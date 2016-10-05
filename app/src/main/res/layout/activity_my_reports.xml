@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:id="@+id/myfragment"
+tools:context="in.reweyou.reweyou.MyReports">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:orientation="horizontal"
+    android:id="@+id/heading"
+    android:background="#05A8AA">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:textColor="#fff"
+        android:textSize="21sp"
+        android:text="My Reports"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp" />
+</LinearLayout>
+<fragment
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_below="@id/heading"
+    android:name="in.reweyou.reweyou.fragment.ReportsFragment"
+    android:id="@+id/fragment" />
+</RelativeLayout>

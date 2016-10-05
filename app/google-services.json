@@ -1,0 +1,35 @@
+{
+  "project_info": {
+    "project_number": "262880460598",
+    "project_id": "reweyou-1301"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:262880460598:android:074a33ec1398f75d",
+        "android_client_info": {
+          "package_name": "in.reweyou.reweyou"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZLRiaSTPvGFuFzl16j8aexwG8Llr3r_g"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

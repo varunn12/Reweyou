@@ -1,0 +1,91 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_height="match_parent" tools:context=".TokenTest"
+    android:background="@color/colorPrimary">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/welcome"
+        android:text="Welcome "
+        android:textSize="21sp"
+        android:inputType="textEmailAddress"
+        android:textColor="#fff"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/first"
+        android:text="To report a story"
+        android:textSize="21sp"
+        android:inputType="textEmailAddress"
+        android:textColor="#fff"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:orientation="horizontal">
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:text="@string/camera"
+        android:layout_gravity="center"
+        android:id="@+id/CustomCamera"
+        android:textColor="@color/colorPrimary"
+        android:background="@drawable/roundbutton"
+        android:textSize="30sp"
+        android:layout_marginLeft="65dp"
+        android:layout_marginTop="20dp" />
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:text="@string/gallery"
+        android:layout_gravity="center"
+        android:id="@+id/Gallery"
+        android:textColor="@color/colorPrimary"
+        android:background="@drawable/roundbutton"
+        android:textSize="30sp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="20dp" />
+    </LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/read"
+        android:text="To read stories. "
+        android:textSize="21sp"
+        android:inputType="textEmailAddress"
+        android:textColor="#fff"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp" />
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:text="@string/home"
+        android:layout_gravity="center"
+        android:id="@+id/Feed"
+        android:textColor="@color/colorPrimary"
+        android:background="@drawable/roundbutton"
+        android:layout_margin="25dp"
+        android:textSize="30sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/Read"
+        android:text="(You are logged in)"
+        android:textSize="15sp"
+        android:inputType="textEmailAddress"
+        android:textColor="#fff"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"/>
+
+</LinearLayout>

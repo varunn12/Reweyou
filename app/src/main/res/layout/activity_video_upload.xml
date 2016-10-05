@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_weight="1"
+    android:background="#1A000000">
+
+
+    <VideoView
+        android:id="@+id/videoView"
+        android:layout_width="532dp"
+        android:layout_height="400dp"
+        />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/layout"
+        android:weightSum="1"
+        android:orientation="horizontal"
+        android:layout_below="@id/videoView"
+        android:layout_centerHorizontal="true">
+        <Spinner
+            android:id="@+id/static_spinner"
+            android:layout_width="150dp"
+            android:layout_height="39dp"
+            android:layout_weight="1"
+            android:layout_alignParentRight="true"
+            android:background="#062235"
+            android:layout_alignParentTop="true" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:layout_marginBottom="5dp">
+
+        <EditText
+            android:id="@+id/Who"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="6"
+            android:paddingLeft="8dp"
+            android:paddingRight="6dp"
+            android:hint="Headline"
+            android:textCursorDrawable="@drawable/color_cursor"
+            android:background="#fff"
+            android:paddingTop="20dp" />
+
+        <Button
+            android:id="@+id/btn_send"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:textSize="21sp"
+            android:text="@string/location"
+            android:textColor="#fff"
+            android:layout_weight="1"
+            android:layout_margin="3dp"
+            android:background="@color/random" />
+    </LinearLayout>
+
+</RelativeLayout>

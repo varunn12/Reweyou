@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/profile"
+        android:orientation="horizontal"
+        android:background="@color/colorPrimary"
+        android:layout_marginBottom="4dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="What's new?"
+            android:id="@+id/headline"
+            android:textColor="#fff"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="12dp"
+            android:textSize="20sp"
+            />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="#ffffff"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp">
+
+        <ImageView
+            android:layout_width="35dp"
+            android:layout_height="40dp"
+            android:id="@+id/image1"
+            android:layout_alignParentLeft="true"
+            android:src="@android:drawable/ic_menu_myplaces"
+            android:layout_marginRight="2dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="1dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="You can start reading other reporters."
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:layout_toRightOf="@+id/image1"
+            android:textColor="@color/colorPrimary"
+            android:layout_marginLeft="3dp"
+            android:layout_centerVertical="true" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="#ffffff"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp">
+
+        <ImageView
+            android:layout_width="35dp"
+            android:layout_height="40dp"
+            android:id="@+id/image2"
+            android:layout_alignParentLeft="true"
+            android:src="@android:drawable/ic_menu_edit"
+            android:layout_marginRight="2dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="1dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edit your profile and location."
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:layout_toRightOf="@+id/image2"
+            android:textColor="@color/colorPrimary"
+            android:layout_marginLeft="3dp"
+            android:layout_centerVertical="true" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="#ffffff"
+            android:layout_alignBottom="@+id/image2"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
+
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="40dp"
+                android:id="@+id/image5"
+                android:layout_alignParentLeft="true"
+                android:src="@android:drawable/ic_menu_sort_by_size"
+                android:layout_marginRight="2dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="1dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Personalize your feed using feed settings."
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_toRightOf="@+id/image5"
+                android:textColor="@color/colorPrimary"
+                android:layout_marginLeft="3dp"
+                android:layout_centerVertical="true" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="#ffffff"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp">
+
+        <ImageView
+            android:layout_width="35dp"
+            android:layout_height="40dp"
+            android:id="@+id/image4"
+            android:layout_alignParentLeft="true"
+            android:src="@android:drawable/ic_menu_myplaces"
+            android:layout_marginRight="2dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="1dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Click on City to get news from any City"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:layout_toRightOf="@+id/image4"
+            android:textColor="@color/colorPrimary"
+            android:layout_marginLeft="3dp"
+            android:layout_centerVertical="true" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="#ffffff"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp">
+
+        <ImageView
+            android:layout_width="35dp"
+            android:layout_height="40dp"
+            android:id="@+id/image6"
+            android:layout_alignParentLeft="true"
+            android:src="@android:drawable/ic_menu_share"
+            android:layout_marginRight="2dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="1dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Use overflow icon to share stories."
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:layout_toRightOf="@+id/image6"
+            android:textColor="@color/colorPrimary"
+            android:layout_marginLeft="3dp"
+            android:layout_centerVertical="true" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="#ffffff"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp">
+
+        <ImageView
+            android:layout_width="35dp"
+            android:layout_height="40dp"
+            android:id="@+id/image7"
+            android:layout_alignParentLeft="true"
+            android:src="@android:drawable/ic_menu_gallery"
+            android:layout_marginRight="2dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="1dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Use reactions to update stories/multiple images."
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:layout_toRightOf="@+id/image7"
+            android:textColor="@color/colorPrimary"
+            android:layout_marginLeft="3dp"
+            android:layout_centerVertical="true" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:id="@+id/one"
+        android:background="#ffffff"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp">
+
+        <ImageView
+            android:layout_width="35dp"
+            android:layout_height="40dp"
+            android:id="@+id/image"
+            android:layout_alignParentLeft="true"
+            android:src="@android:drawable/ic_menu_search"
+            android:layout_marginRight="2dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="1dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/Who"
+            android:text="Now you can search posts on Reweyou"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:layout_toRightOf="@+id/image"
+            android:textColor="@color/colorPrimary"
+            android:layout_marginLeft="3dp"
+            android:layout_centerVertical="true" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="#ffffff"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp">
+
+        <ImageView
+            android:layout_width="35dp"
+            android:layout_height="40dp"
+            android:id="@+id/image3"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/cup"
+            android:layout_marginRight="2dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="1dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Leaderboard - More Reviews better rank."
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:layout_toRightOf="@+id/image3"
+            android:textColor="@color/colorPrimary"
+            android:layout_marginLeft="3dp"
+            android:layout_centerVertical="true" />
+    </RelativeLayout>
+</LinearLayout>

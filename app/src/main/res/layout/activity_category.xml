@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/myfragment"
+    tools:context="in.reweyou.reweyou.MyProfile"
+    android:background="#80000000">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/profile"
+        android:orientation="horizontal"
+        android:background="@color/colorPrimary">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Profile"
+            android:id="@+id/headline"
+            android:textColor="#fff"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="12dp"
+            android:textSize="20sp"
+            />
+    </LinearLayout>
+    <fragment
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/profile"
+        android:name="in.reweyou.reweyou.fragment.CategoryFragment"
+        android:id="@+id/fragment" />
+</RelativeLayout>

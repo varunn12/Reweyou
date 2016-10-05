@@ -1,0 +1,114 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    tools:context=".TokenTest"
+    android:background="?attr/colorPrimary">
+<ImageView
+    android:layout_width="30dp"
+    android:layout_height="50dp"
+    android:src="@drawable/logo_plain"
+    android:layout_marginTop="20dp"
+    android:textSize="25sp"
+    android:textColor="#fff"
+    android:layout_gravity="center_horizontal"/>
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+        android:layout_marginTop="40dp"
+    android:layout_marginLeft="15dp"
+    android:layout_marginRight="15dp"
+    android:paddingBottom="10dp">
+    <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:padding="5dp">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint=" Full Name"
+            android:layout_marginLeft="10sp"
+            android:id="@+id/editTextUsername"
+            android:textColorHint="#f4f4f4"
+            android:textCursorDrawable="@drawable/color_cursor"
+            android:textColor="#fff"
+            android:textSize="14sp" />
+        </TableRow>
+
+    <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:padding="5dp"
+        android:layout_marginTop="10dp">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="10 digit mobile number"
+            android:id="@+id/editTextNumber"
+            android:inputType="phone"
+            android:textCursorDrawable="@drawable/color_cursor"
+            android:textColorHint="#f4f4f4"
+            android:layout_marginLeft="10sp"
+            android:textColor="#fff"
+            android:textSize="14sp" />
+</TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:padding="5dp"
+            android:layout_marginTop="10dp">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="City"
+                android:id="@+id/editLocation"
+                android:textCursorDrawable="@drawable/color_cursor"
+                android:textColorHint="#f4f4f4"
+                android:layout_marginLeft="10sp"
+                android:textColor="#fff"
+                android:textSize="14sp" />
+        </TableRow>
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:text="Register"
+        android:layout_gravity="center"
+        android:id="@+id/buttonRegister"
+        android:textColor="@color/colorPrimaryDark"
+        android:background="#f4f4f4"
+        android:layout_marginTop="10dp" />
+</LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/Read"
+        android:text="By signing up I agree to Terms and Conditions"
+        android:textSize="14sp"
+        android:inputType="textEmailAddress"
+        android:textColor="#fff"
+        android:layout_gravity="center"
+        android:layout_marginTop="57dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/TermsAndConditions"
+        android:text="(Touch to Read)"
+        android:textSize="14sp"
+        android:inputType="textEmailAddress"
+        android:textColor="#fff"
+        android:layout_gravity="center" />
+
+</LinearLayout>

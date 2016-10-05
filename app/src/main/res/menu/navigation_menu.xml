@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="all">
+        <item
+            android:id="@+id/mycity"
+            android:title="My City"
+            android:checkable="true"
+            android:icon="@drawable/ic_map_marker_radius_white"/>
+        <item
+            android:id="@+id/myreports"
+            android:title="Feed Settings"
+            android:checkable="true"
+            android:icon="@drawable/ic_newspaper_white"/>
+        <item
+            android:id="@+id/notifications"
+            android:title="Notifications"
+            android:checkable="true"
+            android:icon="@drawable/ic_bell_white"/>
+        <item
+            android:id="@+id/leaderboard"
+            android:title="Leaderboard"
+
+            android:icon="@drawable/cup"/>
+        <item
+            android:id="@+id/New"
+            android:title="What's New?"
+            android:checkable="true"
+            android:icon="@drawable/point"></item>
+        <item
+            android:id="@+id/logout"
+            android:title="Delete Account"
+            android:icon="@drawable/point"></item>
+            </group>
+</menu>

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="in.reweyou.reweyou">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <uses-feature android:name="android.hardware.camera" />
+
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="in.reweyou.reweyou.permission.C2D_MESSAGE" />
+    <!-- [START gcm_permission] -->
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <application
+        android:name=".UILApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".SplashScreen"
+            android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".Signup" />
+        <activity
+            android:name=".Feed"
+            android:configChanges="orientation|keyboardHidden|screenSize">
+            <meta-data
+                android:name="android.app.default_searchable"
+                android:value=".SearchResultsActivity" />
+        </activity>
+        <activity android:name=".Details" />
+        <activity android:name=".ShowImage" />
+        <activity android:name=".CameraActivity" />
+        <activity android:name=".VideoUpload" />
+        <activity
+            android:name=".SearchResultsActivity"
+            android:parentActivityName=".Feed">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+        </activity>
+
+        <receiver android:name=".Notification" />
+
+        <activity android:name=".WelcomeScreen" />
+
+        <!-- SMS Receiver -->
+        <receiver android:name=".classes.SmsReceiver">
+            <intent-filter android:priority="99999">
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
+        <!-- Intent service -->
+        <service
+            android:name=".classes.HttpService"
+            android:exported="false" />
+
+        <activity android:name=".VideoCapture" />
+        <activity android:name=".Videorow" />
+        <activity android:name=".ImageCapture" />
+        <activity android:name=".MyProfile" />
+        <activity android:name=".ImageActivity" />
+        <activity android:name=".Welcome" />
+        <activity android:name=".Leaderboard" />
+        <activity android:name=".Notifications" />
+        <activity android:name=".FullImage" />
+        <activity android:name=".PermissionsActivity" />
+        <activity android:name=".MyReports" />
+        <activity android:name=".Action" />
+        <activity android:name=".Comments" />
+        <activity android:name=".LocationActivity" />
+        <activity android:name=".TokenTest" />
+
+        <!-- GCM Receiver -->
+        <receiver
+            android:name="com.google.android.gms.gcm.GcmReceiver"
+            android:exported="true"
+            android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
+                <category android:name="in.reweyou.reweyou" />
+            </intent-filter>
+        </receiver>
+
+        <!-- GCM Receiver Service -->
+        <service
+            android:name=".gcm.GCMPushReceiverService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            </intent-filter>
+        </service>
+
+        <!-- GCM Registration Intent Service -->
+        <service
+            android:name=".gcm.GCMRegistrationIntentService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.gms.iid.InstanceID" />
+            </intent-filter>
+        </service>
+
+        <activity android:name=".Gallery">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="image/*" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".UpdateImage" />
+        <activity android:name=".MyCityActivity" />
+        <activity android:name=".Friends" />
+        <activity android:name=".CategoryActivity" />
+        <activity android:name=".NewActivity" />
+        <activity android:name=".UserProfile" />
+        <activity android:name=".AddressBook" />
+        <activity android:name=".Topic" />
+        <activity
+            android:name=".SinglePost"
+            android:parentActivityName=".Feed" />
+        <activity android:name=".Readers"></activity>
+    </application>
+
+</manifest>

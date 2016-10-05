@@ -1,0 +1,88 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent">
+    <in.reweyou.reweyou.classes.TouchImageView
+        android:layout_width="match_parent"
+        android:layout_height="435dp"
+        android:id="@+id/image"
+        android:src="@drawable/app_logo"
+        android:layout_marginTop="5dp" />
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:layout_centerInParent="true" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/Who"
+        android:layout_below="@+id/image"
+        android:text="This is Headline"
+        android:textSize="20sp"
+        android:paddingLeft="3dp"
+        android:paddingRight="3dp"
+        android:textColor="#fff" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/Who"
+        android:paddingLeft="3dp"
+        android:paddingRight="3dp"
+        android:background="@color/colorPrimary"
+        android:id="@+id/tag"
+        android:text="Category"
+        android:textColor="#fff" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/Who"
+        android:id="@+id/date"
+        android:layout_alignParentRight="true"
+        android:text="Date"
+        android:textColor="#fff" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tag"
+        android:id="@+id/place"
+        android:text="Location"
+        android:layout_alignParentRight="true"
+        android:textColor="#fff" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tag"
+        android:id="@+id/from"
+        android:layout_alignParentRight="false"
+        android:text="Posted by"
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentTop="false"
+        android:layout_alignWithParentIfMissing="false"
+        android:textColor="#fff" />
+
+    <TextView
+        android:layout_width="34dp"
+        android:layout_height="34dp"
+        android:layout_below="@+id/place"
+        android:layout_centerHorizontal="true"
+        android:text="Total"
+        android:background="@drawable/roundbutton"
+        android:id="@+id/reviews"
+        android:textSize="21sp"
+        android:textColor="#fff"
+        android:paddingLeft="8dp"
+        android:paddingRight="4dp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/reviews"
+        android:layout_centerHorizontal="true"
+        android:text="(users have reviewed this)"
+        android:id="@+id/myreviews"
+        android:textSize="16sp"
+        android:textColor="#fff" />
+
+
+</RelativeLayout>

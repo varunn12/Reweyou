@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="in.reweyou.reweyou.SearchResultsActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            />
+    </android.support.design.widget.AppBarLayout>
+
+ <CheckBox
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:layout_below="@+id/appBarLayout"
+     android:id="@+id/National"
+     android:layout_marginTop="2dp"
+     android:paddingLeft="16dp"
+     android:text="National"
+     android:checked="true"
+     android:textSize="20sp"
+     android:buttonTint="@color/colorPrimary" />
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/Technology"
+        android:layout_below="@+id/National"
+        android:layout_marginTop="2dp"
+        android:paddingLeft="16dp"
+        android:text="Technology"
+        android:checked="true"
+        android:textSize="20sp"
+        android:buttonTint="@color/colorPrimary" />
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/Sports"
+        android:layout_below="@+id/Technology"
+        android:layout_marginTop="2dp"
+        android:paddingLeft="16dp"
+        android:text="Sports"
+        android:checked="true"
+        android:textSize="20sp"
+        android:buttonTint="@color/colorPrimary" />
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/International"
+        android:layout_below="@+id/Sports"
+        android:layout_marginTop="2dp"
+        android:paddingLeft="16dp"
+        android:text="International"
+        android:checked="true"
+        android:textSize="20sp"
+        android:buttonTint="@color/colorPrimary" />
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/Business"
+        android:layout_below="@+id/International"
+        android:layout_marginTop="2dp"
+        android:paddingLeft="16dp"
+        android:text="Business"
+        android:checked="true"
+        android:textSize="20sp"
+        android:buttonTint="@color/colorPrimary" />
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/SocialMedia"
+        android:layout_below="@+id/Business"
+        android:layout_marginTop="2dp"
+        android:paddingLeft="16dp"
+        android:text="Social Media"
+        android:checked="true"
+        android:textSize="20sp"
+        android:buttonTint="@color/colorPrimary" />
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/Opinion"
+        android:layout_below="@+id/SocialMedia"
+        android:layout_marginTop="2dp"
+        android:paddingLeft="16dp"
+        android:text="Opinion"
+        android:checked="true"
+        android:textSize="20sp"
+        android:buttonTint="@color/colorPrimary" />
+<Button
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/border"
+    android:layout_below="@id/Opinion"
+    android:layout_marginTop="2dp"
+    android:layout_centerHorizontal="true"
+    android:id="@+id/save"
+    android:text="Save" />
+</RelativeLayout>
