@@ -1,7 +1,9 @@
 {
   "project_info": {
     "project_number": "262880460598",
-    "project_id": "reweyou-1301"
+    "firebase_url": "https://reweyou-1301.firebaseio.com",
+    "project_id": "reweyou-1301",
+    "storage_bucket": "reweyou-1301.appspot.com"
   },
   "client": [
     {
@@ -11,7 +13,12 @@
           "package_name": "in.reweyou.reweyou"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "262880460598-bhqgmkts8i8elhdo8c7ob2rsro82vs4a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAZLRiaSTPvGFuFzl16j8aexwG8Llr3r_g"
@@ -26,7 +33,7 @@
           "other_platform_oauth_client": []
         },
         "ads_service": {
-          "status": 1
+          "status": 2
         }
       }
     }

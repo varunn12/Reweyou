@@ -82,7 +82,7 @@ public class Gallery extends AppCompatActivity implements View.OnClickListener {
     private String number, type, mycity;
     private Spinner staticSpinner;
     Uri uri;
-    static final String[] PERMISSIONS = new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION,android.Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    static final String[] PERMISSIONS = new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.ACCESS_FINE_LOCATION,android.Manifest.permission.WRITE_EXTERNAL_STORAGE};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

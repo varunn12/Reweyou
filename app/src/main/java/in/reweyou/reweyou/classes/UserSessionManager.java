@@ -127,7 +127,7 @@ public class UserSessionManager {
         return pref.getString(KEY_PIC, null);
     }
     public String getMobileNumber() {
-        return pref.getString(KEY_MOBILE_NUMBER, null);
+        return pref.getString(KEY_MOBILE_NUMBER, "0");
     }
 
     public void setUsername(String fullname) {
@@ -139,8 +139,18 @@ public class UserSessionManager {
     }
 
     public String getLoginLocation() {
-        return pref.getString(KEY_LOGIN_LOCATION, null);
+        return pref.getString(KEY_LOGIN_LOCATION, "Unknown");
     }
+
+    public void setFirebaseToken(String token)
+    {
+        editor.putString("token", token);
+        editor.commit();
+    }
+    public String getFirebaseToken(){
+        return pref.getString("token","0");
+    }
+
     //Create login session and Register
     public void createUserRegisterSession(String username, String number, String place) {
         // Storing login value as TRUE

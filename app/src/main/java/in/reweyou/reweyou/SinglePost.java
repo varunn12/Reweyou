@@ -70,7 +70,7 @@ public class SinglePost extends AppCompatActivity {
         progressBar.setVisibility(View.VISIBLE);
         Bundle bundle = getIntent().getExtras();
         query = bundle.getString("postid");
-        getSupportActionBar().setTitle("Happy Reweyouing!");
+        getSupportActionBar().setTitle("Top  Stories!");
 
         new JSONTask().execute(query);
         adapter=new CityAdapter(SinglePost.this,messagelist);
@@ -107,7 +107,9 @@ public class SinglePost extends AppCompatActivity {
         switch (id) {
             case android.R.id.home:
                 // app icon in action bar clicked; go home
-                NavUtils.navigateUpFromSameTask(this);
+              //  NavUtils.navigateUpFromSameTask(this);
+                Intent i = new Intent(SinglePost.this, Feed.class);
+                startActivity(i);
                 return true;
         }
 
@@ -116,6 +118,7 @@ public class SinglePost extends AppCompatActivity {
             Intent i = new Intent(SinglePost.this, Feed.class);
             startActivity(i);
         }
+
 
         return super.onOptionsItemSelected(item);
     }

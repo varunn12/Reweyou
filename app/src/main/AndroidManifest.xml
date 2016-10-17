@@ -17,9 +17,8 @@
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.READ_SMS" />
-    <uses-permission android:name="in.reweyou.reweyou.permission.C2D_MESSAGE" />
-    <!-- [START gcm_permission] -->
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+
+    <!-- Get permission for reliable local dispatching on non-Google Play devices. -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
@@ -55,7 +54,6 @@
             android:parentActivityName=".Feed">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
@@ -93,37 +91,36 @@
         <activity android:name=".Action" />
         <activity android:name=".Comments" />
         <activity android:name=".LocationActivity" />
-        <activity android:name=".TokenTest" />
 
-        <!-- GCM Receiver -->
-        <receiver
-            android:name="com.google.android.gms.gcm.GcmReceiver"
-            android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND">
+        <!-- Firebase Notifications -->
+        <service android:name=".fcm.MyFirebaseMessagingService">
             <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
 
-                <category android:name="in.reweyou.reweyou" />
+        <service android:name=".fcm.MyFirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+        <!-- Firebase Notifications -->
+
+
+        <!-- Register AnalyticsReceiver and AnalyticsService to support background
+             dispatching on non-Google Play devices. -->
+        <receiver android:name="com.google.android.gms.analytics.AnalyticsReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="com.google.android.gms.analytics.ANALYTICS_DISPATCH" />
             </intent-filter>
         </receiver>
+        <service android:name="com.google.android.gms.analytics.AnalyticsService"
+            android:enabled="true"
+            android:exported="false"/>
 
-        <!-- GCM Receiver Service -->
-        <service
-            android:name=".gcm.GCMPushReceiverService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-            </intent-filter>
-        </service>
+        <!-- ... -->
 
-        <!-- GCM Registration Intent Service -->
-        <service
-            android:name=".gcm.GCMRegistrationIntentService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.android.gms.iid.InstanceID" />
-            </intent-filter>
-        </service>
 
         <activity android:name=".Gallery">
             <intent-filter>
@@ -144,7 +141,12 @@
         <activity android:name=".Topic" />
         <activity
             android:name=".SinglePost"
-            android:parentActivityName=".Feed" />
+            android:parentActivityName=".Feed">
+        <intent-filter>
+            <action android:name="in.reweyou.reweyou_SINGLE_POST">
+                <category android:name="android.intent.category.DEFAULT"></category></action>
+        </intent-filter>
+        </activity>
         <activity android:name=".Readers"></activity>
     </application>
 

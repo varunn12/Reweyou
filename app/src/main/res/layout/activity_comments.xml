@@ -72,54 +72,11 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:context="info.androidhive.cardview.MainActivity">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:id="@+id/comment"
-            android:background="@drawable/dark_border"
-            android:orientation="horizontal"
-            android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"
-            android:layout_marginBottom="5dp">
 
-            <EditText
-                android:id="@+id/Who"
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="6"
-                android:paddingLeft="8dp"
-                android:paddingRight="6dp"
-                android:hint="Reactions"
-                android:textCursorDrawable="@drawable/color_cursor"
-                android:paddingTop="20dp" />
-
-            <Button
-                android:id="@+id/btn_send"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:textSize="21sp"
-                android:text="@string/send"
-                android:textColor="#fff"
-                android:layout_weight="1"
-                android:layout_margin="3dp"
-                android:background="@color/colorPrimary" />
-            <Button
-                android:id="@+id/btn_image"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:textSize="21sp"
-                android:text="@string/gallery"
-                android:textColor="#fff"
-                android:layout_weight="1"
-                android:layout_margin="3dp"
-                android:background="@color/colorPrimary" />
-        </LinearLayout>
     <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/swipe_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/comment"
         android:paddingBottom="50dp">
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
@@ -136,4 +93,48 @@
         android:layout_centerInParent="true" />
 
     </RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:id="@+id/comment"
+        android:layout_gravity="bottom"
+        android:background="@drawable/dark_border"
+        android:orientation="horizontal"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:layout_marginBottom="2dp">
+
+        <EditText
+            android:id="@+id/Who"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="6"
+            android:paddingLeft="8dp"
+            android:paddingRight="6dp"
+            android:hint="Reactions"
+            android:textCursorDrawable="@drawable/color_cursor"
+            android:paddingTop="20dp" />
+
+        <Button
+            android:id="@+id/btn_send"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:textSize="21sp"
+            android:text="@string/send"
+            android:textColor="#fff"
+            android:layout_weight="1"
+            android:layout_margin="3dp"
+            android:background="@color/colorPrimary" />
+        <Button
+            android:id="@+id/btn_image"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:textSize="21sp"
+            android:text="@string/gallery"
+            android:textColor="#fff"
+            android:layout_weight="1"
+            android:layout_margin="3dp"
+            android:background="@color/colorPrimary" />
+    </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

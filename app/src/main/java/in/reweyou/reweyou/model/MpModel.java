@@ -23,12 +23,14 @@ public class MpModel {
     private String postviews;
     private String postid;
     private String comments;
+    private String reaction;
+    private String from;
 
     public String getName() {
         return name;
     }
 
-    public void setName(String to) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -53,7 +55,7 @@ public class MpModel {
         return headline;
     }
 
-    public void setHeadline(String type) {
+    public void setHeadline(String headline) {
         this.headline = headline;
     }
 
@@ -117,7 +119,7 @@ public class MpModel {
         return reviews;
     }
 
-    public void setPostviews(String reviews)
+    public void setPostviews(String postviews)
     {
         this.postviews=postviews;
     }
@@ -166,5 +168,21 @@ public class MpModel {
 
     public void setReaders(String readers) {
         this.readers = readers;
+    }
+
+    public String getReaction() {
+        return reaction;
+    }
+
+    public void setReaction(String reaction) {
+        this.reaction = reaction;
+    }
+
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
     }
 }

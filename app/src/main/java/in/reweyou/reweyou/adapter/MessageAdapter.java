@@ -1,6 +1,7 @@
 package in.reweyou.reweyou.adapter;
 
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -18,6 +19,10 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.content.Context;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.format.DateUtils;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -47,20 +52,27 @@ import org.json.JSONException;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import in.reweyou.reweyou.CategoryActivity;
 import in.reweyou.reweyou.Comments;
+import in.reweyou.reweyou.Feed;
 import in.reweyou.reweyou.FullImage;
 import in.reweyou.reweyou.LocationActivity;
 import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.classes.ConnectionDetector;
+import in.reweyou.reweyou.classes.CustomTabActivityHelper;
+import in.reweyou.reweyou.classes.CustomTabsOnClickListener;
 import in.reweyou.reweyou.classes.TouchImageView;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.UserProfile;
+import in.reweyou.reweyou.classes.Util;
 import in.reweyou.reweyou.model.MpModel;
 
 import static android.text.format.DateUtils.getRelativeTimeSpanString;
@@ -73,12 +85,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     private String id, postid;
     int currentposition;
     Date dates;
+    Activity activity;
     private EditText editTextHeadline;
     private AppCompatButton buttonEdit;
     private String number;
     private String username;
     Boolean isInternetPresent = false;
     ConnectionDetector cd;
+    CustomTabActivityHelper mCustomTabActivityHelper;
     private DisplayImageOptions options, option;
     UserSessionManager session;
     public static final String REVIEW_URL = "https://www.reweyou.in/reweyou/reviews.php";
@@ -90,8 +104,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     public MessageAdapter(Context context, List<MpModel> mlist) {
         this.mContext = context;
+        activity = (Activity) context;
         this.messagelist = mlist;
         cd = new ConnectionDetector(mContext);
+        mCustomTabActivityHelper = new CustomTabActivityHelper();
         session = new UserSessionManager(mContext);
         options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.irongrip)
@@ -132,7 +148,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         final Bundle bundle = new Bundle();
         final ViewHolder viewHolderFinal = viewHolder;
         final int total = Integer.parseInt(messagelist.get(position).getReviews());
-        viewHolder.headline.setText(messagelist.get(position).getHeadline());
+        Spannable spannable = new SpannableString(messagelist.get(position).getHeadline());
+        Util.linkifyUrl(spannable, new CustomTabsOnClickListener(activity, mCustomTabActivityHelper));
+        viewHolder.headline.setText(spannable);
+        viewHolder.headline.setMovementMethod(LinkMovementMethod.getInstance());
+
+
 if(messagelist.get(position).getHead()==null)
 {
 viewHolder.head.setVisibility(View.GONE);
@@ -163,15 +184,7 @@ viewHolder.head.setVisibility(View.GONE);
         else {
             viewHolder.head.setVisibility(View.VISIBLE);
             viewHolder.head.setText(messagelist.get(position).getHead());
-            viewHolder.headline.setVisibility(View.GONE);
-            viewHolder.head.setTag(1);
-            viewHolder.head.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    final int status = (Integer) view.getTag();
-                    if (status == 1) {
                         viewHolderFinal.headline.setVisibility(View.VISIBLE);
-                        viewHolderFinal.head.setTag(0);
                         viewHolderFinal.headline.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -185,13 +198,6 @@ viewHolder.head.setVisibility(View.GONE);
                                     e.printStackTrace();
                                 }
 
-                            }
-                        });
-                    }
-                    else {
-                        viewHolderFinal.headline.setVisibility(View.GONE);
-                        viewHolderFinal.head.setTag(1);
-                    }
                 }
             });
 
@@ -217,8 +223,8 @@ viewHolder.head.setVisibility(View.GONE);
         });
         String stroydates = messagelist.get(position).getDate();
         viewHolder.date.setText(stroydates.substring(0, 12));
-   /*     if(stroydates != null && !stroydates .isEmpty()) {
-            SimpleDateFormat dfs = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss a", Locale.US);
+        if(stroydates != null && !stroydates .isEmpty()) {
+            SimpleDateFormat dfs = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss");
             try {
                 dates = dfs.parse(stroydates);
             } catch (ParseException e) {
@@ -233,7 +239,7 @@ viewHolder.head.setVisibility(View.GONE);
         {
             viewHolder.date.setText(stroydates);
         }
-*/
+
     //    imageLoader.clearMemoryCache();
       //  imageLoader.clearDiskCache();
 
@@ -298,6 +304,32 @@ viewHolder.head.setVisibility(View.GONE);
 
         // viewHolder.tv.setVisibility(View.GONE);
         viewHolder.app.setText(messagelist.get(position).getComments() + " Reactions");
+if(!messagelist.get(position).getComments().equals("0")) {
+    viewHolder.rv.setVisibility(View.VISIBLE);
+    viewHolder.rv.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Bundle bundle = new Bundle();
+            bundle.putString("myData", messagelist.get(position).getPostId());
+            bundle.putString("headline", messagelist.get(position).getHeadline());
+            bundle.putString("image", messagelist.get(position).getImage());
+            Intent in = new Intent(mContext, Comments.class);
+            in.putExtras(bundle);
+            mContext.startActivity(in);
+        }
+    });
+
+    Spannable spannables = new SpannableString(messagelist.get(position).getReaction());
+    Util.linkifyUrl(spannables, new CustomTabsOnClickListener(activity, mCustomTabActivityHelper));
+    viewHolder.userName.setText(spannables);
+    viewHolder.userName.setMovementMethod(LinkMovementMethod.getInstance());
+
+    viewHolder.name.setText(messagelist.get(position).getFrom());
+}
+        else
+{
+    viewHolder.rv.setVisibility(View.GONE);
+}
         viewHolder.app.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -439,7 +471,7 @@ viewHolder.head.setVisibility(View.GONE);
 
     class ViewHolder extends RecyclerView.ViewHolder {
         protected ImageView image, profilepic, overflow;
-        protected TextView headline, upvote, head;
+        protected TextView headline, upvote, head, name, userName;
         protected TextView place;
         protected TextView icon;
         protected TextView reacticon;
@@ -450,6 +482,7 @@ viewHolder.head.setVisibility(View.GONE);
         protected CardView cv;
         protected TextView reviews, source;
         protected TextView app, upicon;
+        protected RelativeLayout rv;
 
         public ViewHolder(View view) {
             super(view);
@@ -459,7 +492,11 @@ viewHolder.head.setVisibility(View.GONE);
             Typeface tf = Typeface.createFromAsset(mContext.getAssets(), fontPath);
             Typeface thin = Typeface.createFromAsset(mContext.getAssets(), thinpath);
             this.cv = (CardView) itemView.findViewById(R.id.cv);
+            this.rv=(RelativeLayout)itemView.findViewById(R.id.rv);
             this.headline = (TextView) view.findViewById(R.id.Who);
+
+            this.name = (TextView) view.findViewById(R.id.name);
+            this.userName = (TextView) view.findViewById(R.id.userName);
             this.head=(TextView)view.findViewById(R.id.head);
             if(this.head ==null)
             {
@@ -487,6 +524,7 @@ viewHolder.head.setVisibility(View.GONE);
             this.tv = (TextView) view.findViewById(R.id.tv);
             this.from = (TextView) view.findViewById(R.id.from);
             this.from.setTypeface(tf);
+            this.name.setTypeface(tf);
             this.relative = (RelativeLayout) view.findViewById(R.id.Relative);
             this.reviews = (TextView) view.findViewById(R.id.reviews);
             this.app = (TextView) view.findViewById(R.id.app);
@@ -714,4 +752,8 @@ viewHolder.head.setVisibility(View.GONE);
             requestQueue.add(stringRequest);
         }
     }
+
+
+
+
 }

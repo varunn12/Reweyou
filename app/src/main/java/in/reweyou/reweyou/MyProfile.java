@@ -166,6 +166,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
 
         profilepic.setOnClickListener(this);
         button.setOnClickListener(this);
+        Readers.setOnClickListener(this);
 
     }
 
@@ -189,8 +190,12 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                 }
                 break;
             case R.id.Readers:
+                Bundle bundle = new Bundle();
+                bundle.putString("myData", user);
+                Intent in = new Intent(this, Readers.class);
+                in.putExtras(bundle);
+                startActivity(in);
                 break;
-
         }
     }
 

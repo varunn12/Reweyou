@@ -51,7 +51,7 @@ import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.HttpService;
 import in.reweyou.reweyou.classes.LocationAddress;
 import in.reweyou.reweyou.classes.UserSessionManager;
-import in.reweyou.reweyou.gcm.GCMRegistrationIntentService;
+import in.reweyou.reweyou.fcm.MyFirebaseInstanceIDService;
 
 public class Signup extends AppCompatActivity implements View.OnClickListener {
     private static final int REQUEST_CODE = 0;
@@ -111,19 +111,16 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
             public void onReceive(Context context, Intent intent) {
                 //If the broadcast has received with success
                 //that means device is registered successfully
-                if(intent.getAction().equals(GCMRegistrationIntentService.REGISTRATION_SUCCESS)){
+                if(intent.getAction().equals(MyFirebaseInstanceIDService.REGISTRATION_SUCCESS)){
                     //Getting the registration token from the intent
                     token = intent.getStringExtra("token");
                     //Displaying the token as toast
-                   // Toast.makeText(getApplicationContext(), "Registration token:" + token, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Registration token:" + token, Toast.LENGTH_LONG).show();
                     //if the intent is not with success then displaying error messages
-                } else if(intent.getAction().equals(GCMRegistrationIntentService.REGISTRATION_ERROR)){
-                 //   Toast.makeText(getApplicationContext(), "GCM registration error!", Toast.LENGTH_LONG).show();
-                } else {
-                 //   Toast.makeText(getApplicationContext(), "Error occurred", Toast.LENGTH_LONG).show();
                 }
             }
         };
+      //  Log.e("Token",token);
         //Checking play service is available or not
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
         if(ConnectionResult.SUCCESS != resultCode) {
@@ -141,8 +138,9 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
             //If play service is available
         } else {
             //Starting intent to register device
-            Intent itent = new Intent(this, GCMRegistrationIntentService.class);
+            Intent itent = new Intent(this, MyFirebaseInstanceIDService.class);
             startService(itent);
+            Toast.makeText(this,"Request Sent",Toast.LENGTH_SHORT).show();
         }
 
 
@@ -153,6 +151,7 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
         username = editTextUsername.getText().toString().trim();
         number = editTextNumber.getText().toString().trim();
         place=editLocation.getText().toString().trim();
+        token=session.getFirebaseToken();
 
         if (editTextUsername.getText().toString().trim().equals("")) {
             editTextUsername.setError("Required!");
@@ -337,9 +336,8 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
         }
             Log.w("Signup", "onResume");
             LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                    new IntentFilter(GCMRegistrationIntentService.REGISTRATION_SUCCESS));
-            LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                    new IntentFilter(GCMRegistrationIntentService.REGISTRATION_ERROR));
+                    new IntentFilter(MyFirebaseInstanceIDService.REGISTRATION_SUCCESS));
+
 
     }
 

@@ -73,7 +73,7 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
     private String number, head, url;
     UserSessionManager session;
     private ProgressBar progressBar;
-    public static final String UPLOAD_URL = "https://www.reweyou.in/reweyou/post_comments.php";
+    public static final String UPLOAD_URL = "https://www.reweyou.in/reweyou/post_comments_new.php";
     public static final String KEY_TEXT = "comments";
     public static final String KEY_NAME = "name";
     public static final String KEY_TIME = "time";

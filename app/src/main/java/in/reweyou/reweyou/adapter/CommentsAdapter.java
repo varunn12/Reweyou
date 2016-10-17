@@ -1,6 +1,7 @@
 package in.reweyou.reweyou.adapter;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
@@ -9,7 +10,10 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.content.Context;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.format.DateFormat;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,8 +38,11 @@ import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.Signup;
 import in.reweyou.reweyou.UserProfile;
 import in.reweyou.reweyou.classes.ConnectionDetector;
+import in.reweyou.reweyou.classes.CustomTabActivityHelper;
+import in.reweyou.reweyou.classes.CustomTabsOnClickListener;
 import in.reweyou.reweyou.classes.RealPathUtil;
 import in.reweyou.reweyou.classes.TouchImageView;
+import in.reweyou.reweyou.classes.Util;
 import in.reweyou.reweyou.model.CommentsModel;
 
 
@@ -44,10 +51,15 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
     private Context mContext;
     private DisplayImageOptions options;
     Boolean isInternetPresent = false;
+    Activity activity;
+    CustomTabActivityHelper mCustomTabActivityHelper;
     ConnectionDetector cd;
     ImageLoader imageLoader = ImageLoader.getInstance();
 
     public CommentsAdapter(Context context, List<CommentsModel> mpsList) {
+        activity = (Activity) context;
+        mCustomTabActivityHelper = new CustomTabActivityHelper();
+
         this.mpModelList = mpsList;
         this.mContext = context;
         cd = new ConnectionDetector(mContext);
@@ -71,7 +83,12 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
             // set the other color
 
         }
-        viewHolder.userName.setText(mpModelList.get(position).getComments());
+
+        Spannable spannable = new SpannableString(mpModelList.get(position).getComments());
+        Util.linkifyUrl(spannable, new CustomTabsOnClickListener(activity, mCustomTabActivityHelper));
+        viewHolder.userName.setText(spannable);
+        viewHolder.userName.setMovementMethod(LinkMovementMethod.getInstance());
+
         viewHolder.name.setText(mpModelList.get(position).getReviewer_Name());
         viewHolder.name.setOnClickListener(new View.OnClickListener() {
             @Override
