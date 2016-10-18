@@ -16,6 +16,7 @@ import com.google.firebase.messaging.RemoteMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import in.reweyou.reweyou.MyProfile;
 import in.reweyou.reweyou.SinglePost;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
@@ -77,7 +78,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             String imageUrl = data.getString("image");
             String timestamp = data.getString("timestamp");
             JSONObject payload = data.getJSONObject("payload");
-            String postid=payload.getString("feed");
+            String postid=payload.getString("postid");
 
 
             Log.e(TAG, "title: " + title);
@@ -89,21 +90,33 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
             if (!NotificationUtils.isAppIsInBackground(getApplicationContext())) {
                 // app is in foreground, broadcast the push message
-                Bundle bundle = new Bundle();
-                bundle.putString("postid", postid);
-                Intent resultIntent = new Intent(this, SinglePost.class);
-                resultIntent.putExtras(bundle);
-                resultIntent.setAction(Long.toString(System.currentTimeMillis()));
-                    // check for image attachment
-                if (TextUtils.isEmpty(imageUrl)) {
+                if(postid.equals("0"))
+                {
+                    Intent resultIntent = new Intent(this, MyProfile.class);
                     showNotificationMessage(getApplicationContext(), title, message, timestamp, resultIntent);
-                } else {
-                    // image is present, show notification with image
-                    showNotificationMessageWithBigImage(getApplicationContext(), title, message, timestamp, resultIntent, imageUrl);
+                }
+                else {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("postid", postid);
+                    Intent resultIntent = new Intent(this, SinglePost.class);
+                    resultIntent.putExtras(bundle);
+                    resultIntent.setAction(Long.toString(System.currentTimeMillis()));
+                    // check for image attachment
+                    if (TextUtils.isEmpty(imageUrl)) {
+                        showNotificationMessage(getApplicationContext(), title, message, timestamp, resultIntent);
+                    } else {
+                        // image is present, show notification with image
+                        showNotificationMessageWithBigImage(getApplicationContext(), title, message, timestamp, resultIntent, imageUrl);
+                    }
                 }
             } else {
                 // app is in background, show the notification in notification tray
-                Bundle bundle = new Bundle();
+                if (postid.equals("0")) {
+                    Intent resultIntent = new Intent(this, MyProfile.class);
+                    showNotificationMessage(getApplicationContext(), title, message, timestamp, resultIntent);
+                } else
+                {
+                    Bundle bundle = new Bundle();
                 bundle.putString("postid", postid);
                 Intent resultIntent = new Intent(this, SinglePost.class);
                 resultIntent.putExtras(bundle);
@@ -115,6 +128,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     // image is present, show notification with image
                     showNotificationMessageWithBigImage(getApplicationContext(), title, message, timestamp, resultIntent, imageUrl);
                 }
+            }
             }
         } catch (JSONException e) {
             Log.e(TAG, "Json Exception: " + e.getMessage());

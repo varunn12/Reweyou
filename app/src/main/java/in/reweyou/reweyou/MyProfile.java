@@ -96,7 +96,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
     ArrayList<String> profilelist = new ArrayList<>();
 
     public static final String URL_VERIFY_FOLLOW = "https://www.reweyou.in/reweyou/verify_follow.php";
-    public static final String URL_FOLLOW = "https://www.reweyou.in/reweyou/follow.php";
+    public static final String URL_FOLLOW = "https://www.reweyou.in/reweyou/follow_new.php";
     public static final String UPLOAD_URL = "https://www.reweyou.in/reweyou/profile_picture.php";
     public static final String EDIT_URL = "https://www.reweyou.in/reweyou/profile.php";
     int SELECT_FILE = 1;
