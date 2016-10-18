@@ -36,6 +36,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
         <activity android:name=".Signup" />
         <activity
@@ -64,7 +65,10 @@
 
         <receiver android:name=".Notification" />
 
-        <activity android:name=".WelcomeScreen" />
+        <activity android:name=".WelcomeScreen">
+
+
+        </activity>
 
         <!-- SMS Receiver -->
         <receiver android:name=".classes.SmsReceiver">

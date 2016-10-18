@@ -10,7 +10,6 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -123,7 +122,7 @@ public class WelcomeScreen extends AppCompatActivity {
     private void buildCircles() {
         circles = LinearLayout.class.cast(findViewById(R.id.circles));
 
-        float scale = getResources().getDisplayMetrics().density;
+      /*  float scale = getResources().getDisplayMetrics().density;
         int padding = (int) (5 * scale + 0.5f);
 
         for (int i = 0; i < TOTAL_PAGES - 1; i++) {
@@ -134,7 +133,7 @@ public class WelcomeScreen extends AppCompatActivity {
             circle.setPadding(padding, 0, padding, 0);
             circles.addView(circle);
         }
-
+*/
         setIndicator(0);
     }
 
@@ -143,9 +142,9 @@ public class WelcomeScreen extends AppCompatActivity {
             for (int i = 0; i < TOTAL_PAGES - 1; i++) {
                 ImageView circle = (ImageView) circles.getChildAt(i);
                 if (i == index) {
-                    circle.setColorFilter(getResources().getColor(R.color.text_selected));
-                } else {
                     circle.setColorFilter(getResources().getColor(R.color.transparent_bg));
+                } else {
+                    circle.setColorFilter(getResources().getColor(R.color.text_selected2));
                 }
             }
         }

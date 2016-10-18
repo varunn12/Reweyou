@@ -1,29 +1,30 @@
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
     <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
         android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
         <android.support.v7.widget.Toolbar
             android:id="@+id/tool_bar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|enterAlways"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            />
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/swipe_container"
         android:layout_width="match_parent"
-        android:layout_below="@id/appBarLayout"
         android:layout_height="match_parent"
+        android:layout_below="@id/appBarLayout"
         android:paddingBottom="50dp">
+
         <view
             android:id="@+id/recycler_view"
             class="android.support.v7.widget.RecyclerView"
@@ -38,37 +39,38 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
         android:layout_alignParentBottom="true"
+        android:layout_marginBottom="5dp"
         android:layout_marginLeft="3dp"
         android:layout_marginRight="3dp"
-        android:layout_marginBottom="5dp">
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
         <EditText
             android:id="@+id/Who"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="6"
+            android:background="#fff"
+            android:hint="Actions"
             android:paddingLeft="8dp"
             android:paddingRight="6dp"
-            android:hint="Actions"
-            android:textCursorDrawable="@drawable/color_cursor"
-            android:background="#fff"
-            android:paddingTop="20dp" />
+            android:paddingTop="20dp"
+            android:textCursorDrawable="@drawable/color_cursor" />
 
         <Button
             android:id="@+id/btn_send"
             android:layout_width="0dp"
             android:layout_height="40dp"
-            android:textSize="21sp"
+            android:layout_margin="3dp"
+            android:layout_weight="1"
+            android:background="@color/colorPrimaryDark"
             android:text="@string/send"
             android:textColor="#fff"
-            android:layout_weight="1"
-            android:layout_margin="3dp"
-            android:background="@color/colorPrimaryDark" />
+            android:textSize="21sp" />
     </LinearLayout>
 </RelativeLayout>

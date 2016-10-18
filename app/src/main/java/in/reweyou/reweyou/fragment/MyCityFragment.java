@@ -1,6 +1,5 @@
 package in.reweyou.reweyou.fragment;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,11 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -34,18 +28,16 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import in.reweyou.reweyou.R;
+import in.reweyou.reweyou.adapter.CityAdapter;
 import in.reweyou.reweyou.classes.DividerItemDecoration;
 import in.reweyou.reweyou.classes.HidingScrollListener;
-import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.classes.RequestHandler;
 import in.reweyou.reweyou.classes.UserSessionManager;
-import in.reweyou.reweyou.adapter.CityAdapter;
 import in.reweyou.reweyou.model.MpModel;
 
 
@@ -157,6 +149,7 @@ public class MyCityFragment extends Fragment implements SwipeRefreshLayout.OnRef
                 OutputStreamWriter wr = new OutputStreamWriter(connection.getOutputStream());
                 wr.write(rh.getPostDataString(data));
                 wr.flush();
+
 
                 InputStream stream = connection.getInputStream();
                 reader = new BufferedReader(new InputStreamReader(stream));

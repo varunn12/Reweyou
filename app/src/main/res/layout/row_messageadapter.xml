@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        card_view:cardBackgroundColor="#fff"
+        card_view:cardCornerRadius="0dp"
+        card_view:cardElevation="2dp"
+        card_view:cardUseCompatPadding="false"
+        card_view:contentPadding="2dp">
+
+        <RelativeLayout
+            android:id="@+id/Relative"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#fff">
+            <RelativeLayout
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="48dp">
+
+            <ImageView
+                android:id="@+id/profilepic"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignParentLeft="true"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="12dp"
+                android:layout_centerVertical="true" />
+
+            <TextView
+                android:id="@+id/from"
+                android:layout_marginLeft="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/profilepic"
+                android:text="Varun Pandey"
+                android:layout_marginTop="8dp"
+                android:textColor="#000"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/from"
+                android:layout_marginLeft="8dp"
+                android:layout_toRightOf="@id/profilepic"
+                android:text="Date"
+                android:textColor="#80000000"
+                android:textSize="12sp" />
+
+            <ImageView
+                android:id="@+id/overflow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+             android:layout_centerVertical="true"
+                android:layout_marginRight="12dp"
+                android:src="@drawable/ic_dots" />
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/toolbar"
+                android:layout_marginBottom="2dp"
+                android:background="#f4f4f4" />
+
+            <TextView
+                android:id="@+id/head"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/divider"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="3dp"
+                android:layout_marginLeft="3dp"
+                android:layout_marginTop="2dp"
+                android:autoLink="web"
+                android:text="Headline"
+                android:paddingLeft="3dp"
+                android:paddingRight="3dp"
+                android:textColor="#000"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/Who"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/head"
+                android:layout_marginBottom="2dp"
+                android:layout_marginLeft="3dp"
+                android:layout_marginTop="2dp"
+                android:autoLink="web"
+                android:paddingLeft="3dp"
+                android:paddingRight="3dp"
+                android:textColor="#000"
+                android:textSize="14sp" />
+
+            <RelativeLayout
+                android:id="@+id/actions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/Who">
+
+                <TextView
+                    android:id="@+id/place"
+                    android:layout_width="wrap_content"
+                    android:layout_height="18dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="3dp"
+                    android:layout_marginTop="2dp"
+                    android:text="posted by"
+                    android:textColor="#80000000"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/locationicon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="18dp"
+                    android:layout_toLeftOf="@id/place"
+                    android:paddingRight="2dp"
+                    android:paddingTop="4dp"
+                    android:text="&#xf041;"
+                    android:textColor="#80000000"
+                    android:textSize="12sp" />
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/actions"
+                android:layout_centerHorizontal="true"
+                android:cropToPadding="true"
+                android:scaleType="centerInside" />
+
+            <RelativeLayout
+                android:id="@+id/top"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/image"
+                android:layout_marginTop="1dp"
+                android:background="#fff">
+
+                <TextView
+                    android:id="@+id/source"
+                    android:layout_width="wrap_content"
+                    android:layout_height="18dp"
+                    android:layout_marginLeft="6dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_weight="2"
+                    android:paddingLeft="3dp"
+                    android:paddingRight="3dp"
+                    android:paddingTop="1dp"
+                    android:text="From"
+                    android:textColor="#80000000"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/reviews"
+                    android:layout_width="wrap_content"
+                    android:layout_height="18dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="6dp"
+                    android:layout_weight="2"
+                    android:paddingLeft="3dp"
+                    android:paddingRight="5dp"
+                    android:paddingTop="1dp"
+                    android:textColor="#80000000"
+                    android:textSize="12sp" />
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/top"
+                android:layout_marginBottom="2dp"
+                android:background="#f4f4f4" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/divider2"
+                android:layout_marginTop="1dp"
+                android:background="#fff">
+
+                <TextView
+                    android:id="@+id/upvote"
+                    android:layout_width="wrap_content"
+                    android:layout_height="25dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="6dp"
+                    android:layout_weight="1"
+                    android:paddingLeft="3dp"
+                    android:paddingRight="3dp"
+                    android:text="Upvote"
+                    android:textColor="#9c9c9c"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/upicon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="25dp"
+                    android:layout_toLeftOf="@id/upvote"
+                    android:layout_weight="0.5"
+                    android:paddingLeft="3dp"
+                    android:paddingRight="5dp"
+                    android:paddingTop="1dp"
+                    android:text=" &#xf01b;"
+                    android:textColor="#9c9c9c"
+                    android:textSize="25sp" />
+
+                <TextView
+                    android:id="@+id/reacticon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="25dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="6dp"
+                    android:layout_weight="0.5"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="3dp"
+                    android:paddingTop="1dp"
+                    android:text="&#xf040;"
+                    android:textColor="#9c9c9c"
+                    android:textSize="19sp" />
+
+                <TextView
+                    android:id="@+id/app"
+                    android:layout_width="wrap_content"
+                    android:layout_height="25dp"
+                    android:layout_toRightOf="@id/reacticon"
+                    android:layout_weight="1"
+                    android:paddingLeft="3dp"
+                    android:paddingRight="3dp"
+                    android:text="React"
+                    android:textColor="#9c9c9c"
+                    android:textSize="14sp" />
+
+            </RelativeLayout>
+        </RelativeLayout>
+
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

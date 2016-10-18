@@ -3,60 +3,58 @@
     android:id="@+id/welcome_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipChildren="false"
-    android:background="@color/colorPrimaryDark"
-    android:orientation="vertical"
-    android:layout_weight="6"
-    android:paddingTop="48dp">
+    android:background="#00ACC1"
+    android:orientation="vertical">
 
     <FrameLayout
         android:id="@id/image_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="4"
+        android:layout_weight="2"
         android:clipChildren="false">
 
         <ImageView
             android:id="@+id/img"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="80dp"
             android:scaleType="centerInside"
-            android:src="@drawable/news"
-            android:paddingLeft="18dp"
-            android:paddingRight="18dp"
-            android:layout_gravity="center"/>
+
+            android:src="@drawable/news" />
 
     </FrameLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
     <TextView
         android:id="@+id/screen_heading"
-        android:text="Local Information"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:textSize="28dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Local Information"
         android:textColor="#000"
-        android:paddingLeft="24dp"
-        android:paddingRight="24dp"
-        android:gravity="bottom|center_horizontal"/>
 
-    <TextView
+        android:textSize="28dp" />
+
+        <TextView
         android:id="@+id/screen_desc"
-        android:text="Realtime update about happenings in your city."
         android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:paddingLeft="24dp"
-        android:paddingRight="24dp"
-        android:textSize="16sp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+
+            android:layout_marginTop="4dp"
+            android:gravity="center_horizontal"
+
+            android:text="Realtime update about happenings in your city."
         android:textColor="#fff"
-        android:gravity="top|center_horizontal"
-        android:minHeight="@dimen/welcome_content_min_height"
+            android:textSize="16sp"
         android:textStyle="bold" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="@android:color/transparent"/>
+    </LinearLayout>
 
 </LinearLayout>
