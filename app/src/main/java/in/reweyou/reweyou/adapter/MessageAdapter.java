@@ -4,6 +4,7 @@ package in.reweyou.reweyou.adapter;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -17,7 +18,6 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -25,9 +25,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -40,8 +40,6 @@ import com.android.volley.toolbox.Volley;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
-import com.nostra13.universalimageloader.utils.DiskCacheUtils;
-import com.nostra13.universalimageloader.utils.MemoryCacheUtils;
 
 import org.json.JSONException;
 
@@ -57,36 +55,34 @@ import in.reweyou.reweyou.Comments;
 import in.reweyou.reweyou.FullImage;
 import in.reweyou.reweyou.LocationActivity;
 import in.reweyou.reweyou.R;
+import in.reweyou.reweyou.UserProfile;
 import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.TouchImageView;
 import in.reweyou.reweyou.classes.UserSessionManager;
-import in.reweyou.reweyou.UserProfile;
 import in.reweyou.reweyou.model.MpModel;
-
-import static android.text.format.DateUtils.getRelativeTimeSpanString;
 
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
-    private List<MpModel> messagelist;
-    private Context mContext;
-    private Bitmap bm;
-    private String id, postid;
-    int currentposition;
-    Date dates;
-    private EditText editTextHeadline;
-    private AppCompatButton buttonEdit;
-    private String number;
-    private String username;
-    Boolean isInternetPresent = false;
-    ConnectionDetector cd;
-    private DisplayImageOptions options, option;
-    UserSessionManager session;
     public static final String REVIEW_URL = "https://www.reweyou.in/reweyou/reviews.php";
     public static final String VIEW_URL = "https://www.reweyou.in/reweyou/postviews.php";
     public static final String SUGGEST_URL = "https://www.reweyou.in/reweyou/suggest.php";
     public static final String EDIT_URL = "https://www.reweyou.in/reweyou/editheadline.php";
+    int currentposition;
+    Date dates;
+    Boolean isInternetPresent = false;
+    ConnectionDetector cd;
+    UserSessionManager session;
     Uri uri;
     ImageLoader imageLoader = ImageLoader.getInstance();
+    private List<MpModel> messagelist;
+    private Context mContext;
+    private Bitmap bm;
+    private String id, postid;
+    private EditText editTextHeadline;
+    private AppCompatButton buttonEdit;
+    private String number;
+    private String username;
+    private DisplayImageOptions options, option;
 
     public MessageAdapter(Context context, List<MpModel> mlist) {
         this.mContext = context;
@@ -119,7 +115,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_messageadapter, viewGroup, false);
 
         ViewHolder holder = new ViewHolder(view);
         return holder;
@@ -216,7 +212,7 @@ viewHolder.head.setVisibility(View.GONE);
             }
         });
         String stroydates = messagelist.get(position).getDate();
-        viewHolder.date.setText(stroydates.substring(0, 12));
+        viewHolder.date.setText(stroydates);
    /*     if(stroydates != null && !stroydates .isEmpty()) {
             SimpleDateFormat dfs = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss a", Locale.US);
             try {
@@ -436,68 +432,6 @@ viewHolder.head.setVisibility(View.GONE);
         return (null != messagelist ? messagelist.size() : 0);
     }
 
-
-    class ViewHolder extends RecyclerView.ViewHolder {
-        protected ImageView image, profilepic, overflow;
-        protected TextView headline, upvote, head;
-        protected TextView place;
-        protected TextView icon;
-        protected TextView reacticon;
-        protected TextView date;
-        protected TextView tv;
-        protected TextView from;
-        protected RelativeLayout relative;
-        protected CardView cv;
-        protected TextView reviews, source;
-        protected TextView app, upicon;
-
-        public ViewHolder(View view) {
-            super(view);
-            String fontPath = "fonts/Roboto-Medium.ttf";
-            String thinpath = "fonts/Roboto-Regular.ttf";
-            Typeface font = Typeface.createFromAsset(mContext.getAssets(), "fontawesome-webfont.ttf");
-            Typeface tf = Typeface.createFromAsset(mContext.getAssets(), fontPath);
-            Typeface thin = Typeface.createFromAsset(mContext.getAssets(), thinpath);
-            this.cv = (CardView) itemView.findViewById(R.id.cv);
-            this.headline = (TextView) view.findViewById(R.id.Who);
-            this.head=(TextView)view.findViewById(R.id.head);
-            if(this.head ==null)
-            {
-
-            }
-            else
-            {
-            this.head.setTypeface(tf);
-            }
-
-            this.headline.setTypeface(thin);
-            this.place = (TextView) view.findViewById(R.id.place);
-            this.place.setTypeface(tf);
-            this.icon = (TextView) view.findViewById(R.id.locationicon);
-            this.icon.setTypeface(font);
-            this.upicon = (TextView) view.findViewById(R.id.upicon);
-            this.upicon.setTypeface(font);
-            this.reacticon = (TextView) view.findViewById(R.id.reacticon);
-            this.reacticon.setTypeface(font);
-            this.date = (TextView) view.findViewById(R.id.date);
-            this.date.setTypeface(thin);
-            this.image = (ImageView) view.findViewById(R.id.image);
-            this.overflow = (ImageView) view.findViewById(R.id.overflow);
-            this.profilepic = (ImageView) view.findViewById(R.id.profilepic);
-            this.tv = (TextView) view.findViewById(R.id.tv);
-            this.from = (TextView) view.findViewById(R.id.from);
-            this.from.setTypeface(tf);
-            this.relative = (RelativeLayout) view.findViewById(R.id.Relative);
-            this.reviews = (TextView) view.findViewById(R.id.reviews);
-            this.app = (TextView) view.findViewById(R.id.app);
-            this.app.setTypeface(tf);
-            this.upvote = (TextView) view.findViewById(R.id.upvote);
-            this.source = (TextView) view.findViewById(R.id.source);
-            this.source.setTypeface(tf);
-        }
-    }
-
-
     public void showImage(int position) {
         Dialog builder = new Dialog(mContext);
         //  builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -647,32 +581,6 @@ viewHolder.head.setVisibility(View.GONE);
         popup.show();
     }
 
-    /**
-     * Click listener for popup menu items
-     */
-    class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
-
-        public MyMenuItemClickListener() {
-        }
-
-        @Override
-        public boolean onMenuItemClick(MenuItem menuItem) {
-            switch (menuItem.getItemId()) {
-                case R.id.share:
-                    takeScreenshot();
-                    ShareIntent();
-                    return true;
-                case R.id.send:
-                    Toast.makeText(mContext, "This feature will be added in next update", Toast.LENGTH_SHORT).show();
-                  // suggest(currentposition);
-
-                    return true;
-                default:
-            }
-            return false;
-        }
-    }
-
     private void suggest(int position) {
         id = messagelist.get(position).getPostId();
         username = session.getUsername();
@@ -712,6 +620,89 @@ viewHolder.head.setVisibility(View.GONE);
 
             RequestQueue requestQueue = Volley.newRequestQueue(mContext);
             requestQueue.add(stringRequest);
+        }
+    }
+
+    class ViewHolder extends RecyclerView.ViewHolder {
+        protected ImageView image, profilepic, overflow;
+        protected TextView headline, upvote, head;
+        protected TextView place;
+        protected TextView icon;
+        protected TextView reacticon;
+        protected TextView date;
+        protected TextView tv;
+        protected TextView from;
+        protected RelativeLayout relative;
+        protected CardView cv;
+        protected TextView reviews, source;
+        protected TextView app, upicon;
+
+        public ViewHolder(View view) {
+            super(view);
+            String fontPath = "fonts/Roboto-Medium.ttf";
+            String thinpath = "fonts/Roboto-Regular.ttf";
+            Typeface font = Typeface.createFromAsset(mContext.getAssets(), "fontawesome-webfont.ttf");
+            Typeface tf = Typeface.createFromAsset(mContext.getAssets(), fontPath);
+            Typeface thin = Typeface.createFromAsset(mContext.getAssets(), thinpath);
+            this.cv = (CardView) itemView.findViewById(R.id.cv);
+            this.headline = (TextView) view.findViewById(R.id.Who);
+            this.head = (TextView) view.findViewById(R.id.head);
+            if (this.head == null) {
+
+            } else {
+                this.head.setTypeface(tf);
+            }
+
+            this.headline.setTypeface(thin);
+            this.place = (TextView) view.findViewById(R.id.place);
+            this.place.setTypeface(tf);
+            this.icon = (TextView) view.findViewById(R.id.locationicon);
+            this.icon.setTypeface(font);
+            this.upicon = (TextView) view.findViewById(R.id.upicon);
+            this.upicon.setTypeface(font);
+            this.reacticon = (TextView) view.findViewById(R.id.reacticon);
+            this.reacticon.setTypeface(font);
+            this.date = (TextView) view.findViewById(R.id.date);
+            this.date.setTypeface(thin);
+            this.image = (ImageView) view.findViewById(R.id.image);
+            this.overflow = (ImageView) view.findViewById(R.id.overflow);
+            this.profilepic = (ImageView) view.findViewById(R.id.profilepic);
+            this.tv = (TextView) view.findViewById(R.id.tv);
+            this.from = (TextView) view.findViewById(R.id.from);
+            this.from.setTypeface(tf);
+            this.relative = (RelativeLayout) view.findViewById(R.id.Relative);
+            this.reviews = (TextView) view.findViewById(R.id.reviews);
+            this.app = (TextView) view.findViewById(R.id.app);
+            this.app.setTypeface(tf);
+            this.upvote = (TextView) view.findViewById(R.id.upvote);
+            this.source = (TextView) view.findViewById(R.id.source);
+            this.source.setTypeface(tf);
+        }
+    }
+
+    /**
+     * Click listener for popup menu items
+     */
+    class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
+
+        public MyMenuItemClickListener() {
+        }
+
+        @Override
+        public boolean onMenuItemClick(MenuItem menuItem) {
+            switch (menuItem.getItemId()) {
+                case R.id.share:
+                    takeScreenshot();
+                    ShareIntent();
+                    return true;
+                case R.id.send:
+                    Toast.makeText(mContext, "This feature will be added in next update", Toast.LENGTH_SHORT).show();
+                    // suggest(currentposition);
+
+                    return true;
+                default:
+            }
+            return false;
         }
     }
 }

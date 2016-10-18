@@ -2,6 +2,7 @@
 <resources>
 
     <color name="text_selected">#888</color>
+    <color name="text_selected2">#bfbfbf</color>
     <color name="transparent_bg">#fff</color>
     <color name="transparent">#00000000</color>
     <color name="black">#000000</color>

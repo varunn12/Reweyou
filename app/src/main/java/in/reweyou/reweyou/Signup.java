@@ -8,20 +8,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Paint;
 import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
-import android.os.Build;
-import android.os.Handler;
-import android.os.Message;
+import android.os.Bundle;
 import android.provider.Settings;
-import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +25,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -45,44 +39,48 @@ import org.json.JSONException;
 import java.util.HashMap;
 import java.util.Map;
 
-
-import in.reweyou.reweyou.classes.AppLocationService;
 import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.HttpService;
-import in.reweyou.reweyou.classes.LocationAddress;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.gcm.GCMRegistrationIntentService;
 
 public class Signup extends AppCompatActivity implements View.OnClickListener {
-    private static final int REQUEST_CODE = 0;
-
-    private static final String REGISTER_URL = "https://www.reweyou.in/reweyou/signup.php";
     public static final String URL_VERIFY_OTP = "https://www.reweyou.in/reweyou/verify_otp.php";
-
     public static final String KEY_USERNAME = "username";
     public static final String KEY_NUMBER = "number";
     public static final String KEY_LOCATION="location";
     public static final String KEY_OTP = "otp";
     public static final String KEY_TOKEN = "token";
+    static final String[] PERMISSIONS = new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.READ_SMS};
+    private static final int REQUEST_CODE = 0;
+    private static final String REGISTER_URL = "https://www.reweyou.in/reweyou/signup.php";
+    UserSessionManager session;
+    PermissionsChecker checker;
+    Boolean isInternetPresent = false;
+    ConnectionDetector cd;
     private EditText editTextUsername, editTextNumber,editTextConfirmOtp, editLocation;
     private AppCompatButton buttonConfirm;
     private Button buttonRegister;
     private Location location;
     private TextView Read;
     private String otp;
-    UserSessionManager session;
     private RequestQueue requestQueue;
     private String username, number, place, token;
-    PermissionsChecker checker;
-    Boolean isInternetPresent = false;
-    ConnectionDetector cd;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
-    static final String[] PERMISSIONS = new String[]{ Manifest.permission.RECEIVE_SMS,Manifest.permission.READ_SMS};
+    private TextInputLayout inputLayoutName;
+    private TextInputLayout inputLayoutNumber;
+    private TextInputLayout inputLayoutCity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
+
+        inputLayoutName = (TextInputLayout) findViewById(R.id.input_layout_username);
+        inputLayoutNumber = (TextInputLayout) findViewById(R.id.input_layout_number);
+        inputLayoutCity = (TextInputLayout) findViewById(R.id.input_layout_city);
+
+
         session = new UserSessionManager(getApplicationContext());
         requestQueue = Volley.newRequestQueue(this);
         cd = new ConnectionDetector(Signup.this);
@@ -91,6 +89,11 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
         editLocation=(EditText)findViewById(R.id.editLocation);
         buttonRegister = (Button) findViewById(R.id.buttonRegister);
         Read = (TextView)findViewById(R.id.Read);
+
+
+        Read.setPaintFlags(Read.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
+
         Read.setOnClickListener(this);
         buttonRegister.setOnClickListener(this);
         checker = new PermissionsChecker(this);
@@ -156,7 +159,6 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
 
         if (editTextUsername.getText().toString().trim().equals("")) {
             editTextUsername.setError("Required!");
-
             // editTextUsername.setHint("Enter Email");
         }
         else if (editTextNumber.getText().toString().trim().equals("")) {
@@ -166,7 +168,6 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
         }
         else if (editLocation.getText().toString().trim().equals("")) {
             editLocation.setError("Required!");
-
             //editTextPassword.setHint("Enter password");
         }
         else {
@@ -238,7 +239,7 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
             if(isInternetPresent) {
                 if (checker.lacksPermissions(PERMISSIONS)) {
                     //   Snackbar.make(mToolbar, R.string.no_permissions, Snackbar.LENGTH_INDEFINITE).show();
-                    Toast.makeText(this,R.string.sms_permissions,Toast.LENGTH_LONG).show();
+                    // Toast.makeText(this,R.string.sms_permissions,Toast.LENGTH_LONG).show();
                 }
                 else {
                     registerUser();
