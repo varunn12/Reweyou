@@ -31,6 +31,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import in.reweyou.reweyou.R;
 
@@ -39,6 +40,7 @@ public class NotificationUtils {
     private static String TAG = NotificationUtils.class.getSimpleName();
 
     private Context mContext;
+    private int m;
 
     public NotificationUtils(Context mContext) {
         this.mContext = mContext;
@@ -50,6 +52,8 @@ public class NotificationUtils {
 
     public void showNotificationMessage(final String title, final String message, final String timeStamp, Intent intent, String imageUrl) {
         // Check for empty push message
+        Random random = new Random();
+        m = random.nextInt(9999 - 1000) + 1000;
         if (TextUtils.isEmpty(message))
             return;
 
@@ -93,25 +97,25 @@ public class NotificationUtils {
 
     private void showSmallNotification(NotificationCompat.Builder mBuilder, int icon, String title, String message, String timeStamp, PendingIntent resultPendingIntent, Uri alarmSound) {
 
-        NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+      //  NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
 
-        inboxStyle.addLine(message);
+        //inboxStyle.addLine(message);
 
         Notification notification;
         notification = mBuilder.setSmallIcon(icon).setTicker(title).setWhen(0)
                 .setAutoCancel(true)
                 .setContentTitle(title)
                 .setContentIntent(resultPendingIntent)
-                .setSound(alarmSound)
-                .setStyle(inboxStyle)
+                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
                 .setWhen(getTimeMilliSec(timeStamp))
                 .setSmallIcon(R.drawable.logo_plain)
-                .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), icon))
+                .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.ic_launcher))
                 .setContentText(message)
                 .build();
 
         NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(Config.NOTIFICATION_ID, notification);
+        notificationManager.notify(m, notification);
     }
 
     private void showBigNotification(Bitmap bitmap, NotificationCompat.Builder mBuilder, int icon, String title, String message, String timeStamp, PendingIntent resultPendingIntent, Uri alarmSound) {
@@ -124,16 +128,16 @@ public class NotificationUtils {
                 .setAutoCancel(true)
                 .setContentTitle(title)
                 .setContentIntent(resultPendingIntent)
-                .setSound(alarmSound)
+                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                 .setStyle(bigPictureStyle)
                 .setWhen(getTimeMilliSec(timeStamp))
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), icon))
+                .setSmallIcon(R.drawable.logo_plain)
+                .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.ic_launcher))
                 .setContentText(message)
                 .build();
 
         NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(Config.NOTIFICATION_ID_BIG_IMAGE, notification);
+        notificationManager.notify(m, notification);
     }
 
     /**

@@ -146,10 +146,10 @@
         <activity
             android:name=".SinglePost"
             android:parentActivityName=".Feed">
-        <intent-filter>
-            <action android:name="in.reweyou.reweyou_SINGLE_POST">
+                <intent-filter>
+                <action android:name="in.reweyou.reweyou_SINGLE_POST">
                 <category android:name="android.intent.category.DEFAULT"></category></action>
-        </intent-filter>
+                </intent-filter>
         </activity>
         <activity android:name=".Readers"></activity>
     </application>

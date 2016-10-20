@@ -143,7 +143,7 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
             //Starting intent to register device
             Intent itent = new Intent(this, MyFirebaseInstanceIDService.class);
             startService(itent);
-            Toast.makeText(this,"Request Sent",Toast.LENGTH_SHORT).show();
+           // Toast.makeText(this,"Request Sent",Toast.LENGTH_SHORT).show();
         }
 
 

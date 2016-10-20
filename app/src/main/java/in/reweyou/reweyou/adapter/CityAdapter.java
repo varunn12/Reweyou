@@ -304,6 +304,7 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
 
         // viewHolder.tv.setVisibility(View.GONE);
         viewHolder.app.setText(messagelist.get(position).getComments() + " Reactions");
+
         if(!messagelist.get(position).getComments().equals("0")) {
             viewHolder.rv.setVisibility(View.VISIBLE);
             viewHolder.rv.setOnClickListener(new View.OnClickListener() {

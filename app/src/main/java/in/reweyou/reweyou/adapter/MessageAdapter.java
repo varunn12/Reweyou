@@ -154,54 +154,54 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         viewHolder.headline.setMovementMethod(LinkMovementMethod.getInstance());
 
 
-if(messagelist.get(position).getHead()==null)
-{
-viewHolder.head.setVisibility(View.GONE);
-}
-        else
-{
-        if(messagelist.get(position).getHead().equals("")){
+        if(messagelist.get(position).getHead()==null)
+        {
             viewHolder.head.setVisibility(View.GONE);
-            viewHolder.headline.setVisibility(View.VISIBLE);
-            viewHolder.headline.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    try {
-                        if(session.getMobileNumber().equals(messagelist.get(position).getNumber())) {
-                            editHeadline(position);
+        }
+        else
+        {
+            if(messagelist.get(position).getHead().equals("")){
+                viewHolder.head.setVisibility(View.GONE);
+                viewHolder.headline.setVisibility(View.VISIBLE);
+                viewHolder.headline.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        try {
+                            if(session.getMobileNumber().equals(messagelist.get(position).getNumber())) {
+                                editHeadline(position);
+                            }
+                            else
+                            {
+                                //Toast.makeText(mContext,"Illegal, It isn't your post",Toast.LENGTH_LONG).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                        else
-                        {
-                            //Toast.makeText(mContext,"Illegal, It isn't your post",Toast.LENGTH_LONG).show();
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+
                     }
+                });
+            }
+            else {
+                viewHolder.head.setVisibility(View.VISIBLE);
+                viewHolder.head.setText(messagelist.get(position).getHead());
+                viewHolderFinal.headline.setVisibility(View.VISIBLE);
+                viewHolderFinal.headline.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        try {
+                            if (session.getMobileNumber().equals(messagelist.get(position).getNumber())) {
+                                editHeadline(position);
+                            } else {
+                                //Toast.makeText(mContext,"Illegal, It isn't your post",Toast.LENGTH_LONG).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
 
-                }
-            });
-        }
-        else {
-            viewHolder.head.setVisibility(View.VISIBLE);
-            viewHolder.head.setText(messagelist.get(position).getHead());
-                        viewHolderFinal.headline.setVisibility(View.VISIBLE);
-                        viewHolderFinal.headline.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                try {
-                                    if (session.getMobileNumber().equals(messagelist.get(position).getNumber())) {
-                                        editHeadline(position);
-                                    } else {
-                                        //Toast.makeText(mContext,"Illegal, It isn't your post",Toast.LENGTH_LONG).show();
-                                    }
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
+                    }
+                });
 
-                }
-            });
-
-        }
+            }
         }
         viewHolder.image.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -222,11 +222,16 @@ viewHolder.head.setVisibility(View.GONE);
             }
         });
         String stroydates = messagelist.get(position).getDate();
+
         viewHolder.date.setText(stroydates.substring(0, 12));
         if(stroydates != null && !stroydates .isEmpty()) {
-            SimpleDateFormat dfs = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss");
+            SimpleDateFormat dfs = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss a", Locale.US);
             try {
+                stroydates=stroydates.replaceAll("\\.", "");
+                Log.e("dates", stroydates);
+
                 dates = dfs.parse(stroydates);
+                Log.e("Parse", String.valueOf(dates));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -240,8 +245,8 @@ viewHolder.head.setVisibility(View.GONE);
             viewHolder.date.setText(stroydates);
         }
 
-    //    imageLoader.clearMemoryCache();
-      //  imageLoader.clearDiskCache();
+        //    imageLoader.clearMemoryCache();
+        //  imageLoader.clearDiskCache();
 
         imageLoader.displayImage(messagelist.get(position).getProfilepic(), viewHolder.profilepic, option);
 
@@ -304,32 +309,32 @@ viewHolder.head.setVisibility(View.GONE);
 
         // viewHolder.tv.setVisibility(View.GONE);
         viewHolder.app.setText(messagelist.get(position).getComments() + " Reactions");
-if(!messagelist.get(position).getComments().equals("0")) {
-    viewHolder.rv.setVisibility(View.VISIBLE);
-    viewHolder.rv.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Bundle bundle = new Bundle();
-            bundle.putString("myData", messagelist.get(position).getPostId());
-            bundle.putString("headline", messagelist.get(position).getHeadline());
-            bundle.putString("image", messagelist.get(position).getImage());
-            Intent in = new Intent(mContext, Comments.class);
-            in.putExtras(bundle);
-            mContext.startActivity(in);
+        if(!messagelist.get(position).getComments().equals("0")) {
+            viewHolder.rv.setVisibility(View.VISIBLE);
+            viewHolder.rv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("myData", messagelist.get(position).getPostId());
+                    bundle.putString("headline", messagelist.get(position).getHeadline());
+                    bundle.putString("image", messagelist.get(position).getImage());
+                    Intent in = new Intent(mContext, Comments.class);
+                    in.putExtras(bundle);
+                    mContext.startActivity(in);
+                }
+            });
+
+            Spannable spannables = new SpannableString(messagelist.get(position).getReaction());
+            Util.linkifyUrl(spannables, new CustomTabsOnClickListener(activity, mCustomTabActivityHelper));
+            viewHolder.userName.setText(spannables);
+            viewHolder.userName.setMovementMethod(LinkMovementMethod.getInstance());
+
+            viewHolder.name.setText(messagelist.get(position).getFrom());
         }
-    });
-
-    Spannable spannables = new SpannableString(messagelist.get(position).getReaction());
-    Util.linkifyUrl(spannables, new CustomTabsOnClickListener(activity, mCustomTabActivityHelper));
-    viewHolder.userName.setText(spannables);
-    viewHolder.userName.setMovementMethod(LinkMovementMethod.getInstance());
-
-    viewHolder.name.setText(messagelist.get(position).getFrom());
-}
         else
-{
-    viewHolder.rv.setVisibility(View.GONE);
-}
+        {
+            viewHolder.rv.setVisibility(View.GONE);
+        }
         viewHolder.app.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -504,7 +509,7 @@ if(!messagelist.get(position).getComments().equals("0")) {
             }
             else
             {
-            this.head.setTypeface(tf);
+                this.head.setTypeface(tf);
             }
 
             this.headline.setTypeface(thin);
@@ -702,7 +707,7 @@ if(!messagelist.get(position).getComments().equals("0")) {
                     return true;
                 case R.id.send:
                     Toast.makeText(mContext, "This feature will be added in next update", Toast.LENGTH_SHORT).show();
-                  // suggest(currentposition);
+                    // suggest(currentposition);
 
                     return true;
                 default:

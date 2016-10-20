@@ -56,7 +56,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
-import in.reweyou.reweyou.adapter.CityAdapter;
+import in.reweyou.reweyou.adapter.MessageAdapter;
 import in.reweyou.reweyou.adapter.CommentsAdapter;
 import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.DividerItemDecoration;
@@ -338,7 +338,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         protected void onPostExecute(List<MpModel> result) {
             super.onPostExecute(result);
             progressBar.setVisibility(View.GONE);
-            CityAdapter adapter = new CityAdapter(UserProfile.this,result);
+            MessageAdapter adapter = new MessageAdapter(UserProfile.this,result);
            // total.setText("You have reported "+ String.valueOf(length)+ " stories.");
             recyclerView.setAdapter(adapter);
             //need to set data to the list
