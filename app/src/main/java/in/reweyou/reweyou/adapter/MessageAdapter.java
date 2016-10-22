@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -67,6 +68,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     public static final String VIEW_URL = "https://www.reweyou.in/reweyou/postviews.php";
     public static final String SUGGEST_URL = "https://www.reweyou.in/reweyou/suggest.php";
     public static final String EDIT_URL = "https://www.reweyou.in/reweyou/editheadline.php";
+    private static final String TAG = MessageAdapter.class.getSimpleName();
     int currentposition;
     Date dates;
     Boolean isInternetPresent = false;
@@ -211,7 +213,11 @@ viewHolder.head.setVisibility(View.GONE);
                 }
             }
         });
+
+
         String stroydates = messagelist.get(position).getDate();
+
+        Log.d(TAG, "onBindViewHolder: date" + stroydates);
         viewHolder.date.setText(stroydates);
    /*     if(stroydates != null && !stroydates .isEmpty()) {
             SimpleDateFormat dfs = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss a", Locale.US);
@@ -255,7 +261,7 @@ viewHolder.head.setVisibility(View.GONE);
         });
 
         viewHolder.place.setText(messagelist.get(position).getLocation());
-
+        Log.d(TAG, "onBindViewHolder: name" + messagelist.get(position).getName());
         viewHolder.from.setText(messagelist.get(position).getName());
         viewHolder.profilepic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -330,11 +336,10 @@ viewHolder.head.setVisibility(View.GONE);
         viewHolder.reviews.setText(String.valueOf(total) + " likes");
         viewHolder.reviews.setTag(1);
 
-        viewHolderFinal.upicon.setTextColor(ContextCompat.getColor(mContext, R.color.ReviewColor));
-        viewHolderFinal.upvote.setText("Like");
-        viewHolderFinal.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.ReviewColor));
-        viewHolder.upicon.setTag(1);
-        viewHolder.upicon.setOnClickListener(new View.OnClickListener() {
+        viewHolderFinal.upicon.setImageResource(R.drawable.ic_thumb_up_black_16px);
+        viewHolderFinal.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.likeText));
+        viewHolderFinal.linearLayout.setTag(1);
+        viewHolderFinal.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 isInternetPresent = cd.isConnectingToInternet();
@@ -345,7 +350,39 @@ viewHolder.head.setVisibility(View.GONE);
                     if (status == 1) {
                         upvote(position);
                         viewHolderFinal.reviews.setText(String.valueOf(total + 1) + " likes");
-                        viewHolderFinal.upicon.setTextColor(ContextCompat.getColor(mContext, R.color.red));
+                        viewHolderFinal.upicon.setImageResource(R.drawable.ic_thumb_up_primary_16px);
+                        viewHolderFinal.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
+                        //   viewHolderFinal.myreviews.setText("");
+                        view.setTag(0);
+                        //pause
+                    } else {
+                        upvote(position);
+                        viewHolderFinal.reviews.setText(String.valueOf(total) + " likes");
+                        viewHolderFinal.upicon.setImageResource(R.drawable.ic_thumb_up_black_16px);
+                        viewHolderFinal.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.likeText));
+                        //  viewHolderFinal.myreviews.setText("");
+                        view.setTag(1);
+                    }
+                } else {
+                    Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+
+        //  viewHolder.upicon.setTag(1);
+      /*  viewHolder.upicon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                isInternetPresent = cd.isConnectingToInternet();
+                if (isInternetPresent) {
+
+
+                    final int status = (Integer) view.getTag();
+                    if (status == 1) {
+                        upvote(position);
+                        viewHolderFinal.reviews.setText(String.valueOf(total + 1) + " likes");
+                       // viewHolderFinal.upicon.setTextColor(ContextCompat.getColor(mContext, R.color.red));
                         viewHolderFinal.upvote.setText("Liked");
                         viewHolderFinal.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.red));
                         //   viewHolderFinal.myreviews.setText("");
@@ -354,7 +391,7 @@ viewHolder.head.setVisibility(View.GONE);
                     } else {
                         upvote(position);
                         viewHolderFinal.reviews.setText(String.valueOf(total) + " likes");
-                        viewHolderFinal.upicon.setTextColor(ContextCompat.getColor(mContext, R.color.ReviewColor));
+                      //  viewHolderFinal.upicon.setTextColor(ContextCompat.getColor(mContext, R.color.ReviewColor));
                         viewHolderFinal.upvote.setText("Like");
                         viewHolderFinal.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.ReviewColor));
                         //  viewHolderFinal.myreviews.setText("");
@@ -364,7 +401,7 @@ viewHolder.head.setVisibility(View.GONE);
                     Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_SHORT).show();
                 }
             }
-        });
+        });*/
         viewHolder.source.setText('#' + messagelist.get(position).getCategory());
         viewHolder.source.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -632,11 +669,11 @@ viewHolder.head.setVisibility(View.GONE);
         protected TextView date;
         protected TextView tv;
         protected TextView from;
-        protected RelativeLayout relative;
         protected CardView cv;
         protected TextView reviews, source;
-        protected TextView app, upicon;
-
+        protected TextView app;
+        private LinearLayout linearLayout;
+        private ImageView upicon;
         public ViewHolder(View view) {
             super(view);
             String fontPath = "fonts/Roboto-Medium.ttf";
@@ -656,10 +693,8 @@ viewHolder.head.setVisibility(View.GONE);
             this.headline.setTypeface(thin);
             this.place = (TextView) view.findViewById(R.id.place);
             this.place.setTypeface(tf);
-            this.icon = (TextView) view.findViewById(R.id.locationicon);
-            this.icon.setTypeface(font);
-            this.upicon = (TextView) view.findViewById(R.id.upicon);
-            this.upicon.setTypeface(font);
+
+
             this.reacticon = (TextView) view.findViewById(R.id.reacticon);
             this.reacticon.setTypeface(font);
             this.date = (TextView) view.findViewById(R.id.date);
@@ -670,13 +705,16 @@ viewHolder.head.setVisibility(View.GONE);
             this.tv = (TextView) view.findViewById(R.id.tv);
             this.from = (TextView) view.findViewById(R.id.from);
             this.from.setTypeface(tf);
-            this.relative = (RelativeLayout) view.findViewById(R.id.Relative);
+            //  this.relative = (RelativeLayout) view.findViewById(R.id.Relative);
             this.reviews = (TextView) view.findViewById(R.id.reviews);
             this.app = (TextView) view.findViewById(R.id.app);
             this.app.setTypeface(tf);
             this.upvote = (TextView) view.findViewById(R.id.upvote);
             this.source = (TextView) view.findViewById(R.id.source);
             this.source.setTypeface(tf);
+
+            linearLayout = (LinearLayout) view.findViewById(R.id.like);
+            upicon = (ImageView) view.findViewById(R.id.upicon);
         }
     }
 
