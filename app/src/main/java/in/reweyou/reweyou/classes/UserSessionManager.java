@@ -3,10 +3,6 @@ package in.reweyou.reweyou.classes;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.HashMap;
 
@@ -17,27 +13,8 @@ import in.reweyou.reweyou.Signup;
  */
 public class UserSessionManager {
 
-    // Shared Preferences reference
-    SharedPreferences pref;
-
-    // Editor reference for Shared preferences
-    SharedPreferences.Editor editor;
-
-    // Context
-    Context _context;
-
-    // Shared pref mode
-    int PRIVATE_MODE = 0;
-
-    // Sharedpref file name
-    private static final String PREFER_NAME = "ReweyouPref";
-
-    // All Shared Preferences Keys
-    private static final String IS_USER_LOGIN = "IsUserLoggedIn";
-
     // User name (make variable public to access from outside)
     public static final String KEY_NAME = "username";
-
     // Email address (make variable public to access from outside)
     public static final String KEY_EMAIL = "email";
     public static final String KEY_PIC="pic";
@@ -45,12 +22,22 @@ public class UserSessionManager {
     public static final String KEY_PASSWORD = "password";
     public static final String KEY_LOCATION = "location";
     public static final String KEY_MOBILE_NUMBER="mobilenumber";
-
     public static final String KEY_LOGIN_LOCATION="loginlocation";
     public static final String KEY_CATEGORY="category";
     public static final String KEY_CITY_LOCATION="citylocation";
-
     public static final String KEY_LOGIN_FULLNAME="fullname";
+    // Sharedpref file name
+    private static final String PREFER_NAME = "ReweyouPref";
+    // All Shared Preferences Keys
+    private static final String IS_USER_LOGIN = "IsUserLoggedIn";
+    // Shared Preferences reference
+    SharedPreferences pref;
+    // Editor reference for Shared preferences
+    SharedPreferences.Editor editor;
+    // Context
+    Context _context;
+    // Shared pref mode
+    int PRIVATE_MODE = 0;
 
 
 
@@ -89,14 +76,9 @@ public class UserSessionManager {
         // commit changes
         editor.commit();
     }
-    public void setMobileNumber(String number) {
-        editor.putString(KEY_MOBILE_NUMBER, number);
-        editor.commit();
-    }
 
-    public void setLoginLocation(String location) {
-        editor.putString(KEY_LOGIN_LOCATION, location);
-        editor.commit();
+    public String getCityLocation() {
+        return pref.getString(KEY_CITY_LOCATION, null);
     }
 
     public void setCityLocation(String location) {
@@ -104,8 +86,8 @@ public class UserSessionManager {
         editor.commit();
     }
 
-    public String getCityLocation() {
-        return pref.getString(KEY_CITY_LOCATION, null);
+    public String getCategory() {
+        return pref.getString(KEY_CATEGORY, null);
     }
 
     public void setCategory(String location) {
@@ -113,8 +95,8 @@ public class UserSessionManager {
         editor.commit();
     }
 
-    public String getCategory() {
-        return pref.getString(KEY_CATEGORY, null);
+    public String getProfilePicture() {
+        return pref.getString(KEY_PIC, null);
     }
 
     public void setProfilePicture(String image)
@@ -122,25 +104,34 @@ public class UserSessionManager {
         editor.putString(KEY_PIC,image);
         editor.commit();
     }
-    public String getProfilePicture()
-    {
-        return pref.getString(KEY_PIC, null);
-    }
+
     public String getMobileNumber() {
         return pref.getString(KEY_MOBILE_NUMBER, null);
+    }
+
+    public void setMobileNumber(String number) {
+        editor.putString(KEY_MOBILE_NUMBER, number);
+        editor.commit();
+    }
+
+    public String getUsername() {
+        return pref.getString(KEY_LOGIN_FULLNAME, null);
     }
 
     public void setUsername(String fullname) {
         editor.putString(KEY_LOGIN_FULLNAME, fullname);
         editor.commit();
     }
-    public String getUsername() {
-        return pref.getString(KEY_LOGIN_FULLNAME, null);
-    }
 
     public String getLoginLocation() {
         return pref.getString(KEY_LOGIN_LOCATION, null);
     }
+
+    public void setLoginLocation(String location) {
+        editor.putString(KEY_LOGIN_LOCATION, location);
+        editor.commit();
+    }
+
     //Create login session and Register
     public void createUserRegisterSession(String username, String number, String place) {
         // Storing login value as TRUE
@@ -184,6 +175,11 @@ public class UserSessionManager {
             return true;
         }
         return false;
+    }
+
+    public boolean checkLoginSplash() {
+        // Check login status
+        return !this.isUserLoggedIn();
     }
 
 

@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="#fff">
 
     <android.support.v7.widget.CardView
@@ -11,224 +11,193 @@
         android:layout_height="wrap_content"
         card_view:cardBackgroundColor="#fff"
         card_view:cardCornerRadius="0dp"
-        card_view:cardElevation="2dp"
-        card_view:cardUseCompatPadding="false"
-        card_view:contentPadding="2dp">
+        card_view:cardElevation="2dp">
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/Relative"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#fff">
+            android:background="#fff"
+            android:orientation="vertical">
+
+
             <RelativeLayout
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="48dp">
+                android:layout_height="52dp">
 
-            <ImageView
-                android:id="@+id/profilepic"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_alignParentLeft="true"
-                android:layout_marginBottom="5dp"
-                android:layout_marginLeft="12dp"
-                android:layout_centerVertical="true" />
+                <ImageView
+                    android:id="@+id/profilepic"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp" />
 
-            <TextView
-                android:id="@+id/from"
-                android:layout_marginLeft="8dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/profilepic"
-                android:text="Varun Pandey"
-                android:layout_marginTop="8dp"
-                android:textColor="#000"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/from"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_toRightOf="@id/profilepic"
+                    android:maxLines="1"
+                    android:text="Varun Pandey"
+                    android:textColor="#000"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/from"
-                android:layout_marginLeft="8dp"
-                android:layout_toRightOf="@id/profilepic"
-                android:text="Date"
-                android:textColor="#80000000"
-                android:textSize="12sp" />
+                <TextView
+                    android:id="@+id/date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/from"
+                    android:layout_marginLeft="8dp"
+                    android:layout_toRightOf="@id/profilepic"
+                    android:text="Date"
+                    android:textColor="#80000000"
+                    android:textSize="12sp" />
 
-            <ImageView
-                android:id="@+id/overflow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-             android:layout_centerVertical="true"
-                android:layout_marginRight="12dp"
-                android:src="@drawable/ic_dots" />
+                <ImageView
+                    android:id="@+id/overflow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
+                    card_view:srcCompat="@drawable/ic_more_vert_black_24px" />
             </RelativeLayout>
 
             <View
                 android:id="@+id/divider"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_below="@id/toolbar"
                 android:layout_marginBottom="2dp"
-                android:background="#f4f4f4" />
+                android:background="#eeeeee" />
+
+            <TextView
+                android:id="@+id/source"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="6dp"
+                android:text="From"
+                android:textColor="#80000000"
+                android:textSize="14dp" />
 
             <TextView
                 android:id="@+id/head"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/divider"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="3dp"
-                android:layout_marginLeft="3dp"
-                android:layout_marginTop="2dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="6dp"
                 android:autoLink="web"
                 android:text="Headline"
-                android:paddingLeft="3dp"
-                android:paddingRight="3dp"
-                android:textColor="#000"
-                android:textSize="16sp" />
+
+                android:textColor="#424242"
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/Who"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/head"
-                android:layout_marginBottom="2dp"
-                android:layout_marginLeft="3dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:layout_marginTop="2dp"
                 android:autoLink="web"
-                android:paddingLeft="3dp"
-                android:paddingRight="3dp"
-                android:textColor="#000"
+                android:textColor="#424242"
                 android:textSize="14sp" />
 
-            <RelativeLayout
-                android:id="@+id/actions"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/Who">
-
-                <TextView
-                    android:id="@+id/place"
-                    android:layout_width="wrap_content"
-                    android:layout_height="18dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="3dp"
-                    android:layout_marginTop="2dp"
-                    android:text="posted by"
-                    android:textColor="#80000000"
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:id="@+id/locationicon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="18dp"
-                    android:layout_toLeftOf="@id/place"
-                    android:paddingRight="2dp"
-                    android:paddingTop="4dp"
-                    android:text="&#xf041;"
-                    android:textColor="#80000000"
-                    android:textSize="12sp" />
-            </RelativeLayout>
 
             <ImageView
                 android:id="@+id/image"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/actions"
-                android:layout_centerHorizontal="true"
-                android:cropToPadding="true"
+                android:layout_gravity="center_horizontal"
                 android:scaleType="centerInside" />
 
-            <RelativeLayout
+            <LinearLayout
                 android:id="@+id/top"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/image"
-                android:layout_marginTop="1dp"
-                android:background="#fff">
+                android:layout_height="36dp"
+                android:background="#fff"
+                android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/source"
-                    android:layout_width="wrap_content"
-                    android:layout_height="18dp"
-                    android:layout_marginLeft="6dp"
-                    android:layout_marginTop="2dp"
-                    android:layout_weight="2"
-                    android:paddingLeft="3dp"
-                    android:paddingRight="3dp"
-                    android:paddingTop="1dp"
-                    android:text="From"
-                    android:textColor="#80000000"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
+
+                <RelativeLayout
+                    android:id="@+id/actions"
+                    android:layout_width="0dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="4dp"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/locationicon"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_centerVertical="true"
+                        android:padding="2dp"
+                        card_view:srcCompat="@drawable/ic_location_on_black_18px" />
+
+                    <TextView
+                        android:id="@+id/place"
+                        android:layout_width="wrap_content"
+                        android:layout_height="18dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@+id/locationicon"
+                        android:text="posted by"
+                        android:textColor="#80000000"
+                        android:textSize="12sp" />
+
+
+                </RelativeLayout>
+
 
                 <TextView
                     android:id="@+id/reviews"
                     android:layout_width="wrap_content"
-                    android:layout_height="18dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="6dp"
-                    android:layout_weight="2"
-                    android:paddingLeft="3dp"
-                    android:paddingRight="5dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="10dp"
+                    android:gravity="center_vertical"
+
                     android:paddingTop="1dp"
+                    android:text="0 Reviews"
                     android:textColor="#80000000"
                     android:textSize="12sp" />
-            </RelativeLayout>
+            </LinearLayout>
 
             <View
                 android:id="@+id/divider2"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_below="@id/top"
-                android:layout_marginBottom="2dp"
-                android:background="#f4f4f4" />
+                android:background="#eeeeee" />
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/divider2"
-                android:layout_marginTop="1dp"
-                android:background="#fff">
+                android:layout_height="44dp"
+                android:background="#fff"
+                android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/upvote"
-                    android:layout_width="wrap_content"
-                    android:layout_height="25dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="6dp"
-                    android:layout_weight="1"
-                    android:paddingLeft="3dp"
-                    android:paddingRight="3dp"
-                    android:text="Upvote"
-                    android:textColor="#9c9c9c"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:id="@+id/upicon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="25dp"
-                    android:layout_toLeftOf="@id/upvote"
-                    android:layout_weight="0.5"
-                    android:paddingLeft="3dp"
-                    android:paddingRight="5dp"
-                    android:paddingTop="1dp"
-                    android:text=" &#xf01b;"
-                    android:textColor="#9c9c9c"
-                    android:textSize="25sp" />
 
                 <TextView
                     android:id="@+id/reacticon"
                     android:layout_width="wrap_content"
                     android:layout_height="25dp"
                     android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
                     android:layout_marginLeft="6dp"
                     android:layout_weight="0.5"
                     android:paddingLeft="5dp"
                     android:paddingRight="3dp"
+
                     android:paddingTop="1dp"
                     android:text="&#xf040;"
                     android:textColor="#9c9c9c"
@@ -238,6 +207,7 @@
                     android:id="@+id/app"
                     android:layout_width="wrap_content"
                     android:layout_height="25dp"
+                    android:layout_centerVertical="true"
                     android:layout_toRightOf="@id/reacticon"
                     android:layout_weight="1"
                     android:paddingLeft="3dp"
@@ -246,8 +216,39 @@
                     android:textColor="#9c9c9c"
                     android:textSize="14sp" />
 
-            </RelativeLayout>
-        </RelativeLayout>
+                <LinearLayout
+                    android:id="@+id/like"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:paddingLeft="8dp">
+
+                    <ImageView
+                        android:id="@+id/upicon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="2dp"
+                        card_view:srcCompat="@drawable/ic_thumb_up_black_16px" />
+
+                    <TextView
+                        android:id="@+id/upvote"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="12dp"
+                        android:text="LIKE"
+                        android:textAllCaps="true"
+                        android:textColor="#bdbdbd"
+                        android:textSize="12sp"
+
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
 
 
     </android.support.v7.widget.CardView>

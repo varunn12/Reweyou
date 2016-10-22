@@ -7,6 +7,10 @@
     <color name="transparent">#00000000</color>
     <color name="black">#000000</color>
 
+    <color name="whiteDot">#fff</color>
+    <color name="greyDot">#bfbfbf</color>
+
+    <color name="likeText">#9c9c9c</color>
     <color name="ReviewColor">#80000000</color>
     <color name="randoms">#4D05A8AA</color>
 
@@ -22,4 +26,6 @@
     <color name="feedbackground">#f4f4f4</color>
     <color name="grey">#dbdbdb</color>
     <color name="red">#f44336</color>
+
+    <color name="divider">#BDBDBD</color>
 -</resources>

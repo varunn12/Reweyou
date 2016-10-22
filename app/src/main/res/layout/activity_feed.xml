@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer"
@@ -8,170 +7,183 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:openDrawer="start">
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="in.reweyou.reweyou.Feed">
 
-  <android.support.design.widget.CoordinatorLayout
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/coordinatorLayout">
-
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/appBarLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|enterAlways"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            />
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tabLayout"
-            android:layout_width="match_parent"
-            android:layout_height="35dp"
-            app:tabTextColor="#ccc"
-            android:background="#ffffff"
-            app:tabSelectedTextColor="@color/colorPrimary"
-            app:tabIndicatorColor="@color/colorPrimary"
-            app:tabIndicatorHeight="2dp" />
-    </android.support.design.widget.AppBarLayout>
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewPager"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="40dp"
-        android:id="@+id/buttonLayout"
-        android:orientation="horizontal"
-        android:layout_gravity="end|bottom"
-        android:weightSum="4"
-        app:layout_behavior="in.reweyou.reweyou.classes.ScrollingFABBehavior"
-        android:background="@drawable/dark_border">
+        tools:context="in.reweyou.reweyou.Feed">
 
-        <LinearLayout
-            android:layout_height="wrap_content"
-            android:layout_width="0dp"
-            android:background="#f4f4f4"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center_horizontal">
-            <TextView
-                android:layout_width="wrap_content"
+        <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/coordinatorLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.design.widget.AppBarLayout
+                android:id="@+id/appBarLayout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Camera"
-                android:textSize="10sp"
-                android:textColor="#000" />
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/camera"
-                android:layout_weight="1"
-                android:textSize="20sp"
-                android:text="&#xf030;"
-                android:textColor="@color/colorPrimary"
-                android:background="#f4f4f4"
-                />
-        </LinearLayout>
-      <LinearLayout
-          android:layout_height="wrap_content"
-          android:layout_width="0dp"
-          android:layout_weight="1"
-          android:background="#f4f4f4"
-          android:orientation="vertical"
-          android:gravity="center_horizontal">
-          <TextView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:text="Gallery"
-              android:textSize="10sp"
-              android:textColor="#000" />
-          <Button
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:id="@+id/gallery"
-              android:text="&#xf1c5;"
-              android:textSize="20sp"
-              android:textColor="@color/colorPrimary"
-              android:background="#f4f4f4"
-              android:layout_weight="1"/>
-       
-          </LinearLayout>
-      <LinearLayout
-          android:layout_height="wrap_content"
-          android:layout_width="0dp"
-          android:layout_weight="1"
-          android:background="#f4f4f4"
-          android:orientation="vertical"
-          android:gravity="center_horizontal">
-          <TextView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:text="Profile"
-              android:textSize="10sp"
-              android:textColor="#000" />
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/text"
-            android:textSize="20sp"
-            android:text="&#xf007;"
-            android:layout_weight="1"
-            android:textColor="@color/colorPrimary"
-            android:background="#f4f4f4"
-             />
+                android:elevation="2dp"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-          </LinearLayout>
-      <LinearLayout
-          android:layout_height="wrap_content"
-          android:layout_width="0dp"
-          android:layout_weight="1"
-          android:background="#f4f4f4"
-          android:orientation="vertical"
-          android:gravity="center_horizontal">
-          <TextView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:text="Notifications"
-              android:textSize="10sp"
-              android:textColor="#000" />
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/notify"
-            android:textSize="20sp"
-            android:text="&#xf0f3;"
-            android:layout_weight="1"
-            android:textColor="@color/colorPrimary"
-            android:background="#f4f4f4"
-             />
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="?attr/colorPrimary"
+                    app:layout_scrollFlags="scroll|enterAlways"
+                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-          </LinearLayout>
-    </LinearLayout>
+                <android.support.design.widget.TabLayout
+                    android:id="@+id/tabLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:background="#ffffff"
+                    app:tabIndicatorColor="@color/colorPrimary"
+                    app:tabIndicatorHeight="3dp"
+                    app:tabSelectedTextColor="@color/colorPrimary"
+                    app:tabTextColor="#ccc" />
+            </android.support.design.widget.AppBarLayout>
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/viewPager"
+                android:layout_width="match_parent"
+
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+            <LinearLayout
+                android:id="@+id/buttonLayout"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="end|bottom"
+                android:background="@drawable/dark_border"
+                android:orientation="horizontal"
+                android:weightSum="4"
+                app:layout_behavior="in.reweyou.reweyou.classes.ScrollingFABBehavior">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="#f4f4f4"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Camera"
+                        android:textColor="#000"
+                        android:textSize="10sp" />
+
+                    <Button
+                        android:id="@+id/camera"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="#f4f4f4"
+                        android:text="&#xf030;"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="20sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="#f4f4f4"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Gallery"
+                        android:textColor="#000"
+                        android:textSize="10sp" />
+
+                    <Button
+                        android:id="@+id/gallery"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="#f4f4f4"
+                        android:text="&#xf1c5;"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="20sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="#f4f4f4"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Profile"
+                        android:textColor="#000"
+                        android:textSize="10sp" />
+
+                    <Button
+                        android:id="@+id/text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="#f4f4f4"
+                        android:text="&#xf007;"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="20sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="#f4f4f4"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Notifications"
+                        android:textColor="#000"
+                        android:textSize="10sp" />
+
+                    <Button
+                        android:id="@+id/notify"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="#f4f4f4"
+                        android:text="&#xf0f3;"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="20sp" />
+
+                </LinearLayout>
+            </LinearLayout>
 
 
-    </android.support.design.widget.CoordinatorLayout>
-</RelativeLayout>
+        </android.support.design.widget.CoordinatorLayout>
+    </RelativeLayout>
+
     <android.support.design.widget.NavigationView
         android:id="@+id/navigation_view"
-        android:background="#fff"
-        android:layout_height="match_parent"
         android:layout_width="wrap_content"
+        android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="#fff"
         app:headerLayout="@layout/nav_header"
-        app:itemTextColor="#000"
         app:itemIconTint="#000"
-        app:menu="@menu/navigation_menu"/>
+        app:itemTextColor="#000"
+        app:menu="@menu/navigation_menu" />
 </android.support.v4.widget.DrawerLayout>

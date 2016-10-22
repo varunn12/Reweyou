@@ -1,7 +1,6 @@
 package in.reweyou.reweyou;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -10,7 +9,6 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -23,47 +21,32 @@ import in.reweyou.reweyou.fragment.WelcomeScreenFragment;
 
 public class WelcomeScreen extends AppCompatActivity {
 
-    static final int TOTAL_PAGES = 4;
+    static final int TOTAL_PAGES = 3;
+    private static final String TAG = WelcomeScreen.class.getSimpleName();
+    private static final int FIRST_PAGE = 0;
 
     ViewPager pager;
     PagerAdapter pagerAdapter;
-    LinearLayout circles;
+    LinearLayout pageIndicator;
     Button btnSkip;
     Button btnDone;
-    Button btnNext;
-    boolean isOpaque = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Window window = getWindow();
-        window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
         setContentView(R.layout.welcome_layout);
-        btnSkip = Button.class.cast(findViewById(R.id.btn_skip));
-        btnSkip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                endTutorial();
-            }
-        });
 
-        btnNext = Button.class.cast(findViewById(R.id.btn_next));
-        btnNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pager.setCurrentItem(pager.getCurrentItem() + 1, true);
-            }
-        });
+        initbtnSkip();
+        initbtnDone();
 
-        btnDone = Button.class.cast(findViewById(R.id.done));
-        btnDone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                endTutorial();
-            }
-        });
+        initViewPager();
 
+    }
+
+    private void initViewPager() {
         pager = (ViewPager) findViewById(R.id.pager);
         pagerAdapter = new ScreenSlideAdapter(getSupportFragmentManager());
         pager.setAdapter(pagerAdapter);
@@ -71,7 +54,7 @@ public class WelcomeScreen extends AppCompatActivity {
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                if (position == TOTAL_PAGES - 2 && positionOffset > 0) {
+                /*if (position == TOTAL_PAGES - 2 && positionOffset > 0) {
                     if (isOpaque) {
                         pager.setBackgroundColor(Color.TRANSPARENT);
                         isOpaque = false;
@@ -81,22 +64,18 @@ public class WelcomeScreen extends AppCompatActivity {
                         pager.setBackgroundColor(getResources().getColor(R.color.primary_material_light));
                         isOpaque = true;
                     }
-                }
+                }*/
             }
 
             @Override
             public void onPageSelected(int position) {
                 setIndicator(position);
-                if (position == TOTAL_PAGES - 2) {
+                if (position == 2) {
                     btnSkip.setVisibility(View.GONE);
-                    btnNext.setVisibility(View.GONE);
                     btnDone.setVisibility(View.VISIBLE);
-                } else if (position < TOTAL_PAGES - 2) {
+                } else {
                     btnSkip.setVisibility(View.VISIBLE);
-                    btnNext.setVisibility(View.VISIBLE);
                     btnDone.setVisibility(View.GONE);
-                } else if (position == TOTAL_PAGES - 1) {
-                    endTutorial();
                 }
             }
 
@@ -111,6 +90,27 @@ public class WelcomeScreen extends AppCompatActivity {
 
     }
 
+    private void initbtnDone() {
+
+        btnDone = Button.class.cast(findViewById(R.id.done));
+        btnDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                endTutorial();
+            }
+        });
+    }
+
+    private void initbtnSkip() {
+        btnSkip = Button.class.cast(findViewById(R.id.btn_skip));
+        btnSkip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                endTutorial();
+            }
+        });
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -120,33 +120,20 @@ public class WelcomeScreen extends AppCompatActivity {
     }
 
     private void buildCircles() {
-        circles = LinearLayout.class.cast(findViewById(R.id.circles));
-
-      /*  float scale = getResources().getDisplayMetrics().density;
-        int padding = (int) (5 * scale + 0.5f);
-
-        for (int i = 0; i < TOTAL_PAGES - 1; i++) {
-            ImageView circle = new ImageView(this);
-            circle.setImageResource(R.drawable.point);
-            circle.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            circle.setAdjustViewBounds(true);
-            circle.setPadding(padding, 0, padding, 0);
-            circles.addView(circle);
-        }
-*/
-        setIndicator(0);
+        pageIndicator = (LinearLayout) findViewById(R.id.circles);
+        setIndicator(FIRST_PAGE);
     }
 
     private void setIndicator(int index) {
-        if (index < TOTAL_PAGES) {
-            for (int i = 0; i < TOTAL_PAGES - 1; i++) {
-                ImageView circle = (ImageView) circles.getChildAt(i);
+
+        for (int i = 0; i < TOTAL_PAGES; i++) {
+            ImageView circle = (ImageView) pageIndicator.getChildAt(i);
                 if (i == index) {
-                    circle.setColorFilter(getResources().getColor(R.color.transparent_bg));
+                    circle.setColorFilter(getResources().getColor(R.color.whiteDot));
                 } else {
-                    circle.setColorFilter(getResources().getColor(R.color.text_selected2));
+                    circle.setColorFilter(getResources().getColor(R.color.greyDot));
                 }
-            }
+
         }
     }
 
@@ -186,9 +173,7 @@ public class WelcomeScreen extends AppCompatActivity {
                 case 2:
                     welcomeScreenFragment = WelcomeScreenFragment.newInstance(R.layout.fragment_screen3);
                     break;
-                case 3:
-                    welcomeScreenFragment = WelcomeScreenFragment.newInstance(R.layout.fragment_screen4);
-                    break;
+
             }
 
             return welcomeScreenFragment;
