@@ -312,7 +312,7 @@ viewHolder.head.setVisibility(View.GONE);
                 mContext.startActivity(in);
             }
         });
-        viewHolder.reacticon.setOnClickListener(new View.OnClickListener() {
+        viewHolder.reaction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
@@ -351,7 +351,7 @@ viewHolder.head.setVisibility(View.GONE);
                         upvote(position);
                         viewHolderFinal.reviews.setText(String.valueOf(total + 1) + " likes");
                         viewHolderFinal.upicon.setImageResource(R.drawable.ic_thumb_up_primary_16px);
-                        viewHolderFinal.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
+                        viewHolderFinal.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.rank));
                         //   viewHolderFinal.myreviews.setText("");
                         view.setTag(0);
                         //pause
@@ -665,7 +665,7 @@ viewHolder.head.setVisibility(View.GONE);
         protected TextView headline, upvote, head;
         protected TextView place;
         protected TextView icon;
-        protected TextView reacticon;
+        protected ImageView reaction;
         protected TextView date;
         protected TextView tv;
         protected TextView from;
@@ -695,8 +695,7 @@ viewHolder.head.setVisibility(View.GONE);
             this.place.setTypeface(tf);
 
 
-            this.reacticon = (TextView) view.findViewById(R.id.reacticon);
-            this.reacticon.setTypeface(font);
+            this.reaction = (ImageView) view.findViewById(R.id.comment);
             this.date = (TextView) view.findViewById(R.id.date);
             this.date.setTypeface(thin);
             this.image = (ImageView) view.findViewById(R.id.image);
