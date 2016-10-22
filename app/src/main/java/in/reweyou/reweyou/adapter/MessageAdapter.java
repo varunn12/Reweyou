@@ -19,10 +19,6 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.format.DateUtils;
-import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -31,6 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,12 +47,9 @@ import org.json.JSONException;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import in.reweyou.reweyou.CategoryActivity;
@@ -65,14 +59,9 @@ import in.reweyou.reweyou.LocationActivity;
 import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.UserProfile;
 import in.reweyou.reweyou.classes.ConnectionDetector;
-import in.reweyou.reweyou.classes.CustomTabActivityHelper;
-import in.reweyou.reweyou.classes.CustomTabsOnClickListener;
 import in.reweyou.reweyou.classes.TouchImageView;
 import in.reweyou.reweyou.classes.UserSessionManager;
-import in.reweyou.reweyou.classes.Util;
 import in.reweyou.reweyou.model.MpModel;
-
-import static android.text.format.DateUtils.getRelativeTimeSpanString;
 
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
@@ -132,7 +121,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_messageadapter, viewGroup, false);
 
         ViewHolder holder = new ViewHolder(view);
         return holder;
@@ -259,7 +248,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         });
 
         viewHolder.place.setText(messagelist.get(position).getLocation());
-
+        Log.d(TAG, "onBindViewHolder: name" + messagelist.get(position).getName());
         viewHolder.from.setText(messagelist.get(position).getName());
         viewHolder.profilepic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -330,7 +319,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 mContext.startActivity(in);
             }
         });
-        viewHolder.reacticon.setOnClickListener(new View.OnClickListener() {
+        viewHolder.reaction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
@@ -354,11 +343,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         viewHolder.reviews.setText(String.valueOf(total) + " likes");
         viewHolder.reviews.setTag(1);
 
-        viewHolderFinal.upicon.setTextColor(ContextCompat.getColor(mContext, R.color.ReviewColor));
-        viewHolderFinal.upvote.setText("Like");
-        viewHolderFinal.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.ReviewColor));
-        viewHolder.upicon.setTag(1);
-        viewHolder.upicon.setOnClickListener(new View.OnClickListener() {
+        viewHolderFinal.upicon.setImageResource(R.drawable.ic_thumb_up_black_16px);
+        viewHolderFinal.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.likeText));
+        viewHolderFinal.linearLayout.setTag(1);
+        viewHolderFinal.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 isInternetPresent = cd.isConnectingToInternet();
@@ -369,7 +357,39 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                     if (status == 1) {
                         upvote(position);
                         viewHolderFinal.reviews.setText(String.valueOf(total + 1) + " likes");
-                        viewHolderFinal.upicon.setTextColor(ContextCompat.getColor(mContext, R.color.red));
+                        viewHolderFinal.upicon.setImageResource(R.drawable.ic_thumb_up_primary_16px);
+                        viewHolderFinal.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.rank));
+                        //   viewHolderFinal.myreviews.setText("");
+                        view.setTag(0);
+                        //pause
+                    } else {
+                        upvote(position);
+                        viewHolderFinal.reviews.setText(String.valueOf(total) + " likes");
+                        viewHolderFinal.upicon.setImageResource(R.drawable.ic_thumb_up_black_16px);
+                        viewHolderFinal.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.likeText));
+                        //  viewHolderFinal.myreviews.setText("");
+                        view.setTag(1);
+                    }
+                } else {
+                    Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+
+        //  viewHolder.upicon.setTag(1);
+      /*  viewHolder.upicon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                isInternetPresent = cd.isConnectingToInternet();
+                if (isInternetPresent) {
+
+
+                    final int status = (Integer) view.getTag();
+                    if (status == 1) {
+                        upvote(position);
+                        viewHolderFinal.reviews.setText(String.valueOf(total + 1) + " likes");
+                       // viewHolderFinal.upicon.setTextColor(ContextCompat.getColor(mContext, R.color.red));
                         viewHolderFinal.upvote.setText("Liked");
                         viewHolderFinal.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.red));
                         //   viewHolderFinal.myreviews.setText("");
@@ -378,7 +398,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                     } else {
                         upvote(position);
                         viewHolderFinal.reviews.setText(String.valueOf(total) + " likes");
-                        viewHolderFinal.upicon.setTextColor(ContextCompat.getColor(mContext, R.color.ReviewColor));
+                      //  viewHolderFinal.upicon.setTextColor(ContextCompat.getColor(mContext, R.color.ReviewColor));
                         viewHolderFinal.upvote.setText("Like");
                         viewHolderFinal.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.ReviewColor));
                         //  viewHolderFinal.myreviews.setText("");
@@ -388,7 +408,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                     Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_SHORT).show();
                 }
             }
-        });
+        });*/
         viewHolder.source.setText('#' + messagelist.get(position).getCategory());
         viewHolder.source.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -455,71 +475,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     public int getItemCount() {
         return (null != messagelist ? messagelist.size() : 0);
     }
-
-
-    class ViewHolder extends RecyclerView.ViewHolder {
-        protected ImageView image, profilepic, overflow;
-        protected TextView headline, upvote, head, name, userName;
-        protected TextView place;
-        protected TextView icon;
-        protected TextView reacticon;
-        protected TextView date;
-        protected TextView tv;
-        protected TextView from;
-        protected RelativeLayout relative;
-        protected CardView cv;
-        protected TextView reviews, source;
-        protected TextView app, upicon;
-        protected RelativeLayout rv;
-
-        public ViewHolder(View view) {
-            super(view);
-            String fontPath = "fonts/Roboto-Medium.ttf";
-            String thinpath = "fonts/Roboto-Regular.ttf";
-            Typeface font = Typeface.createFromAsset(mContext.getAssets(), "fontawesome-webfont.ttf");
-            Typeface tf = Typeface.createFromAsset(mContext.getAssets(), fontPath);
-            Typeface thin = Typeface.createFromAsset(mContext.getAssets(), thinpath);
-            this.cv = (CardView) itemView.findViewById(R.id.cv);
-            this.rv = (RelativeLayout) itemView.findViewById(R.id.rv);
-            this.headline = (TextView) view.findViewById(R.id.Who);
-
-            this.name = (TextView) view.findViewById(R.id.name);
-            this.userName = (TextView) view.findViewById(R.id.userName);
-            this.head = (TextView) view.findViewById(R.id.head);
-            if (this.head == null) {
-
-            } else {
-                this.head.setTypeface(tf);
-            }
-
-            this.headline.setTypeface(thin);
-            this.place = (TextView) view.findViewById(R.id.place);
-            this.place.setTypeface(tf);
-            this.icon = (TextView) view.findViewById(R.id.locationicon);
-            this.icon.setTypeface(font);
-            this.upicon = (TextView) view.findViewById(R.id.upicon);
-            this.upicon.setTypeface(font);
-            this.reacticon = (TextView) view.findViewById(R.id.reacticon);
-            this.reacticon.setTypeface(font);
-            this.date = (TextView) view.findViewById(R.id.date);
-            this.date.setTypeface(thin);
-            this.image = (ImageView) view.findViewById(R.id.image);
-            this.overflow = (ImageView) view.findViewById(R.id.overflow);
-            this.profilepic = (ImageView) view.findViewById(R.id.profilepic);
-            this.tv = (TextView) view.findViewById(R.id.tv);
-            this.from = (TextView) view.findViewById(R.id.from);
-            this.from.setTypeface(tf);
-            this.name.setTypeface(tf);
-            this.relative = (RelativeLayout) view.findViewById(R.id.Relative);
-            this.reviews = (TextView) view.findViewById(R.id.reviews);
-            this.app = (TextView) view.findViewById(R.id.app);
-            this.app.setTypeface(tf);
-            this.upvote = (TextView) view.findViewById(R.id.upvote);
-            this.source = (TextView) view.findViewById(R.id.source);
-            this.source.setTypeface(tf);
-        }
-    }
-
 
     public void showImage(int position) {
         Dialog builder = new Dialog(mContext);
@@ -738,5 +693,86 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         }
     }
 
+    class ViewHolder extends RecyclerView.ViewHolder {
+        protected ImageView image, profilepic, overflow;
+        protected TextView headline, upvote, head;
+        protected TextView place;
+        protected TextView icon;
+        protected ImageView reaction;
+        protected TextView date;
+        protected TextView tv;
+        protected TextView from;
+        protected CardView cv;
+        protected TextView reviews, source;
+        protected TextView app;
+        private LinearLayout linearLayout;
+        private ImageView upicon;
+        public ViewHolder(View view) {
+            super(view);
+            String fontPath = "fonts/Roboto-Medium.ttf";
+            String thinpath = "fonts/Roboto-Regular.ttf";
+            Typeface font = Typeface.createFromAsset(mContext.getAssets(), "fontawesome-webfont.ttf");
+            Typeface tf = Typeface.createFromAsset(mContext.getAssets(), fontPath);
+            Typeface thin = Typeface.createFromAsset(mContext.getAssets(), thinpath);
+            this.cv = (CardView) itemView.findViewById(R.id.cv);
+            this.headline = (TextView) view.findViewById(R.id.Who);
+            this.head = (TextView) view.findViewById(R.id.head);
+            if (this.head == null) {
 
+            } else {
+                this.head.setTypeface(tf);
+            }
+
+            this.headline.setTypeface(thin);
+            this.place = (TextView) view.findViewById(R.id.place);
+            this.place.setTypeface(tf);
+
+
+            this.reaction = (ImageView) view.findViewById(R.id.comment);
+            this.date = (TextView) view.findViewById(R.id.date);
+            this.date.setTypeface(thin);
+            this.image = (ImageView) view.findViewById(R.id.image);
+            this.overflow = (ImageView) view.findViewById(R.id.overflow);
+            this.profilepic = (ImageView) view.findViewById(R.id.profilepic);
+            this.tv = (TextView) view.findViewById(R.id.tv);
+            this.from = (TextView) view.findViewById(R.id.from);
+            this.from.setTypeface(tf);
+            //  this.relative = (RelativeLayout) view.findViewById(R.id.Relative);
+            this.reviews = (TextView) view.findViewById(R.id.reviews);
+            this.app = (TextView) view.findViewById(R.id.app);
+            this.app.setTypeface(tf);
+            this.upvote = (TextView) view.findViewById(R.id.upvote);
+            this.source = (TextView) view.findViewById(R.id.source);
+            this.source.setTypeface(tf);
+
+            linearLayout = (LinearLayout) view.findViewById(R.id.like);
+            upicon = (ImageView) view.findViewById(R.id.upicon);
+        }
+    }
+
+    /**
+     * Click listener for popup menu items
+     */
+    class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
+
+        public MyMenuItemClickListener() {
+        }
+
+        @Override
+        public boolean onMenuItemClick(MenuItem menuItem) {
+            switch (menuItem.getItemId()) {
+                case R.id.share:
+                    takeScreenshot();
+                    ShareIntent();
+                    return true;
+                case R.id.send:
+                    Toast.makeText(mContext, "This feature will be added in next update", Toast.LENGTH_SHORT).show();
+                    // suggest(currentposition);
+
+                    return true;
+                default:
+            }
+            return false;
+        }
+    }
 }

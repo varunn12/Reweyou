@@ -11,6 +11,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
@@ -24,7 +25,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -52,24 +52,24 @@ import in.reweyou.reweyou.fragment.MyFeed;
 import in.reweyou.reweyou.fragment.SecondFragment;
 
 public class Feed extends AppCompatActivity implements View.OnClickListener {
-    int REQUEST_CAMERA = 0, SELECT_FILE = 1, REQUEST_VIDEO=3;
+    static final String[] PERMISSIONS = new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private static final int REQUEST_CODE = 0;
-    private TabLayout tabLayout;
+    int REQUEST_CAMERA = 0, SELECT_FILE = 1, REQUEST_VIDEO = 3;
     Button camera, gallery, notify, text;
     UserSessionManager session;
     Uri uri;
     PermissionsChecker checker;
-    private DisplayImageOptions options;
     ImageLoader imageLoader = ImageLoader.getInstance();
     ConnectionDetector cd;
-    private DrawerLayout drawerLayout;
     Boolean isInternetPresent = false;
+    boolean doubleBackToExitPressedOnce = false;
+    private TabLayout tabLayout;
+    private DisplayImageOptions options;
+    private DrawerLayout drawerLayout;
     private String mCurrentPhotoPath;
     private String videoFilePath;
-    boolean doubleBackToExitPressedOnce = false;
     private Toolbar mToolbar;
     private int mYear, mMonth, mDay, mHour, mMinute;
-    static final String[] PERMISSIONS = new String[]{Manifest.permission.CAMERA,Manifest. permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,7 +114,6 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
     private void initToolbar() {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
         //setTitle("Trending");
       //  mToolbar.setLogo(R.drawable.logo_plain);
     }
@@ -195,12 +194,8 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
 //        tabLayout.getTabAt(3).setIcon(tabIcons[3]);
     }
     private boolean isDeviceSupportCamera() {
-        if (getApplicationContext().getPackageManager().hasSystemFeature(
-                PackageManager.FEATURE_CAMERA)) {
-            return true;
-        } else {
-            return false;
-        }
+        return getApplicationContext().getPackageManager().hasSystemFeature(
+                PackageManager.FEATURE_CAMERA);
     }
     @Override
     public void onClick(View v) {
@@ -323,35 +318,7 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
 
         return cursor.getString(column_index_data);
     }
-    static class PagerAdapter extends FragmentPagerAdapter {
 
-        private final List<Fragment> fragmentList = new ArrayList<>();
-        private final List<String> fragmentTitleList = new ArrayList<>();
-
-        public PagerAdapter(FragmentManager fragmentManager) {
-            super(fragmentManager);
-        }
-
-        public void addFragment(Fragment fragment, String title) {
-            fragmentList.add(fragment);
-            fragmentTitleList.add(title);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return fragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return fragmentList.size();
-        }
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return fragmentTitleList.get(position);
-            //return null;
-        }
-    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -367,6 +334,7 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
 
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -384,6 +352,7 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
                 return super.onOptionsItemSelected(item);
         }
     }
+
     protected void sendEmail() {
         Log.i("Send email", "");
         String[] TO = {"support@reweyou.in"};
@@ -517,5 +486,36 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
         };
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
+    }
+
+    static class PagerAdapter extends FragmentPagerAdapter {
+
+        private final List<Fragment> fragmentList = new ArrayList<>();
+        private final List<String> fragmentTitleList = new ArrayList<>();
+
+        public PagerAdapter(FragmentManager fragmentManager) {
+            super(fragmentManager);
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            fragmentList.add(fragment);
+            fragmentTitleList.add(title);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return fragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return fragmentList.size();
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return fragmentTitleList.get(position);
+            //return null;
+        }
     }
     }
