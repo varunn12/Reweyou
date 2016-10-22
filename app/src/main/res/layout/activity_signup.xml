@@ -47,7 +47,6 @@
                 android:inputType="textNoSuggestions"
                 android:paddingLeft="2dp"
                 android:textColor="#fff"
-                android:textCursorDrawable="@drawable/color_cursor"
                 android:textSize="14sp" />
 
         </android.support.design.widget.TextInputLayout>
@@ -75,7 +74,6 @@
                 android:textColor="#fff"
 
                 android:textColorHint="#bbffffff"
-                android:textCursorDrawable="@drawable/color_cursor"
                 android:textSize="14sp" />
         </android.support.design.widget.TextInputLayout>
 
@@ -103,7 +101,6 @@
                 android:textColor="#fff"
 
                 android:textColorHint="#bbffffff"
-                android:textCursorDrawable="@drawable/color_cursor"
                 android:textSize="14sp" />
         </android.support.design.widget.TextInputLayout>
 

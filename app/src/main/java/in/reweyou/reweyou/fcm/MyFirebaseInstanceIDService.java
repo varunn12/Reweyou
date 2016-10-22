@@ -18,6 +18,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -100,8 +101,10 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
 
 
     private void storeRegIdInPref(String token) {
-        UserSessionManager session = new UserSessionManager(getApplicationContext());
-
-        session.setFirebaseToken(token);
+        FirebaseMessaging.getInstance().subscribeToTopic("news");
+        SharedPreferences pref = getApplicationContext().getSharedPreferences(Config.SHARED_PREF, 0);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString("regId", token);
+        editor.commit();
     }
 }

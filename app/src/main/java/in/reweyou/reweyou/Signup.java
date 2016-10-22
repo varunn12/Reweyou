@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Paint;
 import android.location.Location;
 import android.net.Uri;
@@ -33,6 +34,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONException;
 
@@ -42,6 +44,7 @@ import java.util.Map;
 import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.HttpService;
 import in.reweyou.reweyou.classes.UserSessionManager;
+import in.reweyou.reweyou.fcm.Config;
 import in.reweyou.reweyou.fcm.MyFirebaseInstanceIDService;
 
 public class Signup extends AppCompatActivity implements View.OnClickListener {
@@ -118,12 +121,12 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
                     //Getting the registration token from the intent
                     token = intent.getStringExtra("token");
                     //Displaying the token as toast
-                    Toast.makeText(getApplicationContext(), "Registration token:" + token, Toast.LENGTH_LONG).show();
+              //      Toast.makeText(getApplicationContext(), "Registration token:" + token, Toast.LENGTH_LONG).show();
                     //if the intent is not with success then displaying error messages
                 }
             }
         };
-      //  Log.e("Token",token);
+        //  Log.e("Token",token);
         //Checking play service is available or not
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
         if(ConnectionResult.SUCCESS != resultCode) {
@@ -143,7 +146,7 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
             //Starting intent to register device
             Intent itent = new Intent(this, MyFirebaseInstanceIDService.class);
             startService(itent);
-           // Toast.makeText(this,"Request Sent",Toast.LENGTH_SHORT).show();
+            FirebaseMessaging.getInstance().subscribeToTopic("news");
         }
 
 
@@ -154,7 +157,9 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
         username = editTextUsername.getText().toString().trim();
         number = editTextNumber.getText().toString().trim();
         place=editLocation.getText().toString().trim();
-        token=session.getFirebaseToken();
+        SharedPreferences pref = getApplicationContext().getSharedPreferences(Config.SHARED_PREF, 0);
+        token = pref.getString("regId", "0");
+
 
         if (editTextUsername.getText().toString().trim().equals("")) {
             editTextUsername.setError("Required!");
@@ -208,7 +213,7 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
                     params.put(KEY_LOCATION, place);
                     params.put(KEY_TOKEN, token);
                     Log.e("Check", "Posting params: " + token);
-                    Log.e("Check", "Posting params: " + location);
+                    Log.e("Check", "Posting params: " + place);
                     return params;
                 }
             };
@@ -338,8 +343,6 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
             Log.w("Signup", "onResume");
             LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
                     new IntentFilter(MyFirebaseInstanceIDService.REGISTRATION_SUCCESS));
-
-
     }
 
     private void startPermissionsActivity() {
