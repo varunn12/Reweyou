@@ -17,6 +17,7 @@
             android:id="@+id/Relative"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:background="#fff"
             android:orientation="vertical">
 
@@ -59,12 +60,15 @@
 
                 <ImageView
                     android:id="@+id/overflow"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="4dp"
+                    android:scaleType="centerInside"
                     card_view:srcCompat="@drawable/ic_more_vert_black_24px" />
+
+
             </RelativeLayout>
 
             <View
@@ -80,10 +84,12 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="sans-serif-medium"
                 android:text="From"
-                android:textColor="#80000000"
-                android:textSize="14dp" />
+                android:textColor="#212121"
+                android:textSize="14dp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/head"
@@ -134,7 +140,7 @@
                     android:layout_width="0dp"
                     android:layout_height="24dp"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="4dp"
+                    android:layout_marginLeft="6dp"
                     android:layout_weight="1">
 
                     <ImageView
@@ -168,7 +174,7 @@
                     android:gravity="center_vertical"
 
                     android:paddingTop="1dp"
-                    android:text="0 Reviews"
+                    android:text="0 Likes"
                     android:textColor="#80000000"
                     android:textSize="12sp" />
             </LinearLayout>
@@ -182,9 +188,10 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="44dp"
+                android:layout_height="36dp"
                 android:background="#fff"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingTop="4dp">
 
 
                 <ImageView
@@ -243,6 +250,38 @@
                 </LinearLayout>
 
             </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/rv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:background="#fff">
+
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="12dp"
+                    android:text="User"
+                    android:textColor="#000"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/userName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/name"
+                    android:layout_marginLeft="12dp"
+                    android:autoLink="web"
+                    android:text="TextView"
+                    android:textColor="#000"
+                    android:textSize="14sp" />
+            </RelativeLayout>
+
         </LinearLayout>
 
 

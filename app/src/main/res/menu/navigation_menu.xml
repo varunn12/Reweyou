@@ -3,32 +3,32 @@
     <group android:checkableBehavior="all">
         <item
             android:id="@+id/mycity"
-            android:title="My City"
             android:checkable="true"
-            android:icon="@drawable/ic_map_marker_radius_white"/>
+            android:icon="@drawable/ic_location_on_black_24px"
+            android:title="My City" />
         <item
             android:id="@+id/myreports"
-            android:title="Feed Settings"
             android:checkable="true"
-            android:icon="@drawable/ic_newspaper_white"/>
+            android:icon="@drawable/ic_assignment_black_24px"
+            android:title="Feed Settings" />
         <item
             android:id="@+id/notifications"
-            android:title="Notifications"
             android:checkable="true"
-            android:icon="@drawable/ic_bell_white"/>
+            android:icon="@drawable/ic_notifications_black_24px"
+            android:title="Notifications" />
         <item
             android:id="@+id/leaderboard"
-            android:title="Leaderboard"
+            android:icon="@drawable/cup"
 
-            android:icon="@drawable/cup"/>
+            android:title="Leaderboard" />
         <item
             android:id="@+id/New"
-            android:title="What's New?"
             android:checkable="true"
-            android:icon="@drawable/point"></item>
+            android:icon="@drawable/ic_new_releases_black_24px"
+            android:title="What's New?"></item>
         <item
             android:id="@+id/logout"
-            android:title="Delete Account"
-            android:icon="@drawable/point"></item>
+            android:icon="@drawable/ic_delete_black_24px"
+            android:title="Delete Account"></item>
             </group>
 </menu>

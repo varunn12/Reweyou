@@ -19,6 +19,10 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.format.DateUtils;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -47,9 +51,12 @@ import org.json.JSONException;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import in.reweyou.reweyou.CategoryActivity;
@@ -59,34 +66,40 @@ import in.reweyou.reweyou.LocationActivity;
 import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.UserProfile;
 import in.reweyou.reweyou.classes.ConnectionDetector;
+import in.reweyou.reweyou.classes.CustomTabActivityHelper;
+import in.reweyou.reweyou.classes.CustomTabsOnClickListener;
 import in.reweyou.reweyou.classes.TouchImageView;
 import in.reweyou.reweyou.classes.UserSessionManager;
+import in.reweyou.reweyou.classes.Util;
 import in.reweyou.reweyou.model.MpModel;
+
+import static android.text.format.DateUtils.getRelativeTimeSpanString;
 
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
-    private List<MpModel> messagelist;
-    private Context mContext;
-    private Bitmap bm;
-    private String id, postid;
-    int currentposition;
-    Date dates;
-    Activity activity;
-    private EditText editTextHeadline;
-    private AppCompatButton buttonEdit;
-    private String number;
-    private String username;
-    Boolean isInternetPresent = false;
-    ConnectionDetector cd;
-    CustomTabActivityHelper mCustomTabActivityHelper;
-    private DisplayImageOptions options, option;
-    UserSessionManager session;
     public static final String REVIEW_URL = "https://www.reweyou.in/reweyou/reviews.php";
     public static final String VIEW_URL = "https://www.reweyou.in/reweyou/postviews.php";
     public static final String SUGGEST_URL = "https://www.reweyou.in/reweyou/suggest.php";
     public static final String EDIT_URL = "https://www.reweyou.in/reweyou/editheadline.php";
+    private static final String TAG = MessageAdapter.class.getSimpleName();
+    int currentposition;
+    Date dates;
+    Activity activity;
+    Boolean isInternetPresent = false;
+    ConnectionDetector cd;
+    CustomTabActivityHelper mCustomTabActivityHelper;
+    UserSessionManager session;
     Uri uri;
     ImageLoader imageLoader = ImageLoader.getInstance();
+    private List<MpModel> messagelist;
+    private Context mContext;
+    private Bitmap bm;
+    private String id, postid;
+    private EditText editTextHeadline;
+    private AppCompatButton buttonEdit;
+    private String number;
+    private String username;
+    private DisplayImageOptions options, option;
 
     public MessageAdapter(Context context, List<MpModel> mlist) {
         this.mContext = context;
@@ -625,32 +638,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         popup.show();
     }
 
-    /**
-     * Click listener for popup menu items
-     */
-    class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
-
-        public MyMenuItemClickListener() {
-        }
-
-        @Override
-        public boolean onMenuItemClick(MenuItem menuItem) {
-            switch (menuItem.getItemId()) {
-                case R.id.share:
-                    takeScreenshot();
-                    ShareIntent();
-                    return true;
-                case R.id.send:
-                    Toast.makeText(mContext, "This feature will be added in next update", Toast.LENGTH_SHORT).show();
-                    // suggest(currentposition);
-
-                    return true;
-                default:
-            }
-            return false;
-        }
-    }
-
     private void suggest(int position) {
         id = messagelist.get(position).getPostId();
         username = session.getUsername();
@@ -693,6 +680,32 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         }
     }
 
+    /**
+     * Click listener for popup menu items
+     */
+    class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
+
+        public MyMenuItemClickListener() {
+        }
+
+        @Override
+        public boolean onMenuItemClick(MenuItem menuItem) {
+            switch (menuItem.getItemId()) {
+                case R.id.share:
+                    takeScreenshot();
+                    ShareIntent();
+                    return true;
+                case R.id.send:
+                    Toast.makeText(mContext, "This feature will be added in next update", Toast.LENGTH_SHORT).show();
+                    // suggest(currentposition);
+
+                    return true;
+                default:
+            }
+            return false;
+        }
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder {
         protected ImageView image, profilepic, overflow;
         protected TextView headline, upvote, head;
@@ -707,6 +720,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         protected TextView app;
         private LinearLayout linearLayout;
         private ImageView upicon;
+        private TextView name, userName;
+        private RelativeLayout rv;
+
         public ViewHolder(View view) {
             super(view);
             String fontPath = "fonts/Roboto-Medium.ttf";
@@ -717,6 +733,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             this.cv = (CardView) itemView.findViewById(R.id.cv);
             this.headline = (TextView) view.findViewById(R.id.Who);
             this.head = (TextView) view.findViewById(R.id.head);
+            this.name = (TextView) view.findViewById(R.id.name);
+            this.userName = (TextView) view.findViewById(R.id.userName);
+
+            rv = (RelativeLayout) view.findViewById(R.id.rv);
             if (this.head == null) {
 
             } else {
@@ -743,36 +763,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             this.app.setTypeface(tf);
             this.upvote = (TextView) view.findViewById(R.id.upvote);
             this.source = (TextView) view.findViewById(R.id.source);
-            this.source.setTypeface(tf);
+            // this.source.setTypeface(tf);
 
             linearLayout = (LinearLayout) view.findViewById(R.id.like);
             upicon = (ImageView) view.findViewById(R.id.upicon);
         }
     }
 
-    /**
-     * Click listener for popup menu items
-     */
-    class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
 
-        public MyMenuItemClickListener() {
-        }
-
-        @Override
-        public boolean onMenuItemClick(MenuItem menuItem) {
-            switch (menuItem.getItemId()) {
-                case R.id.share:
-                    takeScreenshot();
-                    ShareIntent();
-                    return true;
-                case R.id.send:
-                    Toast.makeText(mContext, "This feature will be added in next update", Toast.LENGTH_SHORT).show();
-                    // suggest(currentposition);
-
-                    return true;
-                default:
-            }
-            return false;
-        }
-    }
 }
