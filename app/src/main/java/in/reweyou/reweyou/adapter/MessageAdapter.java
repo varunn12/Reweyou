@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -18,7 +19,6 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.content.Context;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.format.DateUtils;
@@ -30,9 +30,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -45,8 +45,6 @@ import com.android.volley.toolbox.Volley;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
-import com.nostra13.universalimageloader.utils.DiskCacheUtils;
-import com.nostra13.universalimageloader.utils.MemoryCacheUtils;
 
 import org.json.JSONException;
 
@@ -62,16 +60,15 @@ import java.util.Map;
 
 import in.reweyou.reweyou.CategoryActivity;
 import in.reweyou.reweyou.Comments;
-import in.reweyou.reweyou.Feed;
 import in.reweyou.reweyou.FullImage;
 import in.reweyou.reweyou.LocationActivity;
 import in.reweyou.reweyou.R;
+import in.reweyou.reweyou.UserProfile;
 import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.CustomTabActivityHelper;
 import in.reweyou.reweyou.classes.CustomTabsOnClickListener;
 import in.reweyou.reweyou.classes.TouchImageView;
 import in.reweyou.reweyou.classes.UserSessionManager;
-import in.reweyou.reweyou.UserProfile;
 import in.reweyou.reweyou.classes.Util;
 import in.reweyou.reweyou.model.MpModel;
 
@@ -154,24 +151,19 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         viewHolder.headline.setMovementMethod(LinkMovementMethod.getInstance());
 
 
-        if(messagelist.get(position).getHead()==null)
-        {
+        if (messagelist.get(position).getHead() == null) {
             viewHolder.head.setVisibility(View.GONE);
-        }
-        else
-        {
-            if(messagelist.get(position).getHead().equals("")){
+        } else {
+            if (messagelist.get(position).getHead().equals("")) {
                 viewHolder.head.setVisibility(View.GONE);
                 viewHolder.headline.setVisibility(View.VISIBLE);
                 viewHolder.headline.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         try {
-                            if(session.getMobileNumber().equals(messagelist.get(position).getNumber())) {
+                            if (session.getMobileNumber().equals(messagelist.get(position).getNumber())) {
                                 editHeadline(position);
-                            }
-                            else
-                            {
+                            } else {
                                 //Toast.makeText(mContext,"Illegal, It isn't your post",Toast.LENGTH_LONG).show();
                             }
                         } catch (JSONException e) {
@@ -180,8 +172,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
                     }
                 });
-            }
-            else {
+            } else {
                 viewHolder.head.setVisibility(View.VISIBLE);
                 viewHolder.head.setText(messagelist.get(position).getHead());
                 viewHolderFinal.headline.setVisibility(View.VISIBLE);
@@ -224,10 +215,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         String stroydates = messagelist.get(position).getDate();
 
         viewHolder.date.setText(stroydates.substring(0, 12));
-        if(stroydates != null && !stroydates .isEmpty()) {
+        if (stroydates != null && !stroydates.isEmpty()) {
             SimpleDateFormat dfs = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss a", Locale.US);
             try {
-                stroydates=stroydates.replaceAll("\\.", "");
+                stroydates = stroydates.replaceAll("\\.", "");
                 Log.e("dates", stroydates);
 
                 dates = dfs.parse(stroydates);
@@ -239,9 +230,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             Log.e("Time", String.valueOf(epochs));
             CharSequence timePassedString = getRelativeTimeSpanString(epochs, System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS);
             viewHolder.date.setText(timePassedString);
-        }
-        else
-        {
+        } else {
             viewHolder.date.setText(stroydates);
         }
 
@@ -264,7 +253,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 viewHolderFinal.cv.setDrawingCacheEnabled(true);
                 viewHolderFinal.cv.buildDrawingCache();
                 bm = viewHolderFinal.cv.getDrawingCache();
-                currentposition=position;
+                currentposition = position;
                 showPopupMenu(viewHolderFinal.overflow);
             }
         });
@@ -282,9 +271,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                     Intent in = new Intent(mContext, UserProfile.class);
                     in.putExtras(bundle);
                     mContext.startActivity(in);
-                }
-                else
-                {
+                } else {
                     Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -299,9 +286,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                     Intent in = new Intent(mContext, UserProfile.class);
                     in.putExtras(bundle);
                     mContext.startActivity(in);
-                }
-                else
-                {
+                } else {
                     Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -309,7 +294,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
         // viewHolder.tv.setVisibility(View.GONE);
         viewHolder.app.setText(messagelist.get(position).getComments() + " Reactions");
-        if(!messagelist.get(position).getComments().equals("0")) {
+        if (!messagelist.get(position).getComments().equals("0")) {
             viewHolder.rv.setVisibility(View.VISIBLE);
             viewHolder.rv.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -330,9 +315,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             viewHolder.userName.setMovementMethod(LinkMovementMethod.getInstance());
 
             viewHolder.name.setText(messagelist.get(position).getFrom());
-        }
-        else
-        {
+        } else {
             viewHolder.rv.setVisibility(View.GONE);
         }
         viewHolder.app.setOnClickListener(new View.OnClickListener() {
@@ -497,18 +480,15 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             Typeface tf = Typeface.createFromAsset(mContext.getAssets(), fontPath);
             Typeface thin = Typeface.createFromAsset(mContext.getAssets(), thinpath);
             this.cv = (CardView) itemView.findViewById(R.id.cv);
-            this.rv=(RelativeLayout)itemView.findViewById(R.id.rv);
+            this.rv = (RelativeLayout) itemView.findViewById(R.id.rv);
             this.headline = (TextView) view.findViewById(R.id.Who);
 
             this.name = (TextView) view.findViewById(R.id.name);
             this.userName = (TextView) view.findViewById(R.id.userName);
-            this.head=(TextView)view.findViewById(R.id.head);
-            if(this.head ==null)
-            {
+            this.head = (TextView) view.findViewById(R.id.head);
+            if (this.head == null) {
 
-            }
-            else
-            {
+            } else {
                 this.head.setTypeface(tf);
             }
 
@@ -719,11 +699,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     private void suggest(int position) {
         id = messagelist.get(position).getPostId();
         username = session.getUsername();
-        number=session.getMobileNumber();
-        Log.e("id",id);
-        Log.e("username",username);
-        Log.e("number",number);
-        if(messagelist.get(position).getReaders().equals("100")){
+        number = session.getMobileNumber();
+        Log.e("id", id);
+        Log.e("username", username);
+        Log.e("number", number);
+        if (messagelist.get(position).getReaders().equals("100")) {
             Toast.makeText(mContext, "This feature will be added in next update", Toast.LENGTH_SHORT).show();
         } else {
             StringRequest stringRequest = new StringRequest(Request.Method.POST, SUGGEST_URL,
@@ -757,8 +737,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             requestQueue.add(stringRequest);
         }
     }
-
-
 
 
 }
