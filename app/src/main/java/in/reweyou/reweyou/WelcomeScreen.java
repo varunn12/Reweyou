@@ -128,11 +128,14 @@ public class WelcomeScreen extends AppCompatActivity {
 
         for (int i = 0; i < TOTAL_PAGES; i++) {
             ImageView circle = (ImageView) pageIndicator.getChildAt(i);
-                if (i == index) {
-                    circle.setColorFilter(getResources().getColor(R.color.whiteDot));
-                } else {
-                    circle.setColorFilter(getResources().getColor(R.color.greyDot));
-                }
+            if (i == index) {
+                //  circle.setColorFilter(getResources().getColor(R.color.whiteDot));
+                circle.setImageResource(R.drawable.dot_white);
+            } else {
+                //  circle.setColorFilter(getResources().getColor(R.color.greyDot));
+                circle.setImageResource(R.drawable.dot_grey);
+
+            }
 
         }
     }
