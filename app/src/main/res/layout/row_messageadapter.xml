@@ -76,7 +76,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginBottom="2dp"
-                android:background="#eeeeee" />
+                android:alpha=".48"
+                android:background="#CFD8DC" />
 
             <TextView
                 android:id="@+id/source"
@@ -184,7 +185,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_below="@id/top"
-                android:background="#eeeeee" />
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:alpha=".48"
+                android:background="#CFD8DC" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -212,8 +216,8 @@
                     android:layout_toRightOf="@id/reacticon"
                     android:layout_weight="1"
 
+                    android:fontFamily="sans-serif-condensed"
                     android:gravity="center_vertical"
-
                     android:text="React"
                     android:textColor="#9c9c9c"
                     android:textSize="14sp" />
