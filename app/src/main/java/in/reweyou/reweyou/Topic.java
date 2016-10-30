@@ -68,7 +68,6 @@ public class Topic extends AppCompatActivity implements View.OnClickListener {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-
                 }
                 Log.d("Categories", String.valueOf(categoriesList));
                 updateUI();
@@ -89,6 +88,7 @@ public class Topic extends AppCompatActivity implements View.OnClickListener {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(new TopicsAdapter(categoriesList, Topic.this));
+
     }
 
 

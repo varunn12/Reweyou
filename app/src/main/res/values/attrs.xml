@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CircularImageView">
+        <attr name="myborderWidth" format="dimension" />
+        <attr name="myborderColor" format="color" />
+        <attr name="myborderOverlay" format="boolean" />
+        <attr name="myfillColor" format="color" />
+    </declare-styleable>
+</resources>

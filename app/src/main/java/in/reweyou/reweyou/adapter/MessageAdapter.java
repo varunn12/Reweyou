@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -43,6 +42,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
@@ -239,7 +239,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         //    imageLoader.clearMemoryCache();
         //  imageLoader.clearDiskCache();
 
-        imageLoader.displayImage(messagelist.get(position).getProfilepic(), viewHolder.profilepic, option);
+        //  imageLoader.displayImage(messagelist.get(position).getProfilepic(), viewHolder.profilepic, option);
+        if (messagelist.get(position).getProfilepic() != null) {
+            Log.d("uri", messagelist.get(position).getProfilepic());
+
+            Glide.with(mContext).load(messagelist.get(position).getProfilepic()).placeholder(R.drawable.download).error(R.drawable.download).fallback(R.drawable.download).dontAnimate().into(viewHolder.profilepic);
+        }
 
 
         if (messagelist.get(position).getImage() == null) {
@@ -390,38 +395,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             }
         });
 
-        //  viewHolder.upicon.setTag(1);
-      /*  viewHolder.upicon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                isInternetPresent = cd.isConnectingToInternet();
-                if (isInternetPresent) {
-
-
-                    final int status = (Integer) view.getTag();
-                    if (status == 1) {
-                        upvote(position);
-                        viewHolderFinal.reviews.setText(String.valueOf(total + 1) + " likes");
-                       // viewHolderFinal.upicon.setTextColor(ContextCompat.getColor(mContext, R.color.red));
-                        viewHolderFinal.upvote.setText("Liked");
-                        viewHolderFinal.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.red));
-                        //   viewHolderFinal.myreviews.setText("");
-                        view.setTag(0);
-                        //pause
-                    } else {
-                        upvote(position);
-                        viewHolderFinal.reviews.setText(String.valueOf(total) + " likes");
-                      //  viewHolderFinal.upicon.setTextColor(ContextCompat.getColor(mContext, R.color.ReviewColor));
-                        viewHolderFinal.upvote.setText("Like");
-                        viewHolderFinal.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.ReviewColor));
-                        //  viewHolderFinal.myreviews.setText("");
-                        view.setTag(1);
-                    }
-                } else {
-                    Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });*/
         viewHolder.source.setText('#' + messagelist.get(position).getCategory());
         viewHolder.source.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -727,9 +700,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             super(view);
             String fontPath = "fonts/Roboto-Medium.ttf";
             String thinpath = "fonts/Roboto-Regular.ttf";
-            Typeface font = Typeface.createFromAsset(mContext.getAssets(), "fontawesome-webfont.ttf");
+          /*  Typeface font = Typeface.createFromAsset(mContext.getAssets(), "fontawesome-webfont.ttf");
             Typeface tf = Typeface.createFromAsset(mContext.getAssets(), fontPath);
-            Typeface thin = Typeface.createFromAsset(mContext.getAssets(), thinpath);
+            Typeface thin = Typeface.createFromAsset(mContext.getAssets(), thinpath);*/
             this.cv = (CardView) itemView.findViewById(R.id.cv);
             this.headline = (TextView) view.findViewById(R.id.Who);
             this.head = (TextView) view.findViewById(R.id.head);
@@ -740,27 +713,27 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             if (this.head == null) {
 
             } else {
-                this.head.setTypeface(tf);
+                // this.head.setTypeface(tf);
             }
 
-            this.headline.setTypeface(thin);
+            //this.headline.setTypeface(thin);
             this.place = (TextView) view.findViewById(R.id.place);
-            this.place.setTypeface(tf);
+            // this.place.setTypeface(tf);
 
 
             this.reaction = (ImageView) view.findViewById(R.id.comment);
             this.date = (TextView) view.findViewById(R.id.date);
-            this.date.setTypeface(thin);
+            //this.date.setTypeface(thin);
             this.image = (ImageView) view.findViewById(R.id.image);
             this.overflow = (ImageView) view.findViewById(R.id.overflow);
             this.profilepic = (ImageView) view.findViewById(R.id.profilepic);
             this.tv = (TextView) view.findViewById(R.id.tv);
             this.from = (TextView) view.findViewById(R.id.from);
-            this.from.setTypeface(tf);
+            //this.from.setTypeface(tf);
             //  this.relative = (RelativeLayout) view.findViewById(R.id.Relative);
             this.reviews = (TextView) view.findViewById(R.id.reviews);
             this.app = (TextView) view.findViewById(R.id.app);
-            this.app.setTypeface(tf);
+            // this.app.setTypeface(tf);
             this.upvote = (TextView) view.findViewById(R.id.upvote);
             this.source = (TextView) view.findViewById(R.id.source);
             // this.source.setTypeface(tf);

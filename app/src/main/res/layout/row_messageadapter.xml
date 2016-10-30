@@ -27,13 +27,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="52dp">
 
-                <ImageView
+                <in.reweyou.reweyou.customView.CircularImageView
+
                     android:id="@+id/profilepic"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dp" />
+                    android:layout_marginLeft="10dp"
+                    card_view:myborderWidth="0dp" />
 
                 <TextView
                     android:id="@+id/from"
@@ -216,11 +218,12 @@
                     android:layout_toRightOf="@id/reacticon"
                     android:layout_weight="1"
 
-                    android:fontFamily="sans-serif-condensed"
+                    android:fontFamily="sans-serif"
                     android:gravity="center_vertical"
                     android:text="React"
                     android:textColor="#9c9c9c"
-                    android:textSize="14sp" />
+                    android:textSize="13dp"
+                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:id="@+id/like"
@@ -247,7 +250,7 @@
                         android:layout_marginRight="12dp"
                         android:text="LIKE"
                         android:textAllCaps="true"
-                        android:textColor="#bdbdbd"
+                        android:textColor="#9c9c9c"
                         android:textSize="12sp"
 
                         android:textStyle="bold" />
@@ -270,7 +273,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_marginLeft="12dp"
                     android:text="User"
-                    android:textColor="#000"
+                    android:textColor="#212121"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
@@ -282,7 +285,7 @@
                     android:layout_marginLeft="12dp"
                     android:autoLink="web"
                     android:text="TextView"
-                    android:textColor="#000"
+                    android:textColor="#424242"
                     android:textSize="14sp" />
             </RelativeLayout>
 
