@@ -42,12 +42,8 @@ public class Friends extends AppCompatActivity {
     private static final int REQUEST_CODE = 0;
     ArrayList<String> messagelist = new ArrayList<>();
     PermissionsChecker checker;
-    ArrayList<String> aa = new ArrayList<>();
-    ArrayList<String> conname = new ArrayList<>();
     private RecyclerView recyclerView;
-    private FriendsAdapter adapter;
     private ProgressBar progressBar;
-    private HashMap<String, String> contactsHashMaps = new HashMap<>();
     private List<String> contactNumber = new ArrayList<>();
     private List<String> matchedNumber = new ArrayList<>();
     private List<String> matchedName = new ArrayList<>();
@@ -94,8 +90,7 @@ public class Friends extends AppCompatActivity {
             progressBar = (ProgressBar) findViewById(R.id.progress_bar);
             progressBar.setVisibility(View.VISIBLE);
             new JSONTask().execute("9711188949");
-            //adapter = new FriendsAdapter(Friends.this, messagelist);
-            //recyclerView.setAdapter(adapter);
+
 
         }
     }
@@ -105,59 +100,16 @@ public class Friends extends AppCompatActivity {
 
         while (phones.moveToNext()) {
 
-            //String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-            //contactsHashMaps.put("phone",phoneNumber);
             String number = phoneNumber.replaceAll("\\D", "");
-
             contactNumber.add(number);
 
-           /* System.out.println(".................."+phoneNumber);
-            name = phoneNumber.substring(3);
-            name=name.replace(" ","");
-            aa.add(name);*/
         }
-
-        Log.d("co", String.valueOf(contactNumber));
         phones.close();
     }
 
     private void startPermissionsActivity() {
         PermissionsActivity.startActivityForResult(this, REQUEST_CODE, PERMISSIONS);
-    }
-
-    public void getContactNaame(Context context, String phoneNumber) {
-        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
-        Cursor cursor = context.getContentResolver().query(uri,
-                new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup._ID}, null, null, null);
-        List<String> listIds = new ArrayList<String>(); //Arraylist to hold the unique ids
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                String contactId = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup._ID));
-                if (!listIds.contains(contactId))
-                    listIds.add(contactId); //adding unique id to arraylist
-            }
-            //pass unique ids to get contact names
-            for (int i = 0; i < listIds.size(); i++) {
-                String newId = listIds.get(i);
-                Cursor cursorDetails = context.getContentResolver().query(
-                        ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                        null,
-                        ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
-                        new String[]{newId}, null);
-                if (cursorDetails != null) {
-                    if (cursorDetails.moveToFirst()) {
-                        String contactName = cursorDetails.getString(cursorDetails.getColumnIndexOrThrow(ContactsContract.PhoneLookup.DISPLAY_NAME));
-                        // System.out.println("ID : " + newId + " Name : " + contactName + " Number : " + phoneNumber);
-                        conname.add(contactName);
-                    }
-                    cursorDetails.close();
-                }
-            }
-            cursor.close();
-        }
-
-
     }
 
     public class JSONTask extends AsyncTask<String, String, List<String>> {
@@ -248,32 +200,10 @@ public class Friends extends AppCompatActivity {
         protected void onPostExecute(List<String> result) {
             super.onPostExecute(result);
 
-            /*ArrayList<String> tempToDelete = new ArrayList<>();
-
-            for (int i = 0; i < result.size(); i++) {
-                for (int j = 0; j < aa.size(); j++) {
-                    if (result.get(i).equals(aa.get(j))) {
-                        tempToDelete.add(aa.get(j));
-                        break;
-                    }
-                    //    if (PhoneNumberUtils.compare(result.get(i), aa.get(j))) {
-                    //      //they are the same do whatever you want!
-                    //    tempToDelete.add(aa.get(j));
-                    //  break;
-                    //}
-
-                }
-            }
-            for (int i = 0; i < tempToDelete.size(); i++) {
-                getContactName(Friends.this, tempToDelete.get(i));
-            }*/
-
-            //aa.removeAll(tempToDelete);
             progressBar.setVisibility(View.GONE);
             FriendsAdapter adapter = new FriendsAdapter(Friends.this, result);
             recyclerView.setAdapter(adapter);
 
-            //need to set data to the list
         }
     }
 

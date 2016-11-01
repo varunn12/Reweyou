@@ -17,7 +17,19 @@ import android.widget.DatePicker;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.NetworkError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -40,6 +52,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.adapter.MessageAdapter;
@@ -48,6 +61,7 @@ import in.reweyou.reweyou.classes.HidingScrollListener;
 import in.reweyou.reweyou.classes.RequestHandler;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.model.MpModel;
+import in.reweyou.reweyou.utils.MyJSON;
 
 
 public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, View.OnClickListener {
@@ -64,7 +78,6 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private int mYear, mMonth, mDay;
 
     public SecondFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -75,21 +88,22 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View layout=inflater.inflate(R.layout.fragment_second, container, false);
-        recyclerView=(RecyclerView)layout.findViewById(R.id.recycler_view);
-        RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecoration(ContextCompat.getDrawable(getActivity(), R.drawable.line) );
+        final View layout = inflater.inflate(R.layout.fragment_second, container, false);
+        recyclerView = (RecyclerView) layout.findViewById(R.id.recycler_view);
+        RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecoration(ContextCompat.getDrawable(getActivity(), R.drawable.line));
         recyclerView.addItemDecoration(dividerItemDecoration);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setItemViewCacheSize(4);
 
         session = new UserSessionManager(getActivity());
         HashMap<String, String> user = session.getUserDetails();
-        number=session.getMobileNumber();
+        number = session.getMobileNumber();
         //Progress bar
-        progressBar = (ProgressBar)layout. findViewById(R.id.progress_bar);
+        progressBar = (ProgressBar) layout.findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.VISIBLE);
         swipeLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipe_container);
         swipeLayout.setOnRefreshListener(this);
-       // staticSpinner = (Spinner)layout.findViewById(R.id.static_spinner);
+        // staticSpinner = (Spinner)layout.findViewById(R.id.static_spinner);
 
         Calendar c = Calendar.getInstance();
         mYear = c.get(Calendar.YEAR);
@@ -99,13 +113,13 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
         SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
 
 
-        datepick=(TextView)layout.findViewById(R.id.date);
+        datepick = (TextView) layout.findViewById(R.id.date);
         Typeface font = Typeface.createFromAsset(getActivity().getAssets(), "fontawesome-webfont.ttf");
         datepick.setTypeface(font);
         formattedDate = df.format(c.getTime());
         datepick.setText(formattedDate);
         datepick.setVisibility(View.GONE);
-        formattedDate="2016";
+        formattedDate = "2016";
         datepick.setOnClickListener(this);
 
 
@@ -114,7 +128,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
         recyclerView.setOnScrollListener(new HidingScrollListener() {
             @Override
             public void onHide() {
-              //  hideViews();
+                //  hideViews();
             }
 
             @Override
@@ -124,74 +138,138 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
         });
         return layout;
     }
-/*    private void hideViews() {
-        staticSpinner.animate().translationY(-staticSpinner.getHeight()).setInterpolator(new AccelerateInterpolator(2));
-        button8.animate().translationY(-button8.getHeight()).setInterpolator(new AccelerateInterpolator(2));
 
-    }
-
-    private void showViews() {
-       staticSpinner.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2));
-      button8.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2));
-
-
-    }
-*/
     @Override
-    public void onActivityCreated(Bundle savedInstanceState)
-    {
+    public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
         Messages();
-        adapter=new MessageAdapter(getActivity(),messagelist);
+        adapter = new MessageAdapter(getActivity(), messagelist);
         recyclerView.setAdapter(adapter);
-        // Create an ArrayAdapter using the string array and a default spinner
-    /*    ArrayAdapter<CharSequence> staticAdapter = ArrayAdapter
-                .createFromResource(getActivity(), R.array.brew_array,
-                        R.layout.spinner_item);
-        // Specify the layout to use when the list of choices appears
-        staticAdapter
-                .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-        staticSpinner.setAdapter(staticAdapter);
-        staticSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view,
-                                       int position, long id) {
-                if (position > 0) {
-                    // get spinner value
-                    tag = (String) parent.getItemAtPosition(position);
-                    new JSONTask().execute(tag,location);
-                    //Toast.makeText(getActivity(), tag, Toast.LENGTH_LONG).show();
-                   // Messages();
-                } else {
-                    // show toast select gender
-                    new JSONTask().execute("General",location);
-                }
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // TODO Auto-generated method stub
-            }
-        });
-   */
     }
 
     private void Messages() {
-//if(staticSpinner.getSelectedItem()==null)
-//{
-  //  tag="General";
-    //new JSONTask().execute(tag,location);
-//}
-  //      else {
-//    tag = staticSpinner.getSelectedItem().toString();
-        tag="General";
+
+        tag = "General";
         Log.e("D", tag);
         Log.e("D", location);
         Log.e("D", formattedDate);
-        new JSONTask().execute(tag, location,formattedDate,number);
-//}
+        // new JSONTask().execute(tag, location,formattedDate,number);
+
+        makeRequest();
+
+    }
+
+    private void makeRequest() {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, "https://www.reweyou.in/reweyou/newsfeed.php",
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("Response", response);
+
+                        JSONArray parentArray = null;
+                        try {
+                            parentArray = new JSONArray(response);
+                            Log.d("aaa", String.valueOf(parentArray));
+                            StringBuffer finalBufferedData = new StringBuffer();
+
+                            List<MpModel> messagelist = new ArrayList<>();
+
+                            Gson gson = new Gson();
+                            for (int i = 0; i < parentArray.length(); i++) {
+                                JSONObject finalObject = parentArray.getJSONObject(i);
+                                MpModel mpModel = gson.fromJson(finalObject.toString(), MpModel.class);
+                                messagelist.add(mpModel);
+                            }
+                            progressBar.setVisibility(View.GONE);
+                            MessageAdapter adapter = new MessageAdapter(getActivity(), messagelist);
+
+                            recyclerView.setAdapter(adapter);
+
+                            swipeLayout.setRefreshing(false);
+
+                            MyJSON.saveData(getContext(), response);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show();
+
+                       /* if (error instanceof AuthFailureError) {
+                            Log.d("Response", "a");
+
+                        } else */
+                        if (error instanceof NetworkError || error instanceof NoConnectionError || error instanceof TimeoutError) {
+                            Log.d("ResponseError", "n");
+
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getActivity(), "No internet Connection", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            String respo = MyJSON.getData(getContext());
+                            if (respo != null) {
+                                JSONArray parentArray = null;
+                                try {
+                                    parentArray = new JSONArray(respo);
+                                    Log.d("aaa", String.valueOf(parentArray));
+                                    StringBuffer finalBufferedData = new StringBuffer();
+
+                                    List<MpModel> messagelist = new ArrayList<>();
+
+                                    Gson gson = new Gson();
+                                    for (int i = 0; i < parentArray.length(); i++) {
+                                        JSONObject finalObject = parentArray.getJSONObject(i);
+                                        MpModel mpModel = gson.fromJson(finalObject.toString(), MpModel.class);
+                                        messagelist.add(mpModel);
+                                    }
+                                    progressBar.setVisibility(View.GONE);
+                                    MessageAdapter adapter = new MessageAdapter(getActivity(), messagelist);
+
+                                    recyclerView.setAdapter(adapter);
+
+                                    swipeLayout.setRefreshing(false);
+
+                                    MyJSON.saveData(getContext(), respo);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+
+                        } else if (error instanceof ParseError) {
+                            Log.d("Response", "p");
+
+
+                        } else if (error instanceof ServerError) {
+                            Log.d("Response", "s");
+
+
+                        }
+
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> data = new HashMap<>();
+                data.put("tag", tag);
+                data.put("location", location);
+                data.put("date", formattedDate);
+                data.put("number", number);
+                return data;
+            }
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+        requestQueue.add(stringRequest);
     }
 
     @Override
@@ -209,10 +287,10 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                     @Override
                     public void onDateSet(DatePicker view, int year,
                                           int monthOfYear, int dayOfMonth) {
-                        int realmonth=monthOfYear+1;
+                        int realmonth = monthOfYear + 1;
 
 
-                        String selected =  dayOfMonth + "-" + realmonth + "-"
+                        String selected = dayOfMonth + "-" + realmonth + "-"
                                 + year;
                         DateFormat inputFormatter1 = new SimpleDateFormat("dd-MM-yyyy");
                         Date date1 = null;
@@ -225,7 +303,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                         DateFormat outputFormatter1 = new SimpleDateFormat("dd-MMM-yyyy");
                         formattedDate = outputFormatter1.format(date1);
                         Log.e("D", formattedDate);
-                        new JSONTask().execute(tag, location,formattedDate, number);
+                        new JSONTask().execute(tag, location, formattedDate, number);
 
                         datepick.setText(formattedDate);
                         //  txtDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
@@ -234,7 +312,6 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                 }, mYear, mMonth, mDay);
         datePickerDialog.show();
     }
-
 
 
     public class JSONTask extends AsyncTask<String, String, List<MpModel>> {
@@ -249,13 +326,13 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
         protected List<MpModel> doInBackground(String... params) {
             HttpURLConnection connection = null;
             BufferedReader reader = null;
-            RequestHandler rh= new RequestHandler();
-            HashMap<String, String> data = new HashMap<String,String>();
-            data.put("tag",params[0]);
-            data.put("location",params[1]);
-            data.put("date",params[2]);
-            data.put("number",params[3]);
-          //  tag="All";
+            RequestHandler rh = new RequestHandler();
+            HashMap<String, String> data = new HashMap<String, String>();
+            data.put("tag", params[0]);
+            data.put("location", params[1]);
+            data.put("date", params[2]);
+            data.put("number", params[3]);
+            //  tag="All";
             try {
                 URL url = new URL("https://www.reweyou.in/reweyou/newsfeed.php");
                 connection = (HttpURLConnection) url.openConnection();
@@ -317,8 +394,10 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
         protected void onPostExecute(List<MpModel> result) {
             super.onPostExecute(result);
             progressBar.setVisibility(View.GONE);
-            MessageAdapter adapter = new MessageAdapter(getActivity(),result);
+            MessageAdapter adapter = new MessageAdapter(getActivity(), result);
+
             recyclerView.setAdapter(adapter);
+
             swipeLayout.setRefreshing(false);
             //need to set data to the list
         }

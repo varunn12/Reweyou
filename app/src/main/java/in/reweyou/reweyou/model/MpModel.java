@@ -1,11 +1,22 @@
 package in.reweyou.reweyou.model;
 
+import android.text.format.DateUtils;
+import android.util.Log;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+import static android.text.format.DateUtils.getRelativeTimeSpanString;
+
 /**
  * Created by Reweyou on 10/5/2015.
  */
 
 public class MpModel {
 
+    SimpleDateFormat dfs = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss a", Locale.US);
     private String name;
     private String number;
     private String head;
@@ -42,13 +53,12 @@ public class MpModel {
         this.number = number;
     }
 
-    public void setComments(String comments)
-    {
-        this.comments=comments;
-    }
-    public String getComments()
-    {
+    public String getComments() {
         return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
     }
 
     public String getHeadline() {
@@ -68,7 +78,23 @@ public class MpModel {
     }
 
     public String getDate() {
-        return date;
+        if (date != null && !date.isEmpty()) {
+
+            date = date.replaceAll("\\.", "");
+
+            Date dates = null;
+            try {
+                dates = dfs.parse(date);
+                long epochs = dates.getTime();
+                Log.e("Time", String.valueOf(epochs));
+                CharSequence timePassedString = getRelativeTimeSpanString(epochs, System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS);
+                return (String) timePassedString;
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return null;
+            }
+        } else return null;
+
     }
 
     public void setDate(String date) {
@@ -95,6 +121,7 @@ public class MpModel {
         this.image = image;
         // String image = image + url;
     }
+
     public String getVideo() {
         return video;
     }
@@ -102,6 +129,7 @@ public class MpModel {
     public void setVideo(String video) {
         this.video = video;
     }
+
     public String getCategory() {
         return category;
     }
@@ -110,40 +138,36 @@ public class MpModel {
         this.category = category;
     }
 
-    public void setReviews(String reviews)
-    {
-        this.reviews=reviews;
-    }
-    public String getReviews()
-    {
+    public String getReviews() {
         return reviews;
     }
 
-    public void setPostviews(String postviews)
-    {
-        this.postviews=postviews;
+    public void setReviews(String reviews) {
+        this.reviews = reviews;
     }
-    public String getPostviews()
-    {
+
+    public String getPostviews() {
         return postviews;
     }
 
-    public void setId(String id)
-    {
-        this.id=id;
+    public void setPostviews(String postviews) {
+        this.postviews = postviews;
     }
-    public String getId()
-    {
+
+    public String getId() {
         return id;
     }
 
-    public void setPostId(String postid)
-    {
-        this.postid=postid;
+    public void setId(String id) {
+        this.id = id;
     }
-    public String getPostId()
-    {
+
+    public String getPostId() {
         return postid;
+    }
+
+    public void setPostId(String postid) {
+        this.postid = postid;
     }
 
     public String getSource() {
