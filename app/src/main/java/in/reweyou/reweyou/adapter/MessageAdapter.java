@@ -43,9 +43,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 
 import org.json.JSONException;
 
@@ -75,12 +73,11 @@ import static in.reweyou.reweyou.utils.Constants.REVIEW_URL;
 import static in.reweyou.reweyou.utils.Constants.SUGGEST_URL;
 
 
-public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
+public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 
     private static final String TAG = MessageAdapter.class.getSimpleName();
 
-    Date dates;
     Activity activity;
     Boolean isInternetPresent = false;
     ConnectionDetector cd;
@@ -96,166 +93,191 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     private AppCompatButton buttonEdit;
     private String number;
     private String username;
-    private DisplayImageOptions options, option;
+    private boolean loadingView = false;
 
     public MessageAdapter(Context context, List<MpModel> mlist) {
         this.mContext = context;
+
         activity = (Activity) context;
         this.messagelist = mlist;
         cd = new ConnectionDetector(mContext);
         mCustomTabActivityHelper = new CustomTabActivityHelper();
         session = new UserSessionManager(mContext);
-        options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.irongrip)
-                .showImageForEmptyUri(R.drawable.ic_reload)
-                .showImageOnFail(R.drawable.ic_error)
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .considerExifParams(true)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .build();
+    }
 
-        option = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.irongrip)
-                .displayer(new RoundedBitmapDisplayer(1000))
-                .showImageForEmptyUri(R.drawable.download)
-                .showImageOnFail(R.drawable.download)
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .considerExifParams(true)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .build();
-
+    public MessageAdapter() {
 
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_messageadapter, viewGroup, false);
-        return new ViewHolder(view);
-    }
-
-    @Override
-    public void onBindViewHolder(final MessageAdapter.ViewHolder viewHolder, final int position) {
-
-
-        Spannable spannable = new SpannableString(messagelist.get(position).getHeadline());
-        Util.linkifyUrl(spannable, new CustomTabsOnClickListener(activity, mCustomTabActivityHelper));
-        viewHolder.headline.setText(spannable);
-        viewHolder.headline.setMovementMethod(LinkMovementMethod.getInstance());
-
-
-        if (messagelist.get(position).getHead() == null || messagelist.get(position).getHead().isEmpty())
-            viewHolder.head.setVisibility(View.GONE);
-        else {
-            viewHolder.head.setVisibility(View.VISIBLE);
-            viewHolder.head.setText(messagelist.get(position).getHead());
-        }
-
-        if (messagelist.get(position).getHeadline() == null || messagelist.get(position).getHeadline().isEmpty())
-            viewHolder.headline.setVisibility(View.GONE);
-        else {
-            viewHolder.headline.setVisibility(View.VISIBLE);
-            viewHolder.headline.setText(messagelist.get(position).getHeadline());
-        }
-
-        if (messagelist.get(position).getDate().isEmpty() || messagelist.get(position).getDate() == null)
-            viewHolder.date.setVisibility(View.GONE);
-        else {
-            viewHolder.date.setVisibility(View.VISIBLE);
-            viewHolder.date.setText(messagelist.get(position).getDate());
-        }
-
-        if (messagelist.get(position).getProfilepic() == null || messagelist.get(position).getProfilepic().isEmpty())
-            viewHolder.profilepic.setVisibility(View.GONE);
-        else {
-            viewHolder.profilepic.setVisibility(View.VISIBLE);
-            Glide.with(mContext).load(messagelist.get(position).getProfilepic()).placeholder(R.drawable.download).error(R.drawable.download).fallback(R.drawable.download).dontAnimate().into(viewHolder.profilepic);
-        }
-
-        if (messagelist.get(position).getImage() == null || messagelist.get(position).getImage().isEmpty()) {
-            viewHolder.image.setVisibility(View.GONE);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+        if (i != 10) {
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_messageadapter, viewGroup, false);
+            return new ViewHolder(view);
         } else {
-            viewHolder.image.setVisibility(View.VISIBLE);
-            Glide.with(mContext).load(messagelist.get(position).getImage()).placeholder(R.drawable.irongrip).diskCacheStrategy(DiskCacheStrategy.SOURCE).fallback(R.drawable.ic_reload).error(R.drawable.ic_error).dontAnimate().into(viewHolder.image);
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_messageadapter_loading, viewGroup, false);
+            return new ViewHolder1(view);
         }
+    }
 
-        if (messagelist.get(position).getLocation() == null || messagelist.get(position).getLocation().isEmpty())
-            viewHolder.place.setVisibility(View.GONE);
-        else {
-            viewHolder.place.setVisibility(View.VISIBLE);
-            viewHolder.place.setText(messagelist.get(position).getLocation());
-        }
+    @Override
+    public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder2, final int position) {
 
-        if (messagelist.get(position).getName() == null || messagelist.get(position).getName().isEmpty())
-            viewHolder.from.setVisibility(View.GONE);
-        else {
-            viewHolder.from.setVisibility(View.VISIBLE);
-            viewHolder.from.setText(messagelist.get(position).getName());
-        }
+        switch (viewHolder2.getItemViewType()) {
+            case 10:
+                Log.d("dsd", "here");
+                break;
 
-        if (messagelist.get(position).getComments() == null || messagelist.get(position).getComments().isEmpty())
-            viewHolder.app.setText("0 Reactions");
-        else {
-            viewHolder.app.setText(messagelist.get(position).getComments() + " Reactions");
-            if (!messagelist.get(position).getComments().equals("0")) {
-                viewHolder.rv.setVisibility(View.VISIBLE);
-
-                Spannable spannables = new SpannableString(messagelist.get(position).getReaction());
-                Util.linkifyUrl(spannables, new CustomTabsOnClickListener(activity, mCustomTabActivityHelper));
-                viewHolder.userName.setText(spannables);
-                viewHolder.userName.setMovementMethod(LinkMovementMethod.getInstance());
-
-                viewHolder.name.setText(messagelist.get(position).getFrom());
-            } else {
-                viewHolder.rv.setVisibility(View.GONE);
-            }
-        }
-
-        if (messagelist.get(position).getReviews().isEmpty() || messagelist.get(position).getReviews() == null)
-            viewHolder.reviews.setText("0 likes");
-        else
-            viewHolder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews())) + " likes");
-
-        if (messagelist.get(position).getCategory().isEmpty() || messagelist.get(position).getCategory() == null)
-            viewHolder.source.setVisibility(View.GONE);
-        else {
-            viewHolder.source.setVisibility(View.VISIBLE);
-            viewHolder.source.setText('#' + messagelist.get(position).getCategory());
-
-        }
-
-        final int total = Integer.parseInt(messagelist.get(position).getReviews());
-
-        viewHolder.linearLayout.setTag(1);
-        viewHolder.linearLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                isInternetPresent = cd.isConnectingToInternet();
-                if (isInternetPresent) {
+            default:
+                final ViewHolder viewHolder = (ViewHolder) viewHolder2;
+                Spannable spannable = new SpannableString(messagelist.get(position).getHeadline());
+                Util.linkifyUrl(spannable, new CustomTabsOnClickListener(activity, mCustomTabActivityHelper));
+                viewHolder.headline.setText(spannable);
+                viewHolder.headline.setMovementMethod(LinkMovementMethod.getInstance());
 
 
-                    final int status = (Integer) view.getTag();
-                    if (status == 1) {
-                        upvote(position);
-                        viewHolder.reviews.setText(String.valueOf(total + 1) + " likes");
-                        viewHolder.upicon.setImageResource(R.drawable.ic_thumb_up_primary_16px);
-                        viewHolder.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.rank));
-                        view.setTag(0);
-                        //pause
-                    } else {
-                        upvote(position);
-                        viewHolder.reviews.setText(String.valueOf(total) + " likes");
-                        viewHolder.upicon.setImageResource(R.drawable.ic_thumb_up_black_16px);
-                        viewHolder.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.likeText));
-                        view.setTag(1);
-                    }
-                } else {
-                    Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_SHORT).show();
+                if (messagelist.get(position).getHead() == null || messagelist.get(position).getHead().isEmpty())
+                    viewHolder.head.setVisibility(View.GONE);
+                else {
+                    viewHolder.head.setVisibility(View.VISIBLE);
+                    viewHolder.head.setText(messagelist.get(position).getHead());
                 }
 
-            }
-        });
+                if (messagelist.get(position).getHeadline() == null || messagelist.get(position).getHeadline().isEmpty())
+                    viewHolder.headline.setVisibility(View.GONE);
+                else {
+                    viewHolder.headline.setVisibility(View.VISIBLE);
+                    viewHolder.headline.setText(messagelist.get(position).getHeadline());
+                }
+
+                if (messagelist.get(position).getDate().isEmpty() || messagelist.get(position).getDate() == null)
+                    viewHolder.date.setVisibility(View.GONE);
+                else {
+                    viewHolder.date.setVisibility(View.VISIBLE);
+                    viewHolder.date.setText(messagelist.get(position).getDate());
+                }
+
+
+                Glide.with(mContext).load(messagelist.get(position).getProfilepic()).placeholder(R.drawable.download).error(R.drawable.download).fallback(R.drawable.download).dontAnimate().into(viewHolder.profilepic);
+
+
+                if (messagelist.get(position).getImage() == null || messagelist.get(position).getImage().isEmpty()) {
+                    viewHolder.image.setVisibility(View.GONE);
+                } else {
+                    viewHolder.image.setVisibility(View.VISIBLE);
+                    Glide.with(mContext).load(messagelist.get(position).getImage()).placeholder(R.drawable.irongrip).diskCacheStrategy(DiskCacheStrategy.SOURCE).fallback(R.drawable.ic_reload).error(R.drawable.ic_error).dontAnimate().into(viewHolder.image);
+                }
+
+                if (messagelist.get(position).getLocation() == null || messagelist.get(position).getLocation().isEmpty())
+                    viewHolder.place.setVisibility(View.GONE);
+                else {
+                    viewHolder.place.setVisibility(View.VISIBLE);
+                    viewHolder.place.setText(messagelist.get(position).getLocation());
+                }
+
+                if (messagelist.get(position).getName() == null || messagelist.get(position).getName().isEmpty())
+                    viewHolder.from.setVisibility(View.GONE);
+                else {
+                    viewHolder.from.setVisibility(View.VISIBLE);
+                    viewHolder.from.setText(messagelist.get(position).getName());
+                }
+
+                if (messagelist.get(position).getComments() == null || messagelist.get(position).getComments().isEmpty())
+                    viewHolder.app.setText("0 Reactions");
+                else {
+                    viewHolder.app.setText(messagelist.get(position).getComments() + " Reactions");
+                    if (!messagelist.get(position).getComments().equals("0")) {
+                        viewHolder.rv.setVisibility(View.VISIBLE);
+
+                        Spannable spannables = new SpannableString(messagelist.get(position).getReaction());
+                        Util.linkifyUrl(spannables, new CustomTabsOnClickListener(activity, mCustomTabActivityHelper));
+                        viewHolder.userName.setText(spannables);
+                        viewHolder.userName.setMovementMethod(LinkMovementMethod.getInstance());
+
+                        viewHolder.name.setText(messagelist.get(position).getFrom());
+                    } else {
+                        viewHolder.rv.setVisibility(View.GONE);
+                    }
+                }
+
+                if (messagelist.get(position).getReviews().isEmpty() || messagelist.get(position).getReviews() == null)
+                    viewHolder.reviews.setText("0 likes");
+                else
+                    viewHolder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews())) + " likes");
+
+                if (messagelist.get(position).getCategory().isEmpty() || messagelist.get(position).getCategory() == null)
+                    viewHolder.source.setVisibility(View.GONE);
+                else {
+                    viewHolder.source.setVisibility(View.VISIBLE);
+                    viewHolder.source.setText('#' + messagelist.get(position).getCategory());
+
+                }
+
+                final int total = Integer.parseInt(messagelist.get(position).getReviews());
+
+                viewHolder.linearLayout.setTag(1);
+                viewHolder.linearLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        isInternetPresent = cd.isConnectingToInternet();
+                        if (isInternetPresent) {
+
+
+                            final int status = (Integer) view.getTag();
+                            if (status == 1) {
+                                upvote(position);
+                                viewHolder.reviews.setText(String.valueOf(total + 1) + " likes");
+                                viewHolder.upicon.setImageResource(R.drawable.ic_thumb_up_primary_16px);
+                                viewHolder.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.rank));
+                                view.setTag(0);
+                                //pause
+                            } else {
+                                upvote(position);
+                                viewHolder.reviews.setText(String.valueOf(total) + " likes");
+                                viewHolder.upicon.setImageResource(R.drawable.ic_thumb_up_black_16px);
+                                viewHolder.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.likeText));
+                                view.setTag(1);
+                            }
+                        } else {
+                            Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                });
+                break;
+
+        }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        Log.d("pppp", String.valueOf(position));
+        if (position % 10 == 0 && position > 0 && loadingView == true) {
+            Log.d("item", String.valueOf(10) + "          " + position);
+            return 10;
+        } else {
+            Log.d("item", String.valueOf(super.getItemViewType(position)));
+            return super.getItemViewType(position);
+        }
+    }
+
+    public void add() {
+        loadingView = true;
+        Log.d("fwdfwfwefwe", "here");
+        this.messagelist.add(new MpModel());
+        notifyItemInserted(this.messagelist.size() - 1);
+    }
+
+    public void remove() {
+        loadingView = false;
+        messagelist.remove(messagelist.size() - 1);
+        notifyItemRemoved(messagelist.size());
+    }
+
+    public void loadMore(List<MpModel> messagelist2) {
+        this.messagelist.addAll(messagelist2);
+        Log.d("sizeof list", String.valueOf(this.messagelist.size()));
+        notifyItemRangeInserted(this.messagelist.size() - 10, 10);
     }
 
     private void takeScreenshot() {
@@ -504,6 +526,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         }
     }
 
+
     class ViewHolder extends RecyclerView.ViewHolder {
         protected ImageView image, profilepic, overflow;
         protected TextView headline, upvote, head;
@@ -679,8 +702,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             });
 
 
-
-
         }
     }
 
@@ -707,6 +728,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 default:
             }
             return false;
+        }
+    }
+
+    private class ViewHolder1 extends RecyclerView.ViewHolder {
+        public ViewHolder1(View view) {
+            super(view);
         }
     }
 }

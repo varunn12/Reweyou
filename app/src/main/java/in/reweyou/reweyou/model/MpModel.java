@@ -101,6 +101,9 @@ public class MpModel {
         this.date = date;
     }
 
+    public String getDate1() {
+        return date;
+    }
 
     public String getImage() {
         return image;

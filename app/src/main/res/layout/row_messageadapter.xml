@@ -17,7 +17,6 @@
             android:id="@+id/Relative"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:background="#fff"
             android:orientation="vertical">
 
@@ -194,9 +193,10 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="36dp"
+                android:layout_height="40dp"
                 android:background="#fff"
                 android:orientation="horizontal"
+                android:paddingBottom="4dp"
                 android:paddingTop="4dp">
 
 
@@ -262,8 +262,10 @@
                 android:id="@+id/rv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="#25bdbdbd"
 
-                android:background="#fff">
+                android:paddingBottom="4dp"
+                android:paddingTop="4dp">
 
                 <TextView
                     android:id="@+id/name"
@@ -273,7 +275,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_marginLeft="12dp"
                     android:text="User"
-                    android:textColor="#212121"
+                    android:textColor="#757575"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
@@ -285,7 +287,7 @@
                     android:layout_marginLeft="12dp"
                     android:autoLink="web"
                     android:text="TextView"
-                    android:textColor="#424242"
+                    android:textColor="#757575"
                     android:textSize="14sp" />
             </RelativeLayout>
 

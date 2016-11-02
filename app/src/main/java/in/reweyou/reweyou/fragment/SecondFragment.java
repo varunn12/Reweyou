@@ -1,19 +1,17 @@
 package in.reweyou.reweyou.fragment;
 
-import android.app.DatePickerDialog;
 import android.graphics.Typeface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.DatePicker;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -36,20 +34,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,8 +44,6 @@ import java.util.Map;
 import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.adapter.MessageAdapter;
 import in.reweyou.reweyou.classes.DividerItemDecoration;
-import in.reweyou.reweyou.classes.HidingScrollListener;
-import in.reweyou.reweyou.classes.RequestHandler;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.model.MpModel;
 import in.reweyou.reweyou.utils.MyJSON;
@@ -68,14 +53,18 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
     SwipeRefreshLayout swipeLayout;
     UserSessionManager session;
+    int pastVisiblesItems, visibleItemCount, totalItemCount;
     private RecyclerView recyclerView;
-    private List<MpModel> messagelist;
-    private MessageAdapter adapter;
+    private List<MpModel> messagelist = new ArrayList<>();
     private ProgressBar progressBar;
     private Spinner staticSpinner;
     private String tag, location, formattedDate, number;
     private TextView datepick;
     private int mYear, mMonth, mDay;
+    private boolean loading = true;
+    private SimpleDateFormat df;
+    private MessageAdapter adapter = new MessageAdapter();
+    private Calendar c;
 
     public SecondFragment() {
     }
@@ -93,6 +82,87 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
         RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecoration(ContextCompat.getDrawable(getActivity(), R.drawable.line));
         recyclerView.addItemDecoration(dividerItemDecoration);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        final LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        DefaultItemAnimator defaultItemAnimator = new DefaultItemAnimator();
+        recyclerView.setItemAnimator(defaultItemAnimator);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) //check for scroll down
+                {
+                    visibleItemCount = layoutManager.getChildCount();
+                    totalItemCount = layoutManager.getItemCount();
+                    pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
+
+                    if (loading) {
+                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                            loading = false;
+                            Log.v("...", "Last Item Wow !");
+                            adapter.add();
+                            //Do pagination.. i.e. fetch new data
+
+                            StringRequest stringRequest = new StringRequest(Request.Method.POST, "https://www.reweyou.in/reweyou/timefeed.php",
+                                    new Response.Listener<String>() {
+                                        @Override
+                                        public void onResponse(String response) {
+                                            Log.d("Response", response);
+
+                                            List<MpModel> list = new ArrayList<MpModel>();
+                                            JSONArray parentArray = null;
+                                            try {
+                                                parentArray = new JSONArray(response);
+                                                adapter.remove();
+
+                                                Gson gson = new Gson();
+                                                for (int i = 0; i < parentArray.length(); i++) {
+                                                    JSONObject finalObject = parentArray.getJSONObject(i);
+                                                    MpModel mpModel = gson.fromJson(finalObject.toString(), MpModel.class);
+                                                    list.add(mpModel);
+                                                    if (i == parentArray.length() - 1) {
+                                                        formattedDate = mpModel.getDate1();
+                                                        Log.d("last", mpModel.getCategory());
+                                                    }
+                                                }
+
+                                                adapter.loadMore(list);
+                                                loading = true;
+
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
+
+                                        }
+
+                                    },
+                                    new Response.ErrorListener() {
+                                        @Override
+                                        public void onErrorResponse(VolleyError error) {
+                                            //  adapter.remove();
+                                            Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show();
+                                        }
+                                    }) {
+                                @Override
+                                protected Map<String, String> getParams() {
+                                    Map<String, String> data = new HashMap<>();
+                                    data.put("tag", tag);
+                                    data.put("location", location);
+                                    data.put("date", formattedDate);
+                                    Log.d("ddd", formattedDate);
+                                    data.put("number", number);
+                                    return data;
+                                }
+                            };
+
+                            RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+                            requestQueue.add(stringRequest);
+
+
+                        }
+                    }
+                }
+            }
+        });
+
         recyclerView.setItemViewCacheSize(4);
 
         session = new UserSessionManager(getActivity());
@@ -105,12 +175,12 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
         swipeLayout.setOnRefreshListener(this);
         // staticSpinner = (Spinner)layout.findViewById(R.id.static_spinner);
 
-        Calendar c = Calendar.getInstance();
+        c = Calendar.getInstance();
         mYear = c.get(Calendar.YEAR);
         mMonth = c.get(Calendar.MONTH);
         mDay = c.get(Calendar.DAY_OF_MONTH);
 
-        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+        df = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss a");
 
 
         datepick = (TextView) layout.findViewById(R.id.date);
@@ -119,37 +189,18 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
         formattedDate = df.format(c.getTime());
         datepick.setText(formattedDate);
         datepick.setVisibility(View.GONE);
-        formattedDate = "2016";
+        //  formattedDate = "2016";
+        // formattedDate =c.getTime().toString();
         datepick.setOnClickListener(this);
-
-
         location = user.get(UserSessionManager.KEY_LOCATION);
 
-        recyclerView.setOnScrollListener(new HidingScrollListener() {
-            @Override
-            public void onHide() {
-                //  hideViews();
-            }
-
-            @Override
-            public void onShow() {
-                //showViews();
-            }
-        });
+        Messages();
         return layout;
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        Messages();
-        adapter = new MessageAdapter(getActivity(), messagelist);
-        recyclerView.setAdapter(adapter);
-
-    }
 
     private void Messages() {
+        formattedDate = df.format(c.getTime());
 
         tag = "General";
         Log.e("D", tag);
@@ -162,11 +213,12 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
     }
 
     private void makeRequest() {
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, "https://www.reweyou.in/reweyou/newsfeed.php",
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, "https://www.reweyou.in/reweyou/timefeed.php",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         Log.d("Response", response);
+
 
                         JSONArray parentArray = null;
                         try {
@@ -177,14 +229,19 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                             List<MpModel> messagelist = new ArrayList<>();
 
                             Gson gson = new Gson();
+                            Log.d("size", String.valueOf(parentArray.length()));
                             for (int i = 0; i < parentArray.length(); i++) {
                                 JSONObject finalObject = parentArray.getJSONObject(i);
                                 MpModel mpModel = gson.fromJson(finalObject.toString(), MpModel.class);
                                 messagelist.add(mpModel);
+
+                                if (i == parentArray.length() - 1) {
+                                    formattedDate = mpModel.getDate1();
+                                    Log.d("last", mpModel.getCategory());
+                                }
                             }
                             progressBar.setVisibility(View.GONE);
-                            MessageAdapter adapter = new MessageAdapter(getActivity(), messagelist);
-
+                            adapter = new MessageAdapter(getActivity(), messagelist);
                             recyclerView.setAdapter(adapter);
 
                             swipeLayout.setRefreshing(false);
@@ -207,7 +264,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
                         } else */
                         if (error instanceof NetworkError || error instanceof NoConnectionError || error instanceof TimeoutError) {
-                            Log.d("ResponseError", "n");
+                            Log.d("ResponseError", error.toString());
 
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
@@ -223,7 +280,6 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                                     Log.d("aaa", String.valueOf(parentArray));
                                     StringBuffer finalBufferedData = new StringBuffer();
 
-                                    List<MpModel> messagelist = new ArrayList<>();
 
                                     Gson gson = new Gson();
                                     for (int i = 0; i < parentArray.length(); i++) {
@@ -263,6 +319,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                 data.put("tag", tag);
                 data.put("location", location);
                 data.put("date", formattedDate);
+                Log.d("ddd", formattedDate);
                 data.put("number", number);
                 return data;
             }
@@ -280,7 +337,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
     @Override
     public void onClick(View v) {
-
+/*
         DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
                 new DatePickerDialog.OnDateSetListener() {
 
@@ -310,97 +367,8 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
                     }
                 }, mYear, mMonth, mDay);
-        datePickerDialog.show();
+        datePickerDialog.show();*/
     }
 
-
-    public class JSONTask extends AsyncTask<String, String, List<MpModel>> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            //setProgressBarIndeterminateVisibility(true);
-        }
-
-        @Override
-        protected List<MpModel> doInBackground(String... params) {
-            HttpURLConnection connection = null;
-            BufferedReader reader = null;
-            RequestHandler rh = new RequestHandler();
-            HashMap<String, String> data = new HashMap<String, String>();
-            data.put("tag", params[0]);
-            data.put("location", params[1]);
-            data.put("date", params[2]);
-            data.put("number", params[3]);
-            //  tag="All";
-            try {
-                URL url = new URL("https://www.reweyou.in/reweyou/newsfeed.php");
-                connection = (HttpURLConnection) url.openConnection();
-
-                connection.setDoOutput(true);
-                connection.setRequestMethod("POST");
-
-                OutputStreamWriter wr = new OutputStreamWriter(connection.getOutputStream());
-                wr.write(rh.getPostDataString(data));
-                wr.flush();
-
-                InputStream stream = connection.getInputStream();
-                reader = new BufferedReader(new InputStreamReader(stream));
-                StringBuffer buffer = new StringBuffer();
-
-                String line = "";
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line);
-                }
-                String finalJson = buffer.toString();
-
-                JSONArray parentArray = new JSONArray(finalJson);
-                Log.d("aaa", String.valueOf(parentArray));
-                StringBuffer finalBufferedData = new StringBuffer();
-
-                List<MpModel> messagelist = new ArrayList<>();
-
-                Gson gson = new Gson();
-                for (int i = 0; i < parentArray.length(); i++) {
-                    JSONObject finalObject = parentArray.getJSONObject(i);
-                    MpModel mpModel = gson.fromJson(finalObject.toString(), MpModel.class);
-                    messagelist.add(mpModel);
-                }
-
-                return messagelist;
-                //return buffer.toString();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } finally {
-                if (connection != null) {
-                    connection.disconnect();
-                }
-                try {
-                    if (reader != null) {
-                        reader.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(List<MpModel> result) {
-            super.onPostExecute(result);
-            progressBar.setVisibility(View.GONE);
-            MessageAdapter adapter = new MessageAdapter(getActivity(), result);
-
-            recyclerView.setAdapter(adapter);
-
-            swipeLayout.setRefreshing(false);
-            //need to set data to the list
-        }
-    }
 }
 
