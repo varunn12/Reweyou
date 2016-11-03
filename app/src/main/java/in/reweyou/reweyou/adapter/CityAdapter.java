@@ -222,18 +222,26 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
             }
         });
         String stroydates = messagelist.get(position).getDate();
+
         viewHolder.date.setText(stroydates.substring(0, 12));
         if(stroydates != null && !stroydates .isEmpty()) {
-            SimpleDateFormat dfs = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss");
+            SimpleDateFormat dfs = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss a", Locale.US);
             try {
+                stroydates = stroydates.replaceAll("\\.", "");
+                Log.e("dates", stroydates);
                 dates = dfs.parse(stroydates);
+                Log.e("Parse", String.valueOf(dates));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            long epochs = dates.getTime();
-            Log.e("Time", String.valueOf(epochs));
-            CharSequence timePassedString = getRelativeTimeSpanString(epochs, System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS);
-            viewHolder.date.setText(timePassedString);
+            if (dates != null) {
+                long epochs = dates.getTime();
+                Log.e("Time", String.valueOf(epochs));
+                CharSequence timePassedString = getRelativeTimeSpanString(epochs, System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS);
+                viewHolder.date.setText(timePassedString);
+            } else {
+                viewHolder.date.setText(stroydates);
+            }
         }
         else
         {
@@ -304,7 +312,6 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
 
         // viewHolder.tv.setVisibility(View.GONE);
         viewHolder.app.setText(messagelist.get(position).getComments() + " Reactions");
-
         if(!messagelist.get(position).getComments().equals("0")) {
             viewHolder.rv.setVisibility(View.VISIBLE);
             viewHolder.rv.setOnClickListener(new View.OnClickListener() {

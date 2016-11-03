@@ -64,6 +64,7 @@ public final class AnalyticsTracker {
             switch (target) {
                 case APP:
                     tracker = GoogleAnalytics.getInstance(mContext).newTracker(R.xml.app_tracker);
+                    tracker.enableAdvertisingIdCollection(true);
                     break;
                 default:
                     throw new IllegalArgumentException("Unhandled analytics target " + target);

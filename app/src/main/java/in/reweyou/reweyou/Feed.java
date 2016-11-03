@@ -11,6 +11,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
@@ -36,10 +37,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.identifier.AdvertisingIdClient;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -79,6 +85,7 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
         session = new UserSessionManager(getApplicationContext());
         cd = new ConnectionDetector(Feed.this);
         checker = new PermissionsChecker(this);
+        FirebaseMessaging.getInstance().subscribeToTopic("news");
         options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.irongrip)
                 .showImageForEmptyUri(R.drawable.download)

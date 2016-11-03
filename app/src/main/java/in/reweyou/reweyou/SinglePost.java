@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,6 +19,15 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.android.gms.ads.identifier.AdvertisingIdClient;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -45,7 +55,7 @@ public class SinglePost extends AppCompatActivity {
     private RecyclerView recyclerView;
     private List<MpModel> messagelist;
     private CityAdapter adapter;
-    private String query;
+    private String query, advertId;
     private ProgressBar progressBar;
 
     @Override
@@ -59,21 +69,20 @@ public class SinglePost extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-
-        recyclerView=(RecyclerView)findViewById(R.id.recycler_view);
-        RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecoration(ContextCompat.getDrawable(SinglePost.this, R.drawable.line) );
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecoration(ContextCompat.getDrawable(SinglePost.this, R.drawable.line));
         recyclerView.addItemDecoration(dividerItemDecoration);
         recyclerView.setLayoutManager(new LinearLayoutManager(SinglePost.this));
 
         //Progress bar
-        progressBar = (ProgressBar)findViewById(R.id.progress_bar);
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.VISIBLE);
         Bundle bundle = getIntent().getExtras();
         query = bundle.getString("postid");
         getSupportActionBar().setTitle("Top  Stories!");
 
         new JSONTask().execute(query);
-        adapter=new CityAdapter(SinglePost.this,messagelist);
+        adapter = new CityAdapter(SinglePost.this, messagelist);
         recyclerView.setAdapter(adapter);
 
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(SinglePost.this, recyclerView, new ClickListener() {
@@ -107,7 +116,7 @@ public class SinglePost extends AppCompatActivity {
         switch (id) {
             case android.R.id.home:
                 // app icon in action bar clicked; go home
-              //  NavUtils.navigateUpFromSameTask(this);
+                //  NavUtils.navigateUpFromSameTask(this);
                 Intent i = new Intent(SinglePost.this, Feed.class);
                 startActivity(i);
                 return true;
@@ -124,7 +133,6 @@ public class SinglePost extends AppCompatActivity {
     }
 
 
-
     public class JSONTask extends AsyncTask<String, String, List<MpModel>> {
 
         @Override
@@ -137,9 +145,9 @@ public class SinglePost extends AppCompatActivity {
         protected List<MpModel> doInBackground(String... params) {
             HttpURLConnection connection = null;
             BufferedReader reader = null;
-            RequestHandler rh= new RequestHandler();
-            HashMap<String, String> data = new HashMap<String,String>();
-            data.put("query",params[0]);
+            RequestHandler rh = new RequestHandler();
+            HashMap<String, String> data = new HashMap<String, String>();
+            data.put("query", params[0]);
             try {
                 URL url = new URL("https://www.reweyou.in/reweyou/postbyid.php");
                 connection = (HttpURLConnection) url.openConnection();
@@ -201,7 +209,7 @@ public class SinglePost extends AppCompatActivity {
         protected void onPostExecute(List<MpModel> result) {
             super.onPostExecute(result);
             progressBar.setVisibility(View.GONE);
-            CityAdapter adapter = new CityAdapter(SinglePost.this,result);
+            CityAdapter adapter = new CityAdapter(SinglePost.this, result);
             recyclerView.setAdapter(adapter);
             //need to set data to the list
         }
@@ -235,13 +243,15 @@ public class SinglePost extends AppCompatActivity {
         public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
             View child = rv.findChildViewUnder(e.getX(), e.getY());
             if (child != null && clickListener != null && gestureDetector.onTouchEvent(e)) {
-                clickListener.onClick(child,rv.getChildAdapterPosition(child));
+                clickListener.onClick(child, rv.getChildAdapterPosition(child));
             }
             return false;
         }
+
         @Override
         public void onTouchEvent(RecyclerView rv, MotionEvent e) {
         }
+
         @Override
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
         }
@@ -249,6 +259,62 @@ public class SinglePost extends AppCompatActivity {
 
     public static interface ClickListener {
         public void onClick(View view, int position);
+
         public void onLongClick(View view, int position);
     }
-}
+
+    private void remarket() {
+
+        String uri = String.format("https://www.googleadservices.com/pagead/conversion/870227648/?rdid=%1$s&lat=0&bundleid=in.reweyou.reweyou&idtype=advertisingid&remarketing_only=1&appversion=1.3.3.0&usage_tracking_enabled=1",
+                advertId);
+
+// prepare the Request
+        StringRequest getRequest = new StringRequest(Request.Method.GET, uri,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // display response
+                        Log.d("Response", response.toString());
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println("volley Error .................");
+                    }
+                }
+        );
+
+// add it to the RequestQueue
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(getRequest);
+    }
+        AsyncTask<Void, Void, String> task = new AsyncTask<Void, Void, String>() {
+            @Override
+            protected String doInBackground(Void... params) {
+                AdvertisingIdClient.Info idInfo = null;
+                try {
+                    idInfo = AdvertisingIdClient.getAdvertisingIdInfo(getApplicationContext());
+                } catch (GooglePlayServicesNotAvailableException e) {
+                    e.printStackTrace();
+                } catch (GooglePlayServicesRepairableException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                advertId = null;
+                try {
+                    advertId = idInfo.getId();
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+
+                return advertId;
+            }
+
+            @Override
+            protected void onPostExecute(String advertId) {
+                remarket();
+            }
+        };
+    }

@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.graphics.Paint;
 import android.location.Location;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.TextInputLayout;
@@ -32,12 +33,16 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONException;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -68,7 +73,7 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
     private TextView Read;
     private String otp;
     private RequestQueue requestQueue;
-    private String username, number, place, token;
+    private String username, number, place, token, advertId;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     private TextInputLayout inputLayoutName;
     private TextInputLayout inputLayoutNumber;
@@ -83,7 +88,6 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
         inputLayoutNumber = (TextInputLayout) findViewById(R.id.input_layout_number);
         inputLayoutCity = (TextInputLayout) findViewById(R.id.input_layout_city);
 
-
         session = new UserSessionManager(getApplicationContext());
         requestQueue = Volley.newRequestQueue(this);
         cd = new ConnectionDetector(Signup.this);
@@ -95,7 +99,7 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
 
 
         Read.setPaintFlags(Read.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-
+        task.execute();
 
         Read.setOnClickListener(this);
         buttonRegister.setOnClickListener(this);
@@ -356,4 +360,62 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
         }
     }
 
+    private void remarket(){
+
+        String uri = String.format("https://www.googleadservices.com/pagead/conversion/870227648/?rdid=%1$s&lat=0&bundleid=in.reweyou.reweyou&idtype=advertisingid&remarketing_only=1&appversion=1.3.3.0&usage_tracking_enabled=1",
+                advertId);
+
+// prepare the Request
+        StringRequest getRequest = new StringRequest(Request.Method.GET, uri,
+                new Response.Listener<String>()
+                {
+                    @Override
+                    public void onResponse(String response) {
+                        // display response
+                        Log.d("Response", response.toString());
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println("volley Error .................");
+                    }
+                }
+        );
+
+// add it to the RequestQueue
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(getRequest);
+    }
+    AsyncTask<Void, Void, String> task = new AsyncTask<Void, Void, String>() {
+        @Override
+        protected String doInBackground(Void... params) {
+            AdvertisingIdClient.Info idInfo = null;
+            try {
+                idInfo = AdvertisingIdClient.getAdvertisingIdInfo(getApplicationContext());
+            } catch (GooglePlayServicesNotAvailableException e) {
+                e.printStackTrace();
+            } catch (GooglePlayServicesRepairableException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            advertId = null;
+            try{
+                advertId = idInfo.getId();
+            }catch (NullPointerException e){
+                e.printStackTrace();
+            }
+
+            return advertId;
+        }
+
+        @Override
+        protected void onPostExecute(String advertId) {
+           // Toast.makeText(getApplicationContext(), advertId, Toast.LENGTH_SHORT).show();
+            remarket();
+        }
+
+    };
 }

@@ -227,18 +227,21 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         if(stroydates != null && !stroydates .isEmpty()) {
             SimpleDateFormat dfs = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss a", Locale.US);
             try {
-                stroydates=stroydates.replaceAll("\\.", "");
+                stroydates = stroydates.replaceAll("\\.", "");
                 Log.e("dates", stroydates);
-
                 dates = dfs.parse(stroydates);
                 Log.e("Parse", String.valueOf(dates));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            long epochs = dates.getTime();
-            Log.e("Time", String.valueOf(epochs));
-            CharSequence timePassedString = getRelativeTimeSpanString(epochs, System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS);
-            viewHolder.date.setText(timePassedString);
+            if (dates != null) {
+                long epochs = dates.getTime();
+                Log.e("Time", String.valueOf(epochs));
+                CharSequence timePassedString = getRelativeTimeSpanString(epochs, System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS);
+                viewHolder.date.setText(timePassedString);
+            } else {
+                viewHolder.date.setText(stroydates);
+            }
         }
         else
         {
