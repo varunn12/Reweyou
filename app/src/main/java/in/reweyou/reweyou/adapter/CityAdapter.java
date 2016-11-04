@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -18,10 +19,8 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.content.Context;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.format.DateUtils;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,9 +29,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -45,62 +44,54 @@ import com.android.volley.toolbox.Volley;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
-import com.nostra13.universalimageloader.utils.DiskCacheUtils;
-import com.nostra13.universalimageloader.utils.MemoryCacheUtils;
 
 import org.json.JSONException;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import in.reweyou.reweyou.CategoryActivity;
 import in.reweyou.reweyou.Comments;
-import in.reweyou.reweyou.Feed;
 import in.reweyou.reweyou.FullImage;
 import in.reweyou.reweyou.LocationActivity;
 import in.reweyou.reweyou.R;
+import in.reweyou.reweyou.UserProfile;
 import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.CustomTabActivityHelper;
 import in.reweyou.reweyou.classes.CustomTabsOnClickListener;
 import in.reweyou.reweyou.classes.TouchImageView;
 import in.reweyou.reweyou.classes.UserSessionManager;
-import in.reweyou.reweyou.UserProfile;
 import in.reweyou.reweyou.classes.Util;
 import in.reweyou.reweyou.model.MpModel;
 
-import static android.text.format.DateUtils.getRelativeTimeSpanString;
-
 
 public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
-    private List<MpModel> messagelist;
-    private Context mContext;
-    private Bitmap bm;
-    private String id, postid;
-    int currentposition;
-    Date dates;
-    Activity activity;
-    private EditText editTextHeadline;
-    private AppCompatButton buttonEdit;
-    private String number;
-    private String username;
-    Boolean isInternetPresent = false;
-    ConnectionDetector cd;
-    CustomTabActivityHelper mCustomTabActivityHelper;
-    private DisplayImageOptions options, option;
-    UserSessionManager session;
     public static final String REVIEW_URL = "https://www.reweyou.in/reweyou/reviews.php";
     public static final String VIEW_URL = "https://www.reweyou.in/reweyou/postviews.php";
     public static final String SUGGEST_URL = "https://www.reweyou.in/reweyou/suggest.php";
     public static final String EDIT_URL = "https://www.reweyou.in/reweyou/editheadline.php";
+    int currentposition;
+    Date dates;
+    Activity activity;
+    Boolean isInternetPresent = false;
+    ConnectionDetector cd;
+    CustomTabActivityHelper mCustomTabActivityHelper;
+    UserSessionManager session;
     Uri uri;
     ImageLoader imageLoader = ImageLoader.getInstance();
+    private List<MpModel> messagelist;
+    private Context mContext;
+    private Bitmap bm;
+    private String id, postid;
+    private EditText editTextHeadline;
+    private AppCompatButton buttonEdit;
+    private String number;
+    private String username;
+    private DisplayImageOptions options, option;
 
     public CityAdapter(Context context, List<MpModel> mlist) {
         this.mContext = context;
@@ -222,34 +213,15 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
             }
         });
         String stroydates = messagelist.get(position).getDate();
-
-        viewHolder.date.setText(stroydates.substring(0, 12));
         if(stroydates != null && !stroydates .isEmpty()) {
-            SimpleDateFormat dfs = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss a", Locale.US);
-            try {
-                stroydates = stroydates.replaceAll("\\.", "");
-                Log.e("dates", stroydates);
-                dates = dfs.parse(stroydates);
-                Log.e("Parse", String.valueOf(dates));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            if (dates != null) {
-                long epochs = dates.getTime();
-                Log.e("Time", String.valueOf(epochs));
-                CharSequence timePassedString = getRelativeTimeSpanString(epochs, System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS);
-                viewHolder.date.setText(timePassedString);
-            } else {
-                viewHolder.date.setText(stroydates);
-            }
+
+            viewHolder.date.setText(stroydates);
         }
         else
         {
             viewHolder.date.setText(stroydates);
         }
 
-        //    imageLoader.clearMemoryCache();
-        //  imageLoader.clearDiskCache();
 
         imageLoader.displayImage(messagelist.get(position).getProfilepic(), viewHolder.profilepic, option);
 
@@ -312,6 +284,7 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
 
         // viewHolder.tv.setVisibility(View.GONE);
         viewHolder.app.setText(messagelist.get(position).getComments() + " Reactions");
+
         if(!messagelist.get(position).getComments().equals("0")) {
             viewHolder.rv.setVisibility(View.VISIBLE);
             viewHolder.rv.setOnClickListener(new View.OnClickListener() {
@@ -476,74 +449,6 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
         return (null != messagelist ? messagelist.size() : 0);
     }
 
-
-    class ViewHolder extends RecyclerView.ViewHolder {
-        protected ImageView image, profilepic, overflow;
-        protected TextView headline, upvote, head, name, userName;
-        protected TextView place;
-        protected TextView icon;
-        protected TextView reacticon;
-        protected TextView date;
-        protected TextView tv;
-        protected TextView from;
-        protected RelativeLayout relative;
-        protected CardView cv;
-        protected TextView reviews, source;
-        protected TextView app, upicon;
-        protected RelativeLayout rv;
-
-        public ViewHolder(View view) {
-            super(view);
-            String fontPath = "fonts/Roboto-Medium.ttf";
-            String thinpath = "fonts/Roboto-Regular.ttf";
-            Typeface font = Typeface.createFromAsset(mContext.getAssets(), "fontawesome-webfont.ttf");
-            Typeface tf = Typeface.createFromAsset(mContext.getAssets(), fontPath);
-            Typeface thin = Typeface.createFromAsset(mContext.getAssets(), thinpath);
-            this.cv = (CardView) itemView.findViewById(R.id.cv);
-            this.rv=(RelativeLayout)itemView.findViewById(R.id.rv);
-            this.headline = (TextView) view.findViewById(R.id.Who);
-
-            this.name = (TextView) view.findViewById(R.id.name);
-            this.userName = (TextView) view.findViewById(R.id.userName);
-            this.head=(TextView)view.findViewById(R.id.head);
-            if(this.head ==null)
-            {
-
-            }
-            else
-            {
-                this.head.setTypeface(tf);
-            }
-
-            this.headline.setTypeface(thin);
-            this.place = (TextView) view.findViewById(R.id.place);
-            this.place.setTypeface(tf);
-            this.icon = (TextView) view.findViewById(R.id.locationicon);
-            this.icon.setTypeface(font);
-            this.upicon = (TextView) view.findViewById(R.id.upicon);
-            this.upicon.setTypeface(font);
-            this.reacticon = (TextView) view.findViewById(R.id.reacticon);
-            this.reacticon.setTypeface(font);
-            this.date = (TextView) view.findViewById(R.id.date);
-            this.date.setTypeface(thin);
-            this.image = (ImageView) view.findViewById(R.id.image);
-            this.overflow = (ImageView) view.findViewById(R.id.overflow);
-            this.profilepic = (ImageView) view.findViewById(R.id.profilepic);
-            this.tv = (TextView) view.findViewById(R.id.tv);
-            this.from = (TextView) view.findViewById(R.id.from);
-            this.from.setTypeface(tf);
-            this.name.setTypeface(tf);
-            this.relative = (RelativeLayout) view.findViewById(R.id.Relative);
-            this.reviews = (TextView) view.findViewById(R.id.reviews);
-            this.app = (TextView) view.findViewById(R.id.app);
-            this.app.setTypeface(tf);
-            this.upvote = (TextView) view.findViewById(R.id.upvote);
-            this.source = (TextView) view.findViewById(R.id.source);
-            this.source.setTypeface(tf);
-        }
-    }
-
-
     public void showImage(int position) {
         Dialog builder = new Dialog(mContext);
         //  builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -693,32 +598,6 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
         popup.show();
     }
 
-    /**
-     * Click listener for popup menu items
-     */
-    class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
-
-        public MyMenuItemClickListener() {
-        }
-
-        @Override
-        public boolean onMenuItemClick(MenuItem menuItem) {
-            switch (menuItem.getItemId()) {
-                case R.id.share:
-                    takeScreenshot();
-                    ShareIntent();
-                    return true;
-                case R.id.send:
-                    Toast.makeText(mContext, "This feature will be added in next update", Toast.LENGTH_SHORT).show();
-                    // suggest(currentposition);
-
-                    return true;
-                default:
-            }
-            return false;
-        }
-    }
-
     private void suggest(int position) {
         id = messagelist.get(position).getPostId();
         username = session.getUsername();
@@ -758,6 +637,95 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
 
             RequestQueue requestQueue = Volley.newRequestQueue(mContext);
             requestQueue.add(stringRequest);
+        }
+    }
+
+    class ViewHolder extends RecyclerView.ViewHolder {
+        protected ImageView image, profilepic, overflow;
+        protected TextView headline, upvote, head, name, userName;
+        protected TextView place;
+        protected TextView icon;
+        protected TextView reacticon;
+        protected TextView date;
+        protected TextView tv;
+        protected TextView from;
+        protected RelativeLayout relative;
+        protected CardView cv;
+        protected TextView reviews, source;
+        protected TextView app, upicon;
+        protected RelativeLayout rv;
+
+        public ViewHolder(View view) {
+            super(view);
+            String fontPath = "fonts/Roboto-Medium.ttf";
+            String thinpath = "fonts/Roboto-Regular.ttf";
+            Typeface font = Typeface.createFromAsset(mContext.getAssets(), "fontawesome-webfont.ttf");
+            Typeface tf = Typeface.createFromAsset(mContext.getAssets(), fontPath);
+            Typeface thin = Typeface.createFromAsset(mContext.getAssets(), thinpath);
+            this.cv = (CardView) itemView.findViewById(R.id.cv);
+            this.rv = (RelativeLayout) itemView.findViewById(R.id.rv);
+            this.headline = (TextView) view.findViewById(R.id.Who);
+
+            this.name = (TextView) view.findViewById(R.id.name);
+            this.userName = (TextView) view.findViewById(R.id.userName);
+            this.head = (TextView) view.findViewById(R.id.head);
+            if (this.head == null) {
+
+            } else {
+                this.head.setTypeface(tf);
+            }
+
+            this.headline.setTypeface(thin);
+            this.place = (TextView) view.findViewById(R.id.place);
+            this.place.setTypeface(tf);
+            this.icon = (TextView) view.findViewById(R.id.locationicon);
+            this.icon.setTypeface(font);
+            this.upicon = (TextView) view.findViewById(R.id.upicon);
+            this.upicon.setTypeface(font);
+            this.reacticon = (TextView) view.findViewById(R.id.reacticon);
+            this.reacticon.setTypeface(font);
+            this.date = (TextView) view.findViewById(R.id.date);
+            this.date.setTypeface(thin);
+            this.image = (ImageView) view.findViewById(R.id.image);
+            this.overflow = (ImageView) view.findViewById(R.id.overflow);
+            this.profilepic = (ImageView) view.findViewById(R.id.profilepic);
+            this.tv = (TextView) view.findViewById(R.id.tv);
+            this.from = (TextView) view.findViewById(R.id.from);
+            this.from.setTypeface(tf);
+            this.name.setTypeface(tf);
+            this.relative = (RelativeLayout) view.findViewById(R.id.Relative);
+            this.reviews = (TextView) view.findViewById(R.id.reviews);
+            this.app = (TextView) view.findViewById(R.id.app);
+            this.app.setTypeface(tf);
+            this.upvote = (TextView) view.findViewById(R.id.upvote);
+            this.source = (TextView) view.findViewById(R.id.source);
+            this.source.setTypeface(tf);
+        }
+    }
+
+    /**
+     * Click listener for popup menu items
+     */
+    class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
+
+        public MyMenuItemClickListener() {
+        }
+
+        @Override
+        public boolean onMenuItemClick(MenuItem menuItem) {
+            switch (menuItem.getItemId()) {
+                case R.id.share:
+                    takeScreenshot();
+                    ShareIntent();
+                    return true;
+                case R.id.send:
+                    Toast.makeText(mContext, "This feature will be added in next update", Toast.LENGTH_SHORT).show();
+                    // suggest(currentposition);
+
+                    return true;
+                default:
+            }
+            return false;
         }
     }
 

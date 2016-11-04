@@ -5,10 +5,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,10 +18,8 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.content.Context;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.format.DateUtils;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,9 +28,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -42,383 +41,243 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
-import com.nostra13.universalimageloader.utils.DiskCacheUtils;
-import com.nostra13.universalimageloader.utils.MemoryCacheUtils;
 
 import org.json.JSONException;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import in.reweyou.reweyou.CategoryActivity;
 import in.reweyou.reweyou.Comments;
-import in.reweyou.reweyou.Feed;
 import in.reweyou.reweyou.FullImage;
 import in.reweyou.reweyou.LocationActivity;
 import in.reweyou.reweyou.R;
+import in.reweyou.reweyou.UserProfile;
 import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.CustomTabActivityHelper;
 import in.reweyou.reweyou.classes.CustomTabsOnClickListener;
 import in.reweyou.reweyou.classes.TouchImageView;
 import in.reweyou.reweyou.classes.UserSessionManager;
-import in.reweyou.reweyou.UserProfile;
 import in.reweyou.reweyou.classes.Util;
 import in.reweyou.reweyou.model.MpModel;
 
-import static android.text.format.DateUtils.getRelativeTimeSpanString;
+import static in.reweyou.reweyou.utils.Constants.EDIT_URL;
+import static in.reweyou.reweyou.utils.Constants.REVIEW_URL;
+import static in.reweyou.reweyou.utils.Constants.SUGGEST_URL;
 
 
-public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
+public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+
+    private static final String TAG = MessageAdapter.class.getSimpleName();
+
+    Activity activity;
+    Boolean isInternetPresent = false;
+    ConnectionDetector cd;
+    CustomTabActivityHelper mCustomTabActivityHelper;
+    UserSessionManager session;
+    Uri uri;
+    ImageLoader imageLoader = ImageLoader.getInstance();
     private List<MpModel> messagelist;
     private Context mContext;
     private Bitmap bm;
     private String id, postid;
-    int currentposition;
-    Date dates;
-    Activity activity;
     private EditText editTextHeadline;
     private AppCompatButton buttonEdit;
     private String number;
     private String username;
-    Boolean isInternetPresent = false;
-    ConnectionDetector cd;
-    CustomTabActivityHelper mCustomTabActivityHelper;
-    private DisplayImageOptions options, option;
-    UserSessionManager session;
-    public static final String REVIEW_URL = "https://www.reweyou.in/reweyou/reviews.php";
-    public static final String VIEW_URL = "https://www.reweyou.in/reweyou/postviews.php";
-    public static final String SUGGEST_URL = "https://www.reweyou.in/reweyou/suggest.php";
-    public static final String EDIT_URL = "https://www.reweyou.in/reweyou/editheadline.php";
-    Uri uri;
-    ImageLoader imageLoader = ImageLoader.getInstance();
+    private boolean loadingView = false;
 
     public MessageAdapter(Context context, List<MpModel> mlist) {
         this.mContext = context;
+
         activity = (Activity) context;
         this.messagelist = mlist;
         cd = new ConnectionDetector(mContext);
         mCustomTabActivityHelper = new CustomTabActivityHelper();
         session = new UserSessionManager(mContext);
-        options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.irongrip)
-                .showImageForEmptyUri(R.drawable.ic_reload)
-                .showImageOnFail(R.drawable.ic_error)
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .considerExifParams(true)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .build();
+    }
 
-        option = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.irongrip)
-                .displayer(new RoundedBitmapDisplayer(1000))
-                .showImageForEmptyUri(R.drawable.download)
-                .showImageOnFail(R.drawable.download)
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .considerExifParams(true)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .build();
-
+    public MessageAdapter() {
 
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row, viewGroup, false);
-
-        ViewHolder holder = new ViewHolder(view);
-        return holder;
-    }
-
-    @Override
-    public void onBindViewHolder(final MessageAdapter.ViewHolder viewHolder, final int position) {
-
-        //viewHolder.headline.setText(messagelist.get(position).getHeadline());
-        final Bundle bundle = new Bundle();
-        final ViewHolder viewHolderFinal = viewHolder;
-        final int total = Integer.parseInt(messagelist.get(position).getReviews());
-        Spannable spannable = new SpannableString(messagelist.get(position).getHeadline());
-        Util.linkifyUrl(spannable, new CustomTabsOnClickListener(activity, mCustomTabActivityHelper));
-        viewHolder.headline.setText(spannable);
-        viewHolder.headline.setMovementMethod(LinkMovementMethod.getInstance());
-
-
-        if(messagelist.get(position).getHead()==null)
-        {
-            viewHolder.head.setVisibility(View.GONE);
-        }
-        else
-        {
-            if(messagelist.get(position).getHead().equals("")){
-                viewHolder.head.setVisibility(View.GONE);
-                viewHolder.headline.setVisibility(View.VISIBLE);
-                viewHolder.headline.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        try {
-                            if(session.getMobileNumber().equals(messagelist.get(position).getNumber())) {
-                                editHeadline(position);
-                            }
-                            else
-                            {
-                                //Toast.makeText(mContext,"Illegal, It isn't your post",Toast.LENGTH_LONG).show();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                });
-            }
-            else {
-                viewHolder.head.setVisibility(View.VISIBLE);
-                viewHolder.head.setText(messagelist.get(position).getHead());
-                viewHolderFinal.headline.setVisibility(View.VISIBLE);
-                viewHolderFinal.headline.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        try {
-                            if (session.getMobileNumber().equals(messagelist.get(position).getNumber())) {
-                                editHeadline(position);
-                            } else {
-                                //Toast.makeText(mContext,"Illegal, It isn't your post",Toast.LENGTH_LONG).show();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                });
-
-            }
-        }
-        viewHolder.image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                isInternetPresent = cd.isConnectingToInternet();
-                if (isInternetPresent) {
-                    //      Toast.makeText(mContext,messagelist.get(position).getPostId(),Toast.LENGTH_LONG).show();
-                    Bundle bundle = new Bundle();
-                    bundle.putString("myData", messagelist.get(position).getImage());
-                    bundle.putString("headline", messagelist.get(position).getHeadline());
-                    Intent in = new Intent(mContext, FullImage.class);
-                    in.putExtras(bundle);
-                    mContext.startActivity(in);
-                } else {
-                    Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-        String stroydates = messagelist.get(position).getDate();
-
-        viewHolder.date.setText(stroydates.substring(0, 12));
-        if(stroydates != null && !stroydates .isEmpty()) {
-            SimpleDateFormat dfs = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss a", Locale.US);
-            try {
-                stroydates = stroydates.replaceAll("\\.", "");
-                Log.e("dates", stroydates);
-                dates = dfs.parse(stroydates);
-                Log.e("Parse", String.valueOf(dates));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            if (dates != null) {
-                long epochs = dates.getTime();
-                Log.e("Time", String.valueOf(epochs));
-                CharSequence timePassedString = getRelativeTimeSpanString(epochs, System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS);
-                viewHolder.date.setText(timePassedString);
-            } else {
-                viewHolder.date.setText(stroydates);
-            }
-        }
-        else
-        {
-            viewHolder.date.setText(stroydates);
-        }
-
-        //    imageLoader.clearMemoryCache();
-        //  imageLoader.clearDiskCache();
-
-        imageLoader.displayImage(messagelist.get(position).getProfilepic(), viewHolder.profilepic, option);
-
-
-        if (messagelist.get(position).getImage() == null) {
-            viewHolder.image.setVisibility(View.GONE);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+        if (i != 10) {
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_messageadapter, viewGroup, false);
+            return new ViewHolder(view);
         } else {
-            imageLoader.displayImage(messagelist.get(position).getImage(), viewHolder.image, options);
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_messageadapter_loading, viewGroup, false);
+            return new ViewHolder1(view);
         }
+    }
+
+    @Override
+    public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder2, final int position) {
+
+        switch (viewHolder2.getItemViewType()) {
+            case 10:
+                Log.d("dsd", "here");
+                break;
+
+            default:
+                final ViewHolder viewHolder = (ViewHolder) viewHolder2;
+                Spannable spannable = new SpannableString(messagelist.get(position).getHeadline());
+                Util.linkifyUrl(spannable, new CustomTabsOnClickListener(activity, mCustomTabActivityHelper));
+                viewHolder.headline.setText(spannable);
+                viewHolder.headline.setMovementMethod(LinkMovementMethod.getInstance());
 
 
-        viewHolder.overflow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                viewHolderFinal.cv.setDrawingCacheEnabled(true);
-                viewHolderFinal.cv.buildDrawingCache();
-                bm = viewHolderFinal.cv.getDrawingCache();
-                currentposition=position;
-                showPopupMenu(viewHolderFinal.overflow);
-            }
-        });
-
-        viewHolder.place.setText(messagelist.get(position).getLocation());
-
-        viewHolder.from.setText(messagelist.get(position).getName());
-        viewHolder.profilepic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                isInternetPresent = cd.isConnectingToInternet();
-                if (isInternetPresent) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("myData", messagelist.get(position).getNumber());
-                    Intent in = new Intent(mContext, UserProfile.class);
-                    in.putExtras(bundle);
-                    mContext.startActivity(in);
+                if (messagelist.get(position).getHead() == null || messagelist.get(position).getHead().isEmpty())
+                    viewHolder.head.setVisibility(View.GONE);
+                else {
+                    viewHolder.head.setVisibility(View.VISIBLE);
+                    viewHolder.head.setText(messagelist.get(position).getHead());
                 }
-                else
-                {
-                    Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_SHORT).show();
+
+                if (messagelist.get(position).getHeadline() == null || messagelist.get(position).getHeadline().isEmpty())
+                    viewHolder.headline.setVisibility(View.GONE);
+                else {
+                    viewHolder.headline.setVisibility(View.VISIBLE);
+                    viewHolder.headline.setText(messagelist.get(position).getHeadline());
                 }
-            }
-        });
-        viewHolder.from.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                isInternetPresent = cd.isConnectingToInternet();
-                if (isInternetPresent) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("myData", messagelist.get(position).getNumber());
-                    Intent in = new Intent(mContext, UserProfile.class);
-                    in.putExtras(bundle);
-                    mContext.startActivity(in);
+
+                if (messagelist.get(position).getDate().isEmpty() || messagelist.get(position).getDate() == null)
+                    viewHolder.date.setVisibility(View.GONE);
+                else {
+                    viewHolder.date.setVisibility(View.VISIBLE);
+                    viewHolder.date.setText(messagelist.get(position).getDate());
                 }
-                else
-                {
-                    Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        // viewHolder.tv.setVisibility(View.GONE);
-        viewHolder.app.setText(messagelist.get(position).getComments() + " Reactions");
-        if(!messagelist.get(position).getComments().equals("0")) {
-            viewHolder.rv.setVisibility(View.VISIBLE);
-            viewHolder.rv.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("myData", messagelist.get(position).getPostId());
-                    bundle.putString("headline", messagelist.get(position).getHeadline());
-                    bundle.putString("image", messagelist.get(position).getImage());
-                    Intent in = new Intent(mContext, Comments.class);
-                    in.putExtras(bundle);
-                    mContext.startActivity(in);
-                }
-            });
-
-            Spannable spannables = new SpannableString(messagelist.get(position).getReaction());
-            Util.linkifyUrl(spannables, new CustomTabsOnClickListener(activity, mCustomTabActivityHelper));
-            viewHolder.userName.setText(spannables);
-            viewHolder.userName.setMovementMethod(LinkMovementMethod.getInstance());
-
-            viewHolder.name.setText(messagelist.get(position).getFrom());
-        }
-        else
-        {
-            viewHolder.rv.setVisibility(View.GONE);
-        }
-        viewHolder.app.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Bundle bundle = new Bundle();
-                bundle.putString("myData", messagelist.get(position).getPostId());
-                bundle.putString("headline", messagelist.get(position).getHeadline());
-                bundle.putString("image", messagelist.get(position).getImage());
-                Intent in = new Intent(mContext, Comments.class);
-                in.putExtras(bundle);
-                mContext.startActivity(in);
-            }
-        });
-        viewHolder.reacticon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Bundle bundle = new Bundle();
-                bundle.putString("myData", messagelist.get(position).getPostId());
-                bundle.putString("headline", messagelist.get(position).getHeadline());
-                bundle.putString("image", messagelist.get(position).getImage());
-                Intent in = new Intent(mContext, Comments.class);
-                in.putExtras(bundle);
-                mContext.startActivity(in);
-            }
-        });
-        viewHolder.place.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                session = new UserSessionManager(mContext);
-                session.setCityLocation(messagelist.get(position).getLocation());
-                Intent in = new Intent(mContext, LocationActivity.class);
-                mContext.startActivity(in);
-            }
-        });
-        viewHolder.reviews.setText(String.valueOf(total) + " likes");
-        viewHolder.reviews.setTag(1);
-
-        viewHolderFinal.upicon.setTextColor(ContextCompat.getColor(mContext, R.color.ReviewColor));
-        viewHolderFinal.upvote.setText("Like");
-        viewHolderFinal.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.ReviewColor));
-        viewHolder.upicon.setTag(1);
-        viewHolder.upicon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                isInternetPresent = cd.isConnectingToInternet();
-                if (isInternetPresent) {
 
 
-                    final int status = (Integer) view.getTag();
-                    if (status == 1) {
-                        upvote(position);
-                        viewHolderFinal.reviews.setText(String.valueOf(total + 1) + " likes");
-                        viewHolderFinal.upicon.setTextColor(ContextCompat.getColor(mContext, R.color.red));
-                        viewHolderFinal.upvote.setText("Liked");
-                        viewHolderFinal.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.red));
-                        //   viewHolderFinal.myreviews.setText("");
-                        view.setTag(0);
-                        //pause
-                    } else {
-                        upvote(position);
-                        viewHolderFinal.reviews.setText(String.valueOf(total) + " likes");
-                        viewHolderFinal.upicon.setTextColor(ContextCompat.getColor(mContext, R.color.ReviewColor));
-                        viewHolderFinal.upvote.setText("Like");
-                        viewHolderFinal.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.ReviewColor));
-                        //  viewHolderFinal.myreviews.setText("");
-                        view.setTag(1);
-                    }
+                Glide.with(mContext).load(messagelist.get(position).getProfilepic()).placeholder(R.drawable.download).error(R.drawable.download).fallback(R.drawable.download).dontAnimate().into(viewHolder.profilepic);
+
+
+                if (messagelist.get(position).getImage() == null || messagelist.get(position).getImage().isEmpty()) {
+                    viewHolder.image.setVisibility(View.GONE);
                 } else {
-                    Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_SHORT).show();
+                    viewHolder.image.setVisibility(View.VISIBLE);
+                    Glide.with(mContext).load(messagelist.get(position).getImage()).placeholder(R.drawable.irongrip).diskCacheStrategy(DiskCacheStrategy.SOURCE).fallback(R.drawable.ic_reload).error(R.drawable.ic_error).dontAnimate().into(viewHolder.image);
                 }
-            }
-        });
-        viewHolder.source.setText('#' + messagelist.get(position).getCategory());
-        viewHolder.source.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                session = new UserSessionManager(mContext);
-                session.setCategory(messagelist.get(position).getCategory());
-                Intent in = new Intent(mContext, CategoryActivity.class);
-                mContext.startActivity(in);
-            }
-        });
+
+                if (messagelist.get(position).getLocation() == null || messagelist.get(position).getLocation().isEmpty())
+                    viewHolder.place.setVisibility(View.GONE);
+                else {
+                    viewHolder.place.setVisibility(View.VISIBLE);
+                    viewHolder.place.setText(messagelist.get(position).getLocation());
+                }
+
+                if (messagelist.get(position).getName() == null || messagelist.get(position).getName().isEmpty())
+                    viewHolder.from.setVisibility(View.GONE);
+                else {
+                    viewHolder.from.setVisibility(View.VISIBLE);
+                    viewHolder.from.setText(messagelist.get(position).getName());
+                }
+
+                if (messagelist.get(position).getComments() == null || messagelist.get(position).getComments().isEmpty())
+                    viewHolder.app.setText("0 Reactions");
+                else {
+                    viewHolder.app.setText(messagelist.get(position).getComments() + " Reactions");
+                    if (!messagelist.get(position).getComments().equals("0")) {
+                        viewHolder.rv.setVisibility(View.VISIBLE);
+
+                        Spannable spannables = new SpannableString(messagelist.get(position).getReaction());
+                        Util.linkifyUrl(spannables, new CustomTabsOnClickListener(activity, mCustomTabActivityHelper));
+                        viewHolder.userName.setText(spannables);
+                        viewHolder.userName.setMovementMethod(LinkMovementMethod.getInstance());
+
+                        viewHolder.name.setText(messagelist.get(position).getFrom());
+                    } else {
+                        viewHolder.rv.setVisibility(View.GONE);
+                    }
+                }
+
+                if (messagelist.get(position).getReviews().isEmpty() || messagelist.get(position).getReviews() == null)
+                    viewHolder.reviews.setText("0 likes");
+                else
+                    viewHolder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews())) + " likes");
+
+                if (messagelist.get(position).getCategory().isEmpty() || messagelist.get(position).getCategory() == null)
+                    viewHolder.source.setVisibility(View.GONE);
+                else {
+                    viewHolder.source.setVisibility(View.VISIBLE);
+                    viewHolder.source.setText('#' + messagelist.get(position).getCategory());
+
+                }
+
+                final int total = Integer.parseInt(messagelist.get(position).getReviews());
+
+                viewHolder.linearLayout.setTag(1);
+                viewHolder.linearLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        isInternetPresent = cd.isConnectingToInternet();
+                        if (isInternetPresent) {
+
+
+                            final int status = (Integer) view.getTag();
+                            if (status == 1) {
+                                upvote(position);
+                                viewHolder.reviews.setText(String.valueOf(total + 1) + " likes");
+                                viewHolder.upicon.setImageResource(R.drawable.ic_thumb_up_primary_16px);
+                                viewHolder.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.rank));
+                                view.setTag(0);
+                                //pause
+                            } else {
+                                upvote(position);
+                                viewHolder.reviews.setText(String.valueOf(total) + " likes");
+                                viewHolder.upicon.setImageResource(R.drawable.ic_thumb_up_black_16px);
+                                viewHolder.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.likeText));
+                                view.setTag(1);
+                            }
+                        } else {
+                            Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                });
+                break;
+
+        }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        Log.d("pppp", String.valueOf(position));
+        if (position % 10 == 0 && position > 0 && loadingView == true) {
+            Log.d("item", String.valueOf(10) + "          " + position);
+            return 10;
+        } else {
+            Log.d("item", String.valueOf(super.getItemViewType(position)));
+            return super.getItemViewType(position);
+        }
+    }
+
+    public void add() {
+        loadingView = true;
+        Log.d("fwdfwfwefwe", "here");
+        this.messagelist.add(new MpModel());
+        notifyItemInserted(this.messagelist.size() - 1);
+    }
+
+    public void remove() {
+        loadingView = false;
+        messagelist.remove(messagelist.size() - 1);
+        notifyItemRemoved(messagelist.size());
+    }
+
+    public void loadMore(List<MpModel> messagelist2) {
+        this.messagelist.addAll(messagelist2);
+        Log.d("sizeof list", String.valueOf(this.messagelist.size()));
+        notifyItemRangeInserted(this.messagelist.size() - 10, 10);
     }
 
     private void takeScreenshot() {
@@ -475,74 +334,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     public int getItemCount() {
         return (null != messagelist ? messagelist.size() : 0);
     }
-
-
-    class ViewHolder extends RecyclerView.ViewHolder {
-        protected ImageView image, profilepic, overflow;
-        protected TextView headline, upvote, head, name, userName;
-        protected TextView place;
-        protected TextView icon;
-        protected TextView reacticon;
-        protected TextView date;
-        protected TextView tv;
-        protected TextView from;
-        protected RelativeLayout relative;
-        protected CardView cv;
-        protected TextView reviews, source;
-        protected TextView app, upicon;
-        protected RelativeLayout rv;
-
-        public ViewHolder(View view) {
-            super(view);
-            String fontPath = "fonts/Roboto-Medium.ttf";
-            String thinpath = "fonts/Roboto-Regular.ttf";
-            Typeface font = Typeface.createFromAsset(mContext.getAssets(), "fontawesome-webfont.ttf");
-            Typeface tf = Typeface.createFromAsset(mContext.getAssets(), fontPath);
-            Typeface thin = Typeface.createFromAsset(mContext.getAssets(), thinpath);
-            this.cv = (CardView) itemView.findViewById(R.id.cv);
-            this.rv=(RelativeLayout)itemView.findViewById(R.id.rv);
-            this.headline = (TextView) view.findViewById(R.id.Who);
-
-            this.name = (TextView) view.findViewById(R.id.name);
-            this.userName = (TextView) view.findViewById(R.id.userName);
-            this.head=(TextView)view.findViewById(R.id.head);
-            if(this.head ==null)
-            {
-
-            }
-            else
-            {
-                this.head.setTypeface(tf);
-            }
-
-            this.headline.setTypeface(thin);
-            this.place = (TextView) view.findViewById(R.id.place);
-            this.place.setTypeface(tf);
-            this.icon = (TextView) view.findViewById(R.id.locationicon);
-            this.icon.setTypeface(font);
-            this.upicon = (TextView) view.findViewById(R.id.upicon);
-            this.upicon.setTypeface(font);
-            this.reacticon = (TextView) view.findViewById(R.id.reacticon);
-            this.reacticon.setTypeface(font);
-            this.date = (TextView) view.findViewById(R.id.date);
-            this.date.setTypeface(thin);
-            this.image = (ImageView) view.findViewById(R.id.image);
-            this.overflow = (ImageView) view.findViewById(R.id.overflow);
-            this.profilepic = (ImageView) view.findViewById(R.id.profilepic);
-            this.tv = (TextView) view.findViewById(R.id.tv);
-            this.from = (TextView) view.findViewById(R.id.from);
-            this.from.setTypeface(tf);
-            this.name.setTypeface(tf);
-            this.relative = (RelativeLayout) view.findViewById(R.id.Relative);
-            this.reviews = (TextView) view.findViewById(R.id.reviews);
-            this.app = (TextView) view.findViewById(R.id.app);
-            this.app.setTypeface(tf);
-            this.upvote = (TextView) view.findViewById(R.id.upvote);
-            this.source = (TextView) view.findViewById(R.id.source);
-            this.source.setTypeface(tf);
-        }
-    }
-
 
     public void showImage(int position) {
         Dialog builder = new Dialog(mContext);
@@ -693,40 +484,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         popup.show();
     }
 
-    /**
-     * Click listener for popup menu items
-     */
-    class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
-
-        public MyMenuItemClickListener() {
-        }
-
-        @Override
-        public boolean onMenuItemClick(MenuItem menuItem) {
-            switch (menuItem.getItemId()) {
-                case R.id.share:
-                    takeScreenshot();
-                    ShareIntent();
-                    return true;
-                case R.id.send:
-                    Toast.makeText(mContext, "This feature will be added in next update", Toast.LENGTH_SHORT).show();
-                    // suggest(currentposition);
-
-                    return true;
-                default:
-            }
-            return false;
-        }
-    }
-
     private void suggest(int position) {
         id = messagelist.get(position).getPostId();
         username = session.getUsername();
-        number=session.getMobileNumber();
-        Log.e("id",id);
-        Log.e("username",username);
-        Log.e("number",number);
-        if(messagelist.get(position).getReaders().equals("100")){
+        number = session.getMobileNumber();
+        Log.e("id", id);
+        Log.e("username", username);
+        Log.e("number", number);
+        if (messagelist.get(position).getReaders().equals("100")) {
             Toast.makeText(mContext, "This feature will be added in next update", Toast.LENGTH_SHORT).show();
         } else {
             StringRequest stringRequest = new StringRequest(Request.Method.POST, SUGGEST_URL,
@@ -762,6 +527,213 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     }
 
 
+    class ViewHolder extends RecyclerView.ViewHolder {
+        protected ImageView image, profilepic, overflow;
+        protected TextView headline, upvote, head;
+        protected TextView place;
+        protected TextView icon;
+        protected ImageView reaction;
+        protected TextView date;
+        protected TextView tv;
+        protected TextView from;
+        protected CardView cv;
+        protected TextView reviews, source;
+        protected TextView app;
+        private LinearLayout linearLayout;
+        private ImageView upicon;
+        private TextView name, userName;
+        private RelativeLayout rv;
+
+        public ViewHolder(View view) {
+            super(view);
+
+            this.cv = (CardView) itemView.findViewById(R.id.cv);
+            this.headline = (TextView) view.findViewById(R.id.Who);
+            this.head = (TextView) view.findViewById(R.id.head);
+            this.name = (TextView) view.findViewById(R.id.name);
+            this.userName = (TextView) view.findViewById(R.id.userName);
+
+            rv = (RelativeLayout) view.findViewById(R.id.rv);
+            this.place = (TextView) view.findViewById(R.id.place);
+            this.reaction = (ImageView) view.findViewById(R.id.comment);
+            this.date = (TextView) view.findViewById(R.id.date);
+            this.image = (ImageView) view.findViewById(R.id.image);
+            this.overflow = (ImageView) view.findViewById(R.id.overflow);
+            this.profilepic = (ImageView) view.findViewById(R.id.profilepic);
+            this.tv = (TextView) view.findViewById(R.id.tv);
+            this.from = (TextView) view.findViewById(R.id.from);
+
+            this.reviews = (TextView) view.findViewById(R.id.reviews);
+            this.app = (TextView) view.findViewById(R.id.app);
+            this.upvote = (TextView) view.findViewById(R.id.upvote);
+            this.source = (TextView) view.findViewById(R.id.source);
+
+            linearLayout = (LinearLayout) view.findViewById(R.id.like);
+            upicon = (ImageView) view.findViewById(R.id.upicon);
 
 
+            image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    isInternetPresent = cd.isConnectingToInternet();
+                    if (isInternetPresent) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("myData", messagelist.get(getAdapterPosition()).getImage());
+                        bundle.putString("headline", messagelist.get(getAdapterPosition()).getHeadline());
+                        Intent in = new Intent(mContext, FullImage.class);
+                        in.putExtras(bundle);
+                        mContext.startActivity(in);
+                    } else {
+                        Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+            overflow.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    cv.setDrawingCacheEnabled(true);
+                    cv.buildDrawingCache();
+                    bm = cv.getDrawingCache();
+                    showPopupMenu(overflow);
+                }
+            });
+
+            profilepic.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    isInternetPresent = cd.isConnectingToInternet();
+                    if (isInternetPresent) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("myData", messagelist.get(getAdapterPosition()).getNumber());
+                        Intent in = new Intent(mContext, UserProfile.class);
+                        in.putExtras(bundle);
+                        mContext.startActivity(in);
+                    } else {
+                        Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+            from.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    isInternetPresent = cd.isConnectingToInternet();
+                    if (isInternetPresent) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("myData", messagelist.get(getAdapterPosition()).getNumber());
+                        Intent in = new Intent(mContext, UserProfile.class);
+                        in.putExtras(bundle);
+                        mContext.startActivity(in);
+                    } else {
+                        Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+            app.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("myData", messagelist.get(getAdapterPosition()).getPostId());
+                    bundle.putString("headline", messagelist.get(getAdapterPosition()).getHeadline());
+                    bundle.putString("image", messagelist.get(getAdapterPosition()).getImage());
+                    Intent in = new Intent(mContext, Comments.class);
+                    in.putExtras(bundle);
+                    mContext.startActivity(in);
+                }
+            });
+            reaction.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("myData", messagelist.get(getAdapterPosition()).getPostId());
+                    bundle.putString("headline", messagelist.get(getAdapterPosition()).getHeadline());
+                    bundle.putString("image", messagelist.get(getAdapterPosition()).getImage());
+                    Intent in = new Intent(mContext, Comments.class);
+                    in.putExtras(bundle);
+                    mContext.startActivity(in);
+                }
+            });
+            place.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    session = new UserSessionManager(mContext);
+                    session.setCityLocation(messagelist.get(getAdapterPosition()).getLocation());
+                    Intent in = new Intent(mContext, LocationActivity.class);
+                    mContext.startActivity(in);
+                }
+            });
+
+            headline.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    try {
+                        if (session.getMobileNumber().equals(messagelist.get(getAdapterPosition()).getNumber())) {
+                            editHeadline(getAdapterPosition());
+                        } else {
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            });
+            source.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    session = new UserSessionManager(mContext);
+                    session.setCategory(messagelist.get(getAdapterPosition()).getCategory());
+                    Intent in = new Intent(mContext, CategoryActivity.class);
+                    mContext.startActivity(in);
+                }
+            });
+            rv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("myData", messagelist.get(getAdapterPosition()).getPostId());
+                    bundle.putString("headline", messagelist.get(getAdapterPosition()).getHeadline());
+                    bundle.putString("image", messagelist.get(getAdapterPosition()).getImage());
+                    Intent in = new Intent(mContext, Comments.class);
+                    in.putExtras(bundle);
+                    mContext.startActivity(in);
+                }
+            });
+
+
+        }
+    }
+
+    /**
+     * Click listener for popup menu items
+     */
+    class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
+
+        public MyMenuItemClickListener() {
+        }
+
+        @Override
+        public boolean onMenuItemClick(MenuItem menuItem) {
+            switch (menuItem.getItemId()) {
+                case R.id.share:
+                    takeScreenshot();
+                    ShareIntent();
+                    return true;
+                case R.id.send:
+                    Toast.makeText(mContext, "This feature will be added in next update", Toast.LENGTH_SHORT).show();
+                    // suggest(currentposition);
+
+                    return true;
+                default:
+            }
+            return false;
+        }
+    }
+
+    private class ViewHolder1 extends RecyclerView.ViewHolder {
+        public ViewHolder1(View view) {
+            super(view);
+        }
+    }
 }

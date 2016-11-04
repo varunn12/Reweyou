@@ -12,6 +12,7 @@ import in.reweyou.reweyou.classes.AppLocationService;
 import in.reweyou.reweyou.classes.UserSessionManager;
 
 public class SplashScreen extends AppCompatActivity {
+    private static final String TAG = "SplashScreen";
     SharedPreferences sharedPreferences;
     UserSessionManager session;
     AppLocationService appLocationService;
@@ -28,14 +29,17 @@ public class SplashScreen extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         boolean firstTime = sharedPreferences.getBoolean("first", true);
 
+
         if (firstTime) {
             editor.putBoolean("first", false);
             editor.apply();
+
             Intent intent = new Intent(SplashScreen.this, WelcomeScreen.class);
             startActivity(intent);
             finish();
         } else {
-            if(!session.checkLogin()) {
+            if(!session.checkLoginSplash()) {
+
                 Intent intent = new Intent(SplashScreen.this, Feed.class);
                 startActivity(intent);
                 finish();

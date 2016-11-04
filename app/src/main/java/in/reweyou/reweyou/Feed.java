@@ -7,14 +7,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.net.Uri;
-import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -25,7 +25,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -37,15 +36,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.ads.identifier.AdvertisingIdClient;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -58,34 +52,79 @@ import in.reweyou.reweyou.fragment.MyFeed;
 import in.reweyou.reweyou.fragment.SecondFragment;
 
 public class Feed extends AppCompatActivity implements View.OnClickListener {
-    int REQUEST_CAMERA = 0, SELECT_FILE = 1, REQUEST_VIDEO=3;
+    static final String[] PERMISSIONS = new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private static final int REQUEST_CODE = 0;
-    private TabLayout tabLayout;
+    int REQUEST_CAMERA = 0, SELECT_FILE = 1, REQUEST_VIDEO = 3;
     Button camera, gallery, notify, text;
     UserSessionManager session;
     Uri uri;
     PermissionsChecker checker;
-    private DisplayImageOptions options;
     ImageLoader imageLoader = ImageLoader.getInstance();
     ConnectionDetector cd;
-    private DrawerLayout drawerLayout;
     Boolean isInternetPresent = false;
+    boolean doubleBackToExitPressedOnce = false;
+    private TabLayout tabLayout;
+    private DisplayImageOptions options;
+    private DrawerLayout drawerLayout;
     private String mCurrentPhotoPath;
     private String videoFilePath;
-    boolean doubleBackToExitPressedOnce = false;
     private Toolbar mToolbar;
+    private FloatingActionButton floatingActionButton;
     private int mYear, mMonth, mDay, mHour, mMinute;
-    static final String[] PERMISSIONS = new String[]{Manifest.permission.CAMERA,Manifest. permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
         // Session class instance
+
+        floatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder getImageFrom = new AlertDialog.Builder(Feed.this);
+                getImageFrom.setTitle("Select Image from:");
+                final CharSequence[] opsChars = {getResources().getString(R.string.takepic), getResources().getString(R.string.opengallery)};
+                getImageFrom.setItems(opsChars, new android.content.DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which == 0) {
+                            if (checker.lacksPermissions(PERMISSIONS)) {
+                                startPermissionsActivity();
+                            } else {
+
+                                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                File photoFile = null;
+                                photoFile = getOutputMediaFile();
+                                uri = Uri.fromFile(photoFile);
+                                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+                                startActivityForResult(takePictureIntent, REQUEST_CAMERA);
+                                UILApplication.getInstance().trackEvent("Image", "Camera", "For Pics");
+                            }
+
+                        } else if (which == 1) {
+                            if (checker.lacksPermissions(PERMISSIONS)) {
+                                startPermissionsActivity();
+                            } else {
+                                Intent intent = new Intent(Intent.ACTION_PICK,
+                                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                                // 2. pick image only
+                                intent.setType("image/*");
+                                // 3. start activity
+                                startActivityForResult(intent, SELECT_FILE);
+                                UILApplication.getInstance().trackEvent("Gallery", "Gallery", "For Pics");
+                            }
+                        }
+                        dialog.dismiss();
+                    }
+                });
+                getImageFrom.show();
+            }
+        });
         session = new UserSessionManager(getApplicationContext());
         cd = new ConnectionDetector(Feed.this);
         checker = new PermissionsChecker(this);
-        FirebaseMessaging.getInstance().subscribeToTopic("news");
         options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.irongrip)
                 .showImageForEmptyUri(R.drawable.download)
@@ -95,43 +134,44 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
                 .considerExifParams(true)
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .build();
-            initToolbar();
-            initViewPagerAndTabs();
-            initNavigationDrawer();
+        initToolbar();
+        initViewPagerAndTabs();
+        initNavigationDrawer();
 
-            Typeface font = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");
+        Typeface font = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");
 
-            camera = (Button) findViewById(R.id.camera);
-            gallery = (Button) findViewById(R.id.gallery);
-            notify = (Button) findViewById(R.id.notify);
-            text = (Button) findViewById(R.id.text);
-            camera.setOnClickListener(this);
-            gallery.setOnClickListener(this);
-            notify.setOnClickListener(this);
-            text.setOnClickListener(this);
-            camera.setTypeface(font);
-            gallery.setTypeface(font);
-            notify.setTypeface(font);
-            text.setTypeface(font);
-            // Create default options which will be used for every
+        camera = (Button) findViewById(R.id.camera);
+        gallery = (Button) findViewById(R.id.gallery);
+        notify = (Button) findViewById(R.id.notify);
+        text = (Button) findViewById(R.id.text);
+        camera.setOnClickListener(this);
+        gallery.setOnClickListener(this);
+        notify.setOnClickListener(this);
+        text.setOnClickListener(this);
+        camera.setTypeface(font);
+        gallery.setTypeface(font);
+        notify.setTypeface(font);
+        text.setTypeface(font);
+        // Create default options which will be used for every
 //  displayImage(...) call if no options will be passed to this method
-            // Do it on Application start
+        // Do it on Application start
 
     }
+
     private void initToolbar() {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
         //setTitle("Trending");
-      //  mToolbar.setLogo(R.drawable.logo_plain);
+        //  mToolbar.setLogo(R.drawable.logo_plain);
     }
+
     private void initViewPagerAndTabs() {
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
         viewPager.setOffscreenPageLimit(2);
         PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager());
         pagerAdapter.addFragment(new SecondFragment(), getString(R.string.tab_1));
-        pagerAdapter.addFragment(new CampaignFragment(),getString(R.string.tab_4));
-        pagerAdapter.addFragment(new MyFeed(),getString(R.string.tab_5));
+        pagerAdapter.addFragment(new CampaignFragment(), getString(R.string.tab_4));
+        pagerAdapter.addFragment(new MyFeed(), getString(R.string.tab_5));
         viewPager.setAdapter(pagerAdapter);
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
@@ -144,32 +184,32 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
                     if (i == position) {
                         if (position == 0) {
                             String title = "Trending";
-                              // getSupportActionBar().setTitle(title);
-                          //   tabLayout.getTabAt(i).setIcon(R.drawable.ic_newspaper_white);
-                           // mToolbar.setLogo(R.drawable.ic_newspaper_white);
+                            // getSupportActionBar().setTitle(title);
+                            //   tabLayout.getTabAt(i).setIcon(R.drawable.ic_newspaper_white);
+                            // mToolbar.setLogo(R.drawable.ic_newspaper_white);
                         } else if (position == 1) {
                             String title1 = "Home";
-                           //  getSupportActionBar().setTitle(title1);
-                           //  tabLayout.getTabAt(i).setIcon(R.drawable.ic_map_marker_radius_white);
-                          //  mToolbar.setLogo(R.drawable.ic_map_marker_radius_white);
+                            //  getSupportActionBar().setTitle(title1);
+                            //  tabLayout.getTabAt(i).setIcon(R.drawable.ic_map_marker_radius_white);
+                            //  mToolbar.setLogo(R.drawable.ic_map_marker_radius_white);
                         } else if (position == 2) {
                             String title2 = "My City";
-                           // getSupportActionBar().setTitle(title2);
-                           //  tabLayout.getTabAt(i).setIcon(R.drawable.ic_account_location_white);
+                            // getSupportActionBar().setTitle(title2);
+                            //  tabLayout.getTabAt(i).setIcon(R.drawable.ic_account_location_white);
                         } else {
                             String title2 = "Trending";
-                           // getSupportActionBar().setTitle(title2);
-                           // tabLayout.getTabAt(i).setIcon(R.drawable.ic_account_location_white);
+                            // getSupportActionBar().setTitle(title2);
+                            // tabLayout.getTabAt(i).setIcon(R.drawable.ic_account_location_white);
                         }
                     } else {
                         if (i == 0) {
-                          //  tabLayout.getTabAt(i).setIcon(R.drawable.ic_newspaper_black);
+                            //  tabLayout.getTabAt(i).setIcon(R.drawable.ic_newspaper_black);
                         } else if (i == 1) {
-                          //      tabLayout.getTabAt(i).setIcon(R.drawable.ic_map_marker_radius_black);
+                            //      tabLayout.getTabAt(i).setIcon(R.drawable.ic_map_marker_radius_black);
                         } else if (i == 2) {
-                           //   tabLayout.getTabAt(i).setIcon(R.drawable.ic_map_marker_radius_black);
+                            //   tabLayout.getTabAt(i).setIcon(R.drawable.ic_map_marker_radius_black);
                         } else {
-                           // tabLayout.getTabAt(i).setIcon(R.drawable.ic_account_location);
+                            // tabLayout.getTabAt(i).setIcon(R.drawable.ic_account_location);
                         }
                     }
                 }
@@ -186,6 +226,7 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
             }
         });
     }
+
     private void setupTabIcons() {
         int[] tabIcons = {
                 R.drawable.ic_newspaper_white,
@@ -201,22 +242,19 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
         tabLayout.getTabAt(2).setIcon(tabIcons[2]);
 //        tabLayout.getTabAt(3).setIcon(tabIcons[3]);
     }
+
     private boolean isDeviceSupportCamera() {
-        if (getApplicationContext().getPackageManager().hasSystemFeature(
-                PackageManager.FEATURE_CAMERA)) {
-            return true;
-        } else {
-            return false;
-        }
+        return getApplicationContext().getPackageManager().hasSystemFeature(
+                PackageManager.FEATURE_CAMERA);
     }
+
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.camera:
                 if (checker.lacksPermissions(PERMISSIONS)) {
                     startPermissionsActivity();
-                }
-                else {
+                } else {
           /*      Intent cameraIntent = new Intent(
                         android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                  startActivityForResult(cameraIntent, REQUEST_CAMERA);
@@ -234,8 +272,7 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
             case R.id.gallery:
                 if (checker.lacksPermissions(PERMISSIONS)) {
                     startPermissionsActivity();
-                }
-                else {
+                } else {
                     Intent intent = new Intent(Intent.ACTION_PICK,
                             android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     // 2. pick image only
@@ -247,29 +284,33 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
                 break;
             case R.id.notify:
                 isInternetPresent = cd.isConnectingToInternet();
-                if(isInternetPresent) {
+                if (isInternetPresent) {
                     Intent notifications = new Intent(Feed.this, Notifications.class);
                     startActivity(notifications);
-                }
-                else {
+                } else {
                     Toast.makeText(this, "You are not connected to Internet", Toast.LENGTH_LONG).show();
                 }
-                    break;
+                break;
             case R.id.text:
-                Intent profile=new Intent(Feed.this, MyProfile.class);
+                Intent profile = new Intent(Feed.this, MyProfile.class);
                 startActivity(profile);
+                break;
+
+            case R.id.fab:
+                Toast.makeText(Feed.this, "hey", Toast.LENGTH_SHORT).show();
                 break;
         }
     }
-    private File getOutputMediaFile(){
+
+    private File getOutputMediaFile() {
         // To be safe, you should check that the SDCard is mounted
         // using Environment.getExternalStorageState() before doing this.
         File mediaStorageDir = new File(Environment.getExternalStorageDirectory(), "Reweyou");
         // This location works best if you want the created images to be shared
         // between applications and persist after your app has been uninstalled.
         // Create the storage directory if it does not exist
-        if (!mediaStorageDir.exists()){
-            if (! mediaStorageDir.mkdirs()){
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
                 Log.d("Reweyou", "failed to create directory");
                 return null;
             }
@@ -278,30 +319,24 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         File mediaFile;
         mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                    "IMG_"+ timeStamp + ".jpg");
+                "IMG_" + timeStamp + ".jpg");
         mCurrentPhotoPath = "file:" + mediaFile.getAbsolutePath();
         return mediaFile;
     }
+
     @Override
     protected void onActivityResult(int reqCode, int resCode, Intent data) {
-        if (resCode == Activity.RESULT_OK && reqCode==SELECT_FILE && data != null) {
+        if (resCode == Activity.RESULT_OK && reqCode == SELECT_FILE && data != null) {
             Uri uriFromPath = data.getData();
             String show = uriFromPath.toString();
             Intent intent = new Intent(this, ShowImage.class);
             intent.putExtra("path", show);
             startActivity(intent);
         }
-        if (resCode == Activity.RESULT_OK && reqCode==REQUEST_CAMERA) {
-           //Fetches the thumbnail only not the whole picture
-            /*   Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
-           Intent intent = new Intent(Feed.this, CameraActivity.class);
-           intent.putExtra("image", thumbnail);
-             */ //    startActivity(intent);
-           // Bundle extras = getIntent().getExtras();
-            //Uri uriFromPath = (Uri)extras.get(MediaStore.EXTRA_OUTPUT);
+        if (resCode == Activity.RESULT_OK && reqCode == REQUEST_CAMERA) {
             String show = uri.toString();
             Intent intent = new Intent(Feed.this, CameraActivity.class);
-            Log.d("URI",show);
+            Log.d("URI", show);
             Log.d("Intent", mCurrentPhotoPath);
             intent.putExtra("path", mCurrentPhotoPath);
             startActivity(intent);
@@ -310,7 +345,7 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
                 && resCode == RESULT_OK) {
 
             if (data != null && data.getStringExtra("videopath") != null)
-                videoFilePath= data.getStringExtra("videopath");
+                videoFilePath = data.getStringExtra("videopath");
             Intent intent = new Intent(Feed.this, VideoUpload.class);
             intent.putExtra("path", videoFilePath);
             startActivity(intent);
@@ -319,17 +354,195 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
             finish();
         }
     }
-    public String getOriginalImagePath() {
-        String[] projection = { MediaStore.Images.Media.DATA };
-        Cursor cursor = Feed.this.managedQuery(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                projection, null, null, null);
-        int column_index_data = cursor
-                .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToLast();
 
-        return cursor.getString(column_index_data);
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_feed, menu);
+        // Retrieve the SearchView and plug it into SearchManager
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView =
+                (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getComponentName()));
+
+        return true;
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        switch (item.getItemId()) {
+
+            case R.id.action_search:
+                // User chose the "Favorite" action, mark the current item
+                // as a favorite...
+                return true;
+
+            case R.id.action_notification:
+                isInternetPresent = cd.isConnectingToInternet();
+                if (isInternetPresent) {
+                    Intent notifications = new Intent(Feed.this, Notifications.class);
+                    startActivity(notifications);
+                } else {
+                    Toast.makeText(this, "You are not connected to Internet", Toast.LENGTH_LONG).show();
+                }
+                return true;
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    protected void sendEmail() {
+        Log.i("Send email", "");
+        String[] TO = {"support@reweyou.in"};
+        String[] CC = {""};
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+
+        emailIntent.setData(Uri.parse("mailto:"));
+        emailIntent.setType("text/plain");
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, TO);
+        emailIntent.putExtra(Intent.EXTRA_CC, CC);
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Support Reweyou");
+        emailIntent.putExtra(Intent.EXTRA_TEXT, "I need some help regarding");
+
+        try {
+            startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+            Log.i("Finished sending email", "");
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(Feed.this, "There is no email client installed.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            moveTaskToBack(true);
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        //Toast.makeText(this, "Please click back again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce = false;
+            }
+        }, 3000);
+    }
+
+    public void alertMessage() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(Feed.this);
+        builder.setMessage(R.string.confirm_logout)
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // FIRE ZE MISSILES!
+                        session.logoutUser();
+                        finish();
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                        dialog.cancel();
+                    }
+                });
+        // Create the AlertDialog object and return it
+        builder.show();
+    }
+
+    private void startPermissionsActivity() {
+        PermissionsActivity.startActivityForResult(this, REQUEST_CODE, PERMISSIONS);
+    }
+
+    public void initNavigationDrawer() {
+        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        Menu menu = navigationView.getMenu();
+        //    MenuItem title= menu.findItem(R.id.menu_title);
+        //  SpannableString s = new SpannableString(title.getTitle());
+        //s.setSpan(new TextAppearanceSpan(this, R.style.Menutitle), 0, s.length(), 0);
+        // title.setTitle(s);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+
+                int id = menuItem.getItemId();
+
+                switch (id) {
+                    case R.id.mycity:
+                        Intent news = new Intent(Feed.this, MyCityActivity.class);
+                        startActivity(news);
+                        drawerLayout.closeDrawers();
+                        break;
+                    case R.id.myreports:
+                        Intent reports = new Intent(Feed.this, Topic.class);
+                        startActivity(reports);
+                        drawerLayout.closeDrawers();
+                        break;
+                    case R.id.notifications:
+                        Intent notif = new Intent(Feed.this, Notifications.class);
+                        startActivity(notif);
+                        drawerLayout.closeDrawers();
+                        break;
+                    case R.id.New:
+                        Intent New = new Intent(Feed.this, NewActivity.class);
+                        startActivity(New);
+                        drawerLayout.closeDrawers();
+                        break;
+                    case R.id.logout:
+                        alertMessage();
+                        drawerLayout.closeDrawers();
+                        break;
+                    case R.id.leaderboard:
+                        Intent leader = new Intent(Feed.this, Leaderboard.class);
+                        startActivity(leader);
+                        drawerLayout.closeDrawers();
+                }
+                return true;
+            }
+        });
+        View header = navigationView.getHeaderView(0);
+        TextView tv_email = (TextView) header.findViewById(R.id.tv_email);
+        ImageView image = (ImageView) header.findViewById(R.id.image);
+        ImageView profileSetting = (ImageView) header.findViewById(R.id.profile_settings);
+        profileSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent profile = new Intent(Feed.this, MyProfile.class);
+                startActivity(profile);
+            }
+        });
+        tv_email.setText(session.getUsername());
+        String url = "https://www.reweyou.in/uploads/profilepic/" + session.getMobileNumber() + ".jpg";
+        imageLoader.displayImage(url, image, options);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
+
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, mToolbar, R.string.drawer_open, R.string.drawer_close) {
+
+            @Override
+            public void onDrawerClosed(View v) {
+                super.onDrawerClosed(v);
+            }
+
+            @Override
+            public void onDrawerOpened(View v) {
+                super.onDrawerOpened(v);
+            }
+        };
+        drawerLayout.setDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
+    }
+
     static class PagerAdapter extends FragmentPagerAdapter {
 
         private final List<Fragment> fragmentList = new ArrayList<>();
@@ -353,176 +566,11 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
         public int getCount() {
             return fragmentList.size();
         }
+
         @Override
         public CharSequence getPageTitle(int position) {
             return fragmentTitleList.get(position);
             //return null;
         }
     }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_feed, menu);
-        // Retrieve the SearchView and plug it into SearchManager
-        // Associate searchable configuration with the SearchView
-        SearchManager searchManager =
-                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView =
-                (SearchView) menu.findItem(R.id.action_search).getActionView();
-        searchView.setSearchableInfo(
-                searchManager.getSearchableInfo(getComponentName()));
-
-        return true;
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        switch (item.getItemId()) {
-
-           case R.id.action_search:
-                // User chose the "Favorite" action, mark the current item
-                // as a favorite...
-               return true;
-            default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
-                return super.onOptionsItemSelected(item);
-        }
-    }
-    protected void sendEmail() {
-        Log.i("Send email", "");
-        String[] TO = {"support@reweyou.in"};
-        String[] CC = {""};
-        Intent emailIntent = new Intent(Intent.ACTION_SEND);
-
-        emailIntent.setData(Uri.parse("mailto:"));
-        emailIntent.setType("text/plain");
-        emailIntent.putExtra(Intent.EXTRA_EMAIL, TO);
-        emailIntent.putExtra(Intent.EXTRA_CC, CC);
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Support Reweyou");
-        emailIntent.putExtra(Intent.EXTRA_TEXT, "I need some help regarding");
-
-        try {
-            startActivity(Intent.createChooser(emailIntent, "Send mail..."));
-            Log.i("Finished sending email", "");
-        }
-        catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(Feed.this, "There is no email client installed.", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (doubleBackToExitPressedOnce) {
-            moveTaskToBack(true);
-        }
-
-        this.doubleBackToExitPressedOnce = true;
-        //Toast.makeText(this, "Please click back again to exit", Toast.LENGTH_SHORT).show();
-
-        new Handler().postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                doubleBackToExitPressedOnce=false;
-            }
-        }, 3000);
-    }
-
-    public void alertMessage() {
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(Feed.this);
-            builder.setMessage(R.string.confirm_logout)
-                    .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // FIRE ZE MISSILES!
-                            session.logoutUser();
-                            finish();
-                        }
-                    })
-                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // User cancelled the dialog
-                            dialog.cancel();
-                        }
-                    });
-            // Create the AlertDialog object and return it
-           builder.show();
-        }
-
-    private void startPermissionsActivity() {
-        PermissionsActivity.startActivityForResult(this, REQUEST_CODE, PERMISSIONS);
-    }
-
-    public void initNavigationDrawer() {
-        NavigationView navigationView = (NavigationView)findViewById(R.id.navigation_view);
-        Menu menu = navigationView.getMenu();
-    //    MenuItem title= menu.findItem(R.id.menu_title);
-      //  SpannableString s = new SpannableString(title.getTitle());
-        //s.setSpan(new TextAppearanceSpan(this, R.style.Menutitle), 0, s.length(), 0);
-       // title.setTitle(s);
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(MenuItem menuItem) {
-
-                int id = menuItem.getItemId();
-
-                switch (id){
-                    case R.id.mycity:
-                        Intent news= new Intent(Feed.this,MyCityActivity.class);
-                        startActivity(news);
-                        drawerLayout.closeDrawers();
-                        break;
-                    case R.id.myreports:
-                       Intent reports=new Intent(Feed.this,Topic.class);
-                        startActivity(reports);
-                        drawerLayout.closeDrawers();
-                        break;
-                    case R.id.notifications:
-                        Intent notif=new Intent(Feed.this,Notifications.class);
-                        startActivity(notif);
-                        drawerLayout.closeDrawers();
-                        break;
-                    case R.id.New:
-                        Intent New=new Intent(Feed.this,NewActivity.class);
-                        startActivity(New);
-                        drawerLayout.closeDrawers();
-                        break;
-                    case R.id.logout:
-                        alertMessage();
-                        drawerLayout.closeDrawers();
-                        break;
-                    case R.id.leaderboard:
-                        Intent leader=new Intent(Feed.this,Leaderboard.class);
-                        startActivity(leader);
-                        drawerLayout.closeDrawers();
-                }
-                return true;
-            }
-        });
-        View header = navigationView.getHeaderView(0);
-        TextView tv_email = (TextView)header.findViewById(R.id.tv_email);
-        ImageView image=(ImageView)header.findViewById(R.id.image);
-        tv_email.setText(session.getUsername());
-        String url ="https://www.reweyou.in/uploads/profilepic/"+session.getMobileNumber()+".jpg";
-        imageLoader.displayImage(url, image, options);
-        drawerLayout = (DrawerLayout)findViewById(R.id.drawer);
-
-        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,mToolbar,R.string.drawer_open,R.string.drawer_close){
-
-            @Override
-            public void onDrawerClosed(View v){
-                super.onDrawerClosed(v);
-            }
-
-            @Override
-            public void onDrawerOpened(View v) {
-                super.onDrawerOpened(v);
-            }
-        };
-        drawerLayout.setDrawerListener(actionBarDrawerToggle);
-        actionBarDrawerToggle.syncState();
-    }
-    }
+}
