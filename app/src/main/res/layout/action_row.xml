@@ -13,12 +13,21 @@
     android:layout_height="wrap_content"
     tools:context=".TokenTest"
     android:id="@+id/rv">
+    <in.reweyou.reweyou.customView.CircularImageView
+
+        android:id="@+id/profilepic"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
+        card_view:myborderWidth="0dp" />
 <TextView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:id="@+id/name"
+    android:layout_toRightOf="@id/profilepic"
     android:layout_marginLeft="3dp"
-    android:layout_alignParentLeft="true"
     android:layout_alignParentTop="true"
     android:textColor="@color/colorPrimaryDark"
     android:paddingTop="1dp"
@@ -39,6 +48,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="false"
+        android:layout_toRightOf="@id/profilepic"
         android:layout_below="@+id/name"
         android:paddingLeft="3dp"
         android:text="TextView"

@@ -15,6 +15,7 @@ public class CommentsModel {
     private String post;
     private String image;
     private String r_image;
+    private String profilepic;
     private String reviewer;
     private String reviewer_name;
     private String time;
@@ -121,5 +122,15 @@ public class CommentsModel {
     public String getId()
     {
         return id;
+    }
+
+    public String getProfilepic() {
+        return profilepic;
+    }
+
+    public void setProfilepic(String profilepic) {
+        // String url ="https://www.reweyou.in/thumb/230/226/";
+        this.profilepic = profilepic;
+        // String image = image + url;
     }
 }

@@ -23,6 +23,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -110,7 +111,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
 
         viewHolder.time.setText(mpModelList.get(position).getTime().substring(0,12));
 
-
+        Glide.with(mContext).load(mpModelList.get(position).getProfilepic()).placeholder(R.drawable.download).error(R.drawable.download).fallback(R.drawable.download).dontAnimate().into(viewHolder.profilepic);
 
         imageLoader.displayImage(mpModelList.get(position).getR_Image(), viewHolder.image, options);
         viewHolder.image.setOnClickListener(new View.OnClickListener() {
@@ -139,6 +140,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
         protected TextView name;
         protected TextView time;
         protected TouchImageView image;
+        protected ImageView profilepic;
         public ViewHolder(View view) {
             super(view);
             String fontPath = "fonts/Roboto-Medium.ttf";
@@ -153,6 +155,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
             this.time.setTypeface(thin);
             this.cv=(CardView) view.findViewById(R.id.cv);
             this.image=(TouchImageView)view.findViewById(R.id.image);
+            this.profilepic = (ImageView) view.findViewById(R.id.profilepic);
             //userName.setTypeface(font);
         }
 
