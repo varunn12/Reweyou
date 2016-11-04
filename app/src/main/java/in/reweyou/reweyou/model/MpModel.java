@@ -121,7 +121,7 @@ public class MpModel {
 
     public void setProfilepic(String profilepic) {
         // String url ="https://www.reweyou.in/thumb/230/226/";
-        this.image = image;
+        this.profilepic = profilepic;
         // String image = image + url;
     }
 
