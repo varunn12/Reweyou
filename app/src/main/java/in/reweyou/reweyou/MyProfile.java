@@ -8,28 +8,28 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.graphics.Typeface;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,25 +59,29 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 
 import in.reweyou.reweyou.adapter.MessageAdapter;
-import in.reweyou.reweyou.adapter.CommentsAdapter;
 import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.DividerItemDecoration;
 import in.reweyou.reweyou.classes.RequestHandler;
 import in.reweyou.reweyou.classes.UserSessionManager;
-import in.reweyou.reweyou.model.CommentsModel;
 import in.reweyou.reweyou.model.MpModel;
 
 public class MyProfile extends AppCompatActivity implements View.OnClickListener {
+    public static final String URL_VERIFY_FOLLOW = "https://www.reweyou.in/reweyou/verify_follow.php";
+    public static final String URL_FOLLOW = "https://www.reweyou.in/reweyou/follow_new.php";
+    public static final String UPLOAD_URL = "https://www.reweyou.in/reweyou/profile_picture.php";
+    public static final String EDIT_URL = "https://www.reweyou.in/reweyou/profile.php";
+    Boolean isInternetPresent = false;
+    ConnectionDetector cd;
+    UserSessionManager session;
+    ImageLoader imageLoader = ImageLoader.getInstance();
+    ArrayList<String> profilelist = new ArrayList<>();
+    int SELECT_FILE = 1;
     private String i, tag, number, user, result, image, selectedImagePath;
     private TextView Name, Reports, Info, Readers, Location, Mobile;
     private Bitmap bitmap, Correctbmp,btmap;
@@ -86,35 +90,46 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
     private AppCompatButton buttonEdit;
     private int length;
     private Button button;
-    Boolean isInternetPresent = false;
-    ConnectionDetector cd;
-    UserSessionManager session;
     private ProgressBar progressBar;
     private RecyclerView recyclerView;
     private DisplayImageOptions option;
-    ImageLoader imageLoader = ImageLoader.getInstance();
-    ArrayList<String> profilelist = new ArrayList<>();
+    private LinearLayout Empty;
 
-    public static final String URL_VERIFY_FOLLOW = "https://www.reweyou.in/reweyou/verify_follow.php";
-    public static final String URL_FOLLOW = "https://www.reweyou.in/reweyou/follow_new.php";
-    public static final String UPLOAD_URL = "https://www.reweyou.in/reweyou/profile_picture.php";
-    public static final String EDIT_URL = "https://www.reweyou.in/reweyou/profile.php";
-    int SELECT_FILE = 1;
+    public static String encodeTobase64(Bitmap image) {
+        Bitmap immage = image;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        immage.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] b = baos.toByteArray();
+        String imageEncoded = Base64.encodeToString(b, Base64.DEFAULT);
+
+        //  Log.d("Image Log:", imageEncoded);
+        return imageEncoded;
+
+    }
+
+    public static Bitmap decodeBase64(String input) {
+        byte[] decodedByte = Base64.decode(input, 0);
+        return BitmapFactory
+                .decodeByteArray(decodedByte, 0, decodedByte.length);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_profile);
+        setContentView(R.layout.activity_my_profile2);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        initCollapsingToolbar();
+        getSupportActionBar().setTitle("Profile");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        //initCollapsingToolbar();
         session=new UserSessionManager(MyProfile.this);
         i=session.getMobileNumber();
         cd = new ConnectionDetector(MyProfile.this);
         session = new UserSessionManager(getApplicationContext());
         progressBar = (ProgressBar)findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.VISIBLE);
-        
+
 
         Name =(TextView)findViewById(R.id.Name);
         Reports =(TextView)findViewById(R.id.Reports);
@@ -122,22 +137,23 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
         Readers=(TextView)findViewById(R.id.Readers);
         Location=(TextView)findViewById(R.id.Location);
         Mobile=(TextView)findViewById(R.id.Mobile);
+        Empty = (LinearLayout) findViewById(R.id.empty);
 
         button = (Button)findViewById(R.id.button);
         profilepic=(ImageView)findViewById(R.id.profilepic);
 
         String fontPath = "fonts/Roboto-Medium.ttf";
         String thinpath="fonts/Roboto-Regular.ttf";
-        Typeface font = Typeface.createFromAsset(this.getAssets(), "fontawesome-webfont.ttf");
+       /* Typeface font = Typeface.createFromAsset(this.getAssets(), "fontawesome-webfont.ttf");
         Typeface tf = Typeface.createFromAsset(this.getAssets(), fontPath);
         Typeface thin = Typeface.createFromAsset(this.getAssets(), thinpath);
-
-        Name.setTypeface(tf);
+*/
+       /* Name.setTypeface(tf);
         Reports.setTypeface(thin);
         Info.setTypeface(thin);
         Readers.setTypeface(thin);
         Location.setTypeface(thin);
-        Mobile.setTypeface(thin);
+        Mobile.setTypeface(thin);*/
 
         recyclerView=(RecyclerView)findViewById(R.id.recycler_view);
         RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecoration(ContextCompat.getDrawable(this, R.drawable.line));
@@ -196,183 +212,6 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                 in.putExtras(bundle);
                 startActivity(in);
                 break;
-        }
-    }
-
-    public class JSONTask extends AsyncTask<String, String, List<String>> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            //setProgressBarIndeterminateVisibility(true);
-        }
-
-        @Override
-        protected List<String> doInBackground(String... params) {
-            HttpURLConnection connection = null;
-            BufferedReader reader = null;
-            RequestHandler rh= new RequestHandler();
-            HashMap<String, String> data = new HashMap<String,String>();
-            data.put("number",params[0]);
-            try {
-                URL url = new URL("https://www.reweyou.in/reweyou/user_list.php");
-                connection = (HttpURLConnection) url.openConnection();
-
-                connection.setDoOutput(true);
-                connection.setRequestMethod("POST");
-
-                OutputStreamWriter wr = new OutputStreamWriter(connection.getOutputStream());
-                wr.write(rh.getPostDataString(data));
-                wr.flush();
-
-
-                InputStream stream = connection.getInputStream();
-                reader = new BufferedReader(new InputStreamReader(stream));
-                StringBuffer buffer = new StringBuffer();
-
-                String line = "";
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line);
-                }
-                String finalJson = buffer.toString();
-
-                JSONArray parentArray = new JSONArray(finalJson);
-                StringBuffer finalBufferedData = new StringBuffer();
-
-                for (int i = 0; i < parentArray.length(); i++) {
-                    JSONObject finalObject = parentArray.getJSONObject(i);
-                    profilelist.add(finalObject.getString("name"));
-                    profilelist.add(finalObject.getString("total_reviews"));
-                    profilelist.add(finalObject.getString("profilepic"));
-                    profilelist.add(finalObject.getString("info"));
-                    profilelist.add(finalObject.getString("number"));
-                    profilelist.add(finalObject.getString("location"));
-                    profilelist.add(finalObject.getString("readers"));
-                    //  profilelist.add(finalObject.getString("readers"));
-                }
-
-                return profilelist;
-
-                //return buffer.toString();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } finally {
-                if (connection != null) {
-                    connection.disconnect();
-                }
-                try {
-                    if (reader != null) {
-                        reader.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(List<String> result) {
-            super.onPostExecute(result);
-            Name.setText(result.get(0));
-            Reports.setText(result.get(1));
-            Info.setText(result.get(3));
-            imageLoader.displayImage(result.get(2), profilepic, option);
-            user = result.get(4);
-            Mobile.setText(result.get(4));
-            Location.setText(result.get(5));
-            Readers.setText(result.get(6));
-
-            //    progressBar.setVisibility(View.GONE);
-            //need to set data to the list
-        }
-    }
-    public class JSONTasks extends AsyncTask<String, String, List<MpModel>> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            //setProgressBarIndeterminateVisibility(true);
-        }
-
-        @Override
-        protected List<MpModel> doInBackground(String... params) {
-            HttpURLConnection connection = null;
-            BufferedReader reader = null;
-            RequestHandler rh= new RequestHandler();
-            HashMap<String, String> data = new HashMap<String,String>();
-            data.put("tag",params[0]);
-            data.put("number",params[1]);
-            //  tag="All";
-            try {
-                URL url = new URL("https://www.reweyou.in/reweyou/myreports.php");
-                connection = (HttpURLConnection) url.openConnection();
-
-                connection.setDoOutput(true);
-                connection.setRequestMethod("POST");
-
-
-                OutputStreamWriter wr = new OutputStreamWriter(connection.getOutputStream());
-                wr.write(rh.getPostDataString(data));
-                wr.flush();
-
-                InputStream stream = connection.getInputStream();
-                reader = new BufferedReader(new InputStreamReader(stream));
-                StringBuffer buffer = new StringBuffer();
-
-                String line = "";
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line);
-                }
-                String finalJson = buffer.toString();
-
-                JSONArray parentArray = new JSONArray(finalJson);
-                StringBuffer finalBufferedData = new StringBuffer();
-                length=parentArray.length();
-                List<MpModel> messagelist = new ArrayList<>();
-
-                Gson gson = new Gson();
-                for (int i = 0; i < parentArray.length(); i++) {
-                    JSONObject finalObject = parentArray.getJSONObject(i);
-                    MpModel mpModel = gson.fromJson(finalObject.toString(), MpModel.class);
-                    messagelist.add(mpModel);
-                }
-
-                return messagelist;
-                //return buffer.toString();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } finally {
-                if (connection != null) {
-                    connection.disconnect();
-                }
-                try {
-                    if (reader != null) {
-                        reader.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(List<MpModel> result) {
-            super.onPostExecute(result);
-            progressBar.setVisibility(View.GONE);
-            MessageAdapter adapter = new MessageAdapter(MyProfile.this,result);
-            // total.setText("You have reported "+ String.valueOf(length)+ " stories.");
-            recyclerView.setAdapter(adapter);
-            //need to set data to the list
         }
     }
 
@@ -531,18 +370,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
             }
         });
     }
-    public static String encodeTobase64(Bitmap image)
-    {
-        Bitmap immage = image;
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        immage.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        byte[] b = baos.toByteArray();
-        String imageEncoded = Base64.encodeToString(b, Base64.DEFAULT);
 
-        //  Log.d("Image Log:", imageEncoded);
-        return imageEncoded;
-
-    }
     private void setPic(String imagePath, ImageView destination) {
         int targetW = 200;
         int targetH = 200;
@@ -601,12 +429,6 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
             return null;
     }
 
-    public static Bitmap decodeBase64(String input)
-    {
-        byte[] decodedByte = Base64.decode(input, 0);
-        return BitmapFactory
-                .decodeByteArray(decodedByte, 0, decodedByte.length);
-    }
     public void uploadImage() {
         class UploadImage extends AsyncTask<Void, Void, String> {
             ProgressDialog loading;
@@ -655,7 +477,6 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
             uploadImage();
         }
     }
-
 
     //This method would confirm the otp
     public void editHeadline() throws JSONException {
@@ -737,6 +558,236 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                 requestQueue.add(stringRequest);
             }
         });
+
+
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_profile, menu);
+        // Retrieve the SearchView and plug it into SearchManager
+        // Associate searchable configuration with the SearchView
+       /* SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView =
+                (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getComponentName()));
+*/
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        /*switch (item.getItemId()) {
+
+            case R.id.action_search:
+                // User chose the "Favorite" action, mark the current item
+                // as a favorite...
+                return true;
+
+            case R.id.action_notification:
+                isInternetPresent = cd.isConnectingToInternet();
+                if (isInternetPresent) {
+                    Intent notifications = new Intent(Feed.this, Notifications.class);
+                    startActivity(notifications);
+                } else {
+                    Toast.makeText(this, "You are not connected to Internet", Toast.LENGTH_LONG).show();
+                }
+                return true;
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+        }*/
+        return true;
+    }
+
+    public class JSONTask extends AsyncTask<String, String, List<String>> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            //setProgressBarIndeterminateVisibility(true);
+        }
+
+        @Override
+        protected List<String> doInBackground(String... params) {
+            HttpURLConnection connection = null;
+            BufferedReader reader = null;
+            RequestHandler rh = new RequestHandler();
+            HashMap<String, String> data = new HashMap<String, String>();
+            data.put("number", params[0]);
+            try {
+                URL url = new URL("https://www.reweyou.in/reweyou/user_list.php");
+                connection = (HttpURLConnection) url.openConnection();
+
+                connection.setDoOutput(true);
+                connection.setRequestMethod("POST");
+
+                OutputStreamWriter wr = new OutputStreamWriter(connection.getOutputStream());
+                wr.write(rh.getPostDataString(data));
+                wr.flush();
+
+
+                InputStream stream = connection.getInputStream();
+                reader = new BufferedReader(new InputStreamReader(stream));
+                StringBuffer buffer = new StringBuffer();
+
+                String line = "";
+                while ((line = reader.readLine()) != null) {
+                    buffer.append(line);
+                }
+                String finalJson = buffer.toString();
+
+                JSONArray parentArray = new JSONArray(finalJson);
+                StringBuffer finalBufferedData = new StringBuffer();
+
+                for (int i = 0; i < parentArray.length(); i++) {
+                    JSONObject finalObject = parentArray.getJSONObject(i);
+                    profilelist.add(finalObject.getString("name"));
+                    profilelist.add(finalObject.getString("total_reviews"));
+                    profilelist.add(finalObject.getString("profilepic"));
+                    profilelist.add(finalObject.getString("info"));
+                    profilelist.add(finalObject.getString("number"));
+                    profilelist.add(finalObject.getString("location"));
+                    profilelist.add(finalObject.getString("readers"));
+                    //  profilelist.add(finalObject.getString("readers"));
+                }
+
+                return profilelist;
+
+                //return buffer.toString();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } finally {
+                if (connection != null) {
+                    connection.disconnect();
+                }
+                try {
+                    if (reader != null) {
+                        reader.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(List<String> result) {
+            super.onPostExecute(result);
+            Name.setText(result.get(0));
+            Reports.setText(result.get(1));
+            if (!result.get(3).isEmpty())
+                Info.setText(result.get(3));
+            else Info.setVisibility(View.GONE);
+            imageLoader.displayImage(result.get(2), profilepic, option);
+            user = result.get(4);
+            Mobile.setText(result.get(4));
+            Location.setText(result.get(5));
+            Readers.setText(result.get(6));
+
+            //    progressBar.setVisibility(View.GONE);
+            //need to set data to the list
+        }
+    }
+
+    public class JSONTasks extends AsyncTask<String, String, List<MpModel>> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            //setProgressBarIndeterminateVisibility(true);
+        }
+
+        @Override
+        protected List<MpModel> doInBackground(String... params) {
+            HttpURLConnection connection = null;
+            BufferedReader reader = null;
+            RequestHandler rh = new RequestHandler();
+            HashMap<String, String> data = new HashMap<String, String>();
+            data.put("tag", params[0]);
+            data.put("number", params[1]);
+            //  tag="All";
+            try {
+                URL url = new URL("https://www.reweyou.in/reweyou/myreports.php");
+                connection = (HttpURLConnection) url.openConnection();
+
+                connection.setDoOutput(true);
+                connection.setRequestMethod("POST");
+
+
+                OutputStreamWriter wr = new OutputStreamWriter(connection.getOutputStream());
+                wr.write(rh.getPostDataString(data));
+                wr.flush();
+
+                InputStream stream = connection.getInputStream();
+                reader = new BufferedReader(new InputStreamReader(stream));
+                StringBuffer buffer = new StringBuffer();
+
+                String line = "";
+                while ((line = reader.readLine()) != null) {
+                    buffer.append(line);
+                }
+                String finalJson = buffer.toString();
+
+                JSONArray parentArray = new JSONArray(finalJson);
+                StringBuffer finalBufferedData = new StringBuffer();
+                length = parentArray.length();
+                List<MpModel> messagelist = new ArrayList<>();
+
+                Gson gson = new Gson();
+                for (int i = 0; i < parentArray.length(); i++) {
+                    JSONObject finalObject = parentArray.getJSONObject(i);
+                    MpModel mpModel = gson.fromJson(finalObject.toString(), MpModel.class);
+                    messagelist.add(mpModel);
+                }
+
+                return messagelist;
+                //return buffer.toString();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } finally {
+                if (connection != null) {
+                    connection.disconnect();
+                }
+                try {
+                    if (reader != null) {
+                        reader.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(List<MpModel> result) {
+            super.onPostExecute(result);
+            progressBar.setVisibility(View.GONE);
+
+            if (result.isEmpty()) {
+                Empty.setVisibility(View.VISIBLE);
+            }
+            MessageAdapter adapter = new MessageAdapter(MyProfile.this, result);
+            // total.setText("You have reported "+ String.valueOf(length)+ " stories.");
+            recyclerView.setAdapter(adapter);
+            //need to set data to the list
+        }
+    }
 }

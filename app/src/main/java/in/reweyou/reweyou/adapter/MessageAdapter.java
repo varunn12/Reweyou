@@ -287,24 +287,14 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         try {
 
             File mediaStorageDir = new File(Environment.getExternalStorageDirectory(), "Reweyou/Screenshot");
-            // This location works best if you want the created images to be shared
-            // between applications and persist after your app has been uninstalled.
 
-            // Create the storage directory if it does not exist
             if (!mediaStorageDir.exists()) {
                 if (!mediaStorageDir.mkdirs()) {
                     Log.d("Reweyou", "failed to create directory");
                 }
             }
-            // image naming and path  to include sd card  appending name you choose for file
+
             String mPath = mediaStorageDir.toString() + "/" + now + ".jpg";
-
-            // create bitmap screen capture
-            //   View v1 = getWindow().getDecorView().getRootView();
-            // v1.setDrawingCacheEnabled(true);
-            //Bitmap bitmap = Bitmap.createBitmap(v1.getDrawingCache());
-            //  v1.setDrawingCacheEnabled(false);
-
             File imageFile = new File(mPath);
             uri = Uri.fromFile(imageFile);
             FileOutputStream outputStream = new FileOutputStream(imageFile);
@@ -313,9 +303,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             outputStream.flush();
             outputStream.close();
 
-            // openScreenshot(imageFile);
         } catch (Throwable e) {
-            // Several error may come out with file handling or OOM
             e.printStackTrace();
         }
     }
@@ -368,7 +356,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     @Override
                     public void onResponse(String response) {
                         if (response.trim().equals("success")) {
-                            //button.setText("Reviewed");
                         } else {
                             Toast.makeText(mContext, response, Toast.LENGTH_LONG).show();
                         }
@@ -382,7 +369,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> map = new HashMap<String, String>();
+                Map<String, String> map = new HashMap<>();
                 map.put("number", number);
                 map.put("name", username);
                 map.put("id", id);
