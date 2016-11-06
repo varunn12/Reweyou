@@ -3,20 +3,19 @@
     package="in.reweyou.reweyou">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
-    <uses-feature android:name="android.hardware.camera" />
-
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.READ_SMS" />
+
+    <uses-feature android:name="android.hardware.camera" />
 
     <!-- Get permission for reliable local dispatching on non-Google Play devices. -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -28,29 +27,40 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".SplashScreen"
             android:theme="@style/SplashTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
         </activity>
-        <activity android:name=".Signup" />
+
         <activity
             android:name=".Feed"
             android:configChanges="orientation|keyboardHidden|screenSize">
             <meta-data
                 android:name="android.app.default_searchable"
                 android:value=".SearchResultsActivity" />
-
         </activity>
-        <activity android:name=".Details" />
-        <activity android:name=".ShowImage" />
-        <activity android:name=".CameraActivity" />
-        <activity android:name=".VideoUpload" />
+
+        <activity android:name=".Gallery">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="image/*" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".SinglePost"
+            android:parentActivityName=".Feed">
+            <intent-filter>
+                <action android:name="in.reweyou.reweyou_SINGLE_POST">
+                    <category android:name="android.intent.category.DEFAULT"></category>
+                </action>
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".SearchResultsActivity"
             android:parentActivityName=".Feed">
@@ -58,30 +68,17 @@
                 <action android:name="android.intent.action.SEARCH" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
 
-        <receiver android:name=".Notification" />
-
-        <activity android:name=".WelcomeScreen">
-
-
-        </activity>
-
-        <!-- SMS Receiver -->
-        <receiver android:name=".classes.SmsReceiver">
-            <intent-filter android:priority="99999">
-                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
-            </intent-filter>
-        </receiver>
-        <!-- Intent service -->
-        <service
-            android:name=".classes.HttpService"
-            android:exported="false" />
-
+        <activity android:name=".Signup" />
+        <activity android:name=".Details" />
+        <activity android:name=".ShowImage" />
+        <activity android:name=".CameraActivity" />
+        <activity android:name=".VideoUpload" />
+        <activity android:name=".WelcomeScreen"/>
         <activity android:name=".VideoCapture" />
         <activity android:name=".Videorow" />
         <activity android:name=".ImageCapture" />
@@ -96,6 +93,42 @@
         <activity android:name=".Action" />
         <activity android:name=".Comments" />
         <activity android:name=".LocationActivity" />
+        <activity android:name=".UpdateImage" />
+        <activity android:name=".MyCityActivity" />
+        <activity android:name=".Friends"/>
+        <activity android:name=".CategoryActivity" />
+        <activity android:name=".NewActivity" />
+        <activity android:name=".UserProfile" />
+        <activity android:name=".AddressBook" />
+        <activity android:name=".Topic" />
+        <activity android:name=".Readers"/>
+
+        <!-- use an alias in case we want to change the launch activity later without breaking
+           homescreen shortcuts.  Note must be defined after the targetActivity -->
+        <activity-alias
+            android:name=".Launcher"
+            android:label="@string/app_name"
+            android:targetActivity=".SplashScreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+
+        <receiver android:name=".Notification" />
+
+        <!-- SMS Receiver -->
+        <receiver android:name=".classes.SmsReceiver">
+            <intent-filter android:priority="99999">
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Intent service -->
+        <service
+            android:name=".classes.HttpService"
+            android:exported="false" />
 
         <!-- Firebase Notifications -->
         <service android:name=".fcm.MyFirebaseMessagingService">
@@ -109,53 +142,21 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-        <!-- Firebase Notifications -->
-
 
         <!-- Register AnalyticsReceiver and AnalyticsService to support background
              dispatching on non-Google Play devices. -->
-        <receiver android:name="com.google.android.gms.analytics.AnalyticsReceiver"
+        <receiver
+            android:name="com.google.android.gms.analytics.AnalyticsReceiver"
             android:enabled="true">
             <intent-filter>
                 <action android:name="com.google.android.gms.analytics.ANALYTICS_DISPATCH" />
             </intent-filter>
         </receiver>
-        <service android:name="com.google.android.gms.analytics.AnalyticsService"
+
+        <service
+            android:name="com.google.android.gms.analytics.AnalyticsService"
             android:enabled="true"
-            android:exported="false"/>
-
-        <!-- ... -->
-
-
-        <activity android:name=".Gallery">
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data android:mimeType="image/*" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".UpdateImage" />
-        <activity android:name=".MyCityActivity" />
-        <activity android:name=".Friends">
-
-
-        </activity>
-        <activity android:name=".CategoryActivity" />
-        <activity android:name=".NewActivity" />
-        <activity android:name=".UserProfile" />
-        <activity android:name=".AddressBook" />
-        <activity android:name=".Topic" />
-        <activity
-            android:name=".SinglePost"
-            android:parentActivityName=".Feed">
-                <intent-filter>
-                <action android:name="in.reweyou.reweyou_SINGLE_POST">
-                <category android:name="android.intent.category.DEFAULT"></category></action>
-                </intent-filter>
-        </activity>
-        <activity android:name=".Readers"></activity>
+            android:exported="false" />
     </application>
 
 </manifest>
