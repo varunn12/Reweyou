@@ -5,7 +5,7 @@
 
 
     <item
-        android:id="@+id/action_notification"
+        android:id="@+id/action_settings"
         android:icon="@drawable/ic_settings_white_18px"
         android:orderInCategory="102"
         android:title="@string/search"

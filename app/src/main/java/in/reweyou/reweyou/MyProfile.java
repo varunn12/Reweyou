@@ -583,28 +583,25 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        /*switch (item.getItemId()) {
+        switch (item.getItemId()) {
 
-            case R.id.action_search:
+            case R.id.action_settings:
                 // User chose the "Favorite" action, mark the current item
                 // as a favorite...
-                return true;
 
-            case R.id.action_notification:
-                isInternetPresent = cd.isConnectingToInternet();
-                if (isInternetPresent) {
-                    Intent notifications = new Intent(Feed.this, Notifications.class);
-                    startActivity(notifications);
-                } else {
-                    Toast.makeText(this, "You are not connected to Internet", Toast.LENGTH_LONG).show();
+                try {
+                    editHeadline();
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
                 return true;
+
+
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
-        }*/
-        return true;
+        }
     }
 
     public class JSONTask extends AsyncTask<String, String, List<String>> {

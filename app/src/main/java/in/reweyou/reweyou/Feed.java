@@ -47,8 +47,6 @@ import java.util.List;
 
 import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.UserSessionManager;
-import in.reweyou.reweyou.fragment.CampaignFragment;
-import in.reweyou.reweyou.fragment.MyFeed;
 import in.reweyou.reweyou.fragment.SecondFragment;
 
 public class Feed extends AppCompatActivity implements View.OnClickListener {
@@ -167,12 +165,15 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
 
     private void initViewPagerAndTabs() {
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
-        viewPager.setOffscreenPageLimit(2);
+        viewPager.setOffscreenPageLimit(1);
         PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager());
-        pagerAdapter.addFragment(new SecondFragment(), getString(R.string.tab_1));
-        pagerAdapter.addFragment(new CampaignFragment(), getString(R.string.tab_4));
-        pagerAdapter.addFragment(new MyFeed(), getString(R.string.tab_5));
+
+
+        pagerAdapter.addFragment(getFragment(0), getString(R.string.tab_1));
+        pagerAdapter.addFragment(getFragment(1), getString(R.string.tab_4));
+        pagerAdapter.addFragment(getFragment(2), getString(R.string.tab_5));
         viewPager.setAdapter(pagerAdapter);
+
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
         //setupTabIcons();
@@ -225,6 +226,14 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
 
             }
         });
+    }
+
+    private Fragment getFragment(int i) {
+        SecondFragment fragment = new SecondFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("position", i);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     private void setupTabIcons() {

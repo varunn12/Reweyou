@@ -186,7 +186,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     viewHolder.app.setText("0 Reactions");
                 else {
                     viewHolder.app.setText(messagelist.get(position).getComments() + " Reactions");
-                    if (!messagelist.get(position).getComments().equals("0")) {
+                    if (!messagelist.get(position).getComments().equals("0") && messagelist.get(position).getReaction() != null) {
                         viewHolder.rv.setVisibility(View.VISIBLE);
 
                         Spannable spannables = new SpannableString(messagelist.get(position).getReaction());

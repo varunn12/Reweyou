@@ -46,6 +46,7 @@ import in.reweyou.reweyou.adapter.MessageAdapter;
 import in.reweyou.reweyou.classes.DividerItemDecoration;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.model.MpModel;
+import in.reweyou.reweyou.utils.Constants;
 import in.reweyou.reweyou.utils.MyJSON;
 
 
@@ -65,13 +66,20 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private SimpleDateFormat df;
     private MessageAdapter adapter = new MessageAdapter();
     private Calendar c;
+    private String postid;
+    private int position = -1;
 
     public SecondFragment() {
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        position = getArguments().getInt("position");
+
+        Log.d("pos", String.valueOf(position));
     }
 
     @Override
@@ -99,9 +107,8 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                             loading = false;
                             Log.v("...", "Last Item Wow !");
                             adapter.add();
-                            //Do pagination.. i.e. fetch new data
 
-                            StringRequest stringRequest = new StringRequest(Request.Method.POST, "https://www.reweyou.in/reweyou/timefeed.php",
+                            StringRequest stringRequest = new StringRequest(Request.Method.POST, getUrl(),
                                     new Response.Listener<String>() {
                                         @Override
                                         public void onResponse(String response) {
@@ -119,8 +126,9 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                                                     MpModel mpModel = gson.fromJson(finalObject.toString(), MpModel.class);
                                                     list.add(mpModel);
                                                     if (i == parentArray.length() - 1) {
-                                                        formattedDate = mpModel.getDate1();
-                                                        Log.d("last", mpModel.getCategory());
+                                                        // formattedDate = mpModel.getDate1();
+                                                        //Log.d("last", mpModel.getCategory());
+                                                        postid = mpModel.getPostId();
                                                     }
                                                 }
 
@@ -138,16 +146,20 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                                         @Override
                                         public void onErrorResponse(VolleyError error) {
                                             //  adapter.remove();
+                                            // Log.e("error",error.getMessage());
                                             Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show();
+                                            adapter.remove();
+                                            loading = true;
                                         }
                                     }) {
                                 @Override
                                 protected Map<String, String> getParams() {
                                     Map<String, String> data = new HashMap<>();
-                                    data.put("tag", tag);
+                                    //data.put("tag", tag);
                                     data.put("location", location);
-                                    data.put("date", formattedDate);
-                                    Log.d("ddd", formattedDate);
+                                    data.put("postid", postid);
+                                    // data.put("date", formattedDate);
+                                    //  Log.d("ddd", formattedDate);
                                     data.put("number", number);
                                     return data;
                                 }
@@ -213,11 +225,11 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
     }
 
     private void makeRequest() {
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, "https://www.reweyou.in/reweyou/timefeed.php",
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, getUrl(),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.d("Response", response);
+                        Log.d("ResponseSecond", response);
 
 
                         JSONArray parentArray = null;
@@ -236,8 +248,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                                 messagelist.add(mpModel);
 
                                 if (i == parentArray.length() - 1) {
-                                    formattedDate = mpModel.getDate1();
-                                    Log.d("last", mpModel.getCategory());
+                                    postid = mpModel.getPostId();
                                 }
                             }
                             progressBar.setVisibility(View.GONE);
@@ -316,10 +327,10 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> data = new HashMap<>();
-                data.put("tag", tag);
+                //  data.put("tag", tag);
                 data.put("location", location);
                 data.put("date", formattedDate);
-                Log.d("ddd", formattedDate);
+                //Log.d("ddd", formattedDate);
                 data.put("number", number);
                 return data;
             }
@@ -370,5 +381,19 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
         datePickerDialog.show();*/
     }
 
+    public String getUrl() {
+        switch (position) {
+            case 0:
+                return Constants.FEED_URL;
+            case 1:
+                return Constants.CAMPAIGN_URL;
+            case 2:
+                return Constants.READING_URL;
+            default:
+                return null;
+
+        }
+
+    }
 }
 
