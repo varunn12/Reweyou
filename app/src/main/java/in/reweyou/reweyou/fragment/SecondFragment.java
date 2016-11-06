@@ -63,7 +63,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private int mYear, mMonth, mDay;
     private boolean loading = true;
     private SimpleDateFormat df;
-    private MessageAdapter adapter = new MessageAdapter();
+    private MessageAdapter adapter;
     private Calendar c;
 
     public SecondFragment() {
