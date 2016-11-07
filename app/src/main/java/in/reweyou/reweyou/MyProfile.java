@@ -71,12 +71,15 @@ import in.reweyou.reweyou.classes.DividerItemDecoration;
 import in.reweyou.reweyou.classes.RequestHandler;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.model.MpModel;
+import in.reweyou.reweyou.utils.Constants;
+
+import static in.reweyou.reweyou.utils.Constants.PROFILE_EDIT_URL;
+import static in.reweyou.reweyou.utils.Constants.UPLOAD_URL;
+import static in.reweyou.reweyou.utils.Constants.URL_FOLLOW;
 
 public class MyProfile extends AppCompatActivity implements View.OnClickListener {
-    public static final String URL_VERIFY_FOLLOW = "https://www.reweyou.in/reweyou/verify_follow.php";
-    public static final String URL_FOLLOW = "https://www.reweyou.in/reweyou/follow_new.php";
-    public static final String UPLOAD_URL = "https://www.reweyou.in/reweyou/profile_picture.php";
-    public static final String EDIT_URL = "https://www.reweyou.in/reweyou/profile.php";
+
+
     Boolean isInternetPresent = false;
     ConnectionDetector cd;
     UserSessionManager session;
@@ -218,7 +221,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
         final String number = session.getMobileNumber();
         // final ProgressDialog loading = ProgressDialog.show(this, "Authenticating", "Please wait", false, false);
         StringRequest strReq = new StringRequest(Request.Method.POST,
-                URL_VERIFY_FOLLOW, new Response.Listener<String>() {
+                Constants.URL_VERIFY_FOLLOW, new Response.Listener<String>() {
 
             @Override
             public void onResponse(String response) {
@@ -514,7 +517,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                 final String headline = editTextHeadline.getText().toString().trim();
                 final String location = editLocation.getText().toString().trim();
                 //Creating an string request
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, EDIT_URL,
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, PROFILE_EDIT_URL,
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {

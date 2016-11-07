@@ -16,5 +16,9 @@ public class Constants {
     public static final String CAMPAIGN_URL = "https://www.reweyou.in/reweyou/campaignfeed.php";
     public static final String READING_URL = "https://www.reweyou.in/reweyou/readingfeed.php";
 
-
+    //My Profile Class
+    public static final String URL_VERIFY_FOLLOW = "https://www.reweyou.in/reweyou/verify_follow.php";
+    public static final String URL_FOLLOW = "https://www.reweyou.in/reweyou/follow_new.php";
+    public static final String UPLOAD_URL = "https://www.reweyou.in/reweyou/profile_picture.php";
+    public static final String PROFILE_EDIT_URL = "https://www.reweyou.in/reweyou/profile.php";
 }
