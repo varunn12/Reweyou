@@ -60,7 +60,9 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/Name"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="4dp"
+                    android:paddingBottom="4dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
                     android:text="---"
                     android:textColor="#fff"
                     android:textSize="@dimen/backdrop_subtitle" />
@@ -85,7 +87,7 @@
                 android:layout_gravity="center"
 
                 android:layout_marginBottom="8dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="8dp"
                 android:gravity="center"
                 android:orientation="horizontal">
 

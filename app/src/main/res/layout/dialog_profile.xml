@@ -6,25 +6,43 @@
     android:orientation="vertical"
     android:padding="@dimen/activity_horizontal_margin">
 
+
     <EditText
         android:id="@+id/editTextOtp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/emptyStatusHint"
-        android:maxLength="140"
+        android:layout_height="36dp"
+        android:layout_margin="4dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/signup_edittext"
+        android:hint="Your status here"
+        android:inputType="textNoSuggestions"
+        android:paddingLeft="2dp"
         android:textColor="#fff"
-
-        android:textColorHint="#e0e0e0"
-        android:textCursorDrawable="@drawable/color_cursor" />
+        android:textColorHint="#bbffffff"
+        android:textSize="16sp" />
     <EditText
         android:id="@+id/editTextLocation"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="36dp"
+        android:layout_margin="4dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/signup_edittext"
         android:hint="Location"
-        android:maxLength="20"
+        android:inputType="textNoSuggestions"
+        android:paddingLeft="2dp"
         android:textColor="#fff"
-        android:textColorHint="#e0e0e0"
-        android:textCursorDrawable="@drawable/color_cursor" />
+        android:textColorHint="#bbffffff"
+        android:textSize="16sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:alpha=".74"
+        android:text="(Keep your info short)"
+        android:textColor="@color/transparent_bg" />
+
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/buttonConfirm"
         android:layout_width="wrap_content"
@@ -33,13 +51,7 @@
         android:layout_marginBottom="24dp"
         android:layout_marginTop="24dp"
         android:background="@drawable/button_background_rectangular"
-        android:padding="12dp"
         android:text="Update"
         android:textColor="@color/colorPrimaryDark" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="(Keep your info short.)"
-        android:textColor="@color/transparent_bg" />
+
 </LinearLayout>

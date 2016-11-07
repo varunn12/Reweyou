@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -142,6 +143,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
         Location = (TextView) findViewById(R.id.Location);
         Mobile = (TextView) findViewById(R.id.Mobile);
         Empty = (LinearLayout) findViewById(R.id.empty);
+
 
         button = (Button) findViewById(R.id.button);
         profilepic = (ImageView) findViewById(R.id.profilepic);
@@ -489,9 +491,11 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
         buttonEdit = (AppCompatButton) confirmDialog.findViewById(R.id.buttonConfirm);
         editTextHeadline = (EditText) confirmDialog.findViewById(R.id.editTextOtp);
         editLocation = (EditText) confirmDialog.findViewById(R.id.editTextLocation);
+
         if (Info.getText().toString().equals(getResources().getString(R.string.emptyStatus)))
             editTextHeadline.setHint(R.string.emptyStatusHint);
         else editTextHeadline.setText(Info.getText());
+
         editLocation.setText(Location.getText());
         //Creating an alertdialog builder
         AlertDialog.Builder alert = new AlertDialog.Builder(MyProfile.this);
@@ -509,62 +513,67 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
         buttonEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 //Hiding the alert dialog
                 alertDialog.dismiss();
                 //Displaying a progressbar
-                final ProgressDialog loading = ProgressDialog.show(MyProfile.this, "Updating", "Please wait", false, false);
-                //Getting the user entered otp from edittext
-                final String headline = editTextHeadline.getText().toString().trim();
-                final String location = editLocation.getText().toString().trim();
-                //Creating an string request
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, MY_PROFILE_EDIT_URL,
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                //if the server response is success
-                                if (response.equalsIgnoreCase("success")) {
-                                    //dismissing the progressbar
-                                    loading.dismiss();
+                if (!editTextHeadline.getText().toString().equals(Info.getText().toString())) {
+                    final ProgressDialog loading = ProgressDialog.show(MyProfile.this, "Updating", "Please wait", false, false);
+                    //Getting the user entered otp from edittext
+                    final String headline = editTextHeadline.getText().toString().trim();
+                    final String location = editLocation.getText().toString().trim();
+                    //Creating an string request
+                    StringRequest stringRequest = new StringRequest(Request.Method.POST, MY_PROFILE_EDIT_URL,
+                            new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    //if the server response is success
+                                    if (response.equalsIgnoreCase("success")) {
+                                        //dismissing the progressbar
+                                        loading.dismiss();
 
-                                    if (!headline.isEmpty()) {
-                                        Info.setText(headline);
-                                        Info.setTextColor(getResources().getColor(android.R.color.white));
+                                        if (!headline.isEmpty()) {
+                                            Info.setText(headline);
+                                            Info.setTextColor(getResources().getColor(android.R.color.white));
+                                        } else {
+                                            Info.setText(getResources().getString(R.string.emptyStatus));
+                                            Info.setTextColor(getResources().getColor(android.R.color.holo_red_light));
+                                            Info.setPaintFlags(Info.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
+                                        }
+                                        Toast.makeText(MyProfile.this, "Profile Updated!", Toast.LENGTH_LONG).show();
+                                        //Starting a new activity
                                     } else {
-                                        Info.setText(getResources().getString(R.string.emptyStatus));
-                                        Info.setTextColor(getResources().getColor(android.R.color.holo_red_light));
-                                    }
-                                    Toast.makeText(MyProfile.this, "Profile Updated!", Toast.LENGTH_LONG).show();
-                                    //Starting a new activity
-                                } else {
-                                    //Displaying a toast if the otp entered is wrong
-                                    loading.dismiss();
-                                    Toast.makeText(MyProfile.this, "Something went wrong!", Toast.LENGTH_LONG).show();
+                                        //Displaying a toast if the otp entered is wrong
+                                        loading.dismiss();
+                                        Toast.makeText(MyProfile.this, "Something went wrong!", Toast.LENGTH_LONG).show();
 
+                                    }
                                 }
-                            }
-                        },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                alertDialog.dismiss();
-                                loading.dismiss();
-                                Toast.makeText(MyProfile.this, "Try again later", Toast.LENGTH_LONG).show();
-                            }
-                        }) {
-                    @Override
-                    protected Map<String, String> getParams() throws AuthFailureError {
-                        Map<String, String> params = new HashMap<String, String>();
-                        //Adding the parameters otp and username
-                        params.put("number", i);
-                        params.put("info", headline);
-                        params.put("location", location);
-                        // params.put("number",number);
-                        return params;
-                    }
-                };
-                //Adding the request to the queue
-                RequestQueue requestQueue = Volley.newRequestQueue(MyProfile.this);
-                requestQueue.add(stringRequest);
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    alertDialog.dismiss();
+                                    loading.dismiss();
+                                    Toast.makeText(MyProfile.this, "Try again later", Toast.LENGTH_LONG).show();
+                                }
+                            }) {
+                        @Override
+                        protected Map<String, String> getParams() throws AuthFailureError {
+                            Map<String, String> params = new HashMap<String, String>();
+                            //Adding the parameters otp and username
+                            params.put("number", i);
+                            params.put("info", headline);
+                            params.put("location", location);
+                            // params.put("number",number);
+                            return params;
+                        }
+                    };
+                    //Adding the request to the queue
+                    RequestQueue requestQueue = Volley.newRequestQueue(MyProfile.this);
+                    requestQueue.add(stringRequest);
+                }
             }
         });
 
@@ -581,7 +590,9 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView =
                 (SearchView) menu.findItem(R.id.action_search).getActionView();
-        searchView.setSearchableInfo(
+        searchView.setSearchable
+
+        (
                 searchManager.getSearchableInfo(getComponentName()));
 */
         return true;
@@ -694,12 +705,28 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
             super.onPostExecute(result);
             Name.setText(result.get(0));
             Reports.setText(result.get(1));
-            if (!result.get(3).isEmpty())
+            if (!result.get(3).isEmpty()) {
                 Info.setText(result.get(3));
-            else {
+                Info.setPaintFlags(Info.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
+            } else {
                 Info.setText(getResources().getString(R.string.emptyStatus));
                 Info.setTextColor(ColorStateList.valueOf(getResources().getColor(R.color.red)));
+                Info.setPaintFlags(Info.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
             }
+
+            Info.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        editHeadline();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
             imageLoader.displayImage(result.get(2), profilepic, option);
             user = result.get(4);
             Mobile.setText(result.get(4));
