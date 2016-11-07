@@ -73,9 +73,9 @@ import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.model.MpModel;
 import in.reweyou.reweyou.utils.Constants;
 
-import static in.reweyou.reweyou.utils.Constants.PROFILE_EDIT_URL;
-import static in.reweyou.reweyou.utils.Constants.UPLOAD_URL;
-import static in.reweyou.reweyou.utils.Constants.URL_FOLLOW;
+import static in.reweyou.reweyou.utils.Constants.MY_PROFILE_EDIT_URL;
+import static in.reweyou.reweyou.utils.Constants.MY_PROFILE_UPLOAD_URL;
+import static in.reweyou.reweyou.utils.Constants.MY_PROFILE_URL_FOLLOW;
 
 public class MyProfile extends AppCompatActivity implements View.OnClickListener {
 
@@ -221,7 +221,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
         final String number = session.getMobileNumber();
         // final ProgressDialog loading = ProgressDialog.show(this, "Authenticating", "Please wait", false, false);
         StringRequest strReq = new StringRequest(Request.Method.POST,
-                Constants.URL_VERIFY_FOLLOW, new Response.Listener<String>() {
+                Constants.MY_PROFILE_URL_VERIFY_FOLLOW, new Response.Listener<String>() {
 
             @Override
             public void onResponse(String response) {
@@ -271,7 +271,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
         HashMap<String, String> user = session.getUserDetails();
         final String number = session.getMobileNumber();
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_FOLLOW,
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, MY_PROFILE_URL_FOLLOW,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -309,7 +309,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
         HashMap<String, String> user = session.getUserDetails();
         number = session.getMobileNumber();
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_FOLLOW,
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, MY_PROFILE_URL_FOLLOW,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -459,7 +459,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                 param.put("image", image);
 
 
-                String result = rh.sendPostRequest(UPLOAD_URL, param);
+                String result = rh.sendPostRequest(MY_PROFILE_UPLOAD_URL, param);
                 return result;
             }
         }
@@ -517,7 +517,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                 final String headline = editTextHeadline.getText().toString().trim();
                 final String location = editLocation.getText().toString().trim();
                 //Creating an string request
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, PROFILE_EDIT_URL,
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, MY_PROFILE_EDIT_URL,
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
@@ -525,8 +525,14 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                                 if (response.equalsIgnoreCase("success")) {
                                     //dismissing the progressbar
                                     loading.dismiss();
-                                    Info.setText(headline);
-                                    Info.setTextColor(getResources().getColor(android.R.color.white));
+
+                                    if (!headline.isEmpty()) {
+                                        Info.setText(headline);
+                                        Info.setTextColor(getResources().getColor(android.R.color.white));
+                                    } else {
+                                        Info.setText(getResources().getString(R.string.emptyStatus));
+                                        Info.setTextColor(getResources().getColor(android.R.color.holo_red_light));
+                                    }
                                     Toast.makeText(MyProfile.this, "Profile Updated!", Toast.LENGTH_LONG).show();
                                     //Starting a new activity
                                 } else {
