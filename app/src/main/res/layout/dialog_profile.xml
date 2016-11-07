@@ -1,44 +1,45 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:padding="@dimen/activity_horizontal_margin"
-    android:layout_margin="@dimen/activity_horizontal_margin"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#CC000000"
-    android:orientation="vertical">
+    android:layout_margin="@dimen/activity_horizontal_margin"
+    android:background="@color/colorPrimary"
+    android:orientation="vertical"
+    android:padding="@dimen/activity_horizontal_margin">
 
     <EditText
         android:id="@+id/editTextOtp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:hint="@string/emptyStatusHint"
         android:maxLength="140"
-        android:hint="Info"
-        android:textCursorDrawable="@drawable/color_cursor"
-        android:textColor="#fff" />
+        android:textColor="#fff"
 
+        android:textColorHint="#e0e0e0"
+        android:textCursorDrawable="@drawable/color_cursor" />
     <EditText
         android:id="@+id/editTextLocation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:maxLength="20"
         android:hint="Location"
-        android:textCursorDrawable="@drawable/color_cursor"
-        android:textColor="#fff" />
-
+        android:maxLength="20"
+        android:textColor="#fff"
+        android:textColorHint="#e0e0e0"
+        android:textCursorDrawable="@drawable/color_cursor" />
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/buttonConfirm"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
         android:layout_marginBottom="24dp"
         android:layout_marginTop="24dp"
-        android:background="@color/colorPrimary"
+        android:background="@drawable/button_background_rectangular"
         android:padding="12dp"
-        android:text="Edit"
-        android:textColor="#fff"
-        android:layout_gravity="center_horizontal" />
+        android:text="Update"
+        android:textColor="@color/colorPrimaryDark" />
     <TextView
-        android:textColor="@color/transparent_bg"
-        android:text="(Keep your info short.)"
-        android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="(Keep your info short.)"
+        android:textColor="@color/transparent_bg" />
 </LinearLayout>

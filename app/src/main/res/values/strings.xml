@@ -85,5 +85,7 @@
     <string name="drawer_close">Close</string>
     <string name="takepic">Camera</string>
     <string name="opengallery">Gallery</string>
+    <string name="emptyStatus">Add a status to your profile</string>
+    <string name="emptyStatusHint">Your Status</string>
 
 </resources>

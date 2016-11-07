@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -84,7 +85,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
     int SELECT_FILE = 1;
     private String i, tag, number, user, result, image, selectedImagePath;
     private TextView Name, Reports, Info, Readers, Location, Mobile;
-    private Bitmap bitmap, Correctbmp,btmap;
+    private Bitmap bitmap, Correctbmp, btmap;
     private ImageView profilepic;
     private EditText editTextHeadline, editLocation;
     private AppCompatButton buttonEdit;
@@ -123,27 +124,27 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         //initCollapsingToolbar();
-        session=new UserSessionManager(MyProfile.this);
-        i=session.getMobileNumber();
+        session = new UserSessionManager(MyProfile.this);
+        i = session.getMobileNumber();
         cd = new ConnectionDetector(MyProfile.this);
         session = new UserSessionManager(getApplicationContext());
-        progressBar = (ProgressBar)findViewById(R.id.progress_bar);
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.VISIBLE);
 
 
-        Name =(TextView)findViewById(R.id.Name);
-        Reports =(TextView)findViewById(R.id.Reports);
-        Info =(TextView)findViewById(R.id.Info);
-        Readers=(TextView)findViewById(R.id.Readers);
-        Location=(TextView)findViewById(R.id.Location);
-        Mobile=(TextView)findViewById(R.id.Mobile);
+        Name = (TextView) findViewById(R.id.Name);
+        Reports = (TextView) findViewById(R.id.Reports);
+        Info = (TextView) findViewById(R.id.Info);
+        Readers = (TextView) findViewById(R.id.Readers);
+        Location = (TextView) findViewById(R.id.Location);
+        Mobile = (TextView) findViewById(R.id.Mobile);
         Empty = (LinearLayout) findViewById(R.id.empty);
 
-        button = (Button)findViewById(R.id.button);
-        profilepic=(ImageView)findViewById(R.id.profilepic);
+        button = (Button) findViewById(R.id.button);
+        profilepic = (ImageView) findViewById(R.id.profilepic);
 
         String fontPath = "fonts/Roboto-Medium.ttf";
-        String thinpath="fonts/Roboto-Regular.ttf";
+        String thinpath = "fonts/Roboto-Regular.ttf";
        /* Typeface font = Typeface.createFromAsset(this.getAssets(), "fontawesome-webfont.ttf");
         Typeface tf = Typeface.createFromAsset(this.getAssets(), fontPath);
         Typeface thin = Typeface.createFromAsset(this.getAssets(), thinpath);
@@ -155,7 +156,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
         Location.setTypeface(thin);
         Mobile.setTypeface(thin);*/
 
-        recyclerView=(RecyclerView)findViewById(R.id.recycler_view);
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecoration(ContextCompat.getDrawable(this, R.drawable.line));
         recyclerView.addItemDecoration(dividerItemDecoration);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -170,13 +171,12 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                 .build();
 
         //Progress bar
-        tag="Random";
+        tag = "Random";
         isInternetPresent = cd.isConnectingToInternet();
-        if(isInternetPresent) {
+        if (isInternetPresent) {
             new JSONTask().execute(i);
-            new JSONTasks().execute(tag,i);
-        }
-        else {
+            new JSONTasks().execute(tag, i);
+        } else {
             Toast.makeText(this, "You are not connected to Internet", Toast.LENGTH_LONG).show();
         }
 
@@ -188,8 +188,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
-        switch (v.getId())
-        {
+        switch (v.getId()) {
             case R.id.profilepic:
                 Intent intent = new Intent(Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -224,7 +223,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
             @Override
             public void onResponse(String response) {
                 //if the server response is success
-                if(response.equalsIgnoreCase("success")){
+                if (response.equalsIgnoreCase("success")) {
                     //dismissing the progressbar
                     //     loading.dismiss();
 
@@ -234,7 +233,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                     button.setTextColor(ContextCompat.getColor(MyProfile.this, R.color.transparent_bg));
                     button.setText("Unread");
                     button.setTag(1);
-                }else{
+                } else {
                     //Displaying a toast if the otp entered is wrong
                     button.setVisibility(View.VISIBLE);
                     button.setBackgroundColor(ContextCompat.getColor(MyProfile.this, R.color.feedbackground));
@@ -243,11 +242,11 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                     button.setTag(0);
                 }
             }
-        },new Response.ErrorListener() {
+        }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 //   Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
-                Toast.makeText(getApplicationContext(),"Something went wrong, Try again",Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Something went wrong, Try again", Toast.LENGTH_LONG).show();
             }
         }) {
             @Override
@@ -267,7 +266,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
 
     private void reading(final String i) {
         HashMap<String, String> user = session.getUserDetails();
-        final String number=session.getMobileNumber();
+        final String number = session.getMobileNumber();
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_FOLLOW,
                 new Response.Listener<String>() {
@@ -294,8 +293,8 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> map = new HashMap<String, String>();
                 map.put("number", number);
-                map.put("user",i);
-                map.put("unread","reading");
+                map.put("user", i);
+                map.put("unread", "reading");
                 return map;
             }
         };
@@ -305,7 +304,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
 
     private void read(final String i) {
         HashMap<String, String> user = session.getUserDetails();
-        number=session.getMobileNumber();
+        number = session.getMobileNumber();
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_FOLLOW,
                 new Response.Listener<String>() {
@@ -332,7 +331,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> map = new HashMap<String, String>();
                 map.put("number", number);
-                map.put("user",i);
+                map.put("user", i);
                 return map;
             }
         };
@@ -382,7 +381,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
         int photoH = bmOptions.outHeight;
 
         // Determine how much to scale down the image
-        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+        int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
 
         // Decode the image file into a Bitmap sized to fill the View
         bmOptions.inJustDecodeBounds = false;
@@ -402,11 +401,9 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
 
         if (orientation == ExifInterface.ORIENTATION_ROTATE_90) {
             angle = 90;
-        }
-        else if (orientation == ExifInterface.ORIENTATION_ROTATE_180) {
+        } else if (orientation == ExifInterface.ORIENTATION_ROTATE_180) {
             angle = 180;
-        }
-        else if (orientation == ExifInterface.ORIENTATION_ROTATE_270) {
+        } else if (orientation == ExifInterface.ORIENTATION_ROTATE_270) {
             angle = 270;
         }
 
@@ -418,7 +415,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
     }
 
     public String getAbsolutePath(Uri uri) {
-        String[] projection = { MediaStore.MediaColumns.DATA };
+        String[] projection = {MediaStore.MediaColumns.DATA};
         @SuppressWarnings("deprecation")
         Cursor cursor = managedQuery(uri, projection, null, null, null);
         if (cursor != null) {
@@ -469,11 +466,11 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
 
     @Override
     public void onActivityResult(int reqCode, int resCode, Intent data) {
-        if (resCode == Activity.RESULT_OK && reqCode==SELECT_FILE && data != null) {
+        if (resCode == Activity.RESULT_OK && reqCode == SELECT_FILE && data != null) {
             Uri uriFromPath = data.getData();
             selectedImagePath = getAbsolutePath(uriFromPath);
-            setPic(selectedImagePath,profilepic);
-            image=encodeTobase64(Correctbmp);
+            setPic(selectedImagePath, profilepic);
+            image = encodeTobase64(Correctbmp);
             uploadImage();
         }
     }
@@ -489,7 +486,9 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
         buttonEdit = (AppCompatButton) confirmDialog.findViewById(R.id.buttonConfirm);
         editTextHeadline = (EditText) confirmDialog.findViewById(R.id.editTextOtp);
         editLocation = (EditText) confirmDialog.findViewById(R.id.editTextLocation);
-        editTextHeadline.setText(Info.getText());
+        if (Info.getText().toString().equals(getResources().getString(R.string.emptyStatus)))
+            editTextHeadline.setHint(R.string.emptyStatusHint);
+        else editTextHeadline.setText(Info.getText());
         editLocation.setText(Location.getText());
         //Creating an alertdialog builder
         AlertDialog.Builder alert = new AlertDialog.Builder(MyProfile.this);
@@ -513,7 +512,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                 final ProgressDialog loading = ProgressDialog.show(MyProfile.this, "Updating", "Please wait", false, false);
                 //Getting the user entered otp from edittext
                 final String headline = editTextHeadline.getText().toString().trim();
-                final String location=editLocation.getText().toString().trim();
+                final String location = editLocation.getText().toString().trim();
                 //Creating an string request
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, EDIT_URL,
                         new Response.Listener<String>() {
@@ -524,6 +523,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                                     //dismissing the progressbar
                                     loading.dismiss();
                                     Info.setText(headline);
+                                    Info.setTextColor(getResources().getColor(android.R.color.white));
                                     Toast.makeText(MyProfile.this, "Profile Updated!", Toast.LENGTH_LONG).show();
                                     //Starting a new activity
                                 } else {
@@ -548,7 +548,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                         //Adding the parameters otp and username
                         params.put("number", i);
                         params.put("info", headline);
-                        params.put("location",location);
+                        params.put("location", location);
                         // params.put("number",number);
                         return params;
                     }
@@ -687,7 +687,10 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
             Reports.setText(result.get(1));
             if (!result.get(3).isEmpty())
                 Info.setText(result.get(3));
-            else Info.setVisibility(View.GONE);
+            else {
+                Info.setText(getResources().getString(R.string.emptyStatus));
+                Info.setTextColor(ColorStateList.valueOf(getResources().getColor(R.color.red)));
+            }
             imageLoader.displayImage(result.get(2), profilepic, option);
             user = result.get(4);
             Mobile.setText(result.get(4));

@@ -49,7 +49,7 @@
                     android:layout_below="@id/profilepic"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="16dp"
-                    android:text="UserName"
+                    android:text="---"
                     android:textColor="#fff"
                     android:textSize="16dp"
                     android:textStyle="bold" />
@@ -60,8 +60,8 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/Name"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="8dp"
-                    android:text="Tag line"
+                    android:layout_marginTop="4dp"
+                    android:text="---"
                     android:textColor="#fff"
                     android:textSize="@dimen/backdrop_subtitle" />
 
@@ -103,7 +103,7 @@
                     android:drawablePadding="2dp"
 
                     android:gravity="center"
-                    android:text="Location"
+                    android:text="---"
                     android:textColor="#fff"
                     android:textSize="@dimen/backdrop_subtitle" />
 
@@ -119,7 +119,7 @@
                     android:drawablePadding="2dp"
 
                     android:gravity="center_vertical"
-                    android:text="959473827"
+                    android:text="---"
                     android:textColor="#fff"
                     android:textSize="@dimen/backdrop_subtitle" />
 
@@ -154,7 +154,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
 
-                        android:text="0"
+                        android:text="---"
 
                         android:textColor="#f4f4f4"
                         android:textSize="19sp" />
@@ -182,7 +182,7 @@
                         android:id="@+id/Readers"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0"
+                        android:text="---"
                         android:textColor="#f4f4f4"
                         android:textSize="19sp" />
 
@@ -229,8 +229,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <ImageView
                 android:layout_width="wrap_content"
