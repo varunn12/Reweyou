@@ -6,12 +6,19 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
     <string name="tab_1">News</string>
     <string name="tab_2">My City</string>
     <string name="tab_3">Notifications</string>
     <string name="tab_4">Issues</string>
     <string name="tab_5">Reading</string>
 
+    <string-array name="tabs">
+        <item>@string/tab_1</item>
+        <item>@string/tab_2</item>
+        <item>@string/tab_5</item>
+    </string-array>
     <string name="action_logout">Delete Account</string>
     <string name="action_help">Mail Feedback</string>
     <string name="screen1_title">Screen1</string>

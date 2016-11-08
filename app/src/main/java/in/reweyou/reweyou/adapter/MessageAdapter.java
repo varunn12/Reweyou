@@ -13,6 +13,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.CardView;
@@ -264,8 +265,13 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void add() {
         loadingView = true;
         Log.d("fwdfwfwefwe", "here");
-        this.messagelist.add(new MpModel());
-        notifyItemInserted(this.messagelist.size() - 1);
+        messagelist.add(new MpModel());
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                notifyItemInserted(messagelist.size() - 1);
+            }
+        });
     }
 
     public void remove() {

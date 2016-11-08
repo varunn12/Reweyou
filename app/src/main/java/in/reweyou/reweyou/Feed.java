@@ -19,7 +19,7 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -41,9 +41,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.UserSessionManager;
@@ -166,13 +164,16 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
     private void initViewPagerAndTabs() {
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
         viewPager.setOffscreenPageLimit(2);
-        PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager());
 
+        PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager());
+/*
 
         pagerAdapter.addFragment(getFragment(0), getString(R.string.tab_1));
         pagerAdapter.addFragment(getFragment(1), getString(R.string.tab_4));
         pagerAdapter.addFragment(getFragment(2), getString(R.string.tab_5));
-        viewPager.setAdapter(pagerAdapter);
+*/
+
+        viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
 
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
@@ -552,34 +553,37 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
         actionBarDrawerToggle.syncState();
     }
 
-    static class PagerAdapter extends FragmentPagerAdapter {
+    private class PagerAdapter extends FragmentStatePagerAdapter {
 
-        private final List<Fragment> fragmentList = new ArrayList<>();
-        private final List<String> fragmentTitleList = new ArrayList<>();
+        private String[] tabs = getResources().getStringArray(R.array.tabs);
 
-        public PagerAdapter(FragmentManager fragmentManager) {
+        private PagerAdapter(FragmentManager fragmentManager) {
             super(fragmentManager);
         }
 
-        public void addFragment(Fragment fragment, String title) {
+       /* public void addFragment(Fragment fragment, String title) {
             fragmentList.add(fragment);
             fragmentTitleList.add(title);
-        }
+        }*/
 
         @Override
         public Fragment getItem(int position) {
-            return fragmentList.get(position);
+            SecondFragment fragment = new SecondFragment();
+            Bundle bundle = new Bundle();
+            bundle.putInt("position", position);
+            fragment.setArguments(bundle);
+            Log.d("getItem", "" + position);
+            return fragment;
         }
 
         @Override
         public int getCount() {
-            return fragmentList.size();
+            return tabs.length;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return fragmentTitleList.get(position);
-            //return null;
+            return tabs[position];
         }
     }
 }

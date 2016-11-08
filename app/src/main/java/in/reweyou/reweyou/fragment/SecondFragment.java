@@ -2,6 +2,7 @@ package in.reweyou.reweyou.fragment;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -64,10 +65,11 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private int mYear, mMonth, mDay;
     private boolean loading = true;
     private SimpleDateFormat df;
-    private MessageAdapter adapter = new MessageAdapter();
+    private MessageAdapter adapter;
     private Calendar c;
     private String postid;
     private int position = -1;
+    private boolean cacheLoad = false;
 
     public SecondFragment() {
     }
@@ -102,76 +104,92 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                     totalItemCount = layoutManager.getItemCount();
                     pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
 
+                    if (!cacheLoad)
                     if (loading) {
                         if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
                             loading = false;
+
                             Log.v("...", "Last Item Wow !");
                             adapter.add();
 
-                            StringRequest stringRequest = new StringRequest(Request.Method.POST, getUrl(),
-                                    new Response.Listener<String>() {
-                                        @Override
-                                        public void onResponse(String response) {
-                                            Log.d("Response", response);
-
-                                            List<MpModel> list = new ArrayList<MpModel>();
-                                            JSONArray parentArray = null;
-                                            try {
-                                                parentArray = new JSONArray(response);
-                                                adapter.remove();
-
-                                                Gson gson = new Gson();
-                                                for (int i = 0; i < parentArray.length(); i++) {
-                                                    JSONObject finalObject = parentArray.getJSONObject(i);
-                                                    MpModel mpModel = gson.fromJson(finalObject.toString(), MpModel.class);
-                                                    list.add(mpModel);
-                                                    if (i == parentArray.length() - 1) {
-                                                        // formattedDate = mpModel.getDate1();
-                                                        //Log.d("last", mpModel.getCategory());
-                                                        postid = mpModel.getPostId();
-                                                    }
-                                                }
-
-                                                adapter.loadMore(list);
-                                                loading = true;
-
-                                            } catch (JSONException e) {
-                                                e.printStackTrace();
-                                            }
-
-                                        }
-
-                                    },
-                                    new Response.ErrorListener() {
-                                        @Override
-                                        public void onErrorResponse(VolleyError error) {
-                                            //  adapter.remove();
-                                            // Log.e("error",error.getMessage());
-                                            Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show();
-                                            adapter.remove();
-                                            loading = true;
-                                        }
-                                    }) {
+                            new Handler().postDelayed(new Runnable() {
                                 @Override
-                                protected Map<String, String> getParams() {
-                                    Map<String, String> data = new HashMap<>();
-                                    //data.put("tag", tag);
-                                    data.put("location", location);
-                                    data.put("postid", postid);
-                                    // data.put("date", formattedDate);
-                                    //  Log.d("ddd", formattedDate);
-                                    data.put("number", number);
-                                    return data;
+                                public void run() {
+                                    makeLoadMoreRequest();
                                 }
-                            };
-
-                            RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-                            requestQueue.add(stringRequest);
-
+                            }, 1000);
 
                         }
                     }
                 }
+            }
+
+            private void makeLoadMoreRequest() {
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, getUrl(),
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                Log.d("Response", response);
+
+                                List<MpModel> list = new ArrayList<MpModel>();
+                                JSONArray parentArray = null;
+                                try {
+                                    parentArray = new JSONArray(response);
+                                    adapter.remove();
+
+                                    Gson gson = new Gson();
+                                    for (int i = 0; i < parentArray.length(); i++) {
+                                        JSONObject finalObject = parentArray.getJSONObject(i);
+                                        MpModel mpModel = gson.fromJson(finalObject.toString(), MpModel.class);
+                                        list.add(mpModel);
+                                        if (i == parentArray.length() - 1) {
+                                            // formattedDate = mpModel.getDate1();
+                                            //Log.d("last", mpModel.getCategory());
+                                            postid = mpModel.getPostId();
+                                        }
+                                    }
+
+                                    adapter.loadMore(list);
+                                    loading = true;
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    Log.d("ex", e.getMessage());
+
+                                }
+
+                            }
+
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                if (error instanceof NetworkError)
+                                    Log.e("error", error.getMessage());
+                                Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show();
+                                adapter.remove();
+                                loading = true;
+                            }
+                        }) {
+                    @Override
+                    protected Map<String, String> getParams() {
+                        Map<String, String> data = new HashMap<>();
+                        //data.put("tag", tag);
+                        data.put("location", location);
+                        data.put("postid", postid);
+                        // data.put("date", formattedDate);
+                        //  Log.d("ddd", formattedDate);
+                        data.put("number", number);
+
+                        Log.d("data", String.valueOf(data));
+                        return data;
+                    }
+                };
+
+                RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+                requestQueue.add(stringRequest);
+
+
             }
         });
 
@@ -257,6 +275,8 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
                             swipeLayout.setRefreshing(false);
 
+                            Log.d("postid", postid);
+                            cacheLoad = false;
                             MyJSON.saveData(getContext(), response);
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -299,13 +319,13 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                                         messagelist.add(mpModel);
                                     }
                                     progressBar.setVisibility(View.GONE);
-                                    MessageAdapter adapter = new MessageAdapter(getActivity(), messagelist);
+                                    adapter = new MessageAdapter(getActivity(), messagelist);
 
                                     recyclerView.setAdapter(adapter);
 
                                     swipeLayout.setRefreshing(false);
-
-                                    MyJSON.saveData(getContext(), respo);
+                                    cacheLoad = true;
+                                    //   MyJSON.saveData(getContext(), respo);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
