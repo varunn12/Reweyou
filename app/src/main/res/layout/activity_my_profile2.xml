@@ -33,14 +33,15 @@
                 android:layout_marginRight="3dp"
                 android:layout_weight="3.75">
 
-                <ImageView
+                <in.reweyou.reweyou.customView.CircularImageView
                     android:id="@+id/profilepic"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
                     android:layout_centerHorizontal="true"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/download"
-                    app:layout_collapseMode="parallax" />
+
+                    app:myborderColor="@color/colorPrimaryDark"
+                    app:myborderWidth="3dp" />
 
                 <TextView
                     android:id="@+id/Name"
