@@ -18,6 +18,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkError;
 import com.android.volley.NoConnectionError;
 import com.android.volley.ParseError;
@@ -125,10 +126,13 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
             }
 
             private void makeLoadMoreRequest() {
+                final long mRequestStartTime = System.currentTimeMillis();
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, getUrl(),
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
+                                long totalRequestTime = System.currentTimeMillis() - mRequestStartTime;
+                                Log.d("tme", String.valueOf(totalRequestTime));
                                 Log.d("Response", response);
 
                                 List<MpModel> list = new ArrayList<MpModel>();
@@ -164,9 +168,12 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                         new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
+                                long totalRequestTime = System.currentTimeMillis() - mRequestStartTime;
+                                Log.d("tme", String.valueOf(totalRequestTime));
+
                                 if (error instanceof NetworkError)
                                     Log.e("error", error.getMessage());
-                                Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show();
+                                // Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show();
                                 adapter.remove();
                                 loading = true;
                             }
@@ -186,9 +193,11 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                     }
                 };
 
+
+                stringRequest.setRetryPolicy(new DefaultRetryPolicy(10 * 1000, 0,
+                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
                 RequestQueue requestQueue = Volley.newRequestQueue(getContext());
                 requestQueue.add(stringRequest);
-
 
             }
         });
@@ -297,12 +306,12 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                         if (error instanceof NetworkError || error instanceof NoConnectionError || error instanceof TimeoutError) {
                             Log.d("ResponseError", error.toString());
 
-                            getActivity().runOnUiThread(new Runnable() {
+                            /*getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     Toast.makeText(getActivity(), "No internet Connection", Toast.LENGTH_SHORT).show();
                                 }
-                            });
+                            });*/
                             String respo = MyJSON.getData(getContext());
                             if (respo != null) {
                                 JSONArray parentArray = null;
@@ -356,6 +365,9 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
             }
         };
 
+
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(10 * 1000, 0,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(stringRequest);
     }
