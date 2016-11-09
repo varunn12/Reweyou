@@ -43,6 +43,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -727,7 +728,8 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                 }
             });
 
-            imageLoader.displayImage(result.get(2), profilepic, option);
+            // imageLoader.displayImage(result.get(2), profilepic, option);
+            Glide.with(MyProfile.this).load(result.get(2)).error(R.drawable.download).into(profilepic);
             user = result.get(4);
             Mobile.setText(result.get(4));
             Location.setText(result.get(5));
