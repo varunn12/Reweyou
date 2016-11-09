@@ -8,13 +8,13 @@
     android:orientation="vertical"
     android:paddingTop="20dp">
 
-    <ImageView
+    <in.reweyou.reweyou.customView.CircularImageView
         android:id="@+id/image"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
-        android:src="@mipmap/ic_launcher" />
+        app:myborderWidth="0dp" />
 
     <TextView
         android:id="@+id/tv_email"
