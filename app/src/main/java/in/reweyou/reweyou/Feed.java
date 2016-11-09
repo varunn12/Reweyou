@@ -36,6 +36,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -534,7 +535,8 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
         });
         tv_email.setText(session.getUsername());
         String url = "https://www.reweyou.in/uploads/profilepic/" + session.getMobileNumber() + ".jpg";
-        imageLoader.displayImage(url, image, options);
+        // imageLoader.displayImage(url, image, options);
+        Glide.with(Feed.this).load(url).error(R.drawable.download).into(image);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
 
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, mToolbar, R.string.drawer_open, R.string.drawer_close) {
