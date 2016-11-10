@@ -14,7 +14,8 @@
         android:layout_height="64dp"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
-        app:myborderWidth="0dp" />
+        app:myborderColor="@color/colorPrimaryDark"
+        app:myborderWidth="3dp" />
 
     <TextView
         android:id="@+id/tv_email"
