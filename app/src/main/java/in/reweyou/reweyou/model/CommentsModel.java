@@ -14,7 +14,7 @@ public class CommentsModel {
     private String postid;
     private String post;
     private String image;
-    private String r_image;
+    private String r_image = null;
     private String profilepic;
     private String reviewer;
     private String reviewer_name;
@@ -24,16 +24,16 @@ public class CommentsModel {
         return from_name;
     }
 
+    public void setFrom_Name(String from_name) {
+        this.from_name = from_name;
+    }
+
     public String getHeadline() {
         return headline;
     }
 
     public void setHeadline(String type) {
         this.headline = headline;
-    }
-
-    public void setFrom_Name(String from_name) {
-        this.from_name = from_name;
     }
 
     public String getComments() {
@@ -97,31 +97,33 @@ public class CommentsModel {
         this.from = from;
     }
 
-    public void setReviewer(String reviewer)
-    {
-        this.reviewer=reviewer;
-    }
     public String getReviewer()
     {
         return reviewer;
     }
 
-    public void setReviewer_Name(String reviewer_name)
+    public void setReviewer(String reviewer)
     {
-        this.reviewer_name=reviewer_name;
+        this.reviewer = reviewer;
     }
+
     public String getReviewer_Name()
     {
         return reviewer_name;
     }
 
-    public void setId(String id)
+    public void setReviewer_Name(String reviewer_name)
     {
-        this.id=id;
+        this.reviewer_name = reviewer_name;
     }
+
     public String getId()
     {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getProfilepic() {

@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,15 +16,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -69,7 +65,8 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
     ImageLoader imageLoader = ImageLoader.getInstance();
     PermissionsChecker checker;
     private RecyclerView recyclerView;
-    private Button button, imagebutton;
+    private ImageView button;
+    private ImageView imagebutton;
     private EditText editText;
     private List<CommentsModel> mpModelList;
     private CommentsAdapter adapter;
@@ -85,12 +82,25 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_comments);
-        initCollapsingToolbar();
-        checker = new PermissionsChecker(this);
-        Typeface font = Typeface.createFromAsset( getAssets(), "fontawesome-webfont.ttf" );
-        Typeface tf= Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
+        setContentView(R.layout.activity_comments_test);
+        //initCollapsingToolbar();
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Comments");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+        checker = new PermissionsChecker(this);
+        /*Typeface font = Typeface.createFromAsset( getAssets(), "fontawesome-webfont.ttf" );
+        Typeface tf= Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
+*/
         session = new UserSessionManager(getApplicationContext());
         HashMap<String, String> user = session.getUserDetails();
         name = user.get(UserSessionManager.KEY_NAME);
@@ -103,29 +113,26 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
 
 
         editText = (EditText)findViewById(R.id.Who);
-        button=(Button)findViewById(R.id.btn_send);
-        imagebutton=(Button)findViewById(R.id.btn_image);
-        button.setTypeface(font);
-        imagebutton.setTypeface(font);
+        button = (ImageView) findViewById(R.id.btn_send);
+        imagebutton = (ImageView) findViewById(R.id.btn_image);
 
 
         imagebutton.setOnClickListener(this);
         button.setOnClickListener(this);
-
+/*
         headline=(TextView)findViewById(R.id.headline);
-        headline.setTypeface(tf);
-        headline.setText(head);
+        headline.setText(head);*/
       //  headline.setVisibility(View.GONE);
 
         image=(ImageView)findViewById(R.id.image);
         // imageLoader.displayImage(url,image);
-        Glide.with(Comments.this).load(url).diskCacheStrategy(DiskCacheStrategy.SOURCE).skipMemoryCache(true).into(image);
+        //  Glide.with(Comments.this).load(url).diskCacheStrategy(DiskCacheStrategy.SOURCE).skipMemoryCache(true).into(image);
      //   image.setVisibility(View.GONE);
         recyclerView=(RecyclerView)findViewById(R.id.recycler_view);
 
 
         RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecoration(ContextCompat.getDrawable(Comments.this, R.drawable.line) );
-        recyclerView.addItemDecoration(dividerItemDecoration);
+      /*  recyclerView.addItemDecoration(dividerItemDecoration);*/
         recyclerView.setLayoutManager(new LinearLayoutManager(Comments.this));
         progressBar = (ProgressBar)findViewById(R.id.progress_bar);
 
