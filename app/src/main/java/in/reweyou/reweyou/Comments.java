@@ -86,7 +86,7 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
         //initCollapsingToolbar();
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Comments");
+        getSupportActionBar().setTitle("Reactions");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
