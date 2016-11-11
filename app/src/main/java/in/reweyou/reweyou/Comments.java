@@ -18,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -78,6 +79,7 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
     private String i;
     private String number, head, url;
     private ProgressBar progressBar;
+    private LinearLayout Empty;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,15 +106,17 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
         session = new UserSessionManager(getApplicationContext());
         HashMap<String, String> user = session.getUserDetails();
         name = user.get(UserSessionManager.KEY_NAME);
-        number= user.get(UserSessionManager.KEY_NUMBER);
-        Intent in=getIntent();
+        number = user.get(UserSessionManager.KEY_NUMBER);
+        Intent in = getIntent();
         Bundle bundle = getIntent().getExtras();
         i = bundle.getString("myData");
-        head=bundle.getString("headline");
-        url=bundle.getString("image");
+        head = bundle.getString("headline");
+        url = bundle.getString("image");
+
+        Empty = (LinearLayout) findViewById(R.id.empty);
 
 
-        editText = (EditText)findViewById(R.id.Who);
+        editText = (EditText) findViewById(R.id.Who);
         button = (ImageView) findViewById(R.id.btn_send);
         imagebutton = (ImageView) findViewById(R.id.btn_image);
 
@@ -122,21 +126,21 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
 /*
         headline=(TextView)findViewById(R.id.headline);
         headline.setText(head);*/
-      //  headline.setVisibility(View.GONE);
+        //  headline.setVisibility(View.GONE);
 
-        image=(ImageView)findViewById(R.id.image);
+        image = (ImageView) findViewById(R.id.image);
         // imageLoader.displayImage(url,image);
         //  Glide.with(Comments.this).load(url).diskCacheStrategy(DiskCacheStrategy.SOURCE).skipMemoryCache(true).into(image);
-     //   image.setVisibility(View.GONE);
-        recyclerView=(RecyclerView)findViewById(R.id.recycler_view);
+        //   image.setVisibility(View.GONE);
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
 
-        RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecoration(ContextCompat.getDrawable(Comments.this, R.drawable.line) );
+        RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecoration(ContextCompat.getDrawable(Comments.this, R.drawable.line));
       /*  recyclerView.addItemDecoration(dividerItemDecoration);*/
         recyclerView.setLayoutManager(new LinearLayoutManager(Comments.this));
-        progressBar = (ProgressBar)findViewById(R.id.progress_bar);
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
 
-        swipeLayout = (SwipeRefreshLayout)findViewById(R.id.swipe_container);
+        swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
         swipeLayout.setOnRefreshListener(this);
         progressBar.setVisibility(View.VISIBLE);
         new JSONTask().execute(i);
@@ -152,12 +156,10 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
     public void onClick(View v) {
         if (v == button) {
             uploadText();
-        }
-        else {
+        } else {
             if (checker.lacksPermissions(PERMISSIONS)) {
                 startPermissionsActivity();
-            }
-            else {
+            } else {
                 Intent intent = new Intent(Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 // 2. pick image only
@@ -210,7 +212,7 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
                     param.put(KEY_NUMBER, number);
                     param.put(KEY_NAME, name);
                     param.put(KEY_TIME, timeStamp);
-                    param.put(KEY_ID,i);
+                    param.put(KEY_ID, i);
                     result = rh.sendPostRequest(UPLOAD_URL, param);
                     return result;
                 }
@@ -222,17 +224,15 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
 
     @Override
     protected void onActivityResult(int reqCode, int resCode, Intent data) {
-        if (resCode == Activity.RESULT_OK && reqCode==SELECT_FILE && data != null) {
+        if (resCode == Activity.RESULT_OK && reqCode == SELECT_FILE && data != null) {
             Uri uriFromPath = data.getData();
             String show = uriFromPath.toString();
             Intent intent = new Intent(this, UpdateImage.class);
             intent.putExtra("path", show);
-            intent.putExtra("postid",i);
+            intent.putExtra("postid", i);
             startActivity(intent);
-        }
-        else
-        {
-            Toast.makeText(this,"There is some error!",Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "There is some error!", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -346,11 +346,16 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
         @Override
         protected void onPostExecute(List<CommentsModel> result) {
             super.onPostExecute(result);
+
             progressBar.setVisibility(View.GONE);
-            CommentsAdapter adapter = new CommentsAdapter(Comments.this, result);
-            recyclerView.setAdapter(adapter);
-            swipeLayout.setRefreshing(false);
-            //need to set data to the list
+            if (result.isEmpty()) {
+                Empty.setVisibility(View.VISIBLE);
+            } else {
+                CommentsAdapter adapter = new CommentsAdapter(Comments.this, result);
+                recyclerView.setAdapter(adapter);
+                swipeLayout.setRefreshing(false);
+            }
+
         }
     }
 
