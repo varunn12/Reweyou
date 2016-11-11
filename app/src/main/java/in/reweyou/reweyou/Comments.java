@@ -151,7 +151,6 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
             }
         });
         button = (ImageView) findViewById(R.id.btn_send);
-        button.setEnabled(false);
 
         imagebutton = (ImageView) findViewById(R.id.btn_image);
 
@@ -200,13 +199,13 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
 
     private void setEnabledBottomBarViews(int i) {
         if (i == DISABLE) {
-            editText.setEnabled(false);
-            imagebutton.setEnabled(false);
-            button.setEnabled(false);
+            editText.setVisibility(View.GONE);
+            imagebutton.setVisibility(View.GONE);
+            button.setVisibility(View.GONE);
         } else {
-            editText.setEnabled(true);
-            imagebutton.setEnabled(true);
-            button.setEnabled(true);
+            editText.setVisibility(View.VISIBLE);
+            imagebutton.setVisibility(View.VISIBLE);
+            button.setVisibility(View.VISIBLE);
         }
     }
 
