@@ -49,6 +49,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 import in.reweyou.reweyou.adapter.CommentsAdapter;
+import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.DividerItemDecoration;
 import in.reweyou.reweyou.classes.RequestHandler;
 import in.reweyou.reweyou.classes.UserSessionManager;
@@ -63,6 +64,8 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
     public static final String KEY_NUMBER = "number";
     static final String[] PERMISSIONS = new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private static final int REQUEST_CODE = 0;
+    private static final int DISABLE = 0;
+    private static final int ENABLE = 1;
     int SELECT_FILE = 1;
     SwipeRefreshLayout swipeLayout;
     UserSessionManager session;
@@ -83,6 +86,8 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
     private String number, head, url;
     private ProgressBar progressBar;
     private LinearLayout Empty;
+    private ConnectionDetector checknet;
+    private LinearLayout Empty1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +100,7 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        checknet = new ConnectionDetector(Comments.this);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -117,6 +123,7 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
         url = bundle.getString("image");
 
         Empty = (LinearLayout) findViewById(R.id.empty);
+        Empty1 = (LinearLayout) findViewById(R.id.empty1);
 
 
         editText = (EditText) findViewById(R.id.Who);
@@ -151,6 +158,9 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
 
         imagebutton.setOnClickListener(this);
         button.setOnClickListener(this);
+
+        setEnabledBottomBarViews(DISABLE);
+
 /*
         headline=(TextView)findViewById(R.id.headline);
         headline.setText(head);*/
@@ -170,9 +180,34 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
 
         swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
         swipeLayout.setOnRefreshListener(this);
-        progressBar.setVisibility(View.VISIBLE);
-        new JSONTask().execute(i);
 
+        if (checknet.isConnectingToInternet())
+            new JSONTask().execute(i);
+        else {
+            Empty1.setVisibility(View.VISIBLE);
+            Empty1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (checknet.isConnectingToInternet())
+                        new JSONTask().execute(i);
+                    else Empty1.setVisibility(View.VISIBLE);
+
+                }
+            });
+        }
+
+    }
+
+    private void setEnabledBottomBarViews(int i) {
+        if (i == DISABLE) {
+            editText.setEnabled(false);
+            imagebutton.setEnabled(false);
+            button.setEnabled(false);
+        } else {
+            editText.setEnabled(true);
+            imagebutton.setEnabled(true);
+            button.setEnabled(true);
+        }
     }
 
     @Override
@@ -312,6 +347,9 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
         protected void onPreExecute() {
             super.onPreExecute();
             //setProgressBarIndeterminateVisibility(true);
+            progressBar.setVisibility(View.VISIBLE);
+            Empty1.setVisibility(View.GONE);
+
         }
 
         @Override
@@ -381,15 +419,21 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
         @Override
         protected void onPostExecute(List<CommentsModel> result) {
             super.onPostExecute(result);
-
             progressBar.setVisibility(View.GONE);
-            if (result.isEmpty()) {
-                Empty.setVisibility(View.VISIBLE);
-            } else {
-                CommentsAdapter adapter = new CommentsAdapter(Comments.this, result);
-                recyclerView.setAdapter(adapter);
-                swipeLayout.setRefreshing(false);
-            }
+
+            if (result != null) {
+                setEnabledBottomBarViews(ENABLE);
+                button.setEnabled(false);
+                if (result.isEmpty()) {
+                    Empty.setVisibility(View.VISIBLE);
+
+                } else {
+                    CommentsAdapter adapter = new CommentsAdapter(Comments.this, result);
+                    recyclerView.setAdapter(adapter);
+                    swipeLayout.setRefreshing(false);
+                }
+            } else setEnabledBottomBarViews(DISABLE);
+
 
         }
     }
