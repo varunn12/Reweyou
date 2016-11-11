@@ -370,6 +370,7 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
                 wr.write(rh.getPostDataString(data));
                 wr.flush();
 
+
                 InputStream stream = connection.getInputStream();
                 reader = new BufferedReader(new InputStreamReader(stream));
                 StringBuffer buffer = new StringBuffer();

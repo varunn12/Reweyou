@@ -115,7 +115,7 @@
     <LinearLayout
         android:id="@+id/comment"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom"
 
         android:gravity="center_vertical"
@@ -130,16 +130,25 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="#fff"
             android:orientation="horizontal">
 
             <EditText
                 android:id="@+id/Who"
                 android:layout_width="0dip"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="6"
                 android:background="@android:color/transparent"
                 android:hint="Add a Reaction..."
+
+                android:inputType="textMultiLine"
+                android:lines="10"
+                android:maxLines="10"
+                android:minHeight="48dp"
+                android:minLines="1"
+                android:paddingBottom="4dp"
                 android:paddingLeft="16dp"
+                android:paddingTop="4dp"
                 android:textColorHint="#9e9e9e"
                 android:textCursorDrawable="@drawable/color_cursor"
                 android:textSize="14dp" />
@@ -148,6 +157,7 @@
                 android:id="@+id/btn_image"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
+                android:layout_gravity="bottom"
                 android:scaleType="centerInside"
                 app:srcCompat="@drawable/ic_photo_camera_black_24px"
 
@@ -157,6 +167,7 @@
                 android:id="@+id/btn_send"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
+                android:layout_gravity="bottom"
                 android:scaleType="centerInside"
                 app:srcCompat="@drawable/ic_send_black_24px"
 
