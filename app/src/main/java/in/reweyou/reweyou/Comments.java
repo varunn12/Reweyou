@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.ContextCompat;
@@ -184,17 +185,24 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
         if (v == button) {
             uploadText();
         } else {
-            if (checker.lacksPermissions(PERMISSIONS)) {
-                startPermissionsActivity();
-            } else {
-                Intent intent = new Intent(Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                // 2. pick image only
-                intent.setType("image/*");
-                // 3. start activity
-                startActivityForResult(intent, SELECT_FILE);
-                UILApplication.getInstance().trackEvent("Gallery", "Gallery", "For Pics");
-            }
+            editText.clearFocus();
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    if (checker.lacksPermissions(PERMISSIONS)) {
+                        startPermissionsActivity();
+                    } else {
+                        Intent intent = new Intent(Intent.ACTION_PICK,
+                                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        // 2. pick image only
+                        intent.setType("image/*");
+                        // 3. start activity
+                        startActivityForResult(intent, SELECT_FILE);
+                        UILApplication.getInstance().trackEvent("Gallery", "Gallery", "For Pics");
+                    }
+                }
+            });
+
         }
     }
 
