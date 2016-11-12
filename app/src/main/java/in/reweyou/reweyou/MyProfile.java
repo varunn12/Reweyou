@@ -128,6 +128,12 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
         getSupportActionBar().setTitle("Profile");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         //initCollapsingToolbar();
         session = new UserSessionManager(MyProfile.this);
         i = session.getMobileNumber();
