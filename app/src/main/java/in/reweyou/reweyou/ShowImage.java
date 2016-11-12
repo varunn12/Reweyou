@@ -17,12 +17,13 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -50,6 +51,23 @@ import in.reweyou.reweyou.classes.RequestHandler;
 import in.reweyou.reweyou.classes.UserSessionManager;
 
 public class ShowImage extends AppCompatActivity implements View.OnClickListener {
+    public static final String KEY_IMAGE = "image";
+    public static final String KEY_ADDRESS = "address";
+    public static final String KEY_TAG = "tag";
+    public static final String KEY_TIME = "time";
+    public static final String KEY_LOCATION = "location";
+    public static final String KEY_TEXT = "headline";
+    public static final String KEY_NAME = "name";
+    public static final String UPLOAD_URL = "https://www.reweyou.in/reweyou/upload_report.php";
+    static final String[] PERMISSIONS = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
+    private static final int REQUEST_CODE = 0;
+    Location location;
+    AppLocationService appLocationService;
+    ConnectionDetector cd;
+    UserSessionManager session;
+    String selectedImagePath;
+    Boolean isInternetPresent = false;
+    PermissionsChecker checker;
     private Button button;
     private EditText editText,editTag, head;
     private ImageView imageview;
@@ -57,34 +75,45 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
     private String place;
     private Bitmap Correctbmp;
     private String address, mycity;
-    Location location;
-
-    AppLocationService appLocationService;
-    ConnectionDetector cd;
-    private static final int REQUEST_CODE = 0;
-    UserSessionManager session;
     private String name;
     private String tag, type;
-    String selectedImagePath;
     private ImageLoadingUtils utils;
-    Boolean isInternetPresent = false;
     private Spinner staticSpinner;
-    PermissionsChecker checker;
-
-    public static final String KEY_IMAGE = "image";
-    public static final String KEY_ADDRESS="address";
-    public static final String KEY_TAG = "tag";
-    public static final String KEY_TIME = "time";
-    public static final String KEY_LOCATION = "location";
-    public static final String KEY_TEXT = "headline";
-    public static final String KEY_NAME = "name";
-    public static final String UPLOAD_URL = "https://www.reweyou.in/reweyou/upload_report.php";
     private String number;
-    static final String[] PERMISSIONS = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
+    private Toolbar toolbar;
+
+    public static boolean isLocationEnabled(Context context) {
+        int locationMode = 0;
+        String locationProviders;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            try {
+                locationMode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
+
+            } catch (Settings.SettingNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            return locationMode != Settings.Secure.LOCATION_MODE_OFF;
+
+        } else {
+            locationProviders = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+            return !TextUtils.isEmpty(locationProviders);
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setTitle("Upload Report");
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         session = new UserSessionManager(getApplicationContext());
         checker = new PermissionsChecker(this);
         mycity=session.getLoginLocation();
@@ -294,7 +323,7 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
                         double latitude = location.getLatitude();
                         double longitude = location.getLongitude();
                         LocationAddress locationAddress = new LocationAddress(ShowImage.this);
-                        locationAddress.getAddressFromLocation(latitude, longitude,
+                        LocationAddress.getAddressFromLocation(latitude, longitude,
                                 getApplicationContext(), new GeocoderHandler());
                         // Toast.makeText(CameraActivity.this,"Detecting current location...We need your current location for authenticity.",Toast.LENGTH_LONG).show();
                         button.setBackgroundResource(R.color.colorPrimary);
@@ -315,7 +344,7 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
                             double latitude = location.getLatitude();
                             double longitude = location.getLongitude();
                             LocationAddress locationAddress = new LocationAddress(ShowImage.this);
-                            locationAddress.getAddressFromLocation(latitude, longitude,
+                            LocationAddress.getAddressFromLocation(latitude, longitude,
                                     getApplicationContext(), new GeocoderHandler());
                             //     Toast.makeText(CameraActivity.this,"Detecting current location...We need your current location for authenticity.",Toast.LENGTH_LONG).show();
                             button.setBackgroundResource(R.color.colorPrimary);
@@ -360,6 +389,27 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
         alertDialog.show();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (checker.lacksPermissions(PERMISSIONS)) {
+            startPermissionsActivity();
+        }
+    }
+
+    private void startPermissionsActivity() {
+        PermissionsActivity.startActivityForResult(this, REQUEST_CODE, PERMISSIONS);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE && resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
+            finish();
+        }
+    }
+
     private class GeocoderHandler extends Handler {
         @Override
         public void handleMessage(Message message) {
@@ -377,43 +427,6 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
             }
             place = locationAddress;
             address=fulladdress;
-        }
-    }
-    public static boolean isLocationEnabled(Context context) {
-        int locationMode = 0;
-        String locationProviders;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
-            try {
-                locationMode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
-
-            } catch (Settings.SettingNotFoundException e) {
-                e.printStackTrace();
-            }
-
-            return locationMode != Settings.Secure.LOCATION_MODE_OFF;
-
-        }else{
-            locationProviders = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
-            return !TextUtils.isEmpty(locationProviders);
-        }
-    }
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        if (checker.lacksPermissions(PERMISSIONS)) {
-            startPermissionsActivity();
-        }
-    }
-    private void startPermissionsActivity() {
-        PermissionsActivity.startActivityForResult(this, REQUEST_CODE, PERMISSIONS);
-    }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE && resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
-            finish();
         }
     }
 }

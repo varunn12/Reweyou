@@ -84,9 +84,15 @@
 
         <activity android:name=".VideoCapture" />
         <activity android:name=".Videorow" />
-        <activity android:name=".ImageCapture" />
+        <activity android:name=".ImageCapture">
+
+        </activity>
         <activity android:name=".MyProfile" />
-        <activity android:name=".ImageActivity" />
+        <activity
+            android:name=".ImageActivity"
+            android:theme="@style/AppTheme">
+
+        </activity>
         <activity android:name=".Welcome" />
         <activity android:name=".Leaderboard" />
         <activity android:name=".Notifications" />
