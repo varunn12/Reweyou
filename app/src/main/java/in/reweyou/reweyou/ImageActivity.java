@@ -14,12 +14,13 @@ import android.location.LocationManager;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.view.View;
 import android.widget.AdapterView;
@@ -44,6 +45,19 @@ import in.reweyou.reweyou.classes.RequestHandler;
 import in.reweyou.reweyou.classes.UserSessionManager;
 
 public class ImageActivity extends AppCompatActivity implements View.OnClickListener {
+    public static final String KEY_LOCATION = "location";
+    public static final String KEY_ADDRESS = "address";
+    public static final String KEY_IMAGE = "image";
+    public static final String KEY_TIME = "time";
+    public static final String KEY_NAME = "name";
+    public static final String KEY_TAG = "tag";
+    public static final String KEY_TEXT = "headline";
+    public static final String UPLOAD_URL = "https://www.reweyou.in/upload.php";
+    Location location;
+    String selectedImagePath;
+    UserSessionManager session;
+    int backpress;
+    AppLocationService appLocationService;
     private Button button;
     private EditText editText;
     private ImageView imageview;
@@ -52,24 +66,10 @@ public class ImageActivity extends AppCompatActivity implements View.OnClickList
     private Spinner staticSpinner;
     private String tag;
     private String result;
-    Location location;
     private String place;
     private String address;
-    String selectedImagePath;
-    UserSessionManager session;
     private String name;
-    int backpress;
-
-    AppLocationService appLocationService;
-
-    public static final String KEY_LOCATION="location";
-    public static final String KEY_ADDRESS="address";
-    public static final String KEY_IMAGE = "image";
-    public static final String KEY_TIME = "time";
-    public static final String KEY_NAME = "name";
-    public static final String KEY_TAG="tag";
-    public static final String KEY_TEXT = "headline";
-    public static final String UPLOAD_URL = "https://www.reweyou.in/upload.php";
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +77,15 @@ public class ImageActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_camera);
         Typeface font = Typeface.createFromAsset( getAssets(), "fontawesome-webfont.ttf" );
         session = new UserSessionManager(ImageActivity.this);
+
+       /* toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setTitle("Upload Report");
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);*/
+
         appLocationService = new AppLocationService(
                 ImageActivity.this);
         imageview = (ImageView)findViewById(R.id.ImageShow);
@@ -252,7 +261,7 @@ public class ImageActivity extends AppCompatActivity implements View.OnClickList
                 double latitude = location.getLatitude();
                 double longitude = location.getLongitude();
                 LocationAddress locationAddress = new LocationAddress(ImageActivity.this);
-                locationAddress.getAddressFromLocation(latitude, longitude,
+                LocationAddress.getAddressFromLocation(latitude, longitude,
                         getApplicationContext(), new GeocoderHandler());
             }
         }else {
@@ -290,6 +299,16 @@ public class ImageActivity extends AppCompatActivity implements View.OnClickList
         finish(); // Call once you redirect to another activity
     }
 
+    public void onBackPressed() {
+        backpress = (backpress + 1);
+        Toast.makeText(ImageActivity.this, " Press Back again to Exit ", Toast.LENGTH_SHORT).show();
+
+        if (backpress > 1) {
+            Intent i = new Intent(ImageActivity.this, Feed.class);
+            startActivity(i);
+        }
+    }
+
     private class GeocoderHandler extends Handler {
         @Override
         public void handleMessage(Message message) {
@@ -307,16 +326,6 @@ public class ImageActivity extends AppCompatActivity implements View.OnClickList
             }
             place = locationAddress;
             address=fulladdress;
-        }
-    }
-
-    public void onBackPressed(){
-        backpress = (backpress + 1);
-        Toast.makeText(ImageActivity.this, " Press Back again to Exit ", Toast.LENGTH_SHORT).show();
-
-        if (backpress>1) {
-            Intent i=new Intent(ImageActivity.this,Feed.class);
-            startActivity(i);
         }
     }
 

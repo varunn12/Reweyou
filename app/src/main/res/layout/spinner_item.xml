@@ -2,7 +2,9 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:textSize="18sp"
-    android:gravity="center"
     android:drawableRight="@drawable/abc_spinner_mtrl_am_alpha"
-    android:textColor="#fff" />
+    android:gravity="center"
+    android:paddingRight="8dp"
+
+    android:textColor="#757575"
+    android:textSize="16sp" />

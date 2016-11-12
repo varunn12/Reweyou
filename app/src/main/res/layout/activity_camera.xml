@@ -1,94 +1,147 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:isScrollContainer="false"
-    android:fillViewport="false">
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:layout_weight="1"
-    android:background="#1A000000">
+    android:background="@android:color/white">
 
-
-    <ImageView
-        android:id="@+id/ImageShow"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_marginBottom="20dp"
-        android:layout_centerHorizontal="true" />
-    <EditText
-        android:layout_width="200dp"
-        android:layout_height="40dp"
-        android:id="@+id/EditTag"
-        android:inputType="textCapSentences"
-        android:layout_centerHorizontal="true"
-        android:textCursorDrawable="@drawable/color_cursor"
-        android:layout_below="@id/ImageShow"
-        android:hint="Enter a tag"
-        android:layout_marginBottom="10dp" />
-    <Spinner
-        android:id="@+id/static_spinner"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_below="@id/EditTag"
-        android:layout_centerHorizontal="true"
-        android:background="@color/colorPrimary" />
-
-    <EditText
-        android:id="@+id/head"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/static_spinner"
-        android:maxLength="140"
-        android:inputType="textCapSentences|textMultiLine"
-        android:hint="One line Headline"
-        android:textCursorDrawable="@drawable/color_cursor"
-        android:textColor="#000"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginTop="20dp" />
+        android:fitsSystemWindows="true"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-    <LinearLayout
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+
+            android:layout_height="?attr/actionBarSize"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:id="@+id/linear"
-        android:orientation="horizontal"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="3dp"
-        android:layout_marginRight="3dp"
-        android:layout_marginBottom="5dp"
-        android:background="@drawable/border">
+        android:layout_height="match_parent"
+        android:background="#fff"
+        android:fillViewport="true"
+        android:isScrollContainer="false">
 
-        <EditText
-            android:id="@+id/Who"
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_weight="6"
-            android:paddingLeft="8dp"
-            android:paddingRight="6dp"
-            android:maxLength="500"
-            android:inputType="textCapSentences|textMultiLine"
-            android:hint="Explain your report in 500 charcters"
-            android:textCursorDrawable="@drawable/color_cursor"
-            android:textColor="#000"
-            android:paddingTop="20dp" />
 
-        <Button
-            android:id="@+id/btn_send"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:textSize="21sp"
-            android:text="@string/location"
-            android:textColor="#fff"
-            android:layout_weight="1"
-            android:layout_margin="3dp"
-            android:background="@color/random" />
-    </LinearLayout>
-</LinearLayout>
-</ScrollView>
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+
+            <ImageView
+                android:id="@+id/ImageShow"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/border_primary"
+                android:padding="4dp" />
+
+            <EditText
+                android:id="@+id/EditTag"
+                android:layout_width="200dp"
+                android:layout_height="44dp"
+                android:layout_below="@id/ImageShow"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/border"
+                android:gravity="center"
+                android:hint="Enter a tag"
+                android:inputType="textMultiLine"
+                android:textColorHint="#9e9e9e"
+                android:textCursorDrawable="@drawable/color_cursor"
+                android:textSize="16dp"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/static_spinner"
+                android:layout_width="200dp"
+                android:layout_height="44dp"
+                android:layout_below="@id/EditTag"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/border" />
+
+            <EditText
+                android:id="@+id/head"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/static_spinner"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/border"
+                android:hint="One line Headline"
+                android:inputType="textMultiLine"
+                android:maxLength="140"
+                android:minHeight="44dp"
+
+                android:paddingBottom="8dp"
+                android:paddingLeft="12dp"
+                android:paddingTop="8dp"
+
+                android:textColor="#000"
+                android:textCursorDrawable="@drawable/color_cursor"
+                android:textSize="16dp" />
+
+            <LinearLayout
+                android:id="@+id/linear"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:background="@drawable/border"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="4dp">
+
+
+                <EditText
+                    android:id="@+id/Who"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6"
+
+                    android:background="#fff"
+
+                    android:hint="Add a Reaction..."
+
+                    android:inputType="textMultiLine"
+                    android:lines="10"
+                    android:maxLines="10"
+                    android:minHeight="48dp"
+                    android:minLines="1"
+                    android:paddingBottom="16dp"
+                    android:paddingLeft="12dp"
+                    android:paddingTop="16dp"
+                    android:textColorHint="#9e9e9e"
+                    android:textCursorDrawable="@drawable/color_cursor"
+                    android:textSize="14dp" />
+
+                <Button
+                    android:id="@+id/btn_send"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="bottom"
+                    android:layout_marginBottom="2dp"
+                    android:layout_weight="1"
+                    android:background="@color/random"
+                    android:text="@string/location"
+                    android:textColor="#fff"
+
+                    android:textSize="21sp" />
+
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</android.support.design.widget.CoordinatorLayout>
