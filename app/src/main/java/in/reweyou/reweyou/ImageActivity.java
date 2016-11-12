@@ -78,13 +78,12 @@ public class ImageActivity extends AppCompatActivity implements View.OnClickList
         Typeface font = Typeface.createFromAsset( getAssets(), "fontawesome-webfont.ttf" );
         session = new UserSessionManager(ImageActivity.this);
 
-       /* toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setTitle("Upload Report");
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);*/
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         appLocationService = new AppLocationService(
                 ImageActivity.this);
