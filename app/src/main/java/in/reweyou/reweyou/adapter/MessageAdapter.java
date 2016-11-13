@@ -100,6 +100,10 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private String username;
     private boolean loadingView = false;
 
+    public MessageAdapter() {
+
+    }
+
     public MessageAdapter(Context context, List<MpModel> mlist) {
         this.mContext = context;
 
@@ -110,26 +114,18 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         session = new UserSessionManager(mContext);
     }
 
-    public MessageAdapter() {
-
-    }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        Log.d("viewType", "" + viewType);
         switch (viewType) {
             case VIEW_TYPE_IMAGE:
-                View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_messageadapter, viewGroup, false);
-                return new ImageViewHolder(view);
+                return new ImageViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_messageadapter_image, viewGroup, false));
             case VIEW_TYPE_VIDEO:
-                View view3 = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_messageadapter_video, viewGroup, false);
-                return new ViewHolder2(view3);
+                return new VideoViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_messageadapter_video, viewGroup, false));
             case VIEW_TYPE_LOADING:
-                View view2 = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_messageadapter_loading, viewGroup, false);
-                return new VideoViewHolder(view2);
+                return new LoadingViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_messageadapter_loading, viewGroup, false));
             default:
-                View view4 = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_messageadapter, viewGroup, false);
-                return new ImageViewHolder(view4);
+                return new ImageViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_messageadapter_image, viewGroup, false));
         }
     }
 
@@ -138,27 +134,40 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         switch (viewHolder2.getItemViewType()) {
             case VIEW_TYPE_LOADING:
-                Log.d("loading view", "true");
                 break;
             case VIEW_TYPE_VIDEO:
-                Log.d("loading viewwqqw", "true");
-
-                bind2(position, viewHolder2);
+                bindVideo(position, viewHolder2);
                 break;
             case VIEW_TYPE_IMAGE:
-                Log.d("loading viewdwqkjdq", "true");
-
-                bind(position, viewHolder2);
+                bindImageOrGif(position, viewHolder2);
                 break;
             default:
-                bind(position, viewHolder2);
+                bindImageOrGif(position, viewHolder2);
                 break;
 
         }
     }
 
-    private void bind(final int position, RecyclerView.ViewHolder viewHolder2) {
-        Log.d("ewdwedew", viewHolder2.getItemViewType() + "   " + messagelist.get(position).getFrom());
+    @Override
+    public int getItemViewType(int position) {
+        switch (messagelist.get(position).getViewType()) {
+            case VIEW_TYPE_IMAGE:
+                return VIEW_TYPE_IMAGE;
+            case VIEW_TYPE_VIDEO:
+                return VIEW_TYPE_VIDEO;
+            case VIEW_TYPE_LOADING:
+                return VIEW_TYPE_LOADING;
+            default:
+                return super.getItemViewType(position);
+        }
+    }
+
+    @Override
+    public int getItemCount() {
+        return (null != messagelist ? messagelist.size() : 0);
+    }
+
+    private void bindImageOrGif(final int position, RecyclerView.ViewHolder viewHolder2) {
         final ImageViewHolder viewHolder = (ImageViewHolder) viewHolder2;
         Spannable spannable = new SpannableString(messagelist.get(position).getHeadline());
         Util.linkifyUrl(spannable, new CustomTabsOnClickListener(activity, mCustomTabActivityHelper));
@@ -278,8 +287,8 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         });
     }
 
-    private void bind2(final int position, RecyclerView.ViewHolder viewHolder2) {
-        final ViewHolder2 viewHolder = (ViewHolder2) viewHolder2;
+    private void bindVideo(final int position, RecyclerView.ViewHolder viewHolder2) {
+        final VideoViewHolder viewHolder = (VideoViewHolder) viewHolder2;
         Spannable spannable = new SpannableString(messagelist.get(position).getHeadline());
         Util.linkifyUrl(spannable, new CustomTabsOnClickListener(activity, mCustomTabActivityHelper));
         viewHolder.headline.setText(spannable);
@@ -411,22 +420,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         });
     }
 
-
-    @Override
-    public int getItemViewType(int position) {
-        switch (messagelist.get(position).getViewType()) {
-            case VIEW_TYPE_IMAGE:
-                return VIEW_TYPE_IMAGE;
-            case VIEW_TYPE_VIDEO:
-                return VIEW_TYPE_VIDEO;
-            case VIEW_TYPE_LOADING:
-                return VIEW_TYPE_LOADING;
-            default:
-                Log.d("item", String.valueOf(super.getItemViewType(position)));
-                return super.getItemViewType(position);
-        }
-    }
-
     public void add() {
         loadingView = true;
         Log.d("fwdfwfwefwe", "here");
@@ -490,11 +483,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         mContext.startActivity(Intent.createChooser(intent, "Share image using"));
     }
 
-    @Override
-    public int getItemCount() {
-        return (null != messagelist ? messagelist.size() : 0);
-    }
-
     public void showImage(int position) {
         Dialog builder = new Dialog(mContext);
         //  builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -552,7 +540,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         requestQueue.add(stringRequest);
     }
 
-    //This method would confirm the otp
     public void editHeadline(int position) throws JSONException {
         //Creating a LayoutInflater object for the dialog box
         LayoutInflater li = LayoutInflater.from(mContext);
@@ -682,33 +669,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
             RequestQueue requestQueue = Volley.newRequestQueue(mContext);
             requestQueue.add(stringRequest);
-        }
-    }
-
-
-    /**
-     * Click listener for popup menu items
-     */
-    class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
-
-        public MyMenuItemClickListener() {
-        }
-
-        @Override
-        public boolean onMenuItemClick(MenuItem menuItem) {
-            switch (menuItem.getItemId()) {
-                case R.id.share:
-                    takeScreenshot();
-                    ShareIntent();
-                    return true;
-                case R.id.send:
-                    Toast.makeText(mContext, "This feature will be added in next update", Toast.LENGTH_SHORT).show();
-                    // suggest(currentposition);
-
-                    return true;
-                default:
-            }
-            return false;
         }
     }
 
@@ -890,13 +850,13 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
-    private class VideoViewHolder extends RecyclerView.ViewHolder {
-        public VideoViewHolder(View view) {
+    private class LoadingViewHolder extends RecyclerView.ViewHolder {
+        public LoadingViewHolder(View view) {
             super(view);
         }
     }
 
-    private class ViewHolder2 extends RecyclerView.ViewHolder {
+    private class VideoViewHolder extends RecyclerView.ViewHolder {
         protected ImageView profilepic, overflow;
         protected ImageView image;
         protected TextView headline, upvote, head;
@@ -915,7 +875,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         private RelativeLayout rv;
         private ImageView play;
 
-        public ViewHolder2(View view) {
+        public VideoViewHolder(View view) {
             super(view);
 
             this.cv = (CardView) itemView.findViewById(R.id.cv);
@@ -1081,5 +1041,30 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
+    /**
+     * Click listener for popup menu items
+     */
+    class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
+
+        public MyMenuItemClickListener() {
+        }
+
+        @Override
+        public boolean onMenuItemClick(MenuItem menuItem) {
+            switch (menuItem.getItemId()) {
+                case R.id.share:
+                    takeScreenshot();
+                    ShareIntent();
+                    return true;
+                case R.id.send:
+                    Toast.makeText(mContext, "This feature will be added in next update", Toast.LENGTH_SHORT).show();
+                    // suggest(currentposition);
+
+                    return true;
+                default:
+            }
+            return false;
+        }
+    }
 
 }

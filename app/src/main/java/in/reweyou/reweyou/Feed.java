@@ -7,8 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -31,14 +29,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -52,28 +47,23 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
     static final String[] PERMISSIONS = new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private static final int REQUEST_CODE = 0;
     int REQUEST_CAMERA = 0, SELECT_FILE = 1, REQUEST_VIDEO = 3;
-    Button camera, gallery, notify, text;
     UserSessionManager session;
     Uri uri;
     PermissionsChecker checker;
-    ImageLoader imageLoader = ImageLoader.getInstance();
     ConnectionDetector cd;
     Boolean isInternetPresent = false;
     boolean doubleBackToExitPressedOnce = false;
     private TabLayout tabLayout;
-    private DisplayImageOptions options;
     private DrawerLayout drawerLayout;
     private String mCurrentPhotoPath;
     private String videoFilePath;
     private Toolbar mToolbar;
     private FloatingActionButton floatingActionButton;
-    private int mYear, mMonth, mDay, mHour, mMinute;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
-        // Session class instance
 
         floatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -122,137 +112,28 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
         session = new UserSessionManager(getApplicationContext());
         cd = new ConnectionDetector(Feed.this);
         checker = new PermissionsChecker(this);
-        options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.irongrip)
-                .showImageForEmptyUri(R.drawable.download)
-                .showImageOnFail(R.drawable.download)
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .considerExifParams(true)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .build();
+
         initToolbar();
         initViewPagerAndTabs();
         initNavigationDrawer();
 
-        Typeface font = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");
-
-        camera = (Button) findViewById(R.id.camera);
-        gallery = (Button) findViewById(R.id.gallery);
-        notify = (Button) findViewById(R.id.notify);
-        text = (Button) findViewById(R.id.text);
-        camera.setOnClickListener(this);
-        gallery.setOnClickListener(this);
-        notify.setOnClickListener(this);
-        text.setOnClickListener(this);
-        camera.setTypeface(font);
-        gallery.setTypeface(font);
-        notify.setTypeface(font);
-        text.setTypeface(font);
-        // Create default options which will be used for every
-//  displayImage(...) call if no options will be passed to this method
-        // Do it on Application start
 
     }
 
     private void initToolbar() {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        //setTitle("Trending");
-        //  mToolbar.setLogo(R.drawable.logo_plain);
     }
 
     private void initViewPagerAndTabs() {
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
-        viewPager.setOffscreenPageLimit(0);
-
-        PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager());
-/*
-
-        pagerAdapter.addFragment(getFragment(0), getString(R.string.tab_1));
-        pagerAdapter.addFragment(getFragment(1), getString(R.string.tab_4));
-        pagerAdapter.addFragment(getFragment(2), getString(R.string.tab_5));
-*/
-
+        viewPager.setOffscreenPageLimit(2);
         viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
 
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
-        //setupTabIcons();
-        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-
-            @Override
-            public void onPageSelected(int position) {
-                for (int i = 0; i < 3; i++) {
-                    if (i == position) {
-                        if (position == 0) {
-                            String title = "Trending";
-                            // getSupportActionBar().setTitle(title);
-                            //   tabLayout.getTabAt(i).setIcon(R.drawable.ic_newspaper_white);
-                            // mToolbar.setLogo(R.drawable.ic_newspaper_white);
-                        } else if (position == 1) {
-                            String title1 = "Home";
-                            //  getSupportActionBar().setTitle(title1);
-                            //  tabLayout.getTabAt(i).setIcon(R.drawable.ic_map_marker_radius_white);
-                            //  mToolbar.setLogo(R.drawable.ic_map_marker_radius_white);
-                        } else if (position == 2) {
-                            String title2 = "My City";
-                            // getSupportActionBar().setTitle(title2);
-                            //  tabLayout.getTabAt(i).setIcon(R.drawable.ic_account_location_white);
-                        } else {
-                            String title2 = "Trending";
-                            // getSupportActionBar().setTitle(title2);
-                            // tabLayout.getTabAt(i).setIcon(R.drawable.ic_account_location_white);
-                        }
-                    } else {
-                        if (i == 0) {
-                            //  tabLayout.getTabAt(i).setIcon(R.drawable.ic_newspaper_black);
-                        } else if (i == 1) {
-                            //      tabLayout.getTabAt(i).setIcon(R.drawable.ic_map_marker_radius_black);
-                        } else if (i == 2) {
-                            //   tabLayout.getTabAt(i).setIcon(R.drawable.ic_map_marker_radius_black);
-                        } else {
-                            // tabLayout.getTabAt(i).setIcon(R.drawable.ic_account_location);
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onPageScrolled(int position, float offset, int offsetPixel) {
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
     }
 
-    private Fragment getFragment(int i) {
-        SecondFragment fragment = new SecondFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt("position", i);
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
-    private void setupTabIcons() {
-        int[] tabIcons = {
-                R.drawable.ic_newspaper_white,
-                R.drawable.ic_map_marker_radius_black,
-                R.drawable.ic_magnify,
-                R.drawable.ic_error
-
-
-        };
-
-        tabLayout.getTabAt(0).setIcon(tabIcons[0]);
-        tabLayout.getTabAt(1).setIcon(tabIcons[1]);
-        tabLayout.getTabAt(2).setIcon(tabIcons[2]);
-//        tabLayout.getTabAt(3).setIcon(tabIcons[3]);
-    }
 
     private boolean isDeviceSupportCamera() {
         return getApplicationContext().getPackageManager().hasSystemFeature(
@@ -478,11 +359,6 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
 
     public void initNavigationDrawer() {
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
-        Menu menu = navigationView.getMenu();
-        //    MenuItem title= menu.findItem(R.id.menu_title);
-        //  SpannableString s = new SpannableString(title.getTitle());
-        //s.setSpan(new TextAppearanceSpan(this, R.style.Menutitle), 0, s.length(), 0);
-        // title.setTitle(s);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -562,11 +438,6 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
         private PagerAdapter(FragmentManager fragmentManager) {
             super(fragmentManager);
         }
-
-       /* public void addFragment(Fragment fragment, String title) {
-            fragmentList.add(fragment);
-            fragmentTitleList.add(title);
-        }*/
 
         @Override
         public Fragment getItem(int position) {
