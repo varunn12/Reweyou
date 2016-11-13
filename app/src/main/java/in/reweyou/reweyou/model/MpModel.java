@@ -39,6 +39,7 @@ public class MpModel {
     private String comments;
     private String reaction;
     private String from;
+    private String gif;
     private boolean loadingView = false;
 
     public String getName() {
@@ -214,6 +215,14 @@ public class MpModel {
         this.from = from;
     }
 
+    public String getGif() {
+        return gif;
+    }
+
+    public void setGif(String gif) {
+        this.gif = gif;
+    }
+
     public boolean hasVideo() {
         return getVideo() != null;
     }
@@ -227,9 +236,7 @@ public class MpModel {
             return VIEW_TYPE_LOADING;
         else if (!getVideo().isEmpty()) {
             return VIEW_TYPE_VIDEO;
-        } else {
-            return VIEW_TYPE_IMAGE;
-        }
+        } else return VIEW_TYPE_IMAGE;
     }
 
 

@@ -120,16 +120,16 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         switch (viewType) {
             case VIEW_TYPE_IMAGE:
                 View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_messageadapter, viewGroup, false);
-                return new ViewHolder(view);
+                return new ImageViewHolder(view);
             case VIEW_TYPE_VIDEO:
                 View view3 = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_messageadapter_video, viewGroup, false);
                 return new ViewHolder2(view3);
             case VIEW_TYPE_LOADING:
                 View view2 = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_messageadapter_loading, viewGroup, false);
-                return new ViewHolder1(view2);
+                return new VideoViewHolder(view2);
             default:
                 View view4 = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_messageadapter, viewGroup, false);
-                return new ViewHolder(view4);
+                return new ImageViewHolder(view4);
         }
     }
 
@@ -159,7 +159,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private void bind(final int position, RecyclerView.ViewHolder viewHolder2) {
         Log.d("ewdwedew", viewHolder2.getItemViewType() + "   " + messagelist.get(position).getFrom());
-        final ViewHolder viewHolder = (ViewHolder) viewHolder2;
+        final ImageViewHolder viewHolder = (ImageViewHolder) viewHolder2;
         Spannable spannable = new SpannableString(messagelist.get(position).getHeadline());
         Util.linkifyUrl(spannable, new CustomTabsOnClickListener(activity, mCustomTabActivityHelper));
         viewHolder.headline.setText(spannable);
@@ -190,13 +190,15 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         Glide.with(mContext).load(messagelist.get(position).getProfilepic()).placeholder(R.drawable.download).error(R.drawable.download).fallback(R.drawable.download).dontAnimate().into(viewHolder.profilepic);
 
+        viewHolder.image.setVisibility(View.VISIBLE);
+        if (messagelist.get(position).getImage().isEmpty()) {
+            if (messagelist.get(position).getGif().isEmpty()) {
+                viewHolder.image.setVisibility(View.GONE);
+            } else
+                Glide.with(mContext).load(messagelist.get(position).getGif()).asGif().placeholder(R.drawable.irongrip).diskCacheStrategy(DiskCacheStrategy.SOURCE).error(R.drawable.ic_error).into(viewHolder.image);
+        } else
+            Glide.with(mContext).load(messagelist.get(position).getImage()).placeholder(R.drawable.irongrip).diskCacheStrategy(DiskCacheStrategy.SOURCE).error(R.drawable.ic_error).into(viewHolder.image);
 
-        if (messagelist.get(position).getImage() == null || messagelist.get(position).getImage().isEmpty()) {
-            viewHolder.image.setVisibility(View.GONE);
-        } else {
-            viewHolder.image.setVisibility(View.VISIBLE);
-            Glide.with(mContext).load(messagelist.get(position).getImage()).placeholder(R.drawable.irongrip).diskCacheStrategy(DiskCacheStrategy.SOURCE).fallback(R.drawable.ic_reload).error(R.drawable.ic_error).dontAnimate().into(viewHolder.image);
-        }
 
         if (messagelist.get(position).getLocation() == null || messagelist.get(position).getLocation().isEmpty())
             viewHolder.place.setVisibility(View.GONE);
@@ -710,7 +712,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
-    private class ViewHolder extends RecyclerView.ViewHolder {
+    private class ImageViewHolder extends RecyclerView.ViewHolder {
         protected ImageView image, profilepic, overflow;
         protected TextView headline, upvote, head;
         protected TextView place;
@@ -727,7 +729,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         private TextView name, userName;
         private RelativeLayout rv;
 
-        public ViewHolder(View view) {
+        public ImageViewHolder(View view) {
             super(view);
 
             this.cv = (CardView) itemView.findViewById(R.id.cv);
@@ -888,8 +890,8 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
-    private class ViewHolder1 extends RecyclerView.ViewHolder {
-        public ViewHolder1(View view) {
+    private class VideoViewHolder extends RecyclerView.ViewHolder {
+        public VideoViewHolder(View view) {
             super(view);
         }
     }
