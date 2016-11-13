@@ -9,6 +9,9 @@ import java.util.Date;
 import java.util.Locale;
 
 import static android.text.format.DateUtils.getRelativeTimeSpanString;
+import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_IMAGE;
+import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_LOADING;
+import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_VIDEO;
 
 /**
  * Created by Reweyou on 10/5/2015.
@@ -16,7 +19,7 @@ import static android.text.format.DateUtils.getRelativeTimeSpanString;
 
 public class MpModel {
 
-    SimpleDateFormat dfs = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss a", Locale.US);
+    private SimpleDateFormat dfs = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss a", Locale.US);
     private String name;
     private String number;
     private String head;
@@ -36,6 +39,7 @@ public class MpModel {
     private String comments;
     private String reaction;
     private String from;
+    private boolean loadingView = false;
 
     public String getName() {
         return name;
@@ -129,9 +133,6 @@ public class MpModel {
         return video;
     }
 
-    public void setVideo(String video) {
-        this.video = video;
-    }
 
     public String getCategory() {
         return category;
@@ -212,4 +213,30 @@ public class MpModel {
     public void setFrom(String from) {
         this.from = from;
     }
+
+    public boolean hasVideo() {
+        return getVideo() != null;
+    }
+
+    public boolean hasImage() {
+        return getImage() != null;
+    }
+
+    public int getViewType() {
+        if (getImage() == null && getVideo() == null)
+            return VIEW_TYPE_LOADING;
+        else if (!getVideo().isEmpty()) {
+            return VIEW_TYPE_VIDEO;
+        } else {
+            return VIEW_TYPE_IMAGE;
+        }
+    }
+
+
+
+    /*private boolean hasGIF() {
+        if(get==null){
+            return false;
+        }else return true;
+    }*/
 }

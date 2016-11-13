@@ -164,7 +164,7 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
 
     private void initViewPagerAndTabs() {
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
-        viewPager.setOffscreenPageLimit(2);
+        viewPager.setOffscreenPageLimit(0);
 
         PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager());
 /*

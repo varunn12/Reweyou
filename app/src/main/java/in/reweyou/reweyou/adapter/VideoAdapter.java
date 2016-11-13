@@ -1,6 +1,7 @@
 package in.reweyou.reweyou.adapter;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
@@ -9,12 +10,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -46,6 +45,12 @@ import in.reweyou.reweyou.model.MpModel;
 
 
 public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> {
+    public static final String VIEW_URL = "https://www.reweyou.in/videoview.php";
+    public static final String REVIEW_URL = "https://www.reweyou.in/videoreview.php";
+    ProgressDialog pDialog;
+    Uri uri;
+    UserSessionManager session;
+    ImageLoader imageLoader = ImageLoader.getInstance();
     private List<MpModel> messagelist;
     private Context mContext;
     private Bitmap bm;
@@ -53,12 +58,6 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
     private String number;
     private String username;
     private DisplayImageOptions options;
-    ProgressDialog pDialog;
-    Uri uri;
-    UserSessionManager session;
-    public static final String VIEW_URL = "https://www.reweyou.in/videoview.php";
-    public static final String REVIEW_URL = "https://www.reweyou.in/videoreview.php";
-    ImageLoader imageLoader = ImageLoader.getInstance();
 
     public VideoAdapter(Context context, List<MpModel> mlist) {
         this.mContext = context;
@@ -79,7 +78,6 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.vidrow, viewGroup, false);
-
         ViewHolder holder = new ViewHolder(view);
         return holder;
     }
@@ -247,49 +245,6 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
         return (null != messagelist ? messagelist.size() : 0);
     }
 
-
-    class ViewHolder extends RecyclerView.ViewHolder {
-        protected TextView headline;
-        protected TextView place;
-        protected TextView vidicon;
-        protected TextView date;
-        protected TextView tag;
-        protected TextView share;
-        protected TextView tv;
-        protected TextView from;
-        protected ImageView image;
-        protected TextView reviews;
-        protected RelativeLayout relative;
-        protected CardView cv;
-        protected TextView app;
-
-        public ViewHolder(View view) {
-            super(view);
-            String fontPath = "fonts/Roboto-Regular.ttf";
-            Typeface font = Typeface.createFromAsset(mContext.getAssets(), "fontawesome-webfont.ttf");
-            Typeface tf = Typeface.createFromAsset(mContext.getAssets(), fontPath);
-            this.cv = (CardView)itemView.findViewById(R.id.cv);
-            this.headline = (TextView) view.findViewById(R.id.Who);
-            this.headline.setTypeface(tf);
-            this.place = (TextView) view.findViewById(R.id.place);
-            this.place.setTypeface(tf);
-            this.date = (TextView) view.findViewById(R.id.date);
-            this.vidicon = (TextView) view.findViewById(R.id.vidicon);
-            this.image = (ImageView) view.findViewById(R.id.image);
-            this.tag = (TextView) view.findViewById(R.id.tag);
-            this.share = (TextView) view.findViewById(R.id.share);
-            this.share.setTypeface(font);
-            this.reviews=(TextView)view.findViewById(R.id.reviews);
-            this.tv = (TextView)view.findViewById(R.id.tv);
-            this.from=(TextView)view.findViewById(R.id.from);
-            this.from.setTypeface(tf);
-            this.relative=(RelativeLayout)view.findViewById(R.id.Relative);
-            this.app=(TextView)view.findViewById(R.id.app);
-            this.app.setTypeface(tf);
-        }
-    }
-
-
     private void user(int position) {
 
         session = new UserSessionManager(mContext);
@@ -359,5 +314,46 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
 
         RequestQueue requestQueue = Volley.newRequestQueue(mContext);
         requestQueue.add(stringRequest);
+    }
+
+    class ViewHolder extends RecyclerView.ViewHolder {
+        protected TextView headline;
+        protected TextView place;
+        protected TextView vidicon;
+        protected TextView date;
+        protected TextView tag;
+        protected TextView share;
+        protected TextView tv;
+        protected TextView from;
+        protected ImageView image;
+        protected TextView reviews;
+        protected RelativeLayout relative;
+        protected CardView cv;
+        protected TextView app;
+
+        public ViewHolder(View view) {
+            super(view);
+            String fontPath = "fonts/Roboto-Regular.ttf";
+            Typeface font = Typeface.createFromAsset(mContext.getAssets(), "fontawesome-webfont.ttf");
+            Typeface tf = Typeface.createFromAsset(mContext.getAssets(), fontPath);
+            this.cv = (CardView) itemView.findViewById(R.id.cv);
+            this.headline = (TextView) view.findViewById(R.id.Who);
+            this.headline.setTypeface(tf);
+            this.place = (TextView) view.findViewById(R.id.place);
+            this.place.setTypeface(tf);
+            this.date = (TextView) view.findViewById(R.id.date);
+            this.vidicon = (TextView) view.findViewById(R.id.vidicon);
+            this.image = (ImageView) view.findViewById(R.id.image);
+            this.tag = (TextView) view.findViewById(R.id.tag);
+            this.share = (TextView) view.findViewById(R.id.share);
+            this.share.setTypeface(font);
+            this.reviews = (TextView) view.findViewById(R.id.reviews);
+            this.tv = (TextView) view.findViewById(R.id.tv);
+            this.from = (TextView) view.findViewById(R.id.from);
+            this.from.setTypeface(tf);
+            this.relative = (RelativeLayout) view.findViewById(R.id.Relative);
+            this.app = (TextView) view.findViewById(R.id.app);
+            this.app.setTypeface(tf);
+        }
     }
 }

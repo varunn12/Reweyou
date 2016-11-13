@@ -61,6 +61,7 @@ import in.reweyou.reweyou.FullImage;
 import in.reweyou.reweyou.LocationActivity;
 import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.UserProfile;
+import in.reweyou.reweyou.Videorow;
 import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.CustomTabActivityHelper;
 import in.reweyou.reweyou.classes.CustomTabsOnClickListener;
@@ -72,6 +73,9 @@ import in.reweyou.reweyou.model.MpModel;
 import static in.reweyou.reweyou.utils.Constants.EDIT_URL;
 import static in.reweyou.reweyou.utils.Constants.REVIEW_URL;
 import static in.reweyou.reweyou.utils.Constants.SUGGEST_URL;
+import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_IMAGE;
+import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_LOADING;
+import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_VIDEO;
 
 
 public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -111,13 +115,21 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        if (i != 10) {
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_messageadapter, viewGroup, false);
-            return new ViewHolder(view);
-        } else {
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_messageadapter_loading, viewGroup, false);
-            return new ViewHolder1(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+        Log.d("viewType", "" + viewType);
+        switch (viewType) {
+            case VIEW_TYPE_IMAGE:
+                View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_messageadapter, viewGroup, false);
+                return new ViewHolder(view);
+            case VIEW_TYPE_VIDEO:
+                View view3 = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_messageadapter_video, viewGroup, false);
+                return new ViewHolder2(view3);
+            case VIEW_TYPE_LOADING:
+                View view2 = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_messageadapter_loading, viewGroup, false);
+                return new ViewHolder1(view2);
+            default:
+                View view4 = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_messageadapter, viewGroup, false);
+                return new ViewHolder(view4);
         }
     }
 
@@ -125,147 +137,299 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder2, final int position) {
 
         switch (viewHolder2.getItemViewType()) {
-            case 10:
-                Log.d("dsd", "here");
+            case VIEW_TYPE_LOADING:
+                Log.d("loading view", "true");
                 break;
+            case VIEW_TYPE_VIDEO:
+                Log.d("loading viewwqqw", "true");
 
+                bind2(position, viewHolder2);
+                break;
+            case VIEW_TYPE_IMAGE:
+                Log.d("loading viewdwqkjdq", "true");
+
+                bind(position, viewHolder2);
+                break;
             default:
-                final ViewHolder viewHolder = (ViewHolder) viewHolder2;
-                Spannable spannable = new SpannableString(messagelist.get(position).getHeadline());
-                Util.linkifyUrl(spannable, new CustomTabsOnClickListener(activity, mCustomTabActivityHelper));
-                viewHolder.headline.setText(spannable);
-                viewHolder.headline.setMovementMethod(LinkMovementMethod.getInstance());
-
-
-                if (messagelist.get(position).getHead() == null || messagelist.get(position).getHead().isEmpty())
-                    viewHolder.head.setVisibility(View.GONE);
-                else {
-                    viewHolder.head.setVisibility(View.VISIBLE);
-                    viewHolder.head.setText(messagelist.get(position).getHead());
-                }
-
-                if (messagelist.get(position).getHeadline() == null || messagelist.get(position).getHeadline().isEmpty())
-                    viewHolder.headline.setVisibility(View.GONE);
-                else {
-                    viewHolder.headline.setVisibility(View.VISIBLE);
-                    viewHolder.headline.setText(messagelist.get(position).getHeadline());
-                }
-
-                if (messagelist.get(position).getDate().isEmpty() || messagelist.get(position).getDate() == null)
-                    viewHolder.date.setVisibility(View.GONE);
-                else {
-                    viewHolder.date.setVisibility(View.VISIBLE);
-                    viewHolder.date.setText(messagelist.get(position).getDate());
-                }
-
-
-                Glide.with(mContext).load(messagelist.get(position).getProfilepic()).placeholder(R.drawable.download).error(R.drawable.download).fallback(R.drawable.download).dontAnimate().into(viewHolder.profilepic);
-
-
-                if (messagelist.get(position).getImage() == null || messagelist.get(position).getImage().isEmpty()) {
-                    viewHolder.image.setVisibility(View.GONE);
-                } else {
-                    viewHolder.image.setVisibility(View.VISIBLE);
-                    Glide.with(mContext).load(messagelist.get(position).getImage()).placeholder(R.drawable.irongrip).diskCacheStrategy(DiskCacheStrategy.SOURCE).fallback(R.drawable.ic_reload).error(R.drawable.ic_error).dontAnimate().into(viewHolder.image);
-                }
-
-                if (messagelist.get(position).getLocation() == null || messagelist.get(position).getLocation().isEmpty())
-                    viewHolder.place.setVisibility(View.GONE);
-                else {
-                    viewHolder.place.setVisibility(View.VISIBLE);
-                    viewHolder.place.setText(messagelist.get(position).getLocation());
-                }
-
-                if (messagelist.get(position).getName() == null || messagelist.get(position).getName().isEmpty())
-                    viewHolder.from.setVisibility(View.GONE);
-                else {
-                    viewHolder.from.setVisibility(View.VISIBLE);
-                    viewHolder.from.setText(messagelist.get(position).getName());
-                }
-
-                if (messagelist.get(position).getComments() == null || messagelist.get(position).getComments().isEmpty())
-                    viewHolder.app.setText("0 Reactions");
-                else {
-                    viewHolder.app.setText(messagelist.get(position).getComments() + " Reactions");
-                    if (!messagelist.get(position).getComments().equals("0") && messagelist.get(position).getReaction() != null) {
-                        viewHolder.rv.setVisibility(View.VISIBLE);
-
-                        Spannable spannables = new SpannableString(messagelist.get(position).getReaction());
-                        Util.linkifyUrl(spannables, new CustomTabsOnClickListener(activity, mCustomTabActivityHelper));
-                        viewHolder.userName.setText(spannables);
-                        viewHolder.userName.setMovementMethod(LinkMovementMethod.getInstance());
-
-                        viewHolder.name.setText(messagelist.get(position).getFrom());
-                    } else {
-                        viewHolder.rv.setVisibility(View.GONE);
-                    }
-                }
-
-                if (messagelist.get(position).getReviews().isEmpty() || messagelist.get(position).getReviews() == null)
-                    viewHolder.reviews.setText("0 likes");
-                else
-                    viewHolder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews())) + " likes");
-
-                if (messagelist.get(position).getCategory().isEmpty() || messagelist.get(position).getCategory() == null)
-                    viewHolder.source.setVisibility(View.GONE);
-                else {
-                    viewHolder.source.setVisibility(View.VISIBLE);
-                    viewHolder.source.setText('#' + messagelist.get(position).getCategory());
-
-                }
-
-                final int total = Integer.parseInt(messagelist.get(position).getReviews());
-
-                viewHolder.linearLayout.setTag(1);
-                viewHolder.linearLayout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        isInternetPresent = cd.isConnectingToInternet();
-                        if (isInternetPresent) {
-
-
-                            final int status = (Integer) view.getTag();
-                            if (status == 1) {
-                                upvote(position);
-                                viewHolder.reviews.setText(String.valueOf(total + 1) + " likes");
-                                viewHolder.upicon.setImageResource(R.drawable.ic_thumb_up_primary_16px);
-                                viewHolder.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.rank));
-                                view.setTag(0);
-                                //pause
-                            } else {
-                                upvote(position);
-                                viewHolder.reviews.setText(String.valueOf(total) + " likes");
-                                viewHolder.upicon.setImageResource(R.drawable.ic_thumb_up_black_16px);
-                                viewHolder.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.likeText));
-                                view.setTag(1);
-                            }
-                        } else {
-                            Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_SHORT).show();
-                        }
-
-                    }
-                });
+                bind(position, viewHolder2);
                 break;
 
         }
     }
 
+    private void bind(final int position, RecyclerView.ViewHolder viewHolder2) {
+        Log.d("ewdwedew", viewHolder2.getItemViewType() + "   " + messagelist.get(position).getFrom());
+        final ViewHolder viewHolder = (ViewHolder) viewHolder2;
+        Spannable spannable = new SpannableString(messagelist.get(position).getHeadline());
+        Util.linkifyUrl(spannable, new CustomTabsOnClickListener(activity, mCustomTabActivityHelper));
+        viewHolder.headline.setText(spannable);
+        viewHolder.headline.setMovementMethod(LinkMovementMethod.getInstance());
+
+
+        if (messagelist.get(position).getHead() == null || messagelist.get(position).getHead().isEmpty())
+            viewHolder.head.setVisibility(View.GONE);
+        else {
+            viewHolder.head.setVisibility(View.VISIBLE);
+            viewHolder.head.setText(messagelist.get(position).getHead());
+        }
+
+        if (messagelist.get(position).getHeadline() == null || messagelist.get(position).getHeadline().isEmpty())
+            viewHolder.headline.setVisibility(View.GONE);
+        else {
+            viewHolder.headline.setVisibility(View.VISIBLE);
+            viewHolder.headline.setText(messagelist.get(position).getHeadline());
+        }
+
+        if (messagelist.get(position).getDate() == null)
+            viewHolder.date.setVisibility(View.GONE);
+        else {
+            viewHolder.date.setVisibility(View.VISIBLE);
+            viewHolder.date.setText(messagelist.get(position).getDate());
+        }
+
+
+        Glide.with(mContext).load(messagelist.get(position).getProfilepic()).placeholder(R.drawable.download).error(R.drawable.download).fallback(R.drawable.download).dontAnimate().into(viewHolder.profilepic);
+
+
+        if (messagelist.get(position).getImage() == null || messagelist.get(position).getImage().isEmpty()) {
+            viewHolder.image.setVisibility(View.GONE);
+        } else {
+            viewHolder.image.setVisibility(View.VISIBLE);
+            Glide.with(mContext).load(messagelist.get(position).getImage()).placeholder(R.drawable.irongrip).diskCacheStrategy(DiskCacheStrategy.SOURCE).fallback(R.drawable.ic_reload).error(R.drawable.ic_error).dontAnimate().into(viewHolder.image);
+        }
+
+        if (messagelist.get(position).getLocation() == null || messagelist.get(position).getLocation().isEmpty())
+            viewHolder.place.setVisibility(View.GONE);
+        else {
+            viewHolder.place.setVisibility(View.VISIBLE);
+            viewHolder.place.setText(messagelist.get(position).getLocation());
+        }
+
+        if (messagelist.get(position).getName() == null || messagelist.get(position).getName().isEmpty())
+            viewHolder.from.setVisibility(View.GONE);
+        else {
+            viewHolder.from.setVisibility(View.VISIBLE);
+            viewHolder.from.setText(messagelist.get(position).getName());
+        }
+
+        if (messagelist.get(position).getComments() == null || messagelist.get(position).getComments().isEmpty())
+            viewHolder.app.setText("0 Reactions");
+        else {
+            viewHolder.app.setText(messagelist.get(position).getComments() + " Reactions");
+            if (!messagelist.get(position).getComments().equals("0") && messagelist.get(position).getReaction() != null) {
+                viewHolder.rv.setVisibility(View.VISIBLE);
+
+                Spannable spannables = new SpannableString(messagelist.get(position).getReaction());
+                Util.linkifyUrl(spannables, new CustomTabsOnClickListener(activity, mCustomTabActivityHelper));
+                viewHolder.userName.setText(spannables);
+                viewHolder.userName.setMovementMethod(LinkMovementMethod.getInstance());
+
+                viewHolder.name.setText(messagelist.get(position).getFrom());
+            } else {
+                viewHolder.rv.setVisibility(View.GONE);
+            }
+        }
+
+        if (messagelist.get(position).getReviews().isEmpty() || messagelist.get(position).getReviews() == null)
+            viewHolder.reviews.setText("0 likes");
+        else
+            viewHolder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews())) + " likes");
+
+        if (messagelist.get(position).getCategory().isEmpty() || messagelist.get(position).getCategory() == null)
+            viewHolder.source.setVisibility(View.GONE);
+        else {
+            viewHolder.source.setVisibility(View.VISIBLE);
+            viewHolder.source.setText('#' + messagelist.get(position).getCategory());
+
+        }
+
+        final int total = Integer.parseInt(messagelist.get(position).getReviews());
+
+        viewHolder.linearLayout.setTag(1);
+        viewHolder.linearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                isInternetPresent = cd.isConnectingToInternet();
+                if (isInternetPresent) {
+
+
+                    final int status = (Integer) view.getTag();
+                    if (status == 1) {
+                        upvote(position);
+                        viewHolder.reviews.setText(String.valueOf(total + 1) + " likes");
+                        viewHolder.upicon.setImageResource(R.drawable.ic_thumb_up_primary_16px);
+                        viewHolder.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.rank));
+                        view.setTag(0);
+                        //pause
+                    } else {
+                        upvote(position);
+                        viewHolder.reviews.setText(String.valueOf(total) + " likes");
+                        viewHolder.upicon.setImageResource(R.drawable.ic_thumb_up_black_16px);
+                        viewHolder.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.likeText));
+                        view.setTag(1);
+                    }
+                } else {
+                    Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+    }
+
+    private void bind2(final int position, RecyclerView.ViewHolder viewHolder2) {
+        final ViewHolder2 viewHolder = (ViewHolder2) viewHolder2;
+        Spannable spannable = new SpannableString(messagelist.get(position).getHeadline());
+        Util.linkifyUrl(spannable, new CustomTabsOnClickListener(activity, mCustomTabActivityHelper));
+        viewHolder.headline.setText(spannable);
+        viewHolder.headline.setMovementMethod(LinkMovementMethod.getInstance());
+
+
+        if (messagelist.get(position).getHead() == null || messagelist.get(position).getHead().isEmpty())
+            viewHolder.head.setVisibility(View.GONE);
+        else {
+            viewHolder.head.setVisibility(View.VISIBLE);
+            viewHolder.head.setText(messagelist.get(position).getHead());
+        }
+
+        if (messagelist.get(position).getHeadline() == null || messagelist.get(position).getHeadline().isEmpty())
+            viewHolder.headline.setVisibility(View.GONE);
+        else {
+            viewHolder.headline.setVisibility(View.VISIBLE);
+            viewHolder.headline.setText(messagelist.get(position).getHeadline());
+        }
+
+        if (messagelist.get(position).getDate() == null)
+            viewHolder.date.setVisibility(View.GONE);
+        else {
+            viewHolder.date.setVisibility(View.VISIBLE);
+            viewHolder.date.setText(messagelist.get(position).getDate());
+        }
+
+
+        Glide.with(mContext).load(messagelist.get(position).getProfilepic()).placeholder(R.drawable.download).error(R.drawable.download).fallback(R.drawable.download).dontAnimate().into(viewHolder.profilepic);
+
+
+        if (messagelist.get(position).getImage() == null || messagelist.get(position).getImage().isEmpty()) {
+            viewHolder.image.setVisibility(View.GONE);
+        } else {
+            viewHolder.image.setVisibility(View.VISIBLE);
+            Glide.with(mContext).load(messagelist.get(position).getImage()).placeholder(R.drawable.irongrip).diskCacheStrategy(DiskCacheStrategy.SOURCE).fallback(R.drawable.ic_reload).error(R.drawable.ic_error).dontAnimate().into(viewHolder.image);
+        }
+
+
+       /* try {
+            // Start the MediaController
+
+            Uri video = Uri.parse(messagelist.get(position).getVideo());
+            viewHolder.image.setVideoURI(video);
+
+
+        } catch (Exception e) {
+            Log.e("Error", e.getMessage());
+            e.printStackTrace();
+        }
+*/
+
+
+        if (messagelist.get(position).getLocation() == null || messagelist.get(position).getLocation().isEmpty())
+            viewHolder.place.setVisibility(View.GONE);
+        else {
+            viewHolder.place.setVisibility(View.VISIBLE);
+            viewHolder.place.setText(messagelist.get(position).getLocation());
+        }
+
+        if (messagelist.get(position).getName() == null || messagelist.get(position).getName().isEmpty())
+            viewHolder.from.setVisibility(View.GONE);
+        else {
+            viewHolder.from.setVisibility(View.VISIBLE);
+            viewHolder.from.setText(messagelist.get(position).getName());
+        }
+
+        if (messagelist.get(position).getComments() == null || messagelist.get(position).getComments().isEmpty())
+            viewHolder.app.setText("0 Reactions");
+        else {
+            viewHolder.app.setText(messagelist.get(position).getComments() + " Reactions");
+            if (!messagelist.get(position).getComments().equals("0") && messagelist.get(position).getReaction() != null) {
+                viewHolder.rv.setVisibility(View.VISIBLE);
+
+                Spannable spannables = new SpannableString(messagelist.get(position).getReaction());
+                Util.linkifyUrl(spannables, new CustomTabsOnClickListener(activity, mCustomTabActivityHelper));
+                viewHolder.userName.setText(spannables);
+                viewHolder.userName.setMovementMethod(LinkMovementMethod.getInstance());
+
+                viewHolder.name.setText(messagelist.get(position).getFrom());
+            } else {
+                viewHolder.rv.setVisibility(View.GONE);
+            }
+        }
+
+        if (messagelist.get(position).getReviews().isEmpty() || messagelist.get(position).getReviews() == null)
+            viewHolder.reviews.setText("0 likes");
+        else
+            viewHolder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews())) + " likes");
+
+        if (messagelist.get(position).getCategory().isEmpty() || messagelist.get(position).getCategory() == null)
+            viewHolder.source.setVisibility(View.GONE);
+        else {
+            viewHolder.source.setVisibility(View.VISIBLE);
+            viewHolder.source.setText('#' + messagelist.get(position).getCategory());
+
+        }
+
+        final int total = Integer.parseInt(messagelist.get(position).getReviews());
+
+        viewHolder.linearLayout.setTag(1);
+        viewHolder.linearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                isInternetPresent = cd.isConnectingToInternet();
+                if (isInternetPresent) {
+
+
+                    final int status = (Integer) view.getTag();
+                    if (status == 1) {
+                        upvote(position);
+                        viewHolder.reviews.setText(String.valueOf(total + 1) + " likes");
+                        viewHolder.upicon.setImageResource(R.drawable.ic_thumb_up_primary_16px);
+                        viewHolder.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.rank));
+                        view.setTag(0);
+                        //pause
+                    } else {
+                        upvote(position);
+                        viewHolder.reviews.setText(String.valueOf(total) + " likes");
+                        viewHolder.upicon.setImageResource(R.drawable.ic_thumb_up_black_16px);
+                        viewHolder.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.likeText));
+                        view.setTag(1);
+                    }
+                } else {
+                    Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+    }
+
+
     @Override
     public int getItemViewType(int position) {
-        Log.d("pppp", String.valueOf(position));
-        if (position % 10 == 0 && position > 0 && loadingView == true) {
-            Log.d("item", String.valueOf(10) + "          " + position);
-            return 10;
-        } else {
-            Log.d("item", String.valueOf(super.getItemViewType(position)));
-            return super.getItemViewType(position);
+        switch (messagelist.get(position).getViewType()) {
+            case VIEW_TYPE_IMAGE:
+                return VIEW_TYPE_IMAGE;
+            case VIEW_TYPE_VIDEO:
+                return VIEW_TYPE_VIDEO;
+            case VIEW_TYPE_LOADING:
+                return VIEW_TYPE_LOADING;
+            default:
+                Log.d("item", String.valueOf(super.getItemViewType(position)));
+                return super.getItemViewType(position);
         }
     }
 
     public void add() {
         loadingView = true;
         Log.d("fwdfwfwefwe", "here");
-        messagelist.add(new MpModel());
+        MpModel loader = new MpModel();
+        messagelist.add(loader);
         new Handler().post(new Runnable() {
             @Override
             public void run() {
@@ -520,7 +684,33 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    /**
+     * Click listener for popup menu items
+     */
+    class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
+
+        public MyMenuItemClickListener() {
+        }
+
+        @Override
+        public boolean onMenuItemClick(MenuItem menuItem) {
+            switch (menuItem.getItemId()) {
+                case R.id.share:
+                    takeScreenshot();
+                    ShareIntent();
+                    return true;
+                case R.id.send:
+                    Toast.makeText(mContext, "This feature will be added in next update", Toast.LENGTH_SHORT).show();
+                    // suggest(currentposition);
+
+                    return true;
+                default:
+            }
+            return false;
+        }
+    }
+
+    private class ViewHolder extends RecyclerView.ViewHolder {
         protected ImageView image, profilepic, overflow;
         protected TextView headline, upvote, head;
         protected TextView place;
@@ -698,35 +888,196 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
-    /**
-     * Click listener for popup menu items
-     */
-    class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
-
-        public MyMenuItemClickListener() {
-        }
-
-        @Override
-        public boolean onMenuItemClick(MenuItem menuItem) {
-            switch (menuItem.getItemId()) {
-                case R.id.share:
-                    takeScreenshot();
-                    ShareIntent();
-                    return true;
-                case R.id.send:
-                    Toast.makeText(mContext, "This feature will be added in next update", Toast.LENGTH_SHORT).show();
-                    // suggest(currentposition);
-
-                    return true;
-                default:
-            }
-            return false;
-        }
-    }
-
     private class ViewHolder1 extends RecyclerView.ViewHolder {
         public ViewHolder1(View view) {
             super(view);
         }
     }
+
+    private class ViewHolder2 extends RecyclerView.ViewHolder {
+        protected ImageView profilepic, overflow;
+        protected ImageView image;
+        protected TextView headline, upvote, head;
+        protected TextView place;
+        protected TextView icon;
+        protected ImageView reaction;
+        protected TextView date;
+        protected TextView tv;
+        protected TextView from;
+        protected CardView cv;
+        protected TextView reviews, source;
+        protected TextView app;
+        private LinearLayout linearLayout;
+        private ImageView upicon;
+        private TextView name, userName;
+        private RelativeLayout rv;
+        private ImageView play;
+
+        public ViewHolder2(View view) {
+            super(view);
+
+            this.cv = (CardView) itemView.findViewById(R.id.cv);
+            this.headline = (TextView) view.findViewById(R.id.Who);
+            this.head = (TextView) view.findViewById(R.id.head);
+            this.name = (TextView) view.findViewById(R.id.name);
+            this.userName = (TextView) view.findViewById(R.id.userName);
+            play = (ImageView) view.findViewById(R.id.play);
+            rv = (RelativeLayout) view.findViewById(R.id.rv);
+            this.place = (TextView) view.findViewById(R.id.place);
+            this.reaction = (ImageView) view.findViewById(R.id.comment);
+            this.date = (TextView) view.findViewById(R.id.date);
+            this.image = (ImageView) view.findViewById(R.id.image);
+            this.overflow = (ImageView) view.findViewById(R.id.overflow);
+            this.profilepic = (ImageView) view.findViewById(R.id.profilepic);
+            this.tv = (TextView) view.findViewById(R.id.tv);
+            this.from = (TextView) view.findViewById(R.id.from);
+
+            this.reviews = (TextView) view.findViewById(R.id.reviews);
+            this.app = (TextView) view.findViewById(R.id.app);
+            this.upvote = (TextView) view.findViewById(R.id.upvote);
+            this.source = (TextView) view.findViewById(R.id.source);
+
+            linearLayout = (LinearLayout) view.findViewById(R.id.like);
+            upicon = (ImageView) view.findViewById(R.id.upicon);
+
+
+            image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    isInternetPresent = cd.isConnectingToInternet();
+                    if (isInternetPresent) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("myData", messagelist.get(getAdapterPosition()).getVideo());
+                        bundle.putString("date", messagelist.get(getAdapterPosition()).getDate());
+                        bundle.putString("headline", messagelist.get(getAdapterPosition()).getHeadline());
+                        bundle.putString("from", messagelist.get(getAdapterPosition()).getName());
+                        bundle.putString("tag", messagelist.get(getAdapterPosition()).getCategory());
+                        bundle.putString("place", messagelist.get(getAdapterPosition()).getLocation());
+                        bundle.putString("reviews", messagelist.get(getAdapterPosition()).getReviews());
+                        Intent in = new Intent(mContext, Videorow.class);
+                        in.putExtras(bundle);
+                        mContext.startActivity(in);
+                    } else {
+                        Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+            overflow.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    cv.setDrawingCacheEnabled(true);
+                    cv.buildDrawingCache();
+                    bm = cv.getDrawingCache();
+                    showPopupMenu(overflow);
+                }
+            });
+
+            profilepic.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    isInternetPresent = cd.isConnectingToInternet();
+                    if (isInternetPresent) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("myData", messagelist.get(getAdapterPosition()).getNumber());
+                        Intent in = new Intent(mContext, UserProfile.class);
+                        in.putExtras(bundle);
+                        mContext.startActivity(in);
+                    } else {
+                        Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+            from.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    isInternetPresent = cd.isConnectingToInternet();
+                    if (isInternetPresent) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("myData", messagelist.get(getAdapterPosition()).getNumber());
+                        Intent in = new Intent(mContext, UserProfile.class);
+                        in.putExtras(bundle);
+                        mContext.startActivity(in);
+                    } else {
+                        Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+            app.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("myData", messagelist.get(getAdapterPosition()).getPostId());
+                    bundle.putString("headline", messagelist.get(getAdapterPosition()).getHeadline());
+                    bundle.putString("image", messagelist.get(getAdapterPosition()).getImage());
+                    Intent in = new Intent(mContext, Comments.class);
+                    in.putExtras(bundle);
+                    mContext.startActivity(in);
+                }
+            });
+            reaction.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("myData", messagelist.get(getAdapterPosition()).getPostId());
+                    bundle.putString("headline", messagelist.get(getAdapterPosition()).getHeadline());
+                    bundle.putString("image", messagelist.get(getAdapterPosition()).getImage());
+                    Intent in = new Intent(mContext, Comments.class);
+                    in.putExtras(bundle);
+                    mContext.startActivity(in);
+                }
+            });
+            place.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    session = new UserSessionManager(mContext);
+                    session.setCityLocation(messagelist.get(getAdapterPosition()).getLocation());
+                    Intent in = new Intent(mContext, LocationActivity.class);
+                    mContext.startActivity(in);
+                }
+            });
+
+            headline.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    try {
+                        if (session.getMobileNumber().equals(messagelist.get(getAdapterPosition()).getNumber())) {
+                            editHeadline(getAdapterPosition());
+                        } else {
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            });
+            source.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    session = new UserSessionManager(mContext);
+                    session.setCategory(messagelist.get(getAdapterPosition()).getCategory());
+                    Intent in = new Intent(mContext, CategoryActivity.class);
+                    mContext.startActivity(in);
+                }
+            });
+            rv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("myData", messagelist.get(getAdapterPosition()).getPostId());
+                    bundle.putString("headline", messagelist.get(getAdapterPosition()).getHeadline());
+                    bundle.putString("image", messagelist.get(getAdapterPosition()).getImage());
+                    Intent in = new Intent(mContext, Comments.class);
+                    in.putExtras(bundle);
+                    mContext.startActivity(in);
+                }
+            });
+
+
+        }
+    }
+
+
 }
