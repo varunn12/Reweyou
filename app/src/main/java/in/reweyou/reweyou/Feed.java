@@ -143,46 +143,7 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.camera:
-                if (checker.lacksPermissions(PERMISSIONS)) {
-                    startPermissionsActivity();
-                } else {
-          /*      Intent cameraIntent = new Intent(
-                        android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                 startActivityForResult(cameraIntent, REQUEST_CAMERA);
-            */
-                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    File photoFile = null;
-                    photoFile = getOutputMediaFile();
-                    uri = Uri.fromFile(photoFile);
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                    startActivityForResult(takePictureIntent, REQUEST_CAMERA);
-                    UILApplication.getInstance().trackEvent("Image", "Camera", "For Pics");
-                }
-                break;
 
-            case R.id.gallery:
-                if (checker.lacksPermissions(PERMISSIONS)) {
-                    startPermissionsActivity();
-                } else {
-                    Intent intent = new Intent(Intent.ACTION_PICK,
-                            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    // 2. pick image only
-                    intent.setType("image/*");
-                    // 3. start activity
-                    startActivityForResult(intent, SELECT_FILE);
-                    UILApplication.getInstance().trackEvent("Gallery", "Gallery", "For Pics");
-                }
-                break;
-            case R.id.notify:
-                isInternetPresent = cd.isConnectingToInternet();
-                if (isInternetPresent) {
-                    Intent notifications = new Intent(Feed.this, Notifications.class);
-                    startActivity(notifications);
-                } else {
-                    Toast.makeText(this, "You are not connected to Internet", Toast.LENGTH_LONG).show();
-                }
-                break;
             case R.id.text:
                 Intent profile = new Intent(Feed.this, MyProfile.class);
                 startActivity(profile);

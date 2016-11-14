@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.media.ExifInterface;
@@ -36,6 +37,11 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -58,7 +64,8 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
     public static final String KEY_LOCATION = "location";
     public static final String KEY_TEXT = "headline";
     public static final String KEY_NAME = "name";
-    public static final String UPLOAD_URL = "https://www.reweyou.in/reweyou/upload_report.php";
+    //public static final String UPLOAD_URL = "https://www.reweyou.in/reweyou/upload_report.php";
+    public static final String UPLOAD_URL = "https://www.reweyou.in/reweyou/test_report.php";
     static final String[] PERMISSIONS = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
     private static final int REQUEST_CODE = 0;
     Location location;
@@ -69,7 +76,7 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
     Boolean isInternetPresent = false;
     PermissionsChecker checker;
     private Button button;
-    private EditText editText,editTag, head;
+    private EditText editText, editTag, head;
     private ImageView imageview;
     private Bitmap bitmap;
     private String place;
@@ -116,7 +123,7 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
 
         session = new UserSessionManager(getApplicationContext());
         checker = new PermissionsChecker(this);
-        mycity=session.getLoginLocation();
+        mycity = session.getLoginLocation();
         Typeface font = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");
         cd = new ConnectionDetector(ShowImage.this);
         appLocationService = new AppLocationService(
@@ -124,8 +131,8 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
         utils = new ImageLoadingUtils(this);
         imageview = (ImageView) findViewById(R.id.ImageShow);
         editText = (EditText) findViewById(R.id.Who);
-        editTag=(EditText)findViewById(R.id.EditTag);
-        head=(EditText)findViewById(R.id.head);
+        editTag = (EditText) findViewById(R.id.EditTag);
+        head = (EditText) findViewById(R.id.head);
         button = (Button) findViewById(R.id.btn_send);
         button.setTypeface(font);
         button.setOnClickListener(this);
@@ -137,7 +144,8 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
         number = user.get(UserSessionManager.KEY_NUMBER);
 
         selectedImagePath = getAbsolutePath(Uri.parse(show));
-        setPic(selectedImagePath,imageview);
+        Glide.with(ShowImage.this).load(selectedImagePath).override(400, 400).into(imageview);
+        // setPic(selectedImagePath, imageview);
 
         staticSpinner = (Spinner) findViewById(R.id.static_spinner);
 
@@ -161,7 +169,7 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
                     // Messages();
                 } else {
                     // show toast select gender
-        //            Toast.makeText(ShowImage.this,"Select a category",Toast.LENGTH_SHORT).show();
+                    //            Toast.makeText(ShowImage.this,"Select a category",Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -176,8 +184,8 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
     }
 
     private void setPic(String imagePath, ImageView destination) {
-        int targetW = 400;
-        int targetH = 400;
+        int targetW = 800;
+        int targetH = 800;
         // Get the dimensions of the bitmap
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         bmOptions.inJustDecodeBounds = true;
@@ -186,7 +194,7 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
         int photoH = bmOptions.outHeight;
 
         // Determine how much to scale down the image
-        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+        int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
 
         // Decode the image file into a Bitmap sized to fill the View
         bmOptions.inJustDecodeBounds = false;
@@ -206,11 +214,9 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
 
         if (orientation == ExifInterface.ORIENTATION_ROTATE_90) {
             angle = 90;
-        }
-        else if (orientation == ExifInterface.ORIENTATION_ROTATE_180) {
+        } else if (orientation == ExifInterface.ORIENTATION_ROTATE_180) {
             angle = 180;
-        }
-        else if (orientation == ExifInterface.ORIENTATION_ROTATE_270) {
+        } else if (orientation == ExifInterface.ORIENTATION_ROTATE_270) {
             angle = 270;
         }
 
@@ -222,7 +228,7 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
     }
 
     public String getAbsolutePath(Uri uri) {
-        String[] projection = { MediaStore.MediaColumns.DATA };
+        String[] projection = {MediaStore.MediaColumns.DATA};
         @SuppressWarnings("deprecation")
         Cursor cursor = managedQuery(uri, projection, null, null, null);
         if (cursor != null) {
@@ -234,10 +240,44 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
     }
 
     public void uploadImage() {
-        tag=editTag.getText().toString().trim();
+
+        Glide
+                .with(this)
+                .load(selectedImagePath)
+                .asBitmap()
+                .toBytes(Bitmap.CompressFormat.JPEG, 60)
+                .fitCenter()
+                .atMost()
+                .override(800, 800)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+                .into(new SimpleTarget<byte[]>() {
+                    @Override
+                    public void onLoadStarted(Drawable ignore) {
+                        // started async load
+                    }
+
+                    @Override
+                    public void onResourceReady(byte[] resource, GlideAnimation<? super byte[]> ignore) {
+                        String encodedImage = Base64.encodeToString(resource, Base64.DEFAULT);
+                        uploadImage2(encodedImage);
+                    }
+
+                    @Override
+                    public void onLoadFailed(Exception ex, Drawable ignore) {
+                        Log.d("ex", ex.getMessage());
+                    }
+                });
+
+
+    }
+
+    private void uploadImage2(String encodedImage) {
+
+        tag = editTag.getText().toString().trim();
         final String text = editText.getText().toString().trim();
-        final String heads= head.getText().toString().trim();
-        final String image = getStringImage(bitmap);
+        final String heads = head.getText().toString().trim();
+        final String image = encodedImage;
         String format = "dd-MMM-yyyy hh:mm:ss a";
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         sdf.setTimeZone(TimeZone.getTimeZone("Asia/Calcutta"));
@@ -273,17 +313,17 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
                 param.put(KEY_LOCATION, place);
                 param.put(KEY_NAME, name);
                 param.put(KEY_TAG, tag);
-                param.put("type",type);
-                param.put("head",heads);
-                param.put(KEY_TIME,timeStamp);
+                param.put("type", type);
+                param.put("head", heads);
+                param.put(KEY_TIME, timeStamp);
                 param.put(KEY_ADDRESS, address);
-                param.put("number",number);
+                param.put("number", number);
                 Log.d("DATE", timeStamp);
-                Log.d("DATE",text);
-                Log.d("DATE",place);
-                Log.d("DATE",address);
-                Log.d("DATE",name);
-                Log.d("DATE",tag);
+                Log.d("DATE", text);
+                Log.d("DATE", place);
+                Log.d("DATE", address);
+                Log.d("DATE", name);
+                Log.d("DATE", tag);
 
                 String result = rh.sendPostRequest(UPLOAD_URL, param);
                 return result;
@@ -291,15 +331,17 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
         }
         UploadImage u = new UploadImage();
         u.execute();
+
     }
 
     private String getStringImage(Bitmap bitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, baos);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
         byte[] imageBytes = baos.toByteArray();
         String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
         return encodedImage;
     }
+
 
     private void openProfile() {
         // Starting TokenTest
@@ -312,8 +354,8 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
     @Override
     public void onClick(View v) {
         isInternetPresent = cd.isConnectingToInternet();
-        if(isInternetPresent) {
-            if(isLocationEnabled(this)) {
+        if (isInternetPresent) {
+            if (isLocationEnabled(this)) {
                 location = appLocationService
                         .getLocation(LocationManager.GPS_PROVIDER);
                 if (location != null) {
@@ -333,11 +375,9 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
                     location = appLocationService.getLocation(LocationManager.NETWORK_PROVIDER);
                     if (location != null) {
                         if (place != null) {
-                            if(type.equals("Select Category"))
-                            {
-                                Toast.makeText(ShowImage.this,"Select a category",Toast.LENGTH_SHORT).show();
-                            }
-                            else {
+                            if (type.equals("Select Category")) {
+                                Toast.makeText(ShowImage.this, "Select a category", Toast.LENGTH_SHORT).show();
+                            } else {
                                 uploadImage();
                             }
                         } else {
@@ -354,16 +394,12 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
                         Toast.makeText(this, "Fetching Reporting Location", Toast.LENGTH_LONG).show();
                     }
                 }
-            }
-            else
-            {
+            } else {
                 showSettingsAlert();
             }
 
-        }
-        else
-        {
-            Toast.makeText(ShowImage.this,"You are not connected to Internet",Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(ShowImage.this, "You are not connected to Internet", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -419,14 +455,14 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
                 case 1:
                     Bundle bundle = message.getData();
                     locationAddress = bundle.getString("address");
-                    fulladdress=bundle.getString("add");
+                    fulladdress = bundle.getString("add");
                     break;
                 default:
                     locationAddress = mycity;
-                    fulladdress=mycity;
+                    fulladdress = mycity;
             }
             place = locationAddress;
-            address=fulladdress;
+            address = fulladdress;
         }
     }
 }
