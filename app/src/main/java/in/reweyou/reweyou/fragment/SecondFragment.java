@@ -95,7 +95,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
         final LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
         DefaultItemAnimator defaultItemAnimator = new DefaultItemAnimator();
         recyclerView.setItemAnimator(defaultItemAnimator);
-
+        recyclerView.setItemViewCacheSize(3);
 /*
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
