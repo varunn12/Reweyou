@@ -8,13 +8,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -42,8 +39,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -144,8 +139,8 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
         number = user.get(UserSessionManager.KEY_NUMBER);
 
         selectedImagePath = getAbsolutePath(Uri.parse(show));
+
         Glide.with(ShowImage.this).load(selectedImagePath).override(400, 400).into(imageview);
-        // setPic(selectedImagePath, imageview);
 
         staticSpinner = (Spinner) findViewById(R.id.static_spinner);
 
@@ -183,48 +178,100 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
 
     }
 
-    private void setPic(String imagePath, ImageView destination) {
-        int targetW = 800;
-        int targetH = 800;
-        // Get the dimensions of the bitmap
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(imagePath, bmOptions);
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
+    @Override
+    public void onClick(View v) {
+        isInternetPresent = cd.isConnectingToInternet();
+        if (isInternetPresent) {
+            if (isLocationEnabled(this)) {
+                location = appLocationService
+                        .getLocation(LocationManager.GPS_PROVIDER);
+                if (location != null) {
+                    if (place != null) {
+                        compressImage();
+                    } else {
+                        double latitude = location.getLatitude();
+                        double longitude = location.getLongitude();
+                        LocationAddress locationAddress = new LocationAddress(ShowImage.this);
+                        LocationAddress.getAddressFromLocation(latitude, longitude,
+                                getApplicationContext(), new GeocoderHandler());
+                        // Toast.makeText(CameraActivity.this,"Detecting current location...We need your current location for authenticity.",Toast.LENGTH_LONG).show();
+                        button.setBackgroundResource(R.color.colorPrimary);
+                        button.setText(R.string.send);
+                    }
+                } else {
+                    location = appLocationService.getLocation(LocationManager.NETWORK_PROVIDER);
+                    if (location != null) {
+                        if (place != null) {
+                            if (type.equals("Select Category")) {
+                                Toast.makeText(ShowImage.this, "Select a category", Toast.LENGTH_SHORT).show();
+                            } else {
+                                compressImage();
+                            }
+                        } else {
+                            double latitude = location.getLatitude();
+                            double longitude = location.getLongitude();
+                            LocationAddress locationAddress = new LocationAddress(ShowImage.this);
+                            LocationAddress.getAddressFromLocation(latitude, longitude,
+                                    getApplicationContext(), new GeocoderHandler());
+                            //     Toast.makeText(CameraActivity.this,"Detecting current location...We need your current location for authenticity.",Toast.LENGTH_LONG).show();
+                            button.setBackgroundResource(R.color.colorPrimary);
+                            button.setText(R.string.send);
+                        }
+                    } else {
+                        Toast.makeText(this, "Fetching Reporting Location", Toast.LENGTH_LONG).show();
+                    }
+                }
+            } else {
+                showSettingsAlert();
+            }
 
-        // Determine how much to scale down the image
-        int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
-
-        // Decode the image file into a Bitmap sized to fill the View
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = scaleFactor;
-        bmOptions.inPurgeable = true;
-
-        bitmap = BitmapFactory.decodeFile(imagePath, bmOptions);
-        ExifInterface exif = null;
-        try {
-            exif = new ExifInterface(imagePath);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } else {
+            Toast.makeText(ShowImage.this, "You are not connected to Internet", Toast.LENGTH_SHORT).show();
         }
-        int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+    }
 
-        int angle = 0;
+    public void showSettingsAlert() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(
+                ShowImage.this);
+        alertDialog.setTitle("SETTINGS");
+        alertDialog.setMessage("Enable Location Provider! Go to settings menu?");
+        alertDialog.setPositiveButton("Settings",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(
+                                Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        ShowImage.this.startActivity(intent);
+                    }
+                });
+        alertDialog.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+        alertDialog.show();
+    }
 
-        if (orientation == ExifInterface.ORIENTATION_ROTATE_90) {
-            angle = 90;
-        } else if (orientation == ExifInterface.ORIENTATION_ROTATE_180) {
-            angle = 180;
-        } else if (orientation == ExifInterface.ORIENTATION_ROTATE_270) {
-            angle = 270;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (checker.lacksPermissions(PERMISSIONS)) {
+            startPermissionsActivity();
         }
+    }
 
-        Matrix mat = new Matrix();
-        mat.postRotate(angle);
+    private void startPermissionsActivity() {
+        PermissionsActivity.startActivityForResult(this, REQUEST_CODE, PERMISSIONS);
+    }
 
-        Correctbmp = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), mat, true);
-        destination.setImageBitmap(Correctbmp);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE && resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
+            finish();
+        }
     }
 
     public String getAbsolutePath(Uri uri) {
@@ -239,7 +286,7 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
             return null;
     }
 
-    public void uploadImage() {
+    public void compressImage() {
 
         Glide
                 .with(this)
@@ -260,7 +307,7 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
                     @Override
                     public void onResourceReady(byte[] resource, GlideAnimation<? super byte[]> ignore) {
                         String encodedImage = Base64.encodeToString(resource, Base64.DEFAULT);
-                        uploadImage2(encodedImage);
+                        uploadImage(encodedImage);
                     }
 
                     @Override
@@ -272,7 +319,7 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
 
     }
 
-    private void uploadImage2(String encodedImage) {
+    private void uploadImage(String encodedImage) {
 
         tag = editTag.getText().toString().trim();
         final String text = editText.getText().toString().trim();
@@ -334,116 +381,12 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
 
     }
 
-    private String getStringImage(Bitmap bitmap) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
-        byte[] imageBytes = baos.toByteArray();
-        String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-        return encodedImage;
-    }
-
-
     private void openProfile() {
         // Starting TokenTest
         Intent i = new Intent(this, Feed.class);
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
         finish(); // Call once you redirect to another activity
-    }
-
-    @Override
-    public void onClick(View v) {
-        isInternetPresent = cd.isConnectingToInternet();
-        if (isInternetPresent) {
-            if (isLocationEnabled(this)) {
-                location = appLocationService
-                        .getLocation(LocationManager.GPS_PROVIDER);
-                if (location != null) {
-                    if (place != null) {
-                        uploadImage();
-                    } else {
-                        double latitude = location.getLatitude();
-                        double longitude = location.getLongitude();
-                        LocationAddress locationAddress = new LocationAddress(ShowImage.this);
-                        LocationAddress.getAddressFromLocation(latitude, longitude,
-                                getApplicationContext(), new GeocoderHandler());
-                        // Toast.makeText(CameraActivity.this,"Detecting current location...We need your current location for authenticity.",Toast.LENGTH_LONG).show();
-                        button.setBackgroundResource(R.color.colorPrimary);
-                        button.setText(R.string.send);
-                    }
-                } else {
-                    location = appLocationService.getLocation(LocationManager.NETWORK_PROVIDER);
-                    if (location != null) {
-                        if (place != null) {
-                            if (type.equals("Select Category")) {
-                                Toast.makeText(ShowImage.this, "Select a category", Toast.LENGTH_SHORT).show();
-                            } else {
-                                uploadImage();
-                            }
-                        } else {
-                            double latitude = location.getLatitude();
-                            double longitude = location.getLongitude();
-                            LocationAddress locationAddress = new LocationAddress(ShowImage.this);
-                            LocationAddress.getAddressFromLocation(latitude, longitude,
-                                    getApplicationContext(), new GeocoderHandler());
-                            //     Toast.makeText(CameraActivity.this,"Detecting current location...We need your current location for authenticity.",Toast.LENGTH_LONG).show();
-                            button.setBackgroundResource(R.color.colorPrimary);
-                            button.setText(R.string.send);
-                        }
-                    } else {
-                        Toast.makeText(this, "Fetching Reporting Location", Toast.LENGTH_LONG).show();
-                    }
-                }
-            } else {
-                showSettingsAlert();
-            }
-
-        } else {
-            Toast.makeText(ShowImage.this, "You are not connected to Internet", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public void showSettingsAlert() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(
-                ShowImage.this);
-        alertDialog.setTitle("SETTINGS");
-        alertDialog.setMessage("Enable Location Provider! Go to settings menu?");
-        alertDialog.setPositiveButton("Settings",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(
-                                Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        ShowImage.this.startActivity(intent);
-                    }
-                });
-        alertDialog.setNegativeButton("Cancel",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-        alertDialog.show();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        if (checker.lacksPermissions(PERMISSIONS)) {
-            startPermissionsActivity();
-        }
-    }
-
-    private void startPermissionsActivity() {
-        PermissionsActivity.startActivityForResult(this, REQUEST_CODE, PERMISSIONS);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE && resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
-            finish();
-        }
     }
 
     private class GeocoderHandler extends Handler {
