@@ -48,7 +48,10 @@
 
         </activity>
         <activity android:name=".Details" />
-        <activity android:name=".ShowImage">
+        <activity
+            android:name=".ShowImage"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -124,15 +127,17 @@
 
         <!-- Register AnalyticsReceiver and AnalyticsService to support background
              dispatching on non-Google Play devices. -->
-        <receiver android:name="com.google.android.gms.analytics.AnalyticsReceiver"
+        <receiver
+            android:name="com.google.android.gms.analytics.AnalyticsReceiver"
             android:enabled="true">
             <intent-filter>
                 <action android:name="com.google.android.gms.analytics.ANALYTICS_DISPATCH" />
             </intent-filter>
         </receiver>
-        <service android:name="com.google.android.gms.analytics.AnalyticsService"
+        <service
+            android:name="com.google.android.gms.analytics.AnalyticsService"
             android:enabled="true"
-            android:exported="false"/>
+            android:exported="false" />
 
         <!-- ... -->
 
@@ -160,10 +165,11 @@
         <activity
             android:name=".SinglePost"
             android:parentActivityName=".Feed">
-                <intent-filter>
+            <intent-filter>
                 <action android:name="in.reweyou.reweyou_SINGLE_POST">
-                <category android:name="android.intent.category.DEFAULT"></category></action>
-                </intent-filter>
+                    <category android:name="android.intent.category.DEFAULT"></category>
+                </action>
+            </intent-filter>
         </activity>
         <activity android:name=".Readers"></activity>
     </application>
