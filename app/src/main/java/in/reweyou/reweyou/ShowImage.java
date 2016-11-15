@@ -1,6 +1,7 @@
 package in.reweyou.reweyou;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -16,13 +17,17 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -31,6 +36,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -39,6 +46,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -61,7 +69,9 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
     public static final String KEY_NAME = "name";
     //public static final String UPLOAD_URL = "https://www.reweyou.in/reweyou/upload_report.php";
     public static final String UPLOAD_URL = "https://www.reweyou.in/reweyou/test_report.php";
-    static final String[] PERMISSIONS = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
+    static final String[] PERMISSION = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
+    static final String[] PERMISSIONS = new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
     private static final int REQUEST_CODE = 0;
     Location location;
     AppLocationService appLocationService;
@@ -70,8 +80,9 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
     String selectedImagePath;
     Boolean isInternetPresent = false;
     PermissionsChecker checker;
+    int REQUEST_CAMERA = 0, SELECT_FILE = 1, REQUEST_VIDEO = 3;
     private Button button;
-    private EditText editText, editTag, head;
+    private EditText description, editTag, headline;
     private ImageView imageview;
     private Bitmap bitmap;
     private String place;
@@ -83,6 +94,20 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
     private Spinner staticSpinner;
     private String number;
     private Toolbar toolbar;
+    private LinearLayout optionsLayout;
+    private TextInputLayout til_description;
+    private TextInputLayout til_tag;
+    private TextInputLayout til_headline;
+    private int position_spinner = -1;
+    private ImageView btn_camera;
+    private ImageView btn_video;
+    private ImageView btn_gif;
+    private Uri uri;
+    private String mCurrentPhotoPath;
+    private String videoFilePath;
+    private RelativeLayout previewLayout;
+    private ImageView imagecancel;
+
 
     public static boolean isLocationEnabled(Context context) {
         int locationMode = 0;
@@ -109,8 +134,13 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
+        til_tag = (TextInputLayout) findViewById(R.id.input_layout_tag);
+        til_headline = (TextInputLayout) findViewById(R.id.input_layout_headline);
+        til_description = (TextInputLayout) findViewById(R.id.input_layout_description);
+
+        setSupportActionBar(toolbar);
+        optionsLayout = (LinearLayout) findViewById(R.id.options);
         getSupportActionBar().setTitle("Upload Report");
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -125,23 +155,101 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
                 ShowImage.this);
         utils = new ImageLoadingUtils(this);
         imageview = (ImageView) findViewById(R.id.ImageShow);
-        editText = (EditText) findViewById(R.id.Who);
-        editTag = (EditText) findViewById(R.id.EditTag);
-        head = (EditText) findViewById(R.id.head);
+        imagecancel = (ImageView) findViewById(R.id.cancel);
+        description = (EditText) findViewById(R.id.Who);
+        editTag = (EditText) findViewById(R.id.tag);
+
+        headline = (EditText) findViewById(R.id.head);
         button = (Button) findViewById(R.id.btn_send);
         button.setTypeface(font);
         button.setOnClickListener(this);
 
-        String show = getIntent().getStringExtra("path");
+        previewLayout = (RelativeLayout) findViewById(R.id.previewLayout);
+        // String show = getIntent().getStringExtra("path");
 
         HashMap<String, String> user = session.getUserDetails();
         name = user.get(UserSessionManager.KEY_NAME);
         number = user.get(UserSessionManager.KEY_NUMBER);
 
-        selectedImagePath = getAbsolutePath(Uri.parse(show));
+        initOptions();
 
-        Glide.with(ShowImage.this).load(selectedImagePath).override(400, 400).into(imageview);
+        //selectedImagePath = getAbsolutePath(Uri.parse(show));
 
+        // Glide.with(ShowImage.this).load(selectedImagePath).override(400, 400).into(imageview);
+
+
+        initCategorySpinner();
+
+
+        addTextWatcher();
+
+        imagecancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                previewLayout.setVisibility(View.GONE);
+                selectedImagePath = null;
+                optionsLayout.setVisibility(View.VISIBLE);
+            }
+        });
+
+    }
+
+    private void initOptions() {
+        btn_camera = (ImageView) findViewById(R.id.btn_camera);
+        btn_video = (ImageView) findViewById(R.id.btn_video);
+        btn_gif = (ImageView) findViewById(R.id.btn_gif);
+
+        btn_camera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showOptions();
+            }
+        });
+    }
+
+    private void showOptions() {
+        AlertDialog.Builder getImageFrom = new AlertDialog.Builder(ShowImage.this);
+        getImageFrom.setTitle("Select Image from:");
+        final CharSequence[] opsChars = {getResources().getString(R.string.takepic), getResources().getString(R.string.opengallery)};
+        getImageFrom.setItems(opsChars, new android.content.DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == 0) {
+                    if (checker.lacksPermissions(PERMISSION)) {
+                        startPermissionsActivity();
+                    } else {
+
+                        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        File photoFile = null;
+                        photoFile = getOutputMediaFile();
+                        uri = Uri.fromFile(photoFile);
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+                        startActivityForResult(takePictureIntent, REQUEST_CAMERA);
+                        UILApplication.getInstance().trackEvent("Image", "Camera", "For Pics");
+                    }
+
+                } else if (which == 1) {
+                    if (checker.lacksPermissions(PERMISSION)) {
+                        startPermissionsActivity();
+                    } else {
+                        Intent intent = new Intent(Intent.ACTION_PICK,
+                                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        // 2. pick image only
+                        intent.setType("image/*");
+                        // 3. start activity
+                        startActivityForResult(intent, SELECT_FILE);
+                        UILApplication.getInstance().trackEvent("Gallery", "Gallery", "For Pics");
+                    }
+                }
+                dialog.dismiss();
+            }
+        });
+        getImageFrom.show();
+    }
+
+
+    private void initCategorySpinner() {
         staticSpinner = (Spinner) findViewById(R.id.static_spinner);
 
         // Create an ArrayAdapter using the string array and a default spinner
@@ -157,6 +265,7 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
             @Override
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
+                position_spinner = position;
                 if (position > 0) {
                     // get spinner value
                     type = (String) parent.getItemAtPosition(position);
@@ -174,8 +283,105 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
                 // TODO Auto-generated method stub
             }
         });
+    }
+
+    private void addTextWatcher() {
+        editTag.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.toString().trim().length() > 0) {
+                    til_tag.setErrorEnabled(false);
+                } else til_tag.setError("Cannot be empty");
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        headline.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.toString().trim().length() > 0) {
+                    til_headline.setErrorEnabled(false);
+                } else til_headline.setError("Cannot be empty");
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        description.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.toString().trim().length() > 0) {
+                    til_description.setErrorEnabled(false);
+                } else til_description.setError("Cannot be empty");
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        /*editTag.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+               if(!hasFocus) til_tag.setErrorEnabled(false);
+            }
+        });
+        headline.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus) til_headline.setErrorEnabled(false);
+            }
+        });
+        description.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus) til_description.setErrorEnabled(false);
+            }
+        });*/
 
 
+    }
+
+    private File getOutputMediaFile() {
+        // To be safe, you should check that the SDCard is mounted
+        // using Environment.getExternalStorageState() before doing this.
+        File mediaStorageDir = new File(Environment.getExternalStorageDirectory(), "Reweyou");
+        // This location works best if you want the created images to be shared
+        // between applications and persist after your app has been uninstalled.
+        // Create the storage directory if it does not exist
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
+                Log.d("Reweyou", "failed to create directory");
+                return null;
+            }
+        }
+        // Create a media file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        File mediaFile;
+        mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                "IMG_" + timeStamp + ".jpg");
+        mCurrentPhotoPath = "file:" + mediaFile.getAbsolutePath();
+        return mediaFile;
     }
 
     @Override
@@ -257,18 +463,49 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
     protected void onResume() {
         super.onResume();
 
-        if (checker.lacksPermissions(PERMISSIONS)) {
+        if (checker.lacksPermissions(PERMISSION)) {
             startPermissionsActivity();
         }
     }
 
     private void startPermissionsActivity() {
-        PermissionsActivity.startActivityForResult(this, REQUEST_CODE, PERMISSIONS);
+        PermissionsActivity.startActivityForResult(this, REQUEST_CODE, PERMISSION);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE && resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
+            finish();
+        }
+
+        if (resultCode == Activity.RESULT_OK && requestCode == SELECT_FILE && data != null) {
+            Uri uriFromPath = data.getData();
+            String show = uriFromPath.toString();
+
+            selectedImagePath = getAbsolutePath(Uri.parse(show));
+            optionsLayout.setVisibility(View.GONE);
+            previewLayout.setVisibility(View.VISIBLE);
+            Glide.with(ShowImage.this).load(selectedImagePath).override(400, 400).into(imageview);
+
+        }
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CAMERA) {
+            String show = uri.toString();
+            Intent intent = new Intent(ShowImage.this, CameraActivity.class);
+            Log.d("URI", show);
+            Log.d("Intent", mCurrentPhotoPath);
+            intent.putExtra("path", mCurrentPhotoPath);
+            startActivity(intent);
+        }
+        if (requestCode == REQUEST_VIDEO
+                && resultCode == RESULT_OK) {
+
+            if (data != null && data.getStringExtra("videopath") != null)
+                videoFilePath = data.getStringExtra("videopath");
+            Intent intent = new Intent(ShowImage.this, VideoUpload.class);
+            intent.putExtra("path", videoFilePath);
+            startActivity(intent);
+        }
         if (requestCode == REQUEST_CODE && resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
             finish();
         }
@@ -288,42 +525,43 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
 
     public void compressImage() {
 
-        Glide
-                .with(this)
-                .load(selectedImagePath)
-                .asBitmap()
-                .toBytes(Bitmap.CompressFormat.JPEG, 60)
-                .fitCenter()
-                .atMost()
-                .override(800, 800)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
-                .into(new SimpleTarget<byte[]>() {
-                    @Override
-                    public void onLoadStarted(Drawable ignore) {
-                        // started async load
-                    }
+        if (selectedImagePath != null) {
+            Glide
+                    .with(this)
+                    .load(selectedImagePath)
+                    .asBitmap()
+                    .toBytes(Bitmap.CompressFormat.JPEG, 60)
+                    .fitCenter()
+                    .atMost()
+                    .override(800, 800)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
+                    .into(new SimpleTarget<byte[]>() {
+                        @Override
+                        public void onLoadStarted(Drawable ignore) {
+                            // started async load
+                        }
 
-                    @Override
-                    public void onResourceReady(byte[] resource, GlideAnimation<? super byte[]> ignore) {
-                        String encodedImage = Base64.encodeToString(resource, Base64.DEFAULT);
-                        uploadImage(encodedImage);
-                    }
+                        @Override
+                        public void onResourceReady(byte[] resource, GlideAnimation<? super byte[]> ignore) {
+                            String encodedImage = Base64.encodeToString(resource, Base64.DEFAULT);
+                            uploadImage(encodedImage);
+                        }
 
-                    @Override
-                    public void onLoadFailed(Exception ex, Drawable ignore) {
-                        Log.d("ex", ex.getMessage());
-                    }
-                });
-
+                        @Override
+                        public void onLoadFailed(Exception ex, Drawable ignore) {
+                            Log.d("ex", ex.getMessage());
+                        }
+                    });
+        } else uploadImage(null);
 
     }
 
     private void uploadImage(String encodedImage) {
 
         tag = editTag.getText().toString().trim();
-        final String text = editText.getText().toString().trim();
-        final String heads = head.getText().toString().trim();
+        final String text = description.getText().toString().trim();
+        final String heads = headline.getText().toString().trim();
         final String image = encodedImage;
         String format = "dd-MMM-yyyy hh:mm:ss a";
         SimpleDateFormat sdf = new SimpleDateFormat(format);
@@ -344,6 +582,7 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
                 loading.dismiss();
+
                 if (s.trim().equals("Successfully Uploaded")) {
                     openProfile();
                 } else {
@@ -356,12 +595,13 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
                 RequestHandler rh = new RequestHandler();
                 HashMap<String, String> param = new HashMap<String, String>();
                 param.put(KEY_TEXT, text);
-                param.put(KEY_IMAGE, image);
+                if (image != null)
+                    param.put(KEY_IMAGE, image);
                 param.put(KEY_LOCATION, place);
                 param.put(KEY_NAME, name);
                 param.put(KEY_TAG, tag);
                 param.put("type", type);
-                param.put("head", heads);
+                param.put("headline", heads);
                 param.put(KEY_TIME, timeStamp);
                 param.put(KEY_ADDRESS, address);
                 param.put("number", number);
@@ -376,8 +616,15 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
                 return result;
             }
         }
-        UploadImage u = new UploadImage();
-        u.execute();
+
+        if (editTag.getText().toString().trim().length() > 0 && headline.getText().toString().trim().length() > 0 && description.getText().toString().trim().length() > 0) {
+            if (position_spinner > 0) {
+                UploadImage u = new UploadImage();
+                u.execute();
+
+            } else Toast.makeText(ShowImage.this, "Choose a Category", Toast.LENGTH_SHORT).show();
+        } else Toast.makeText(ShowImage.this, "Check details", Toast.LENGTH_SHORT).show();
+
 
     }
 

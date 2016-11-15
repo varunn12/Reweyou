@@ -28,4 +28,7 @@
     <color name="red">#f44336</color>
 
     <color name="divider">#BDBDBD</color>
--</resources>
+    <color name="camera_grey">#BDBDBD</color>
+    <color name="greylight">#25000000</color>
+    -
+</resources>

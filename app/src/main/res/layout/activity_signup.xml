@@ -8,12 +8,12 @@
     tools:context=".TokenTest">
 
     <ImageView
+        android:id="@+id/logo"
         android:layout_width="30dp"
         android:layout_height="50dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="40dp"
         android:src="@drawable/logo_plain"
-        android:id="@+id/logo"
         android:textColor="#fff"
         android:textSize="25sp" />
 
@@ -30,7 +30,7 @@
         android:paddingBottom="10dp">
 
         <android.support.design.widget.TextInputLayout
-            android:id="@+id/input_layout_username"
+            android:id="@+id/input_layout_tag"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColorHint="#bbffffff"
