@@ -11,7 +11,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -69,7 +68,9 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder getImageFrom = new AlertDialog.Builder(Feed.this);
+
+                startActivity(new Intent(Feed.this, ShowImage.class));
+               /* AlertDialog.Builder getImageFrom = new AlertDialog.Builder(Feed.this);
                 getImageFrom.setTitle("Select Image from:");
                 final CharSequence[] opsChars = {getResources().getString(R.string.takepic), getResources().getString(R.string.opengallery)};
                 getImageFrom.setItems(opsChars, new android.content.DialogInterface.OnClickListener() {
@@ -77,7 +78,7 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (which == 0) {
-                            if (checker.lacksPermissions(PERMISSIONS)) {
+                            if (checker.lacksPermissions(PERMISSION)) {
                                 startPermissionsActivity();
                             } else {
 
@@ -91,13 +92,13 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
                             }
 
                         } else if (which == 1) {
-                            if (checker.lacksPermissions(PERMISSIONS)) {
+                            if (checker.lacksPermissions(PERMISSION)) {
                                 startPermissionsActivity();
                             } else {
                                 Intent intent = new Intent(Intent.ACTION_PICK,
                                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                                 // 2. pick image only
-                                intent.setType("image/*");
+                                intent.setType("image*//*");
                                 // 3. start activity
                                 startActivityForResult(intent, SELECT_FILE);
                                 UILApplication.getInstance().trackEvent("Gallery", "Gallery", "For Pics");
@@ -106,7 +107,7 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
                         dialog.dismiss();
                     }
                 });
-                getImageFrom.show();
+                getImageFrom.show();*/
             }
         });
         session = new UserSessionManager(getApplicationContext());
