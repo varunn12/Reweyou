@@ -553,6 +553,8 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
             selectedImagePath = getAbsolutePath(Uri.parse(show));
             optionsLayout.setVisibility(View.GONE);
             previewLayout.setVisibility(View.VISIBLE);
+            Glide.with(ShowImage.this).load(selectedImagePath).override(400, 400).into(imageview);
+
 
         }
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CAMERA) {
