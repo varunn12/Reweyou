@@ -24,7 +24,11 @@
         android:fillViewport="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
         <LinearLayout
+            android:id="@+id/lll"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/white"
@@ -122,6 +126,14 @@
                     android:layout_marginTop="8dp"
                     android:background="@drawable/border_primary"
                     android:padding="4dp" />
+
+                <ImageView
+                    android:id="@+id/play"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    app:srcCompat="@drawable/ic_play_circle_filled_black_24px" />
 
                 <ImageView
                     android:id="@+id/cancel"
@@ -276,6 +288,27 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/greylight" />
+
         </LinearLayout>
+
+            <ImageView
+                android:id="@+id/a"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/lll"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="32dp"
+                android:src="@drawable/logo_plain" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/a"
+                android:layout_centerHorizontal="true"
+                android:text="Reweyou"
+                android:textColor="#fff"
+                android:textSize="28dp"
+                android:textStyle="bold" />
+        </RelativeLayout>
     </ScrollView>
 </android.support.design.widget.CoordinatorLayout>

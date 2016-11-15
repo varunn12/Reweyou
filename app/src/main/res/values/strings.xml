@@ -94,5 +94,6 @@
     <string name="opengallery">Gallery</string>
     <string name="emptyStatus">Add your status here</string>
     <string name="emptyStatusHint">Your Status</string>
+    <string name="takevideo">Shoot video</string>
 
 </resources>

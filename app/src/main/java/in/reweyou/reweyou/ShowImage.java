@@ -73,6 +73,7 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
     static final String[] PERMISSIONS = new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     private static final int REQUEST_CODE = 0;
+    private static final int REQUEST_TAKE_GALLERY_VIDEO = 5;
     Location location;
     AppLocationService appLocationService;
     ConnectionDetector cd;
@@ -107,6 +108,8 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
     private String videoFilePath;
     private RelativeLayout previewLayout;
     private ImageView imagecancel;
+    private String selectedVideoPath;
+    private ImageView play;
 
 
     public static boolean isLocationEnabled(Context context) {
@@ -170,12 +173,28 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
         HashMap<String, String> user = session.getUserDetails();
         name = user.get(UserSessionManager.KEY_NAME);
         number = user.get(UserSessionManager.KEY_NUMBER);
-
+        play = (ImageView) findViewById(R.id.play);
+        play.setVisibility(View.GONE);
         initOptions();
 
         //selectedImagePath = getAbsolutePath(Uri.parse(show));
 
         // Glide.with(ShowImage.this).load(selectedImagePath).override(400, 400).into(imageview);
+
+        previewLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (selectedImagePath != null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("myData", selectedImagePath);
+                    Intent in = new Intent(ShowImage.this, FullImage.class);
+                    in.putExtras(bundle);
+                    startActivity(in);
+                } else if (selectedVideoPath != null) {
+
+                }
+            }
+        });
 
 
         initCategorySpinner();
@@ -186,8 +205,10 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
         imagecancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                play.setVisibility(View.GONE);
                 previewLayout.setVisibility(View.GONE);
                 selectedImagePath = null;
+                selectedVideoPath = null;
                 optionsLayout.setVisibility(View.VISIBLE);
             }
         });
@@ -202,12 +223,58 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
         btn_camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showOptions();
+                showImageOptions();
+            }
+        });
+
+        btn_video.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showVideoOptions();
             }
         });
     }
 
-    private void showOptions() {
+    private void showVideoOptions() {
+        AlertDialog.Builder getImageFrom = new AlertDialog.Builder(ShowImage.this);
+        getImageFrom.setTitle("Select Video from:");
+        final CharSequence[] opsChars = {getResources().getString(R.string.takevideo), getResources().getString(R.string.opengallery)};
+        getImageFrom.setItems(opsChars, new android.content.DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == 0) {
+                    if (checker.lacksPermissions(PERMISSION)) {
+                        startPermissionsActivity();
+                    } else {
+
+                       /* Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        File photoFile = null;
+                        photoFile = getOutputMediaFile();
+                        uri = Uri.fromFile(photoFile);
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+                        startActivityForResult(takePictureIntent, REQUEST_CAMERA);
+                        UILApplication.getInstance().trackEvent("Image", "Camera", "For Pics");*/
+                    }
+
+                } else if (which == 1) {
+                    if (checker.lacksPermissions(PERMISSION)) {
+                        startPermissionsActivity();
+                    } else {
+
+                        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+                        startActivityForResult(Intent.createChooser(intent, "Select Video"), REQUEST_TAKE_GALLERY_VIDEO);
+
+                        // UILApplication.getInstance().trackEvent("Gallery", "Gallery", "For Pics");
+                    }
+                }
+                dialog.dismiss();
+            }
+        });
+        getImageFrom.show();
+    }
+
+    private void showImageOptions() {
         AlertDialog.Builder getImageFrom = new AlertDialog.Builder(ShowImage.this);
         getImageFrom.setTitle("Select Image from:");
         final CharSequence[] opsChars = {getResources().getString(R.string.takepic), getResources().getString(R.string.opengallery)};
@@ -486,7 +553,6 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
             selectedImagePath = getAbsolutePath(Uri.parse(show));
             optionsLayout.setVisibility(View.GONE);
             previewLayout.setVisibility(View.VISIBLE);
-            Glide.with(ShowImage.this).load(selectedImagePath).override(400, 400).into(imageview);
 
         }
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CAMERA) {
@@ -497,18 +563,62 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
             intent.putExtra("path", mCurrentPhotoPath);
             startActivity(intent);
         }
-        if (requestCode == REQUEST_VIDEO
-                && resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_TAKE_GALLERY_VIDEO && resultCode == RESULT_OK) {
 
-            if (data != null && data.getStringExtra("videopath") != null)
+/*
+
+           if (data != null && data.getStringExtra("videopath") != null)
                 videoFilePath = data.getStringExtra("videopath");
-            Intent intent = new Intent(ShowImage.this, VideoUpload.class);
-            intent.putExtra("path", videoFilePath);
-            startActivity(intent);
+
+            Log.d("called", videoFilePath);
+*/
+
+
+            selectedVideoPath = getAbsolutePath(Uri.parse(data.getData().toString()));
+            Log.d("path", selectedVideoPath);
+            optionsLayout.setVisibility(View.GONE);
+            previewLayout.setVisibility(View.VISIBLE);
+            play.setVisibility(View.VISIBLE);
+            Glide.with(ShowImage.this).load(new File(selectedVideoPath)).override(400, 400).into(imageview);
+
+
+
+/*
+
+            Uri selectedImageUri = data.getData();
+            Log.d("calleddwd", String.valueOf(selectedImageUri));
+
+            // MEDIA GALLERY
+            selectedVideoPath = getPath(selectedImageUri);
+            if (selectedVideoPath != null) {
+                Log.d("called", selectedVideoPath);
+
+                optionsLayout.setVisibility(View.GONE);
+                previewLayout.setVisibility(View.VISIBLE);
+                play.setVisibility(View.VISIBLE);
+                Glide.with(ShowImage.this).load(new File(selectedVideoPath)).override(400, 400).into(imageview);
+
+            } else Log.d("called", "errrroro");
+*/
+
         }
         if (requestCode == REQUEST_CODE && resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
             finish();
         }
+    }
+
+    public String getPath(Uri uri) {
+        String[] projection = {MediaStore.Images.Media.DATA};
+        Cursor cursor = managedQuery(uri, projection, null, null, null);
+        if (cursor != null) {
+            // HERE YOU WILL GET A NULLPOINTER IF CURSOR IS NULL
+            // THIS CAN BE, IF YOU USED OI FILE MANAGER FOR PICKING THE MEDIA
+            int column_index = cursor
+                    .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } else
+            return null;
     }
 
     public String getAbsolutePath(Uri uri) {

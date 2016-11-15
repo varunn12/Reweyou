@@ -2,32 +2,27 @@ package in.reweyou.reweyou;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-
-import org.w3c.dom.Text;
 
 import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.TouchImageView;
 
 public class FullImage extends AppCompatActivity {
+    Boolean isInternetPresent = false;
+    ConnectionDetector cd;
 private String i;
     private ProgressBar progressBar;
     private DisplayImageOptions options;
     private TouchImageView imageView;
     private String text;
-    Boolean isInternetPresent = false;
-    ConnectionDetector cd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +31,9 @@ private String i;
         Intent in=getIntent();
         Bundle bundle = getIntent().getExtras();
         i = bundle.getString("myData");
-        text=bundle.getString("headline");
+        if (in.hasExtra("headline")) {
+            text = bundle.getString("headline");
+        }
         imageView = (TouchImageView) findViewById(R.id.image);
         TextView textview = (TextView)findViewById(R.id.text);
          // Do it on Application start
@@ -54,7 +51,9 @@ private String i;
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .build();
         // Then later, when you want to display image
+        if (text != null)
         textview.setText(text);
+        else textview.setVisibility(View.GONE);
         isInternetPresent = cd.isConnectingToInternet();
         if(isInternetPresent) {
             showimage(i);
@@ -69,7 +68,7 @@ private String i;
 
     private void showimage(String i) {
         progressBar.setVisibility(View.GONE);
-        ImageLoader.getInstance().displayImage(i, imageView,options);
+        Glide.with(FullImage.this).load(i).override(300, 300).into(imageView);
     }
 
 
