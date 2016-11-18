@@ -268,7 +268,9 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                             StringBuffer finalBufferedData = new StringBuffer();
 
                             List<MpModel> messagelist = new ArrayList<>();
-
+                            MpModel newPost = new MpModel();
+                            newPost.newPost = true;
+                            messagelist.add(newPost);
                             Gson gson = new Gson();
                             Log.d("size", String.valueOf(parentArray.length()));
                             for (int i = 0; i < parentArray.length(); i++) {
