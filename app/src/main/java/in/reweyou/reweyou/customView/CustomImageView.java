@@ -2,22 +2,22 @@ package in.reweyou.reweyou.customView;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.VideoView;
+import android.widget.ImageView;
 
 /**
  * Created by master on 13/11/16.
  */
 
-public class CustomVideoView extends VideoView {
-    public CustomVideoView(Context context) {
+public class CustomImageView extends ImageView {
+    public CustomImageView(Context context) {
         super(context);
     }
 
-    public CustomVideoView(Context context, AttributeSet attrs) {
+    public CustomImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public CustomVideoView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public CustomImageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
@@ -26,5 +26,7 @@ public class CustomVideoView extends VideoView {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int width = getMeasuredWidth();
         setMeasuredDimension(width, width);
+
+
     }
 }
