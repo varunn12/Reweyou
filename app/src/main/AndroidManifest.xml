@@ -36,7 +36,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
         <activity android:name=".Signup" />
         <activity
@@ -45,7 +44,6 @@
             <meta-data
                 android:name="android.app.default_searchable"
                 android:value=".SearchResultsActivity" />
-
         </activity>
         <activity android:name=".Details" />
         <activity
@@ -63,6 +61,7 @@
             android:parentActivityName=".Feed">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
@@ -73,10 +72,7 @@
 
         <receiver android:name=".Notification" />
 
-        <activity android:name=".WelcomeScreen">
-
-
-        </activity>
+        <activity android:name=".WelcomeScreen"></activity>
 
         <!-- SMS Receiver -->
         <receiver android:name=".classes.SmsReceiver">
@@ -91,15 +87,11 @@
 
         <activity android:name=".VideoCapture" />
         <activity android:name=".Videorow" />
-        <activity android:name=".ImageCapture">
-
-        </activity>
+        <activity android:name=".ImageCapture"></activity>
         <activity android:name=".MyProfile" />
         <activity
             android:name=".ImageActivity"
-            android:theme="@style/AppTheme">
-
-        </activity>
+            android:theme="@style/AppTheme"></activity>
         <activity android:name=".Welcome" />
         <activity android:name=".Leaderboard" />
         <activity android:name=".Notifications" />
@@ -116,7 +108,6 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
         <service android:name=".fcm.MyFirebaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
@@ -125,8 +116,10 @@
         <!-- Firebase Notifications -->
 
 
-        <!-- Register AnalyticsReceiver and AnalyticsService to support background
-             dispatching on non-Google Play devices. -->
+        <!--
+             Register AnalyticsReceiver and AnalyticsService to support background
+             dispatching on non-Google Play devices.
+        -->
         <receiver
             android:name="com.google.android.gms.analytics.AnalyticsReceiver"
             android:enabled="true">
@@ -134,13 +127,13 @@
                 <action android:name="com.google.android.gms.analytics.ANALYTICS_DISPATCH" />
             </intent-filter>
         </receiver>
+
         <service
             android:name="com.google.android.gms.analytics.AnalyticsService"
             android:enabled="true"
             android:exported="false" />
 
         <!-- ... -->
-
 
         <activity android:name=".Gallery">
             <intent-filter>
@@ -153,10 +146,7 @@
         </activity>
         <activity android:name=".UpdateImage" />
         <activity android:name=".MyCityActivity" />
-        <activity android:name=".Friends">
-
-
-        </activity>
+        <activity android:name=".Friends"></activity>
         <activity android:name=".CategoryActivity" />
         <activity android:name=".NewActivity" />
         <activity android:name=".UserProfile" />
@@ -167,11 +157,17 @@
             android:parentActivityName=".Feed">
             <intent-filter>
                 <action android:name="in.reweyou.reweyou_SINGLE_POST">
-                    <category android:name="android.intent.category.DEFAULT"></category>
+                    <category android:name="android.intent.category.DEFAULT" />
                 </action>
             </intent-filter>
         </activity>
-        <activity android:name=".Readers"></activity>
+        <activity android:name=".Readers" />
+        <activity
+            android:name=".Raw"
+            android:label="@string/title_activity_raw"
+            android:theme="@style/AppTheme">
+
+        </activity>
     </application>
 
 </manifest>
