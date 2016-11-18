@@ -95,5 +95,6 @@
     <string name="emptyStatus">Add your status here</string>
     <string name="emptyStatusHint">Your Status</string>
     <string name="takevideo">Shoot video</string>
+    <string name="title_activity_raw">Raw</string>
 
 </resources>

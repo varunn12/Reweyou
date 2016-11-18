@@ -19,10 +19,6 @@ import android.widget.VideoView;
  */
 public class Videorow extends Activity {
 
-    // Declare variables
-    ProgressDialog pDialog;
-    VideoView videoview;
-    ProgressBar progressbar;
     protected TextView video;
     protected TextView Headline;
     protected TextView place;
@@ -31,6 +27,10 @@ public class Videorow extends Activity {
     protected Button share;
     protected TextView tv;
     protected TextView From;
+    // Declare variables
+    ProgressDialog pDialog;
+    VideoView videoview;
+    ProgressBar progressbar;
     private String url;
     private String date;
     private String from;
@@ -38,8 +38,6 @@ public class Videorow extends Activity {
     private String category;
     private String reviews;
     private String headline;
-    // Insert your Video URL
-    String VideoURL = "https://www.reweyou.in/uploads/VID1454333655915_1517396294.mp4";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,10 +48,11 @@ public class Videorow extends Activity {
         videoview = (VideoView) findViewById(R.id.video);
         progressbar = (ProgressBar) findViewById(R.id.progressBar2);
         // Execute StreamVideo AsyncTask
-        Intent in=getIntent();
+        Intent in = getIntent();
         Bundle bundle = getIntent().getExtras();
         url = bundle.getString("myData");
-        Headline = (TextView) findViewById(R.id.Who);
+
+      /*  Headline = (TextView) findViewById(R.id.Who);
         place = (TextView) findViewById(R.id.place);
         Date = (TextView) findViewById(R.id.date);
         tag = (TextView) findViewById(R.id.tag);
@@ -74,7 +73,7 @@ public class Videorow extends Activity {
         tag.setText(category);
         share.setVisibility(View.GONE);
         From.setText(from);
-
+*/
 
         // Create a progressbar
       /*  pDialog = new ProgressDialog(Videorow.this);
@@ -86,7 +85,8 @@ public class Videorow extends Activity {
         pDialog.setCancelable(false);
         // Show progressbar
         pDialog.show();
-*/              progressbar.setVisibility(View.VISIBLE);
+*/
+        progressbar.setVisibility(View.VISIBLE);
         try {
             // Start the MediaController
             MediaController mediacontroller = new MediaController(
