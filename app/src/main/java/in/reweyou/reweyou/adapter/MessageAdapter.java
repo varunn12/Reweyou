@@ -60,6 +60,7 @@ import in.reweyou.reweyou.Comments;
 import in.reweyou.reweyou.FullImage;
 import in.reweyou.reweyou.LocationActivity;
 import in.reweyou.reweyou.R;
+import in.reweyou.reweyou.ShowImage;
 import in.reweyou.reweyou.UserProfile;
 import in.reweyou.reweyou.Videorow;
 import in.reweyou.reweyou.classes.ConnectionDetector;
@@ -75,6 +76,7 @@ import static in.reweyou.reweyou.utils.Constants.REVIEW_URL;
 import static in.reweyou.reweyou.utils.Constants.SUGGEST_URL;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_IMAGE;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_LOADING;
+import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_NEW_POST;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_VIDEO;
 
 
@@ -124,8 +126,11 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 return new VideoViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_messageadapter_video, viewGroup, false));
             case VIEW_TYPE_LOADING:
                 return new LoadingViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_messageadapter_loading, viewGroup, false));
+            case VIEW_TYPE_NEW_POST:
+                return new NewPostViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_messageadapter_new_post, viewGroup, false));
             default:
-                return new ImageViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_messageadapter_image, viewGroup, false));
+                return null;
+
         }
     }
 
@@ -141,9 +146,9 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             case VIEW_TYPE_IMAGE:
                 bindImageOrGif(position, viewHolder2);
                 break;
-            default:
+          /*  default:
                 bindImageOrGif(position, viewHolder2);
-                break;
+                break;*/
 
         }
     }
@@ -157,6 +162,8 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 return VIEW_TYPE_VIDEO;
             case VIEW_TYPE_LOADING:
                 return VIEW_TYPE_LOADING;
+            case VIEW_TYPE_NEW_POST:
+                return VIEW_TYPE_NEW_POST;
             default:
                 return super.getItemViewType(position);
         }
@@ -1067,4 +1074,20 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
+    private class NewPostViewHolder extends RecyclerView.ViewHolder {
+        LinearLayout con;
+
+        public NewPostViewHolder(View view) {
+            super(view);
+            con = (LinearLayout) view.findViewById(R.id.newCon);
+            con.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent in = new Intent(mContext, ShowImage.class);
+                    mContext.startActivity(in);
+                }
+            });
+
+        }
+    }
 }
