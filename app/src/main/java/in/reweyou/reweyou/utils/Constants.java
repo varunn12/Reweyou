@@ -32,6 +32,7 @@ public class Constants {
     public static final int VIEW_TYPE_VIDEO = 6;
     public static final int VIEW_TYPE_GIF = 7;
     public static final int VIEW_TYPE_LOADING = 10;
+    public static final int VIEW_TYPE_NEW_POST = 11;
 
 
 }
