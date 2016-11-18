@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
@@ -22,7 +23,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.provider.Settings;
-import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -33,10 +33,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -74,6 +72,8 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
 
     private static final int REQUEST_CODE = 0;
     private static final int REQUEST_TAKE_GALLERY_VIDEO = 5;
+    private static final int IMAGE = 11;
+    private static final int VIDEO = 12;
     Location location;
     AppLocationService appLocationService;
     ConnectionDetector cd;
@@ -82,7 +82,7 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
     Boolean isInternetPresent = false;
     PermissionsChecker checker;
     int REQUEST_CAMERA = 0, SELECT_FILE = 1, REQUEST_VIDEO = 3;
-    private Button button;
+    private ImageView button;
     private EditText description, editTag, headline;
     private ImageView imageview;
     private Bitmap bitmap;
@@ -95,10 +95,10 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
     private Spinner staticSpinner;
     private String number;
     private Toolbar toolbar;
-    private LinearLayout optionsLayout;
-    private TextInputLayout til_description;
+    // private LinearLayout optionsLayout;
+/*    private TextInputLayout til_description;
     private TextInputLayout til_tag;
-    private TextInputLayout til_headline;
+    private TextInputLayout til_headline;*/
     private int position_spinner = -1;
     private ImageView btn_camera;
     private ImageView btn_video;
@@ -110,6 +110,7 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
     private ImageView imagecancel;
     private String selectedVideoPath;
     private ImageView play;
+    private int viewType = -1;
 
 
     public static boolean isLocationEnabled(Context context) {
@@ -135,15 +136,15 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_camera);
+        setContentView(R.layout.activity_camera_test);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        til_tag = (TextInputLayout) findViewById(R.id.input_layout_tag);
+       /* til_tag = (TextInputLayout) findViewById(R.id.input_layout_tag);
         til_headline = (TextInputLayout) findViewById(R.id.input_layout_headline);
         til_description = (TextInputLayout) findViewById(R.id.input_layout_description);
-
+*/
         setSupportActionBar(toolbar);
-        optionsLayout = (LinearLayout) findViewById(R.id.options);
+        //  optionsLayout = (LinearLayout) findViewById(R.id.options);
         getSupportActionBar().setTitle("Upload Report");
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -163,8 +164,8 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
         editTag = (EditText) findViewById(R.id.tag);
 
         headline = (EditText) findViewById(R.id.head);
-        button = (Button) findViewById(R.id.btn_send);
-        button.setTypeface(font);
+        button = (ImageView) findViewById(R.id.btn_send);
+//        button.setTypeface(font);
         button.setOnClickListener(this);
 
         previewLayout = (RelativeLayout) findViewById(R.id.previewLayout);
@@ -177,22 +178,30 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
         play.setVisibility(View.GONE);
         initOptions();
 
-        //selectedImagePath = getAbsolutePath(Uri.parse(show));
-
-        // Glide.with(ShowImage.this).load(selectedImagePath).override(400, 400).into(imageview);
 
         previewLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (selectedImagePath != null) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("myData", selectedImagePath);
-                    Intent in = new Intent(ShowImage.this, FullImage.class);
-                    in.putExtras(bundle);
-                    startActivity(in);
-                } else if (selectedVideoPath != null) {
+                switch (viewType) {
+                    case IMAGE:
+                        if (selectedImagePath != null) {
+
+                            Bundle bundle = new Bundle();
+                            bundle.putString("myData", selectedImagePath);
+                            Intent in = new Intent(ShowImage.this, FullImage.class);
+                            in.putExtras(bundle);
+                            startActivity(in);
+                        }
+                        return;
+                    case VIDEO:
+                        Bundle bundle = new Bundle();
+                        bundle.putString("myData", selectedVideoPath);
+                        Intent in = new Intent(ShowImage.this, Videorow.class);
+                        in.putExtras(bundle);
+                        startActivity(in);
 
                 }
+
             }
         });
 
@@ -209,7 +218,8 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
                 previewLayout.setVisibility(View.GONE);
                 selectedImagePath = null;
                 selectedVideoPath = null;
-                optionsLayout.setVisibility(View.VISIBLE);
+                imageview.setColorFilter(null);
+                //optionsLayout.setVisibility(View.VISIBLE);
             }
         });
 
@@ -226,7 +236,6 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
                 showImageOptions();
             }
         });
-
         btn_video.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -361,9 +370,9 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().trim().length() > 0) {
+              /*  if (s.toString().trim().length() > 0) {
                     til_tag.setErrorEnabled(false);
-                } else til_tag.setError("Cannot be empty");
+                } else til_tag.setError("Cannot be empty");*/
             }
 
             @Override
@@ -379,9 +388,9 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().trim().length() > 0) {
+               /* if (s.toString().trim().length() > 0) {
                     til_headline.setErrorEnabled(false);
-                } else til_headline.setError("Cannot be empty");
+                } else til_headline.setError("Cannot be empty");*/
             }
 
             @Override
@@ -397,9 +406,9 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().trim().length() > 0) {
+               /* if (s.toString().trim().length() > 0) {
                     til_description.setErrorEnabled(false);
-                } else til_description.setError("Cannot be empty");
+                } else til_description.setError("Cannot be empty");*/
             }
 
             @Override
@@ -460,7 +469,17 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
                         .getLocation(LocationManager.GPS_PROVIDER);
                 if (location != null) {
                     if (place != null) {
-                        compressImage();
+                        if (staticSpinner.getSelectedItemPosition() == 0)
+                            Toast.makeText(ShowImage.this, "Select a category", Toast.LENGTH_SHORT).show();
+                        else if (headline.getText().toString().trim().length() == 0)
+                            Toast.makeText(ShowImage.this, "Headline cannot be empty", Toast.LENGTH_SHORT).show();
+                        else if (editTag.getText().toString().trim().length() == 0)
+                            Toast.makeText(ShowImage.this, "Tag cannot be empty", Toast.LENGTH_SHORT).show();
+                        else if (description.getText().toString().trim().length() == 0)
+                            Toast.makeText(ShowImage.this, "Description cannot be empty", Toast.LENGTH_SHORT).show();
+                        else
+                            compressImage();
+
                     } else {
                         double latitude = location.getLatitude();
                         double longitude = location.getLongitude();
@@ -468,18 +487,23 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
                         LocationAddress.getAddressFromLocation(latitude, longitude,
                                 getApplicationContext(), new GeocoderHandler());
                         // Toast.makeText(CameraActivity.this,"Detecting current location...We need your current location for authenticity.",Toast.LENGTH_LONG).show();
-                        button.setBackgroundResource(R.color.colorPrimary);
-                        button.setText(R.string.send);
+                        button.setImageResource(R.drawable.ic_send_primary_24px);
+                        //button.setText(R.string.send);
                     }
                 } else {
                     location = appLocationService.getLocation(LocationManager.NETWORK_PROVIDER);
                     if (location != null) {
                         if (place != null) {
-                            if (type.equals("Select Category")) {
+                            if (staticSpinner.getSelectedItemPosition() == 0)
                                 Toast.makeText(ShowImage.this, "Select a category", Toast.LENGTH_SHORT).show();
-                            } else {
+                            else if (headline.getText().toString().trim().length() == 0)
+                                Toast.makeText(ShowImage.this, "Headline cannot be empty", Toast.LENGTH_SHORT).show();
+                            else if (editTag.getText().toString().trim().length() == 0)
+                                Toast.makeText(ShowImage.this, "Tag cannot be empty", Toast.LENGTH_SHORT).show();
+                            else if (description.getText().toString().trim().length() == 0)
+                                Toast.makeText(ShowImage.this, "Description cannot be empty", Toast.LENGTH_SHORT).show();
+                            else
                                 compressImage();
-                            }
                         } else {
                             double latitude = location.getLatitude();
                             double longitude = location.getLongitude();
@@ -487,8 +511,8 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
                             LocationAddress.getAddressFromLocation(latitude, longitude,
                                     getApplicationContext(), new GeocoderHandler());
                             //     Toast.makeText(CameraActivity.this,"Detecting current location...We need your current location for authenticity.",Toast.LENGTH_LONG).show();
-                            button.setBackgroundResource(R.color.colorPrimary);
-                            button.setText(R.string.send);
+                            button.setImageResource(R.drawable.ic_send_primary_24px);
+                            // button.setText(R.string.send);
                         }
                     } else {
                         Toast.makeText(this, "Fetching Reporting Location", Toast.LENGTH_LONG).show();
@@ -549,12 +573,15 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
         if (resultCode == Activity.RESULT_OK && requestCode == SELECT_FILE && data != null) {
             Uri uriFromPath = data.getData();
             String show = uriFromPath.toString();
+            play.setVisibility(View.GONE);
+            imageview.setColorFilter(null);
 
             selectedImagePath = getAbsolutePath(Uri.parse(show));
-            optionsLayout.setVisibility(View.GONE);
             previewLayout.setVisibility(View.VISIBLE);
-            Glide.with(ShowImage.this).load(selectedImagePath).override(400, 400).into(imageview);
 
+            Glide.with(ShowImage.this).load(selectedImagePath).into(imageview);
+
+            viewType = IMAGE;
 
         }
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CAMERA) {
@@ -575,13 +602,17 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
             Log.d("called", videoFilePath);
 */
 
+            viewType = VIDEO;
 
             selectedVideoPath = getAbsolutePath(Uri.parse(data.getData().toString()));
             Log.d("path", selectedVideoPath);
-            optionsLayout.setVisibility(View.GONE);
+            //  optionsLayout.setVisibility(View.GONE);
             previewLayout.setVisibility(View.VISIBLE);
             play.setVisibility(View.VISIBLE);
-            Glide.with(ShowImage.this).load(new File(selectedVideoPath)).override(400, 400).into(imageview);
+            imageview.setColorFilter(Color.argb(150, 255, 255, 255)); // White Tint
+
+
+            Glide.with(ShowImage.this).load(new File(selectedVideoPath)).into(imageview);
 
 
 
@@ -642,10 +673,10 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
                     .with(this)
                     .load(selectedImagePath)
                     .asBitmap()
-                    .toBytes(Bitmap.CompressFormat.JPEG, 60)
+                    .toBytes(Bitmap.CompressFormat.JPEG, 90)
                     .fitCenter()
                     .atMost()
-                    .override(800, 800)
+                    .override(1000, 1000)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .skipMemoryCache(true)
                     .into(new SimpleTarget<byte[]>() {
