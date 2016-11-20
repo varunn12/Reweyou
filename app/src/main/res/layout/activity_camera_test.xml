@@ -150,6 +150,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="4dp"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
                     android:background="#fff"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
@@ -176,7 +178,7 @@
                         android:id="@+id/btn_send"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:layout_marginRight="2dp"
+                        android:layout_marginRight="6dp"
                         android:scaleType="centerInside"
                         app:srcCompat="@drawable/ic_send_black_24px" />
 

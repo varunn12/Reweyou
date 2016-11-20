@@ -149,6 +149,31 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
         });
     }
 
+
+    @Override
+    public void onBackPressed() {
+        if (previewLayout.getVisibility() == View.VISIBLE || headline.getText().toString().trim().length() > 0 || editTag.getText().toString().trim().length() > 0 || description.getText().toString().trim().length() > 0) {
+            AlertDialog.Builder getImageFrom = new AlertDialog.Builder(ShowImage.this);
+            getImageFrom.setTitle("Discard Report?");
+            getImageFrom.setMessage("All your changes will be lost");
+            getImageFrom.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    ShowImage.super.onBackPressed();
+                }
+            });
+            getImageFrom.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+
+            getImageFrom.show();
+        } else super.onBackPressed();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
