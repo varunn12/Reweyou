@@ -1,7 +1,6 @@
 package in.reweyou.reweyou;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -39,8 +38,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import in.reweyou.reweyou.classes.ConnectionDetector;
+import in.reweyou.reweyou.classes.HandleActivityResult;
+import in.reweyou.reweyou.classes.UploadOptions;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.fragment.SecondFragment;
+
+import static in.reweyou.reweyou.classes.HandleActivityResult.HANDLE_IMAGE;
+import static in.reweyou.reweyou.classes.HandleActivityResult.HANDLE_VIDEO;
 
 public class Feed extends AppCompatActivity implements View.OnClickListener {
     static final String[] PERMISSIONS = new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -180,7 +184,7 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
 
     @Override
     protected void onActivityResult(int reqCode, int resCode, Intent data) {
-        if (resCode == Activity.RESULT_OK && reqCode == SELECT_FILE && data != null) {
+      /*  if (resCode == Activity.RESULT_OK && reqCode == SELECT_FILE && data != null) {
             Uri uriFromPath = data.getData();
             String show = uriFromPath.toString();
             Intent intent = new Intent(this, ShowImage.class);
@@ -206,6 +210,22 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
         }
         if (reqCode == REQUEST_CODE && resCode == PermissionsActivity.PERMISSIONS_DENIED) {
             finish();
+        }*/
+
+        int dataType = new HandleActivityResult().handleResult(reqCode, resCode, data);
+        switch (dataType) {
+            case HANDLE_IMAGE:
+                Intent i = new Intent(this, ShowImage.class);
+                i.putExtra("dataImage", data.getData().toString());
+                startActivity(i);
+                break;
+            case HANDLE_VIDEO:
+                Intent i2 = new Intent(this, ShowImage.class);
+                UploadOptions uploadOptions = new UploadOptions(Feed.this);
+                i2.putExtra("dataVideo", uploadOptions.getAbsolutePath(data.getData()));
+                startActivity(i2);
+            default:
+                return;
         }
     }
 

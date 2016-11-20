@@ -1,13 +1,11 @@
 package in.reweyou.reweyou;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -18,10 +16,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -35,6 +31,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -52,10 +49,15 @@ import java.util.TimeZone;
 
 import in.reweyou.reweyou.classes.AppLocationService;
 import in.reweyou.reweyou.classes.ConnectionDetector;
+import in.reweyou.reweyou.classes.HandleActivityResult;
 import in.reweyou.reweyou.classes.ImageLoadingUtils;
 import in.reweyou.reweyou.classes.LocationAddress;
 import in.reweyou.reweyou.classes.RequestHandler;
+import in.reweyou.reweyou.classes.UploadOptions;
 import in.reweyou.reweyou.classes.UserSessionManager;
+
+import static in.reweyou.reweyou.classes.HandleActivityResult.HANDLE_IMAGE;
+import static in.reweyou.reweyou.classes.HandleActivityResult.HANDLE_VIDEO;
 
 public class ShowImage extends AppCompatActivity implements View.OnClickListener {
     public static final String KEY_IMAGE = "image";
@@ -67,13 +69,14 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
     public static final String KEY_NAME = "name";
     //public static final String UPLOAD_URL = "https://www.reweyou.in/reweyou/upload_report.php";
     public static final String UPLOAD_URL = "https://www.reweyou.in/reweyou/test_report.php";
-    static final String[] PERMISSION = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
     static final String[] PERMISSIONS = new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
-    private static final int REQUEST_CODE = 0;
     private static final int REQUEST_TAKE_GALLERY_VIDEO = 5;
     private static final int IMAGE = 11;
     private static final int VIDEO = 12;
+    public ImageView btn_camera;
+    public ImageView btn_video;
+    public ImageView btn_gif;
     Location location;
     AppLocationService appLocationService;
     ConnectionDetector cd;
@@ -81,7 +84,6 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
     String selectedImagePath;
     Boolean isInternetPresent = false;
     PermissionsChecker checker;
-    int REQUEST_CAMERA = 0, SELECT_FILE = 1, REQUEST_VIDEO = 3;
     private ImageView button;
     private EditText description, editTag, headline;
     private ImageView imageview;
@@ -100,9 +102,6 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
     private TextInputLayout til_tag;
     private TextInputLayout til_headline;*/
     private int position_spinner = -1;
-    private ImageView btn_camera;
-    private ImageView btn_video;
-    private ImageView btn_gif;
     private Uri uri;
     private String mCurrentPhotoPath;
     private String videoFilePath;
@@ -111,6 +110,8 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
     private String selectedVideoPath;
     private ImageView play;
     private int viewType = -1;
+    private UploadOptions uploadOptions;
+    private LinearLayout logo;
 
 
     public static boolean isLocationEnabled(Context context) {
@@ -139,16 +140,14 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
         setContentView(R.layout.activity_camera_test);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-       /* til_tag = (TextInputLayout) findViewById(R.id.input_layout_tag);
-        til_headline = (TextInputLayout) findViewById(R.id.input_layout_headline);
-        til_description = (TextInputLayout) findViewById(R.id.input_layout_description);
-*/
         setSupportActionBar(toolbar);
-        //  optionsLayout = (LinearLayout) findViewById(R.id.options);
         getSupportActionBar().setTitle("Upload Report");
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        uploadOptions = new UploadOptions(this);
+        uploadOptions.initOptions();
 
         session = new UserSessionManager(getApplicationContext());
         checker = new PermissionsChecker(this);
@@ -168,6 +167,7 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
 //        button.setTypeface(font);
         button.setOnClickListener(this);
 
+        logo = (LinearLayout) findViewById(R.id.logo);
         previewLayout = (RelativeLayout) findViewById(R.id.previewLayout);
         // String show = getIntent().getStringExtra("path");
 
@@ -176,7 +176,15 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
         number = user.get(UserSessionManager.KEY_NUMBER);
         play = (ImageView) findViewById(R.id.play);
         play.setVisibility(View.GONE);
-        initOptions();
+
+        Intent i = getIntent();
+        if (i != null) {
+            if (i.hasExtra("dataImage")) {
+                handleImage(i.getStringExtra("dataImage"));
+            } else if (i.hasExtra("dataVideo")) {
+                handleVideo(i.getStringExtra("dataVideo"));
+            }
+        }
 
 
         previewLayout.setOnClickListener(new View.OnClickListener() {
@@ -214,6 +222,7 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
         imagecancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                logo.setVisibility(View.VISIBLE);
                 play.setVisibility(View.GONE);
                 previewLayout.setVisibility(View.GONE);
                 selectedImagePath = null;
@@ -223,105 +232,6 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
             }
         });
 
-    }
-
-    private void initOptions() {
-        btn_camera = (ImageView) findViewById(R.id.btn_camera);
-        btn_video = (ImageView) findViewById(R.id.btn_video);
-        btn_gif = (ImageView) findViewById(R.id.btn_gif);
-
-        btn_camera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showImageOptions();
-            }
-        });
-        btn_video.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showVideoOptions();
-            }
-        });
-    }
-
-    private void showVideoOptions() {
-        AlertDialog.Builder getImageFrom = new AlertDialog.Builder(ShowImage.this);
-        getImageFrom.setTitle("Select Video from:");
-        final CharSequence[] opsChars = {getResources().getString(R.string.takevideo), getResources().getString(R.string.opengallery)};
-        getImageFrom.setItems(opsChars, new android.content.DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (which == 0) {
-                    if (checker.lacksPermissions(PERMISSION)) {
-                        startPermissionsActivity();
-                    } else {
-
-                       /* Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        File photoFile = null;
-                        photoFile = getOutputMediaFile();
-                        uri = Uri.fromFile(photoFile);
-                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                        startActivityForResult(takePictureIntent, REQUEST_CAMERA);
-                        UILApplication.getInstance().trackEvent("Image", "Camera", "For Pics");*/
-                    }
-
-                } else if (which == 1) {
-                    if (checker.lacksPermissions(PERMISSION)) {
-                        startPermissionsActivity();
-                    } else {
-
-                        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
-                        startActivityForResult(Intent.createChooser(intent, "Select Video"), REQUEST_TAKE_GALLERY_VIDEO);
-
-                        // UILApplication.getInstance().trackEvent("Gallery", "Gallery", "For Pics");
-                    }
-                }
-                dialog.dismiss();
-            }
-        });
-        getImageFrom.show();
-    }
-
-    private void showImageOptions() {
-        AlertDialog.Builder getImageFrom = new AlertDialog.Builder(ShowImage.this);
-        getImageFrom.setTitle("Select Image from:");
-        final CharSequence[] opsChars = {getResources().getString(R.string.takepic), getResources().getString(R.string.opengallery)};
-        getImageFrom.setItems(opsChars, new android.content.DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (which == 0) {
-                    if (checker.lacksPermissions(PERMISSION)) {
-                        startPermissionsActivity();
-                    } else {
-
-                        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        File photoFile = null;
-                        photoFile = getOutputMediaFile();
-                        uri = Uri.fromFile(photoFile);
-                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                        startActivityForResult(takePictureIntent, REQUEST_CAMERA);
-                        UILApplication.getInstance().trackEvent("Image", "Camera", "For Pics");
-                    }
-
-                } else if (which == 1) {
-                    if (checker.lacksPermissions(PERMISSION)) {
-                        startPermissionsActivity();
-                    } else {
-                        Intent intent = new Intent(Intent.ACTION_PICK,
-                                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                        // 2. pick image only
-                        intent.setType("image/*");
-                        // 3. start activity
-                        startActivityForResult(intent, SELECT_FILE);
-                        UILApplication.getInstance().trackEvent("Gallery", "Gallery", "For Pics");
-                    }
-                }
-                dialog.dismiss();
-            }
-        });
-        getImageFrom.show();
     }
 
 
@@ -438,28 +348,6 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
 
     }
 
-    private File getOutputMediaFile() {
-        // To be safe, you should check that the SDCard is mounted
-        // using Environment.getExternalStorageState() before doing this.
-        File mediaStorageDir = new File(Environment.getExternalStorageDirectory(), "Reweyou");
-        // This location works best if you want the created images to be shared
-        // between applications and persist after your app has been uninstalled.
-        // Create the storage directory if it does not exist
-        if (!mediaStorageDir.exists()) {
-            if (!mediaStorageDir.mkdirs()) {
-                Log.d("Reweyou", "failed to create directory");
-                return null;
-            }
-        }
-        // Create a media file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        File mediaFile;
-        mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                "IMG_" + timeStamp + ".jpg");
-        mCurrentPhotoPath = "file:" + mediaFile.getAbsolutePath();
-        return mediaFile;
-    }
-
     @Override
     public void onClick(View v) {
         isInternetPresent = cd.isConnectingToInternet();
@@ -487,7 +375,7 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
                         LocationAddress.getAddressFromLocation(latitude, longitude,
                                 getApplicationContext(), new GeocoderHandler());
                         // Toast.makeText(CameraActivity.this,"Detecting current location...We need your current location for authenticity.",Toast.LENGTH_LONG).show();
-                        button.setImageResource(R.drawable.ic_send_primary_24px);
+                        button.setImageResource(R.drawable.button_send);
                         //button.setText(R.string.send);
                     }
                 } else {
@@ -511,7 +399,7 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
                             LocationAddress.getAddressFromLocation(latitude, longitude,
                                     getApplicationContext(), new GeocoderHandler());
                             //     Toast.makeText(CameraActivity.this,"Detecting current location...We need your current location for authenticity.",Toast.LENGTH_LONG).show();
-                            button.setImageResource(R.drawable.ic_send_primary_24px);
+                            button.setImageResource(R.drawable.button_send);
                             // button.setText(R.string.send);
                         }
                     } else {
@@ -553,118 +441,48 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
     @Override
     protected void onResume() {
         super.onResume();
-
-        if (checker.lacksPermissions(PERMISSION)) {
-            startPermissionsActivity();
-        }
     }
 
-    private void startPermissionsActivity() {
-        PermissionsActivity.startActivityForResult(this, REQUEST_CODE, PERMISSION);
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE && resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
-            finish();
+        int dataType = new HandleActivityResult().handleResult(requestCode, resultCode, data);
+        switch (dataType) {
+            case HANDLE_IMAGE:
+                handleImage(data.getData().toString());
+                break;
+            case HANDLE_VIDEO:
+                handleVideo(uploadOptions.getAbsolutePath(data.getData()));
+                break;
+            default:
+                finish();
         }
 
-        if (resultCode == Activity.RESULT_OK && requestCode == SELECT_FILE && data != null) {
-            Uri uriFromPath = data.getData();
-            String show = uriFromPath.toString();
-            play.setVisibility(View.GONE);
-            imageview.setColorFilter(null);
-
-            selectedImagePath = getAbsolutePath(Uri.parse(show));
-            previewLayout.setVisibility(View.VISIBLE);
-
-            Glide.with(ShowImage.this).load(selectedImagePath).into(imageview);
-
-            viewType = IMAGE;
-
-        }
-        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CAMERA) {
-            String show = uri.toString();
-            Intent intent = new Intent(ShowImage.this, CameraActivity.class);
-            Log.d("URI", show);
-            Log.d("Intent", mCurrentPhotoPath);
-            intent.putExtra("path", mCurrentPhotoPath);
-            startActivity(intent);
-        }
-        if (requestCode == REQUEST_TAKE_GALLERY_VIDEO && resultCode == RESULT_OK) {
-
-/*
-
-           if (data != null && data.getStringExtra("videopath") != null)
-                videoFilePath = data.getStringExtra("videopath");
-
-            Log.d("called", videoFilePath);
-*/
-
-            viewType = VIDEO;
-
-            selectedVideoPath = getAbsolutePath(Uri.parse(data.getData().toString()));
-            Log.d("path", selectedVideoPath);
-            //  optionsLayout.setVisibility(View.GONE);
-            previewLayout.setVisibility(View.VISIBLE);
-            play.setVisibility(View.VISIBLE);
-            imageview.setColorFilter(Color.argb(150, 255, 255, 255)); // White Tint
-
-
-            Glide.with(ShowImage.this).load(new File(selectedVideoPath)).into(imageview);
-
-
-
-/*
-
-            Uri selectedImageUri = data.getData();
-            Log.d("calleddwd", String.valueOf(selectedImageUri));
-
-            // MEDIA GALLERY
-            selectedVideoPath = getPath(selectedImageUri);
-            if (selectedVideoPath != null) {
-                Log.d("called", selectedVideoPath);
-
-                optionsLayout.setVisibility(View.GONE);
-                previewLayout.setVisibility(View.VISIBLE);
-                play.setVisibility(View.VISIBLE);
-                Glide.with(ShowImage.this).load(new File(selectedVideoPath)).override(400, 400).into(imageview);
-
-            } else Log.d("called", "errrroro");
-*/
-
-        }
-        if (requestCode == REQUEST_CODE && resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
-            finish();
-        }
     }
 
-    public String getPath(Uri uri) {
-        String[] projection = {MediaStore.Images.Media.DATA};
-        Cursor cursor = managedQuery(uri, projection, null, null, null);
-        if (cursor != null) {
-            // HERE YOU WILL GET A NULLPOINTER IF CURSOR IS NULL
-            // THIS CAN BE, IF YOU USED OI FILE MANAGER FOR PICKING THE MEDIA
-            int column_index = cursor
-                    .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            return cursor.getString(column_index);
-        } else
-            return null;
+    private void handleVideo(String data) {
+        viewType = VIDEO;
+        //Log.d("path2", data);
+        // selectedVideoPath = uploadOptions.getAbsolutePath(Uri.parse(data));//Log.d("path", selectedVideoPath);
+        previewLayout.setVisibility(View.VISIBLE);
+        play.setVisibility(View.VISIBLE);
+        logo.setVisibility(View.GONE);
+        imageview.setColorFilter(Color.argb(150, 255, 255, 255)); // White Tint
+        Glide.with(ShowImage.this).load(new File(data)).into(imageview);
+        selectedVideoPath = data;
     }
 
-    public String getAbsolutePath(Uri uri) {
-        String[] projection = {MediaStore.MediaColumns.DATA};
-        @SuppressWarnings("deprecation")
-        Cursor cursor = managedQuery(uri, projection, null, null, null);
-        if (cursor != null) {
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
-            cursor.moveToFirst();
-            return cursor.getString(column_index);
-        } else
-            return null;
+    private void handleImage(String data) {
+        play.setVisibility(View.GONE);
+        logo.setVisibility(View.GONE);
+        imageview.setColorFilter(null);
+        selectedImagePath = uploadOptions.getAbsolutePath(Uri.parse(data));
+        previewLayout.setVisibility(View.VISIBLE);
+        Glide.with(ShowImage.this).load(selectedImagePath).into(imageview);
+        viewType = IMAGE;
     }
+
 
     public void compressImage() {
 
