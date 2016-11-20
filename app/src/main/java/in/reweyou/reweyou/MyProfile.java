@@ -5,16 +5,15 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.ContextCompat;
@@ -24,6 +23,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -44,6 +44,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -54,7 +57,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -70,18 +72,21 @@ import java.util.Map;
 import in.reweyou.reweyou.adapter.MessageAdapter;
 import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.DividerItemDecoration;
+import in.reweyou.reweyou.classes.HandleActivityResult;
 import in.reweyou.reweyou.classes.RequestHandler;
+import in.reweyou.reweyou.classes.UploadOptions;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.model.MpModel;
 import in.reweyou.reweyou.utils.Constants;
 
+import static in.reweyou.reweyou.classes.HandleActivityResult.HANDLE_IMAGE;
 import static in.reweyou.reweyou.utils.Constants.MY_PROFILE_EDIT_URL;
-import static in.reweyou.reweyou.utils.Constants.MY_PROFILE_UPLOAD_URL;
 import static in.reweyou.reweyou.utils.Constants.MY_PROFILE_URL_FOLLOW;
 
 public class MyProfile extends AppCompatActivity implements View.OnClickListener {
 
 
+    private final String MY_PROFILE_UPLOAD_URL = "https://www.reweyou.in/reweyou/profilepic.php";
     Boolean isInternetPresent = false;
     ConnectionDetector cd;
     UserSessionManager session;
@@ -101,23 +106,6 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
     private DisplayImageOptions option;
     private LinearLayout Empty;
 
-    public static String encodeTobase64(Bitmap image) {
-        Bitmap immage = image;
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        immage.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        byte[] b = baos.toByteArray();
-        String imageEncoded = Base64.encodeToString(b, Base64.DEFAULT);
-
-        //  Log.d("Image Log:", imageEncoded);
-        return imageEncoded;
-
-    }
-
-    public static Bitmap decodeBase64(String input) {
-        byte[] decodedByte = Base64.decode(input, 0);
-        return BitmapFactory
-                .decodeByteArray(decodedByte, 0, decodedByte.length);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -426,19 +414,8 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
         destination.setImageBitmap(Correctbmp);
     }
 
-    public String getAbsolutePath(Uri uri) {
-        String[] projection = {MediaStore.MediaColumns.DATA};
-        @SuppressWarnings("deprecation")
-        Cursor cursor = managedQuery(uri, projection, null, null, null);
-        if (cursor != null) {
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
-            cursor.moveToFirst();
-            return cursor.getString(column_index);
-        } else
-            return null;
-    }
 
-    public void uploadImage() {
+    public void uploadImage(final String encodedImage) {
         class UploadImage extends AsyncTask<Void, Void, String> {
             ProgressDialog loading;
 
@@ -452,11 +429,17 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
                 loading.dismiss();
-                if (s.trim().equals("Successfully Uploaded")) {
-                    session.setProfilePicture(image);
-                    Toast.makeText(MyProfile.this, "Profile Picture updated", Toast.LENGTH_LONG).show();
-                } else {
+                Log.d("result", s);
+                if (s.trim().equals("Error")) {
+                    // session.setProfilePicture(image);
                     Toast.makeText(MyProfile.this, "Couldn't set", Toast.LENGTH_LONG).show();
+
+                } else {
+                    Toast.makeText(MyProfile.this, "Profile Picture updated", Toast.LENGTH_LONG).show();
+                    session.setProfilePicture(s);
+                    Glide.with(MyProfile.this).load(s).error(R.drawable.download).into(profilepic);
+                    Intent resultIntent = new Intent();
+                    setResult(Activity.RESULT_OK, resultIntent);
                 }
             }
 
@@ -465,7 +448,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                 RequestHandler rh = new RequestHandler();
                 HashMap<String, String> param = new HashMap<String, String>();
                 param.put("number", i);
-                param.put("image", image);
+                param.put("image", encodedImage);
 
 
                 String result = rh.sendPostRequest(MY_PROFILE_UPLOAD_URL, param);
@@ -479,13 +462,50 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
     @Override
     public void onActivityResult(int reqCode, int resCode, Intent data) {
         if (resCode == Activity.RESULT_OK && reqCode == SELECT_FILE && data != null) {
-            Uri uriFromPath = data.getData();
-            selectedImagePath = getAbsolutePath(uriFromPath);
-            setPic(selectedImagePath, profilepic);
-            image = encodeTobase64(Correctbmp);
-            uploadImage();
+            int dataType = new HandleActivityResult().handleResult(reqCode, resCode, data);
+            if (dataType == HANDLE_IMAGE) {
+                selectedImagePath = new UploadOptions(MyProfile.this).getAbsolutePath(Uri.parse(data.getData().toString()));
+                compressImage();
+            }
+
+
         }
     }
+
+    public void compressImage() {
+
+        if (selectedImagePath != null) {
+            Glide
+                    .with(this)
+                    .load(selectedImagePath)
+                    .asBitmap()
+                    .toBytes(Bitmap.CompressFormat.JPEG, 100)
+                    .fitCenter()
+                    .atMost()
+                    .override(200, 200)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
+                    .into(new SimpleTarget<byte[]>() {
+                        @Override
+                        public void onLoadStarted(Drawable ignore) {
+                            // started async load
+                        }
+
+                        @Override
+                        public void onResourceReady(byte[] resource, GlideAnimation<? super byte[]> ignore) {
+                            String encodedImage = Base64.encodeToString(resource, Base64.DEFAULT);
+                            uploadImage(encodedImage);
+                        }
+
+                        @Override
+                        public void onLoadFailed(Exception ex, Drawable ignore) {
+                            Log.d("ex", ex.getMessage());
+                        }
+                    });
+        } else uploadImage(null);
+
+    }
+
 
     //This method would confirm the otp
     public void editHeadline() throws JSONException {
