@@ -49,6 +49,7 @@ import static in.reweyou.reweyou.classes.HandleActivityResult.HANDLE_VIDEO;
 public class Feed extends AppCompatActivity implements View.OnClickListener {
     static final String[] PERMISSIONS = new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private static final int REQUEST_CODE = 0;
+    private final int REQ_CODE_PROFILE = 56;
     int REQUEST_CAMERA = 0, SELECT_FILE = 1, REQUEST_VIDEO = 3;
     UserSessionManager session;
     Uri uri;
@@ -62,6 +63,7 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
     private String videoFilePath;
     private Toolbar mToolbar;
     private FloatingActionButton floatingActionButton;
+    private ImageView image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -212,23 +214,33 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
             finish();
         }*/
 
-        int dataType = new HandleActivityResult().handleResult(reqCode, resCode, data);
-        switch (dataType) {
-            case HANDLE_IMAGE:
-                Intent i = new Intent(this, ShowImage.class);
-                i.putExtra("dataImage", data.getData().toString());
-                startActivity(i);
-                break;
-            case HANDLE_VIDEO:
-                Intent i2 = new Intent(this, ShowImage.class);
-                UploadOptions uploadOptions = new UploadOptions(Feed.this);
-                i2.putExtra("dataVideo", uploadOptions.getAbsolutePath(data.getData()));
-                startActivity(i2);
-            default:
-                return;
+        Log.d("reacheddewdd", "wwqd   hereeeeeee");
+
+
+        if (reqCode == REQ_CODE_PROFILE && resCode == RESULT_OK) {
+
+            Log.d("reached", "ewjdkejdu   hereeeeeee");
+            Glide.with(Feed.this).load(session.getProfilePicture()).error(R.drawable.download).into(image);
+
+        } else {
+
+            int dataType = new HandleActivityResult().handleResult(reqCode, resCode, data);
+            switch (dataType) {
+                case HANDLE_IMAGE:
+                    Intent i = new Intent(this, ShowImage.class);
+                    i.putExtra("dataImage", data.getData().toString());
+                    startActivity(i);
+                    break;
+                case HANDLE_VIDEO:
+                    Intent i2 = new Intent(this, ShowImage.class);
+                    UploadOptions uploadOptions = new UploadOptions(Feed.this);
+                    i2.putExtra("dataVideo", uploadOptions.getAbsolutePath(data.getData()));
+                    startActivity(i2);
+                default:
+                    return;
+            }
         }
     }
-
 
 
     @Override
@@ -382,19 +394,18 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
         });
         View header = navigationView.getHeaderView(0);
         TextView tv_email = (TextView) header.findViewById(R.id.tv_email);
-        ImageView image = (ImageView) header.findViewById(R.id.image);
+        image = (ImageView) header.findViewById(R.id.image);
         ImageView profileSetting = (ImageView) header.findViewById(R.id.profile_settings);
         profileSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent profile = new Intent(Feed.this, MyProfile.class);
-                startActivity(profile);
+
+                startActivityForResult(profile, REQ_CODE_PROFILE);
             }
         });
         tv_email.setText(session.getUsername());
-        String url = "https://www.reweyou.in/uploads/profilepic/" + session.getMobileNumber() + ".jpg";
-        // imageLoader.displayImage(url, image, options);
-        Glide.with(Feed.this).load(url).error(R.drawable.download).into(image);
+        Glide.with(Feed.this).load(session.getProfilePicture()).error(R.drawable.download).into(image);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
 
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, mToolbar, R.string.drawer_open, R.string.drawer_close) {
