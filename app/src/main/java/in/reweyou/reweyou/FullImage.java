@@ -1,12 +1,11 @@
 package in.reweyou.reweyou;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -23,19 +22,17 @@ private String i;
     private DisplayImageOptions options;
     private TouchImageView imageView;
     private String text;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_full_image);
-        Intent in=getIntent();
+        initToolbar();
+
         Bundle bundle = getIntent().getExtras();
         i = bundle.getString("myData");
-        if (in.hasExtra("headline")) {
-            text = bundle.getString("headline");
-        }
         imageView = (TouchImageView) findViewById(R.id.image);
-        TextView textview = (TextView)findViewById(R.id.text);
          // Do it on Application start
         cd = new ConnectionDetector(FullImage.this);
 
@@ -51,9 +48,7 @@ private String i;
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .build();
         // Then later, when you want to display image
-        if (text != null)
-        textview.setText(text);
-        else textview.setVisibility(View.GONE);
+
         isInternetPresent = cd.isConnectingToInternet();
         if(isInternetPresent) {
             showimage(i);
@@ -66,9 +61,24 @@ private String i;
 
     }
 
+    private void initToolbar() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+    }
+
     private void showimage(String i) {
         progressBar.setVisibility(View.GONE);
-        Glide.with(FullImage.this).load(i).override(300, 300).into(imageView);
+        Glide.with(FullImage.this).load(i).into(imageView);
     }
 
 

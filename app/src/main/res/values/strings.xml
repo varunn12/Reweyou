@@ -16,7 +16,7 @@
 
     <string-array name="tabs">
         <item>@string/tab_1</item>
-        <item>@string/tab_2</item>
+        <item>@string/tab_4</item>
         <item>@string/tab_5</item>
     </string-array>
     <string name="action_logout">Delete Account</string>
@@ -97,5 +97,9 @@
     <string name="takevideo">Shoot video</string>
     <string name="title_activity_raw">Raw</string>
     <string name="shootVideo">Shoot Video</string>
+    <string name="title_activity_nav">NavA</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 
 </resources>
