@@ -3,6 +3,7 @@ package in.reweyou.reweyou;
 /**
  * Created by Reweyou on 2/1/2016.
  */
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -16,6 +17,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Surface;
@@ -24,11 +26,9 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +37,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class VideoCapture extends Activity implements
+public class VideoCapture extends AppCompatActivity implements
         SurfaceHolder.Callback, OnClickListener {
 
     protected static final int RESULT_ERROR = 0x00000001;
@@ -58,11 +58,72 @@ public class VideoCapture extends Activity implements
     private String filePath;
 
     private boolean mIsRecording = false;
+    private boolean shootingVideo = false;
+    private Handler mHandler = new Handler() {
+
+        @Override
+        public void handleMessage(android.os.Message msg) {
+            switch (msg.what) {
+                case ID_TIME_COUNT:
+                    if (mIsRecording) {
+                        if (msg.arg1 > msg.arg2) {
+                            // mTvTimeCount.setVisibility(View.INVISIBLE);
+                            tv_counter.setText("00:00");
+                            stopRecord();
+                        } else {
+                            tv_counter.setText("00:0" + (msg.arg2 - msg.arg1));
+                            Message msg2 = mHandler.obtainMessage(ID_TIME_COUNT,
+                                    msg.arg1 + 1, msg.arg2);
+                            mHandler.sendMessageDelayed(msg2, 1000);
+                        }
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    };
+
+    public static void setCameraDisplayOrientation(Activity activity,
+                                                   int cameraId, Camera camera) {
+        Camera.CameraInfo info = new Camera.CameraInfo(); // Since API level 9
+        Camera.getCameraInfo(cameraId, info);
+        int rotation = activity.getWindowManager().getDefaultDisplay()
+                .getRotation();
+        int degrees = 0;
+        switch (rotation) {
+            case Surface.ROTATION_0:
+                degrees = 0;
+                break;
+            case Surface.ROTATION_90:
+                degrees = 90;
+                break;
+            case Surface.ROTATION_180:
+                degrees = 180;
+                break;
+            case Surface.ROTATION_270:
+                degrees = 270;
+                break;
+        }
+
+        int result;
+        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+            result = (info.orientation + degrees) % 360;
+            result = (360 - result) % 360;
+        } else {
+            result = (info.orientation - degrees + 360) % 360;
+        }
+        camera.setDisplayOrientation(result);
+    }
+
+    public static boolean isEmpty(String str) {
+        return str == null || "".equals(str.trim());
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_video_capture);
 
@@ -75,10 +136,10 @@ public class VideoCapture extends Activity implements
         iv_cancel = (ImageView) findViewById(R.id.iv_cancel);
         iv_ok = (ImageView) findViewById(R.id.iv_ok);
         image=(ImageView)findViewById(R.id.image);
-        iv_record.setImageResource(R.mipmap.start);
+       /* iv_record.setImageResource(R.mipmap.start);
         iv_record.setVisibility(View.VISIBLE);
         iv_ok.setVisibility(View.GONE);
-        iv_cancel.setVisibility(View.GONE);
+        iv_cancel.setVisibility(View.GONE);*/
         tv_counter = (TextView) findViewById(R.id.timer);
         tv_counter.setVisibility(View.GONE);
         iv_cancel.setOnClickListener(this);
@@ -144,32 +205,6 @@ public class VideoCapture extends Activity implements
             }
         }.start();
     }
-
-    private Handler mHandler = new Handler() {
-
-        @Override
-        public void handleMessage(android.os.Message msg) {
-            switch (msg.what) {
-                case ID_TIME_COUNT:
-                    if (mIsRecording) {
-                        if (msg.arg1 > msg.arg2) {
-                            // mTvTimeCount.setVisibility(View.INVISIBLE);
-                            tv_counter.setText("00:00");
-                            stopRecord();
-                        } else {
-                            tv_counter.setText("00:0" + (msg.arg2 - msg.arg1));
-                            Message msg2 = mHandler.obtainMessage(ID_TIME_COUNT,
-                                    msg.arg1 + 1, msg.arg2);
-                            mHandler.sendMessageDelayed(msg2, 1000);
-                        }
-                    }
-                    break;
-
-                default:
-                    break;
-            }
-        }
-    };
 
     private void openCamera() {
         try {
@@ -357,10 +392,10 @@ public class VideoCapture extends Activity implements
         try {
             if (initVideoRecorder()) {
                 mMediaRecorder.start();
-                iv_record.setImageResource(R.mipmap.stop);
+                iv_record.setImageResource(R.drawable.solid_circle_red_white_border_stop);
             } else {
                 releaseMediaRecorder();
-                iv_record.setImageResource(R.mipmap.start);
+                iv_record.setImageResource(R.drawable.solid_circle_red_white_border);
             }
             tv_counter.setVisibility(View.VISIBLE);
             tv_counter.setText("00:" + (MAX_VIDEO_DURATION / 1000));
@@ -386,44 +421,12 @@ public class VideoCapture extends Activity implements
         }
         releaseMediaRecorder();
         mCamera.lock();
-        iv_record.setImageResource(R.drawable.abc_btn_radio_to_on_mtrl_000);
+        iv_record.setImageResource(R.drawable.solid_circle_red_white_border_stop);
         mIsRecording = false;
 
-        iv_record.setVisibility(View.GONE);
+       /* iv_record.setVisibility(View.GONE);
         iv_cancel.setVisibility(View.VISIBLE);
-        iv_ok.setVisibility(View.VISIBLE);
-    }
-
-    public static void setCameraDisplayOrientation(Activity activity,
-                                                   int cameraId, Camera camera) {
-        Camera.CameraInfo info = new Camera.CameraInfo(); // Since API level 9
-        Camera.getCameraInfo(cameraId, info);
-        int rotation = activity.getWindowManager().getDefaultDisplay()
-                .getRotation();
-        int degrees = 0;
-        switch (rotation) {
-            case Surface.ROTATION_0:
-                degrees = 0;
-                break;
-            case Surface.ROTATION_90:
-                degrees = 90;
-                break;
-            case Surface.ROTATION_180:
-                degrees = 180;
-                break;
-            case Surface.ROTATION_270:
-                degrees = 270;
-                break;
-        }
-
-        int result;
-        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-            result = (info.orientation + degrees) % 360;
-            result = (360 - result) % 360;
-        } else {
-            result = (info.orientation - degrees + 360) % 360;
-        }
-        camera.setDisplayOrientation(result);
+        iv_ok.setVisibility(View.VISIBLE);*/
     }
 
     @Override
@@ -478,6 +481,7 @@ public class VideoCapture extends Activity implements
     public void onClick(View arg0) {
         switch (arg0.getId()) {
             case R.id.iv_ok:
+
                 Intent data = new Intent();
                 if (filePath != null) {
                     data.putExtra("videopath", filePath);
@@ -549,10 +553,6 @@ public class VideoCapture extends Activity implements
         public int compare(Size lhs, Size rhs) {
             return rhs.width - lhs.width;
         }
-    }
-
-    public static boolean isEmpty(String str) {
-        return str == null || "".equals(str.trim());
     }
 
 }

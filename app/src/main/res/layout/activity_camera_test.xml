@@ -44,7 +44,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="16dp"
-
+                android:animateLayoutChanges="true"
                 android:background="@drawable/button_background2"
                 android:elevation="4dp"
                 android:orientation="vertical">
@@ -89,17 +89,31 @@
                         android:textStyle="bold" />
                 </LinearLayout>
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.7dp"
+                    android:layout_marginLeft="36dp"
+                    android:layout_marginRight="36dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@color/greylight" />
 
                 <Spinner
                     android:id="@+id/static_spinner"
                     android:layout_width="wrap_content"
                     android:layout_height="44dp"
                     android:layout_gravity="center"
-
                     android:layout_marginTop="8dp"
                     android:background="@android:color/transparent"
                     android:paddingLeft="16dp" />
 
+                <View
+                    android:layout_width="170dp"
+                    android:layout_height="0.7dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@color/greylight" />
 
                 <EditText
                     android:id="@+id/head"
@@ -109,7 +123,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="8dp"
                     android:background="@null"
                     android:drawableLeft="@drawable/ic_timeline_black_18px"
                     android:drawablePadding="16dp"
@@ -127,17 +141,18 @@
                     android:layout_height="0.7dp"
                     android:layout_marginLeft="12dp"
                     android:layout_marginRight="12dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="8dp"
                     android:background="@color/greylight" />
 
                 <LinearLayout
                     android:id="@+id/linear"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
+                    android:layout_marginBottom="4dp"
                     android:background="#fff"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:padding="4dp">
 
 
                     <EditText
@@ -158,10 +173,10 @@
 
                     <ImageView
                         android:id="@+id/btn_send"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="4dp"
-                        android:padding="8dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginRight="2dp"
+                        android:scaleType="centerInside"
                         app:srcCompat="@drawable/ic_send_black_24px" />
 
 
@@ -180,7 +195,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:layout_marginTop="16dp"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <ImageView
                         android:id="@+id/ImageShow"
@@ -191,9 +206,9 @@
                         android:layout_marginRight="48dp"
                         android:adjustViewBounds="true"
                         android:background="@drawable/border_primary"
+                        android:minHeight="48dp"
                         android:padding="2dp"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/nature" />
+                        android:scaleType="centerInside" />
 
                     <ImageView
                         android:id="@+id/play"
@@ -201,19 +216,20 @@
                         android:layout_height="48dp"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
+                        android:elevation="8dp"
                         android:visibility="gone"
                         app:srcCompat="@drawable/ic_play_circle_filled_black_24px" />
 
                     <ImageView
                         android:id="@+id/cancel"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
                         android:layout_alignRight="@+id/ImageShow"
                         android:layout_marginRight="8dp"
                         android:layout_marginTop="8dp"
                         android:background="@drawable/solid_circle"
-                        android:elevation="4dp"
-                        android:padding="4dp"
+                        android:elevation="8dp"
+                        android:padding="8dp"
                         app:srcCompat="@drawable/ic_clear_black_24dp" />
                 </RelativeLayout>
 
@@ -227,7 +243,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:orientation="vertical"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <Space
                     android:layout_width="1dp"
@@ -272,7 +288,7 @@
     <LinearLayout
         android:id="@+id/l1"
         android:layout_width="match_parent"
-        android:layout_height="44dp"
+        android:layout_height="48dp"
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
         android:background="#fff"

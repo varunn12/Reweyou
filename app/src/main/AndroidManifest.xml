@@ -85,8 +85,14 @@
             android:name=".classes.HttpService"
             android:exported="false" />
 
-        <activity android:name=".VideoCapture" />
-        <activity android:name=".Videorow" />
+        <activity android:name=".VideoCapturetest">
+
+        </activity>
+        <activity
+            android:name=".Videorow"
+            android:theme="@style/AppTheme.Preview">
+
+        </activity>
         <activity android:name=".ImageCapture"></activity>
         <activity android:name=".MyProfile" />
         <activity
