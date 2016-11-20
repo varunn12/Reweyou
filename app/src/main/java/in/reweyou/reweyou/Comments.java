@@ -3,6 +3,7 @@ package in.reweyou.reweyou;
 import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +21,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -87,7 +90,7 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
     private ProgressBar progressBar;
     private LinearLayout Empty;
     private ConnectionDetector checknet;
-    private LinearLayout Empty1;
+    private LinearLayout commentContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +103,7 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        commentContainer = (LinearLayout) findViewById(R.id.comment);
         checknet = new ConnectionDetector(Comments.this);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,10 +127,10 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
         url = bundle.getString("image");
 
         Empty = (LinearLayout) findViewById(R.id.empty);
-        Empty1 = (LinearLayout) findViewById(R.id.empty1);
 
 
         editText = (EditText) findViewById(R.id.Who);
+        editText.setText("");
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -137,11 +141,11 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.toString().trim().length() == 0) {
                     button.setEnabled(false);
-                    button.setImageResource(R.drawable.ic_send_black_24px);
+                    button.setImageResource(R.drawable.button_send_disable);
 
                 } else {
                     button.setEnabled(true);
-                    button.setImageResource(R.drawable.ic_send_primary_24px);
+                    button.setImageResource(R.drawable.button_send_comments);
                 }
             }
 
@@ -181,37 +185,31 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
         swipeLayout.setOnRefreshListener(this);
 
         if (checknet.isConnectingToInternet())
-            new JSONTask().execute(i);
+            new JSONTask(false).execute(i);
         else {
-            Empty1.setVisibility(View.VISIBLE);
-            Empty1.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (checknet.isConnectingToInternet())
-                        new JSONTask().execute(i);
-                    else Empty1.setVisibility(View.VISIBLE);
-
-                }
-            });
+            Snackbar.make(findViewById(R.id.main_content), "No internet connectivity", Snackbar.LENGTH_LONG).setDuration(Snackbar.LENGTH_INDEFINITE)
+                    .setAction("RETRY", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            new JSONTask(false).execute(i);
+                        }
+                    }).show();
         }
 
     }
 
-    private void setEnabledBottomBarViews(int i) {
-        if (i == DISABLE) {
-            editText.setVisibility(View.GONE);
-            imagebutton.setVisibility(View.GONE);
-            button.setVisibility(View.GONE);
+    private void setEnabledBottomBarViews(int j) {
+        if (j == DISABLE) {
+            commentContainer.setVisibility(View.INVISIBLE);
+
         } else {
-            editText.setVisibility(View.VISIBLE);
-            imagebutton.setVisibility(View.VISIBLE);
-            button.setVisibility(View.VISIBLE);
+            commentContainer.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
     public void onRefresh() {
-        new JSONTask().execute(i);
+        new JSONTask(true).execute(i);
     }
 
     @Override
@@ -257,8 +255,10 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
 
                 @Override
                 protected void onPreExecute() {
+
                     super.onPreExecute();
                     loading = ProgressDialog.show(Comments.this, "Please wait...", "uploading", false, false);
+                    loading.setCancelable(false);
                 }
 
                 @Override
@@ -268,8 +268,30 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
                     if (s.trim().equals("Successfully Uploaded")) {
                         onRefresh();
                         editText.setText("");
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
                     } else {
-                        Toast.makeText(Comments.this, "Swipe down to refresh.", Toast.LENGTH_LONG).show();
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+                        Snackbar.make(findViewById(R.id.main_content), "Some error occurred while uploading", Snackbar.LENGTH_LONG).setDuration(Snackbar.LENGTH_INDEFINITE)
+                                .setAction("RETRY", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        if (checknet.isConnectingToInternet()) {
+                                            uploadText();
+                                        } else {
+                                            Snackbar.make(findViewById(R.id.main_content), "No Internet Connectivity", Snackbar.LENGTH_LONG).setDuration(Snackbar.LENGTH_INDEFINITE)
+                                                    .setAction("RETRY", new View.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(View v) {
+                                                            if (checknet.isConnectingToInternet()) {
+                                                                uploadText();
+                                                            }
+                                                        }
+                                                    }).show();
+                                        }
+                                    }
+                                }).show();
                     }
                 }
 
@@ -342,13 +364,18 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
 
     public class JSONTask extends AsyncTask<String, String, List<CommentsModel>> {
 
+        private boolean b = false;
+
+        public JSONTask(boolean b) {
+            this.b = b;
+        }
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            //setProgressBarIndeterminateVisibility(true);
+            if (!b)
             progressBar.setVisibility(View.VISIBLE);
-            Empty1.setVisibility(View.GONE);
-
+            Empty.setVisibility(View.GONE);
         }
 
         @Override
@@ -417,8 +444,9 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
         }
 
         @Override
-        protected void onPostExecute(List<CommentsModel> result) {
+        protected void onPostExecute(final List<CommentsModel> result) {
             super.onPostExecute(result);
+            if (!b)
             progressBar.setVisibility(View.GONE);
 
             if (result != null) {
@@ -431,8 +459,26 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
                     CommentsAdapter adapter = new CommentsAdapter(Comments.this, result);
                     recyclerView.setAdapter(adapter);
                     swipeLayout.setRefreshing(false);
+                    new Handler().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            recyclerView.smoothScrollToPosition(result.size());
+
+                        }
+                    });
                 }
-            } else setEnabledBottomBarViews(DISABLE);
+            } else {
+                setEnabledBottomBarViews(DISABLE);
+                Snackbar.make(findViewById(R.id.main_content), "No Internet Connectivity", Snackbar.LENGTH_LONG).setDuration(Snackbar.LENGTH_INDEFINITE)
+                        .setAction("RETRY", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (checknet.isConnectingToInternet()) {
+                                    onRefresh();
+                                }
+                            }
+                        }).show();
+            }
 
 
         }
