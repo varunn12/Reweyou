@@ -153,24 +153,20 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
     @Override
     public void onBackPressed() {
         if (previewLayout.getVisibility() == View.VISIBLE || headline.getText().toString().trim().length() > 0 || editTag.getText().toString().trim().length() > 0 || description.getText().toString().trim().length() > 0) {
-            AlertDialog.Builder getImageFrom = new AlertDialog.Builder(ShowImage.this);
-            getImageFrom.setTitle("Discard Report?");
-            getImageFrom.setMessage("All your changes will be lost");
-            getImageFrom.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            AlertDialogBox alertDialogBox = new AlertDialogBox(ShowImage.this, "Discard Report?", "All your changes will be lost", "Yes", "No") {
                 @Override
-                public void onClick(DialogInterface dialog, int which) {
+                void onNegativeButtonClick(DialogInterface dialog) {
+
+                }
+
+                @Override
+                void onPositiveButtonClick(DialogInterface dialog) {
                     dialog.dismiss();
                     ShowImage.super.onBackPressed();
                 }
-            });
-            getImageFrom.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-
-                }
-            });
-
-            getImageFrom.show();
+            };
+            alertDialogBox.setCancellable(true);
+            alertDialogBox.show();
         } else super.onBackPressed();
     }
 
@@ -496,15 +492,37 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
     }
 
     private void handleVideo(String data) {
-        viewType = VIDEO;
-        //Log.d("path2", data);
-        // selectedVideoPath = uploadOptions.getAbsolutePath(Uri.parse(data));//Log.d("path", selectedVideoPath);
-        previewLayout.setVisibility(View.VISIBLE);
-        play.setVisibility(View.VISIBLE);
-        logo.setVisibility(View.GONE);
-        imageview.setColorFilter(Color.argb(150, 255, 255, 255)); // White Tint
-        Glide.with(ShowImage.this).load(new File(data)).into(imageview);
-        selectedVideoPath = data;
+
+        File videoFile = new File(data);
+        int file_size = Integer.parseInt(String.valueOf(videoFile.length() / (1024 * 1024)));
+        if (file_size < 5) {
+            viewType = VIDEO;
+            //Log.d("path2", data);
+            // selectedVideoPath = uploadOptions.getAbsolutePath(Uri.parse(data));//Log.d("path", selectedVideoPath);
+            previewLayout.setVisibility(View.VISIBLE);
+            play.setVisibility(View.VISIBLE);
+            logo.setVisibility(View.GONE);
+            imageview.setColorFilter(Color.argb(150, 255, 255, 255)); // White Tint
+
+
+            Glide.with(ShowImage.this).load(new File(data)).into(imageview);
+            selectedVideoPath = data;
+        } else {
+            AlertDialogBox alertDialogBox = new AlertDialogBox(ShowImage.this, "File size exceeded", "Please upload video upto 5 MB in size only...", "OKAY", null) {
+                @Override
+                void onNegativeButtonClick(DialogInterface dialog) {
+                    /*Not define*/
+                }
+
+                @Override
+                void onPositiveButtonClick(DialogInterface dialog) {
+                    dialog.dismiss();
+
+                }
+            };
+            alertDialogBox.setCancellable(true);
+            alertDialogBox.show();
+        }
     }
 
     private void handleImage(String data) {
