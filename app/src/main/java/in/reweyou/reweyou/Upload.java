@@ -129,10 +129,16 @@ public class Upload {
             //dos.writeBytes("Content-Type: text/plain; charset=UTF-8" + lineEnd);
             //dos.writeBytes("Content-Length: " + name.length() + lineEnd);
             dos.writeBytes(lineEnd);
-            dos.writeBytes(address); // mobile_no is String variable
+            dos.writeBytes(address);
             dos.writeBytes(lineEnd);
 
 
+            dos.writeBytes(twoHyphens + boundary + lineEnd);
+
+            dos.writeBytes("Content-Disposition: form-data; name=\"type\"" + lineEnd);
+            dos.writeBytes(lineEnd);
+            dos.writeBytes("gif");
+            dos.writeBytes(lineEnd);
             dos.writeBytes(twoHyphens + boundary + lineEnd);
 
             //Adding Parameter image
@@ -141,12 +147,12 @@ public class Upload {
             //dos.writeBytes("Content-Type: text/plain; charset=UTF-8" + lineEnd);
             //dos.writeBytes("Content-Length: " + name.length() + lineEnd);
             dos.writeBytes(lineEnd);
-            dos.writeBytes(image); // mobile_no is String variable
+            if (image != null)
+                dos.writeBytes(image);
             dos.writeBytes(lineEnd);
 
 
             dos.writeBytes(twoHyphens + boundary + lineEnd);
-//adding media file
 
             dos.writeBytes("Content-Disposition: form-data; name=\"myFile\";filename=\"" + fileName + "\"" + lineEnd);
             dos.writeBytes(lineEnd);

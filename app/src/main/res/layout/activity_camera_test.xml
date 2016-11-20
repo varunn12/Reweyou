@@ -207,7 +207,6 @@
                         android:layout_centerHorizontal="true"
                         android:layout_marginLeft="48dp"
                         android:layout_marginRight="48dp"
-                        android:adjustViewBounds="true"
                         android:background="@drawable/border_primary"
                         android:minHeight="48dp"
                         android:padding="2dp"

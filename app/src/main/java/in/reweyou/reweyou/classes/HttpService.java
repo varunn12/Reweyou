@@ -3,6 +3,7 @@ package in.reweyou.reweyou.classes;
 /**
  * Created by Reweyou on 1/23/2016.
  */
+
 import android.app.IntentService;
 import android.content.Intent;
 import android.util.Log;
@@ -18,8 +19,6 @@ import com.android.volley.toolbox.Volley;
 import java.util.HashMap;
 import java.util.Map;
 
-import in.reweyou.reweyou.Feed;
-import in.reweyou.reweyou.ImageCapture;
 import in.reweyou.reweyou.Welcome;
 
 /**
@@ -59,7 +58,7 @@ public class HttpService extends IntentService {
                 //if the server response is success
                 if(response.equalsIgnoreCase("success")){
                     //dismissing the progressbar
-                    //     loading.dismiss();
+                    //     loading.show();
 
                     //Starting a new activity
                     openProfile();

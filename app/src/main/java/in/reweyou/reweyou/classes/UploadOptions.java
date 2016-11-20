@@ -91,6 +91,11 @@ public class UploadOptions {
 
     }
 
+    private void showGIFptions() {
+        showImageOptions();
+
+    }
+
     private void showImageOptions() {
         if (checker.lacksPermissions(PERMISSION)) {
             startPermissionsActivity();
@@ -132,6 +137,12 @@ public class UploadOptions {
             @Override
             public void onClick(View v) {
                 showVideoOptions();
+            }
+        });
+        btn_gif.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showGIFptions();
             }
         });
     }

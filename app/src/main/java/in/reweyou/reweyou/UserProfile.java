@@ -199,7 +199,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 //if the server response is success
                 if (response.equalsIgnoreCase("success")) {
                     //dismissing the progressbar
-                    //     loading.dismiss();
+                    //     loading.show();
 
                     //Starting a new activity
                     button.setVisibility(View.VISIBLE);

@@ -117,7 +117,7 @@ public class Videorow extends AppCompatActivity {
         videoview.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             // Close the progress bar and play the video
             public void onPrepared(MediaPlayer mp) {
-                // pDialog.dismiss();
+                // pDialog.show();
                 progressbar.setVisibility(View.GONE);
                 videoview.start();
             }

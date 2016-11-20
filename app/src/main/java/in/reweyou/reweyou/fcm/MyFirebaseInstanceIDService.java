@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -27,10 +26,10 @@ import in.reweyou.reweyou.classes.UserSessionManager;
 
 
 public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
-    private static final String TAG = MyFirebaseInstanceIDService.class.getSimpleName();
     public static final String REGISTRATION_SUCCESS = "RegistrationSuccess";
     public static final String REGISTRATION_ERROR = "RegistrationError";
     public static final String URL_UPDATE_TOKEN = "https://www.reweyou.in/reweyou/firebasetoken.php";
+    private static final String TAG = MyFirebaseInstanceIDService.class.getSimpleName();
 
     @Override
     public void onTokenRefresh() {
@@ -63,7 +62,7 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
                     //if the server response is success
                     if(response.equalsIgnoreCase("success")){
                         //dismissing the progressbar
-                        //     loading.dismiss();
+                        //     loading.show();
                         Log.e(TAG, "Token Sent: " + token);
                         //Starting a new activity
                     }else{

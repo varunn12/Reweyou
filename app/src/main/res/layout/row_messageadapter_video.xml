@@ -133,7 +133,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:background="#e0e0e0">
+
+                >
 
 
                 <ImageView
@@ -149,6 +150,9 @@
                     android:layout_height="48dp"
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
+                    android:adjustViewBounds="true"
+                    android:background="#e0e0e0"
+                    android:scaleType="fitCenter"
                     card_view:srcCompat="@drawable/ic_play_circle_filled_black_24px" />
             </RelativeLayout>
 

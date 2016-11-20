@@ -112,6 +112,8 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
     private int viewType = -1;
     private UploadOptions uploadOptions;
     private LinearLayout logo;
+    private String format;
+    private SimpleDateFormat sdf;
 
 
     public static boolean isLocationEnabled(Context context) {
@@ -176,6 +178,8 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
         setContentView(R.layout.activity_camera_test);
 
         initToolbar();
+        format = "dd-MMM-yyyy hh:mm:ss a";
+        sdf = new SimpleDateFormat(format);
 
         uploadOptions = new UploadOptions(this);
         uploadOptions.initOptions();
@@ -395,8 +399,15 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
                             Toast.makeText(ShowImage.this, "Tag cannot be empty", Toast.LENGTH_SHORT).show();
                         else if (description.getText().toString().trim().length() == 0)
                             Toast.makeText(ShowImage.this, "Description cannot be empty", Toast.LENGTH_SHORT).show();
-                        else
+                        else if (selectedImagePath != null) {
                             compressImage();
+                            Log.d("reachedee2e", "83732983732984924");
+
+                        } else if (selectedVideoPath != null) {
+
+                            Log.d("reached", "83732983732984924");
+                            compressVideo();
+                        }
 
                     } else {
                         double latitude = location.getLatitude();
@@ -420,8 +431,17 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
                                 Toast.makeText(ShowImage.this, "Tag cannot be empty", Toast.LENGTH_SHORT).show();
                             else if (description.getText().toString().trim().length() == 0)
                                 Toast.makeText(ShowImage.this, "Description cannot be empty", Toast.LENGTH_SHORT).show();
-                            else
+                                //else
+                                // compressImage();
+                            else if (selectedImagePath != null) {
                                 compressImage();
+                                Log.d("reachedee2e6666", "83732983732984924");
+
+                            } else if (selectedVideoPath != null) {
+
+                                Log.d("reached66666", "83732983732984924");
+                                compressVideo();
+                            }
                         } else {
                             double latitude = location.getLatitude();
                             double longitude = location.getLongitude();
@@ -443,6 +463,117 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
         } else {
             Toast.makeText(ShowImage.this, "You are not connected to Internet", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void compressVideo() {
+
+
+        Glide.with(ShowImage.this).load(new File(selectedVideoPath)).asBitmap()
+                .toBytes(Bitmap.CompressFormat.JPEG, 60)
+                .fitCenter()
+                .atMost()
+                .override(1000, 1000)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+                .into(new SimpleTarget<byte[]>() {
+                    @Override
+                    public void onLoadStarted(Drawable ignore) {
+                        // started async load
+                    }
+
+                    @Override
+                    public void onResourceReady(byte[] resource, GlideAnimation<? super byte[]> ignore) {
+                        final String encodedImage = Base64.encodeToString(resource, Base64.DEFAULT);
+                        // uploadImage(encodedImage);
+                        Log.d("encode", encodedImage);
+                        class UploadVideo extends AsyncTask<Void, Void, String> {
+
+                            ProgressDialog uploading;
+
+                            @Override
+                            protected void onPreExecute() {
+                                super.onPreExecute();
+                                uploading = ProgressDialog.show(ShowImage.this, "Uploading File", "Please wait...", false, false);
+                            }
+
+                            @Override
+                            protected void onPostExecute(String s) {
+                                super.onPostExecute(s);
+                                uploading.dismiss();
+                                if (s.equals("Successfully uploaded")) {
+                                    Intent feed = new Intent(ShowImage.this, Feed.class);
+                                    startActivity(feed);
+                                    Log.d("Intent not working", "Intent not working");
+                                    finish();
+                                    //  Toast.makeText(VideoUpload.this,s,Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(ShowImage.this, s, Toast.LENGTH_SHORT).show();
+                                }
+
+                            }
+
+                            @Override
+                            protected String doInBackground(Void... params) {
+                                Upload u = new Upload();
+                                String s = u.uploadVideo(selectedVideoPath, "abc", place, sdf.format(new Date()), headline.getText().toString(), editTag.getText().toString(), address, session.getMobileNumber(), encodedImage);
+                                return s;
+                            }
+                        }
+
+                        UploadVideo uv = new UploadVideo();
+                        uv.execute();
+                    }
+
+                    @Override
+                    public void onLoadFailed(Exception ex, Drawable ignore) {
+                        Log.d("ex", ex.getMessage());
+
+                    }
+                });
+/*
+        class UploadVideo extends AsyncTask<Void, Void, String> {
+
+            ProgressDialog uploading;
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                uploading = ProgressDialog.show(ShowImage.this, "Uploading File", "Please wait...", false, false);
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                uploading.dismiss();
+                if(s.equals("Successfully uploaded"))
+                {
+                    Intent feed= new Intent(ShowImage.this,Feed.class);
+                    startActivity(feed);
+                    Log.d("Intent not working", "Intent not working");
+                    finish();
+                    //  Toast.makeText(VideoUpload.this,s,Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    Toast.makeText(ShowImage.this,s,Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            protected String doInBackground(Void... params) {
+                Upload u = new Upload();
+                String s = u.uploadVideo(selectedVideoPath, "abc", place, sdf.format(new Date()), headline.getText().toString(), editTag.getText().toString(), address, session.getMobileNumber(), selectedVideoPath);
+                return s;
+            }
+        }
+*/
+
+        // UploadVideo uv = new UploadVideo();//uv.execute();
+      /*  Upload upload = new Upload();
+        String s = upload.uploadVideo(selectedVideoPath, "abc", place, sdf.format(new Date()), headline.getText().toString(), editTag.getText().toString(), address, session.getMobileNumber(), selectedVideoPath);
+        Log.d("s", s);*/
+
     }
 
     public void showSettingsAlert() {
@@ -491,6 +622,7 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
 
     }
 
+
     private void handleVideo(String data) {
 
         File videoFile = new File(data);
@@ -526,48 +658,102 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
     }
 
     private void handleImage(String data) {
+
+
         play.setVisibility(View.GONE);
         logo.setVisibility(View.GONE);
         imageview.setColorFilter(null);
+
         selectedImagePath = uploadOptions.getAbsolutePath(Uri.parse(data));
-        previewLayout.setVisibility(View.VISIBLE);
-        Glide.with(ShowImage.this).load(selectedImagePath).into(imageview);
-        viewType = IMAGE;
+
+        String type = selectedImagePath.substring(selectedImagePath.lastIndexOf(".") + 1);
+        Log.d("sele", selectedImagePath);
+        if (type.equals("gif")) {
+            selectedImagePath = uploadOptions.getAbsolutePath(Uri.parse(data));
+            previewLayout.setVisibility(View.VISIBLE);
+            Glide.with(ShowImage.this).load(selectedImagePath).asGif().into(imageview);
+            viewType = IMAGE;
+        } else {
+            selectedImagePath = uploadOptions.getAbsolutePath(Uri.parse(data));
+            previewLayout.setVisibility(View.VISIBLE);
+            Glide.with(ShowImage.this).load(selectedImagePath).into(imageview);
+            viewType = IMAGE;
+        }
     }
 
 
     public void compressImage() {
 
-        if (selectedImagePath != null) {
-            Glide
-                    .with(this)
-                    .load(selectedImagePath)
-                    .asBitmap()
-                    .toBytes(Bitmap.CompressFormat.JPEG, 90)
-                    .fitCenter()
-                    .atMost()
-                    .override(1000, 1000)
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .skipMemoryCache(true)
-                    .into(new SimpleTarget<byte[]>() {
-                        @Override
-                        public void onLoadStarted(Drawable ignore) {
-                            // started async load
-                        }
+        String type = selectedImagePath.substring(selectedImagePath.lastIndexOf(".") + 1);
+        Log.d("sele", selectedImagePath);
+        if (type.equals("gif")) {
+            class UploadVideo extends AsyncTask<Void, Void, String> {
 
-                        @Override
-                        public void onResourceReady(byte[] resource, GlideAnimation<? super byte[]> ignore) {
-                            String encodedImage = Base64.encodeToString(resource, Base64.DEFAULT);
-                            uploadImage(encodedImage);
-                        }
+                ProgressDialog uploading;
 
-                        @Override
-                        public void onLoadFailed(Exception ex, Drawable ignore) {
-                            Log.d("ex", ex.getMessage());
-                        }
-                    });
-        } else uploadImage(null);
+                @Override
+                protected void onPreExecute() {
+                    super.onPreExecute();
+                    uploading = ProgressDialog.show(ShowImage.this, "Uploading File", "Please wait...", false, false);
+                }
 
+                @Override
+                protected void onPostExecute(String s) {
+                    super.onPostExecute(s);
+                    uploading.dismiss();
+                    if (s.equals("Successfully uploaded")) {
+                        Intent feed = new Intent(ShowImage.this, Feed.class);
+                        startActivity(feed);
+                        Log.d("Intent not working", "Intent not working");
+                        finish();
+                        //  Toast.makeText(VideoUpload.this,s,Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(ShowImage.this, s, Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+
+                @Override
+                protected String doInBackground(Void... params) {
+                    Upload u = new Upload();
+                    String s = u.uploadVideo(selectedImagePath, "abc", place, sdf.format(new Date()), headline.getText().toString(), editTag.getText().toString(), address, session.getMobileNumber(), null);
+                    return s;
+                }
+            }
+
+            UploadVideo uv = new UploadVideo();
+            uv.execute();
+        } else {
+            if (selectedImagePath != null) {
+                Glide
+                        .with(this)
+                        .load(selectedImagePath)
+                        .asBitmap()
+                        .toBytes(Bitmap.CompressFormat.JPEG, 90)
+                        .fitCenter()
+                        .atMost()
+                        .override(1000, 1000)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true)
+                        .into(new SimpleTarget<byte[]>() {
+                            @Override
+                            public void onLoadStarted(Drawable ignore) {
+                                // started async load
+                            }
+
+                            @Override
+                            public void onResourceReady(byte[] resource, GlideAnimation<? super byte[]> ignore) {
+                                String encodedImage = Base64.encodeToString(resource, Base64.DEFAULT);
+                                uploadImage(encodedImage);
+                            }
+
+                            @Override
+                            public void onLoadFailed(Exception ex, Drawable ignore) {
+                                Log.d("ex", ex.getMessage());
+                            }
+                        });
+            } else uploadImage(null);
+        }
     }
 
     private void uploadImage(String encodedImage) {

@@ -110,7 +110,7 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
                                 UILApplication.getInstance().trackEvent("Gallery", "Gallery", "For Pics");
                             }
                         }
-                        dialog.dismiss();
+                        dialog.show();
                     }
                 });
                 getImageFrom.show();*/

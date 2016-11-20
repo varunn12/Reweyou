@@ -1,7 +1,8 @@
-package in.reweyou.reweyou;
+package in.reweyou.reweyou.fragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -9,28 +10,25 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,6 +49,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
 
+import in.reweyou.reweyou.PermissionsActivity;
+import in.reweyou.reweyou.PermissionsChecker;
+import in.reweyou.reweyou.R;
+import in.reweyou.reweyou.UILApplication;
+import in.reweyou.reweyou.UpdateImage;
 import in.reweyou.reweyou.adapter.CommentsAdapter;
 import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.DividerItemDecoration;
@@ -58,7 +61,11 @@ import in.reweyou.reweyou.classes.RequestHandler;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.model.CommentsModel;
 
-public class Comments extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, View.OnClickListener {
+/**
+ * Created by master on 20/11/16.
+ */
+
+public class CommentsFragment extends Fragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
     public static final String UPLOAD_URL = "https://www.reweyou.in/reweyou/post_comments_new.php";
     public static final String KEY_TEXT = "comments";
     public static final String KEY_NAME = "name";
@@ -66,72 +73,55 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
     public static final String KEY_ID = "postid";
     public static final String KEY_NUMBER = "number";
     static final String[] PERMISSIONS = new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-    private static final int REQUEST_CODE = 0;
     private static final int DISABLE = 0;
     private static final int ENABLE = 1;
+    private static final int REQUEST_CODE = 0;
     int SELECT_FILE = 1;
-    SwipeRefreshLayout swipeLayout;
-    UserSessionManager session;
-    ImageLoader imageLoader = ImageLoader.getInstance();
-    PermissionsChecker checker;
-    private RecyclerView recyclerView;
-    private ImageView button;
-    private ImageView imagebutton;
-    private EditText editText;
-    private List<CommentsModel> mpModelList;
-    private CommentsAdapter adapter;
-    private TextView headline;
-    private ImageView image;
-    private Toolbar toolbar;
+    private LinearLayout commentContainer;
+    private ConnectionDetector checknet;
+    private PermissionsChecker checker;
+    private UserSessionManager session;
     private String name;
+    private String number;
     private String result;
     private String i;
-    private String number, head, url;
-    private ProgressBar progressBar;
+    private String head;
+    private String url;
     private LinearLayout Empty;
-    private ConnectionDetector checknet;
-    private LinearLayout commentContainer;
+    private EditText editText;
+    private ImageView button;
+    private ImageView imagebutton;
+    private ImageView image;
+    private RecyclerView recyclerView;
+    private ProgressBar progressBar;
+    private SwipeRefreshLayout swipeLayout;
+    private Context mContext;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_comments_test);
-        //initCollapsingToolbar();
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Reactions");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-
-
-        commentContainer = (LinearLayout) findViewById(R.id.comment);
-        checknet = new ConnectionDetector(Comments.this);
-        checker = new PermissionsChecker(this);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View layout = inflater.inflate(R.layout.fragment_comments, container, false);
+        mContext = getActivity();
+        commentContainer = (LinearLayout) layout.findViewById(R.id.comment);
+        checknet = new ConnectionDetector(mContext);
+        checker = new PermissionsChecker(mContext);
         /*Typeface font = Typeface.createFromAsset( getAssets(), "fontawesome-webfont.ttf" );
         Typeface tf= Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
 */
-        session = new UserSessionManager(getApplicationContext());
+        session = new UserSessionManager(getActivity());
         HashMap<String, String> user = session.getUserDetails();
         name = user.get(UserSessionManager.KEY_NAME);
         number = user.get(UserSessionManager.KEY_NUMBER);
-        Intent in = getIntent();
-        Bundle bundle = getIntent().getExtras();
+        Intent in = getActivity().getIntent();
+        Bundle bundle = getActivity().getIntent().getExtras();
         i = bundle.getString("myData");
         head = bundle.getString("headline");
         url = bundle.getString("image");
 
-        Empty = (LinearLayout) findViewById(R.id.empty);
+        Empty = (LinearLayout) layout.findViewById(R.id.empty);
 
 
-        editText = (EditText) findViewById(R.id.Who);
+        editText = (EditText) layout.findViewById(R.id.Who);
         editText.setText("");
         editText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -156,9 +146,9 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
 
             }
         });
-        button = (ImageView) findViewById(R.id.btn_send);
+        button = (ImageView) layout.findViewById(R.id.btn_send);
 
-        imagebutton = (ImageView) findViewById(R.id.btn_image);
+        imagebutton = (ImageView) layout.findViewById(R.id.btn_image);
 
 
         imagebutton.setOnClickListener(this);
@@ -171,22 +161,29 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
         headline.setText(head);*/
         //  headline.setVisibility(View.GONE);
 
-        image = (ImageView) findViewById(R.id.image);
+        image = (ImageView) layout.findViewById(R.id.image);
         // imageLoader.displayImage(url,image);
         //  Glide.with(Comments.this).load(url).diskCacheStrategy(DiskCacheStrategy.SOURCE).skipMemoryCache(true).into(image);
         //   image.setVisibility(View.GONE);
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView = (RecyclerView) layout.findViewById(R.id.recycler_view);
 
 
-        RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecoration(ContextCompat.getDrawable(Comments.this, R.drawable.line));
+        RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecoration(ContextCompat.getDrawable(mContext, R.drawable.line));
       /*  recyclerView.addItemDecoration(dividerItemDecoration);*/
-        recyclerView.setLayoutManager(new LinearLayoutManager(Comments.this));
-        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+        progressBar = (ProgressBar) layout.findViewById(R.id.progress_bar);
 
-        swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
+        swipeLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipe_container);
         swipeLayout.setOnRefreshListener(this);
 
         new JSONTask(false).execute(i);
+
+        return layout;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
 
     }
@@ -250,7 +247,7 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
                 protected void onPreExecute() {
 
                     super.onPreExecute();
-                    loading = ProgressDialog.show(Comments.this, "Please wait...", "uploading", false, false);
+                    loading = ProgressDialog.show(mContext, "Please wait...", "uploading", false, false);
                     loading.setCancelable(false);
                 }
 
@@ -261,19 +258,19 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
                     if (s.trim().equals("Successfully Uploaded")) {
                         onRefresh();
                         editText.setText("");
-                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
                     } else {
-                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
-                        Snackbar.make(findViewById(R.id.main_content), "Some error occurred while uploading", Snackbar.LENGTH_LONG).setDuration(Snackbar.LENGTH_INDEFINITE)
+                        Snackbar.make(getActivity().findViewById(R.id.main_content), "Some error occurred while uploading", Snackbar.LENGTH_LONG).setDuration(Snackbar.LENGTH_INDEFINITE)
                                 .setAction("RETRY", new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
                                         if (checknet.isConnectingToInternet()) {
                                             uploadText();
                                         } else {
-                                            Snackbar.make(findViewById(R.id.main_content), "No Internet Connectivity", Snackbar.LENGTH_LONG).setDuration(Snackbar.LENGTH_INDEFINITE)
+                                            Snackbar.make(getActivity().findViewById(R.id.main_content), "No Internet Connectivity", Snackbar.LENGTH_LONG).setDuration(Snackbar.LENGTH_INDEFINITE)
                                                     .setAction("RETRY", new View.OnClickListener() {
                                                         @Override
                                                         public void onClick(View v) {
@@ -307,53 +304,33 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
     }
 
     @Override
-    protected void onActivityResult(int reqCode, int resCode, Intent data) {
+    public void onActivityResult(int reqCode, int resCode, Intent data) {
         if (resCode == Activity.RESULT_OK && reqCode == SELECT_FILE && data != null) {
             Uri uriFromPath = data.getData();
             String show = uriFromPath.toString();
-            Intent intent = new Intent(this, UpdateImage.class);
+            Intent intent = new Intent(mContext, UpdateImage.class);
             intent.putExtra("path", show);
             intent.putExtra("postid", i);
             startActivity(intent);
         } else {
-            Toast.makeText(this, "There is some error!", Toast.LENGTH_LONG).show();
+            Toast.makeText(mContext, "There is some error!", Toast.LENGTH_LONG).show();
         }
     }
 
     private void startPermissionsActivity() {
-        PermissionsActivity.startActivityForResult(this, REQUEST_CODE, PERMISSIONS);
+        PermissionsActivity.startActivityForResult(getActivity(), REQUEST_CODE, PERMISSIONS);
+    }
+
+    public void setData(String i, String head, String url) {
+        this.i = i;
+        this.head = head;
+        this.url = url;
     }
 
     /* Initializing collapsing toolbar
     * Will show and hide the toolbar title on scroll
     */
-    private void initCollapsingToolbar() {
-        final CollapsingToolbarLayout collapsingToolbar =
-                (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        collapsingToolbar.setTitle(" ");
-        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
-        appBarLayout.setExpanded(true);
 
-        // hiding & showing the title when toolbar expanded & collapsed
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            boolean isShow = false;
-            int scrollRange = -1;
-
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.getTotalScrollRange();
-                }
-                if (scrollRange + verticalOffset == 0) {
-                    collapsingToolbar.setTitle(getString(R.string.app_name));
-                    isShow = true;
-                } else if (isShow) {
-                    collapsingToolbar.setTitle(" ");
-                    isShow = false;
-                }
-            }
-        });
-    }
 
     public class JSONTask extends AsyncTask<String, String, List<CommentsModel>> {
 
@@ -449,7 +426,7 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
                     Empty.setVisibility(View.VISIBLE);
 
                 } else {
-                    CommentsAdapter adapter = new CommentsAdapter(Comments.this, result);
+                    CommentsAdapter adapter = new CommentsAdapter(mContext, result);
                     recyclerView.setAdapter(adapter);
                     swipeLayout.setRefreshing(false);
                     new Handler().post(new Runnable() {
@@ -462,7 +439,7 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
                 }
             } else {
                 setEnabledBottomBarViews(DISABLE);
-                Snackbar.make(findViewById(R.id.main_content), "No Internet Connectivity", Snackbar.LENGTH_LONG).setDuration(Snackbar.LENGTH_INDEFINITE)
+                Snackbar.make(getActivity().findViewById(R.id.main_content), "No Internet Connectivity", Snackbar.LENGTH_LONG).setDuration(Snackbar.LENGTH_INDEFINITE)
                         .setAction("RETRY", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -476,5 +453,4 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
 
         }
     }
-
 }

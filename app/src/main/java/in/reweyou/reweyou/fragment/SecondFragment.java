@@ -118,7 +118,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                             new Handler().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    makeLoadMoreRequest();
+                                    //   makeLoadMoreRequest();
                                 }
                             }, 1000);
 
@@ -293,6 +293,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                             cacheLoad = false;
                             MyJSON.saveData(getContext(), response);
                         } catch (JSONException e) {
+                            Log.e("ecec", e.getMessage());
                             e.printStackTrace();
                         }
 

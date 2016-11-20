@@ -56,7 +56,7 @@ import java.util.List;
 import java.util.Map;
 
 import in.reweyou.reweyou.CategoryActivity;
-import in.reweyou.reweyou.Comments;
+import in.reweyou.reweyou.Comments1;
 import in.reweyou.reweyou.FullImage;
 import in.reweyou.reweyou.LocationActivity;
 import in.reweyou.reweyou.R;
@@ -74,6 +74,7 @@ import in.reweyou.reweyou.model.MpModel;
 import static in.reweyou.reweyou.utils.Constants.EDIT_URL;
 import static in.reweyou.reweyou.utils.Constants.REVIEW_URL;
 import static in.reweyou.reweyou.utils.Constants.SUGGEST_URL;
+import static in.reweyou.reweyou.utils.Constants.URL_LIKE;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_IMAGE;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_LOADING;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_NEW_POST;
@@ -108,7 +109,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public MessageAdapter(Context context, List<MpModel> mlist) {
         this.mContext = context;
-
         activity = (Activity) context;
         this.messagelist = mlist;
         cd = new ConnectionDetector(mContext);
@@ -150,6 +150,25 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 bindImageOrGif(position, viewHolder2);
                 break;*/
 
+        }
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position, List<Object> payloads) {
+
+        if (holder instanceof ImageViewHolder) {
+            if (payloads.isEmpty())
+                super.onBindViewHolder(holder, position, payloads);
+            else if (payloads.contains("like")) {
+                ((ImageViewHolder) holder).upicon.setImageResource(R.drawable.ic_thumb_up_primary_16px);
+                ((ImageViewHolder) holder).upvote.setTextColor(mContext.getResources().getColor(R.color.rank));
+
+            } else if (payloads.contains("unlike")) {
+                ((ImageViewHolder) holder).upicon.setImageResource(R.drawable.ic_thumb_up_black_16px);
+                ((ImageViewHolder) holder).upvote.setTextColor(mContext.getResources().getColor(R.color.likeText));
+            }
+        } else if (holder instanceof VideoViewHolder) {
+            super.onBindViewHolder(holder, position, payloads);
         }
     }
 
@@ -263,7 +282,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         final int total = Integer.parseInt(messagelist.get(position).getReviews());
 
-        viewHolder.linearLayout.setTag(1);
+        /*viewHolder.linearLayout.setTag(1);
         viewHolder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -291,7 +310,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
 
             }
-        });
+        });*/
     }
 
     private void bindVideo(final int position, RecyclerView.ViewHolder viewHolder2) {
@@ -516,7 +535,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private void upvote(int position) {
         HashMap<String, String> user = session.getUserDetails();
         username = user.get(UserSessionManager.KEY_NAME);
-        number = session.getMobileNumber();
         id = messagelist.get(position).getPostId();
         StringRequest stringRequest = new StringRequest(Request.Method.POST, REVIEW_URL,
                 new Response.Listener<String>() {
@@ -679,6 +697,52 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
+    private void makeRequest(final int adapterPosition) {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_LIKE,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("ResponseLike", response);
+                        if (response.equals("like")) {
+                            notifyItemChanged(adapterPosition, "like");
+                        } else if (response.equals("unlike")) {
+                            notifyItemChanged(adapterPosition, "unlike");
+
+                        } else if (response.equals("Error")) {
+
+                        }
+
+
+                    }
+
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                        Log.d("ResponseLike", error.getMessage());
+
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> data = new HashMap<>();
+                data.put("from", messagelist.get(adapterPosition).getFrom());
+                data.put("postid", messagelist.get(adapterPosition).getPostId());
+                data.put("number", session.getMobileNumber());
+
+                Log.d("mdda", messagelist.get(adapterPosition).getFrom());
+                Log.d("mdda", messagelist.get(adapterPosition).getId());
+                Log.d("mdda", session.getMobileNumber());
+                return data;
+            }
+        };
+
+
+        RequestQueue requestQueue = Volley.newRequestQueue(mContext);
+        requestQueue.add(stringRequest);
+    }
+
     private class ImageViewHolder extends RecyclerView.ViewHolder {
         protected ImageView image, profilepic, overflow;
         protected TextView headline, upvote, head;
@@ -723,6 +787,13 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             linearLayout = (LinearLayout) view.findViewById(R.id.like);
             upicon = (ImageView) view.findViewById(R.id.upicon);
 
+
+            linearLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    makeRequest(getAdapterPosition());
+                }
+            });
 
             image.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -790,7 +861,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     bundle.putString("myData", messagelist.get(getAdapterPosition()).getPostId());
                     bundle.putString("headline", messagelist.get(getAdapterPosition()).getHeadline());
                     bundle.putString("image", messagelist.get(getAdapterPosition()).getImage());
-                    Intent in = new Intent(mContext, Comments.class);
+                    Intent in = new Intent(mContext, Comments1.class);
                     in.putExtras(bundle);
                     mContext.startActivity(in);
                 }
@@ -802,7 +873,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     bundle.putString("myData", messagelist.get(getAdapterPosition()).getPostId());
                     bundle.putString("headline", messagelist.get(getAdapterPosition()).getHeadline());
                     bundle.putString("image", messagelist.get(getAdapterPosition()).getImage());
-                    Intent in = new Intent(mContext, Comments.class);
+                    Intent in = new Intent(mContext, Comments1.class);
                     in.putExtras(bundle);
                     mContext.startActivity(in);
                 }
@@ -847,7 +918,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     bundle.putString("myData", messagelist.get(getAdapterPosition()).getPostId());
                     bundle.putString("headline", messagelist.get(getAdapterPosition()).getHeadline());
                     bundle.putString("image", messagelist.get(getAdapterPosition()).getImage());
-                    Intent in = new Intent(mContext, Comments.class);
+                    Intent in = new Intent(mContext, Comments1.class);
                     in.putExtras(bundle);
                     mContext.startActivity(in);
                 }
@@ -976,7 +1047,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     bundle.putString("myData", messagelist.get(getAdapterPosition()).getPostId());
                     bundle.putString("headline", messagelist.get(getAdapterPosition()).getHeadline());
                     bundle.putString("image", messagelist.get(getAdapterPosition()).getImage());
-                    Intent in = new Intent(mContext, Comments.class);
+                    Intent in = new Intent(mContext, Comments1.class);
                     in.putExtras(bundle);
                     mContext.startActivity(in);
                 }
@@ -988,7 +1059,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     bundle.putString("myData", messagelist.get(getAdapterPosition()).getPostId());
                     bundle.putString("headline", messagelist.get(getAdapterPosition()).getHeadline());
                     bundle.putString("image", messagelist.get(getAdapterPosition()).getImage());
-                    Intent in = new Intent(mContext, Comments.class);
+                    Intent in = new Intent(mContext, Comments1.class);
                     in.putExtras(bundle);
                     mContext.startActivity(in);
                 }
@@ -1033,7 +1104,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     bundle.putString("myData", messagelist.get(getAdapterPosition()).getPostId());
                     bundle.putString("headline", messagelist.get(getAdapterPosition()).getHeadline());
                     bundle.putString("image", messagelist.get(getAdapterPosition()).getImage());
-                    Intent in = new Intent(mContext, Comments.class);
+                    Intent in = new Intent(mContext, Comments1.class);
                     in.putExtras(bundle);
                     mContext.startActivity(in);
                 }
@@ -1071,6 +1142,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private class NewPostViewHolder extends RecyclerView.ViewHolder {
         LinearLayout con;
+
         public NewPostViewHolder(View view) {
             super(view);
             con = (LinearLayout) view.findViewById(R.id.newCon);
@@ -1088,4 +1160,5 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
 
     }
+
 }
