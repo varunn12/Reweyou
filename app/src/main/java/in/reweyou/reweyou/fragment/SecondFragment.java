@@ -2,6 +2,7 @@ package in.reweyou.reweyou.fragment;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -96,7 +97,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
         DefaultItemAnimator defaultItemAnimator = new DefaultItemAnimator();
         recyclerView.setItemAnimator(defaultItemAnimator);
         recyclerView.setItemViewCacheSize(3);
-/*
+
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -202,7 +203,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
             }
         });
-*/
+
 
         recyclerView.setItemViewCacheSize(4);
 
@@ -418,7 +419,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
     }
 
     public String getUrl() {
-       /* switch (position) {
+        /*switch (position) {
             case 0:
                 return Constants.FEED_URL;
             case 1:
@@ -429,6 +430,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                 return null;
 
         }*/
+
         return Constants.FEED_URL;
     }
 }
