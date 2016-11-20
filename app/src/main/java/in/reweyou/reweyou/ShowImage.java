@@ -134,17 +134,27 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
         }
     }
 
+    private void initToolbar() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Upload Report");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_test);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Upload Report");
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        initToolbar();
 
         uploadOptions = new UploadOptions(this);
         uploadOptions.initOptions();
@@ -193,7 +203,6 @@ public class ShowImage extends AppCompatActivity implements View.OnClickListener
                 switch (viewType) {
                     case IMAGE:
                         if (selectedImagePath != null) {
-
                             Bundle bundle = new Bundle();
                             bundle.putString("myData", selectedImagePath);
                             Intent in = new Intent(ShowImage.this, FullImage.class);
