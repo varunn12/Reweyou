@@ -4,4 +4,18 @@
     <style name="AppTheme.Preview" parent="AppTheme">
         <item name="android:statusBarColor">@android:color/black</item>
     </style>
+
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+
+    </style>
+
+    <style name="AppTheme.NoActionBar.Feed">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
+
 </resources>
