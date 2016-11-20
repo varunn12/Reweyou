@@ -60,13 +60,13 @@ import in.reweyou.reweyou.Comments;
 import in.reweyou.reweyou.FullImage;
 import in.reweyou.reweyou.LocationActivity;
 import in.reweyou.reweyou.R;
-import in.reweyou.reweyou.ShowImage;
 import in.reweyou.reweyou.UserProfile;
 import in.reweyou.reweyou.Videorow;
 import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.CustomTabActivityHelper;
 import in.reweyou.reweyou.classes.CustomTabsOnClickListener;
 import in.reweyou.reweyou.classes.TouchImageView;
+import in.reweyou.reweyou.classes.UploadOptions;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.classes.Util;
 import in.reweyou.reweyou.model.MpModel;
@@ -211,9 +211,9 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             if (messagelist.get(position).getGif().isEmpty()) {
                 viewHolder.image.setVisibility(View.GONE);
             } else
-                Glide.with(mContext).load(messagelist.get(position).getGif()).asGif().placeholder(R.drawable.irongrip).diskCacheStrategy(DiskCacheStrategy.SOURCE).error(R.drawable.ic_error).into(viewHolder.image);
+                Glide.with(mContext).load(messagelist.get(position).getGif()).asGif().placeholder(R.drawable.irongrip).diskCacheStrategy(DiskCacheStrategy.SOURCE).error(R.drawable.ic_error).dontAnimate().into(viewHolder.image);
         } else
-            Glide.with(mContext).load(messagelist.get(position).getImage()).placeholder(R.drawable.irongrip).diskCacheStrategy(DiskCacheStrategy.SOURCE).error(R.drawable.ic_error).into(viewHolder.image);
+            Glide.with(mContext).load(messagelist.get(position).getImage()).diskCacheStrategy(DiskCacheStrategy.SOURCE).error(R.drawable.ic_error).dontAnimate().into(viewHolder.image);
 
 
         if (messagelist.get(position).getLocation() == null || messagelist.get(position).getLocation().isEmpty())
@@ -712,7 +712,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             this.image = (ImageView) view.findViewById(R.id.image);
             this.overflow = (ImageView) view.findViewById(R.id.overflow);
             this.profilepic = (ImageView) view.findViewById(R.id.profilepic);
-            this.tv = (TextView) view.findViewById(R.id.tv);
+            //  this.tv = (TextView) view.findViewById(R.id.tv);
             this.from = (TextView) view.findViewById(R.id.from);
 
             this.reviews = (TextView) view.findViewById(R.id.reviews);
@@ -898,7 +898,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             this.image = (ImageView) view.findViewById(R.id.image);
             this.overflow = (ImageView) view.findViewById(R.id.overflow);
             this.profilepic = (ImageView) view.findViewById(R.id.profilepic);
-            this.tv = (TextView) view.findViewById(R.id.tv);
+            // this.tv = (TextView) view.findViewById(R.id.tv);
             this.from = (TextView) view.findViewById(R.id.from);
 
             this.reviews = (TextView) view.findViewById(R.id.reviews);
@@ -918,12 +918,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     if (isInternetPresent) {
                         Bundle bundle = new Bundle();
                         bundle.putString("myData", messagelist.get(getAdapterPosition()).getVideo());
-                        bundle.putString("date", messagelist.get(getAdapterPosition()).getDate());
-                        bundle.putString("headline", messagelist.get(getAdapterPosition()).getHeadline());
-                        bundle.putString("from", messagelist.get(getAdapterPosition()).getName());
-                        bundle.putString("tag", messagelist.get(getAdapterPosition()).getCategory());
-                        bundle.putString("place", messagelist.get(getAdapterPosition()).getLocation());
-                        bundle.putString("reviews", messagelist.get(getAdapterPosition()).getReviews());
+
                         Intent in = new Intent(mContext, Videorow.class);
                         in.putExtras(bundle);
                         mContext.startActivity(in);
@@ -1076,18 +1071,19 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private class NewPostViewHolder extends RecyclerView.ViewHolder {
         LinearLayout con;
-
         public NewPostViewHolder(View view) {
             super(view);
             con = (LinearLayout) view.findViewById(R.id.newCon);
-            con.setOnClickListener(new View.OnClickListener() {
+            /*con.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent in = new Intent(mContext, ShowImage.class);
                     mContext.startActivity(in);
                 }
-            });
+            });*/
 
+            new UploadOptions(mContext, view, true);
         }
+
     }
 }
