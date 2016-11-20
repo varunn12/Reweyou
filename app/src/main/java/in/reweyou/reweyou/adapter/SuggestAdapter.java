@@ -4,10 +4,10 @@ package in.reweyou.reweyou.adapter;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,7 +17,6 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -25,9 +24,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -61,28 +60,26 @@ import in.reweyou.reweyou.classes.TouchImageView;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.model.MpModel;
 
-import static android.text.format.DateUtils.getRelativeTimeSpanString;
-
 
 public class SuggestAdapter extends RecyclerView.Adapter<SuggestAdapter.ViewHolder> {
+    public static final String REVIEW_URL = "https://www.reweyou.in/reweyou/reviews.php";
+    public static final String VIEW_URL = "https://www.reweyou.in/reweyou/postviews.php";
+    public static final String EDIT_URL = "https://www.reweyou.in/reweyou/editheadline.php";
+    Date dates;
+    Boolean isInternetPresent = false;
+    ConnectionDetector cd;
+    UserSessionManager session;
+    Uri uri;
+    ImageLoader imageLoader = ImageLoader.getInstance();
     private List<MpModel> messagelist;
     private Context mContext;
     private Bitmap bm;
     private String id, postid;
-    Date dates;
     private EditText editTextHeadline;
     private AppCompatButton buttonEdit;
     private String number;
     private String username;
-    Boolean isInternetPresent = false;
-    ConnectionDetector cd;
     private DisplayImageOptions options, option;
-    UserSessionManager session;
-    public static final String REVIEW_URL = "https://www.reweyou.in/reweyou/reviews.php";
-    public static final String VIEW_URL = "https://www.reweyou.in/reweyou/postviews.php";
-    public static final String EDIT_URL = "https://www.reweyou.in/reweyou/editheadline.php";
-    Uri uri;
-    ImageLoader imageLoader = ImageLoader.getInstance();
 
     public SuggestAdapter(Context context, List<MpModel> mlist) {
         this.mContext = context;
@@ -357,58 +354,6 @@ public class SuggestAdapter extends RecyclerView.Adapter<SuggestAdapter.ViewHold
         return (null != messagelist ? messagelist.size() : 0);
     }
 
-
-    class ViewHolder extends RecyclerView.ViewHolder {
-        protected ImageView image, profilepic, overflow;
-        protected TextView headline, upvote;
-        protected TextView place;
-        protected TextView icon;
-        protected TextView reacticon;
-        protected TextView date;
-        protected TextView tv;
-        protected TextView from;
-        protected RelativeLayout relative;
-        protected CardView cv;
-        protected TextView reviews, source;
-        protected TextView app, upicon;
-
-        public ViewHolder(View view) {
-            super(view);
-            String fontPath = "fonts/Roboto-Medium.ttf";
-            String thinpath="fonts/Roboto-Regular.ttf";
-            Typeface font = Typeface.createFromAsset(mContext.getAssets(), "fontawesome-webfont.ttf");
-            Typeface tf = Typeface.createFromAsset(mContext.getAssets(), fontPath);
-            Typeface thin = Typeface.createFromAsset(mContext.getAssets(), thinpath);
-            this.cv = (CardView) itemView.findViewById(R.id.cv);
-            this.headline = (TextView) view.findViewById(R.id.Who);
-            this.headline.setTypeface(thin);
-            this.place = (TextView) view.findViewById(R.id.place);
-            this.place.setTypeface(tf);
-            this.icon=(TextView)view.findViewById(R.id.locationicon);
-            this.icon.setTypeface(font);
-            this.upicon=(TextView)view.findViewById(R.id.upicon);
-            this.upicon.setTypeface(font);
-            this.reacticon=(TextView)view.findViewById(R.id.reacticon);
-            this.reacticon.setTypeface(font);
-            this.date = (TextView) view.findViewById(R.id.date);
-            this.date.setTypeface(thin);
-            this.image = (ImageView) view.findViewById(R.id.image);
-            this.overflow=(ImageView)view.findViewById(R.id.overflow);
-            this.profilepic = (ImageView) view.findViewById(R.id.profilepic);
-            this.tv = (TextView) view.findViewById(R.id.tv);
-            this.from = (TextView) view.findViewById(R.id.from);
-            this.from.setTypeface(tf);
-            this.relative = (RelativeLayout) view.findViewById(R.id.Relative);
-            this.reviews = (TextView) view.findViewById(R.id.reviews);
-            this.app=(TextView)view.findViewById(R.id.app);
-            this.app.setTypeface(tf);
-            this.upvote = (TextView) view.findViewById(R.id.upvote);
-            this.source=(TextView)view.findViewById(R.id.source);
-            this.source.setTypeface(tf);
-        }
-    }
-
-
     public void showImage(int position) {
         Dialog builder = new Dialog(mContext);
         //  builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -470,6 +415,7 @@ public class SuggestAdapter extends RecyclerView.Adapter<SuggestAdapter.ViewHold
         RequestQueue requestQueue = Volley.newRequestQueue(mContext);
         requestQueue.add(stringRequest);
     }
+
     private void views(int position) {
         id=messagelist.get(position).getPostId();
         StringRequest stringRequest = new StringRequest(Request.Method.POST, VIEW_URL,
@@ -589,6 +535,56 @@ public class SuggestAdapter extends RecyclerView.Adapter<SuggestAdapter.ViewHold
         inflater.inflate(R.menu.menu_story, popup.getMenu());
         popup.setOnMenuItemClickListener(new MyMenuItemClickListener());
         popup.show();
+    }
+
+    class ViewHolder extends RecyclerView.ViewHolder {
+        protected ImageView image, profilepic, overflow;
+        protected TextView headline, upvote;
+        protected TextView place;
+        protected TextView icon;
+        protected TextView reacticon;
+        protected TextView date;
+        protected TextView tv;
+        protected TextView from;
+        protected RelativeLayout relative;
+        protected CardView cv;
+        protected TextView reviews, source;
+        protected TextView app, upicon;
+
+        public ViewHolder(View view) {
+            super(view);
+          /*  String fontPath = "fonts/Roboto-Medium.ttf";
+            String thinpath="fonts/Roboto-Regular.ttf";
+            Typeface font = Typeface.createFromAsset(mContext.getAssets(), "fontawesome-webfont.ttf");
+            Typeface tf = Typeface.createFromAsset(mContext.getAssets(), fontPath);
+            Typeface thin = Typeface.createFromAsset(mContext.getAssets(), thinpath);
+            this.cv = (CardView) itemView.findViewById(R.id.cv);
+            this.headline = (TextView) view.findViewById(R.id.Who);
+            this.headline.setTypeface(thin);
+            this.place = (TextView) view.findViewById(R.id.place);
+            this.place.setTypeface(tf);
+            this.icon=(TextView)view.findViewById(R.id.locationicon);
+            this.icon.setTypeface(font);
+            this.upicon=(TextView)view.findViewById(R.id.upicon);
+            this.upicon.setTypeface(font);
+            this.reacticon=(TextView)view.findViewById(R.id.reacticon);
+            this.reacticon.setTypeface(font);
+            this.date = (TextView) view.findViewById(R.id.date);
+            this.date.setTypeface(thin);
+            this.image = (ImageView) view.findViewById(R.id.image);
+            this.overflow=(ImageView)view.findViewById(R.id.overflow);
+            this.profilepic = (ImageView) view.findViewById(R.id.profilepic);
+            this.tv = (TextView) view.findViewById(R.id.tv);
+            this.from = (TextView) view.findViewById(R.id.from);
+            this.from.setTypeface(tf);
+            this.relative = (RelativeLayout) view.findViewById(R.id.Relative);
+            this.reviews = (TextView) view.findViewById(R.id.reviews);
+            this.app=(TextView)view.findViewById(R.id.app);
+            this.app.setTypeface(tf);
+            this.upvote = (TextView) view.findViewById(R.id.upvote);
+            this.source=(TextView)view.findViewById(R.id.source);
+            this.source.setTypeface(tf);*/
+        }
     }
 
     /**

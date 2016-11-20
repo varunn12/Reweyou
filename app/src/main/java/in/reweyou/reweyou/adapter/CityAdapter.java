@@ -675,7 +675,7 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
                 this.head.setTypeface(tf);
             }
 
-            this.headline.setTypeface(thin);
+            /*this.headline.setTypeface(thin);
             this.place = (TextView) view.findViewById(R.id.place);
             this.place.setTypeface(tf);
             this.icon = (TextView) view.findViewById(R.id.locationicon);
@@ -689,7 +689,7 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
             this.image = (ImageView) view.findViewById(R.id.image);
             this.overflow = (ImageView) view.findViewById(R.id.overflow);
             this.profilepic = (ImageView) view.findViewById(R.id.profilepic);
-            this.tv = (TextView) view.findViewById(R.id.tv);
+          //  this.tv = (TextView) view.findViewById(R.id.tv);
             this.from = (TextView) view.findViewById(R.id.from);
             this.from.setTypeface(tf);
             this.name.setTypeface(tf);
@@ -699,7 +699,7 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
             this.app.setTypeface(tf);
             this.upvote = (TextView) view.findViewById(R.id.upvote);
             this.source = (TextView) view.findViewById(R.id.source);
-            this.source.setTypeface(tf);
+            this.source.setTypeface(tf);*/
         }
     }
 

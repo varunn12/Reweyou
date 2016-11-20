@@ -7,7 +7,7 @@ import android.support.v4.content.ContextCompat;
 /**
  * Created by Reweyou on 3/1/2016.
  */
-class PermissionsChecker {
+public class PermissionsChecker {
     private final Context context;
 
     public PermissionsChecker(Context context) {

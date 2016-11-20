@@ -333,7 +333,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
 
         public ViewHolder(View view) {
             super(view);
-            String fontPath = "fonts/Roboto-Regular.ttf";
+          /*  String fontPath = "fonts/Roboto-Regular.ttf";
             Typeface font = Typeface.createFromAsset(mContext.getAssets(), "fontawesome-webfont.ttf");
             Typeface tf = Typeface.createFromAsset(mContext.getAssets(), fontPath);
             this.cv = (CardView) itemView.findViewById(R.id.cv);
@@ -353,7 +353,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
             this.from.setTypeface(tf);
             this.relative = (RelativeLayout) view.findViewById(R.id.Relative);
             this.app = (TextView) view.findViewById(R.id.app);
-            this.app.setTypeface(tf);
+            this.app.setTypeface(tf);*/
         }
     }
 }
