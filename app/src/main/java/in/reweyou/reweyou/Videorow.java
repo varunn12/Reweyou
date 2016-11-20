@@ -1,11 +1,11 @@
 package in.reweyou.reweyou;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -17,7 +17,7 @@ import android.widget.VideoView;
 /**
  * Created by Reweyou on 2/1/2016.
  */
-public class Videorow extends Activity {
+public class Videorow extends AppCompatActivity {
 
     protected TextView video;
     protected TextView Headline;
@@ -38,11 +38,13 @@ public class Videorow extends Activity {
     private String category;
     private String reviews;
     private String headline;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Get the layout from video_main.xml
+
         setContentView(R.layout.videorow);
         // Find your VideoView in your video_main.xml layout
         videoview = (VideoView) findViewById(R.id.video);
@@ -51,6 +53,20 @@ public class Videorow extends Activity {
         Intent in = getIntent();
         Bundle bundle = getIntent().getExtras();
         url = bundle.getString("myData");
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("");
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
       /*  Headline = (TextView) findViewById(R.id.Who);
         place = (TextView) findViewById(R.id.place);
@@ -90,12 +106,19 @@ public class Videorow extends Activity {
         try {
             // Start the MediaController
             MediaController mediacontroller = new MediaController(
-                    Videorow.this);
-            mediacontroller.setAnchorView(videoview);
+                    Videorow.this) {
+                @Override
+                public void hide() {
+                    super.show();
+                }
+            };
+            mediacontroller.show(0);
+
             // Get the URL from String VideoURL
-            Uri video = Uri.parse(url);
+            // Uri video = Uri.parse(url);
             videoview.setMediaController(mediacontroller);
-            videoview.setVideoURI(video);
+            videoview.setVideoPath(url);
+
 
         } catch (Exception e) {
             Log.e("Error", e.getMessage());
@@ -111,6 +134,7 @@ public class Videorow extends Activity {
                 videoview.start();
             }
         });
+
 
     }
 
