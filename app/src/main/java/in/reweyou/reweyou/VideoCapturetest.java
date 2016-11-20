@@ -178,28 +178,26 @@ public class VideoCapturetest extends AppCompatActivity implements OnClickListen
         btn_cancel.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder getImageFrom = new AlertDialog.Builder(VideoCapturetest.this);
-                getImageFrom.setTitle("Alert");
-                getImageFrom.setMessage("Do you want to keep the recording for future?");
-                getImageFrom.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
+                AlertDialogBox alertDialogBox = new AlertDialogBox(VideoCapturetest.this, "Alert", "Do you want to save the recording for future usage?", "Yes", "Discard") {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        finish();
-                    }
-                });
-                getImageFrom.setNegativeButton("Discard", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                    void onNegativeButtonClick(DialogInterface dialog) {
                         if (mOutputFile != null) {
                             mOutputFile.delete();
                             dialog.dismiss();
                             finish();
                         }
                     }
-                });
 
-                getImageFrom.show();
+                    @Override
+                    void onPositiveButtonClick(DialogInterface dialog) {
+                        dialog.dismiss();
+                        finish();
+                    }
+                };
+                alertDialogBox.setCancellable(true);
+                alertDialogBox.show();
+
             }
         });
 

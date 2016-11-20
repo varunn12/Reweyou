@@ -89,7 +89,7 @@
         <activity android:name=".VideoCapturetest"></activity>
         <activity
             android:name=".Videorow"
-            android:theme="@style/AppTheme.Preview"></activity>
+            android:theme="@style/AppTheme.NoActionBar.Preview"></activity>
         <activity android:name=".ImageCapture" />
         <activity android:name=".MyProfile" />
         <activity
@@ -100,11 +100,11 @@
         <activity android:name=".Notifications" />
         <activity
             android:name=".FullImage"
-            android:theme="@style/AppTheme.Preview"></activity>
+            android:theme="@style/AppTheme.NoActionBar.Preview"></activity>
         <activity android:name=".PermissionsActivity" />
         <activity android:name=".MyReports" />
         <activity android:name=".Action" />
-        <activity android:name=".Comments" />
+        <activity android:name=".Comments1" />
         <activity android:name=".LocationActivity" />
 
         <!-- Firebase Notifications -->
