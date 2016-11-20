@@ -519,7 +519,7 @@ public class VideoCapturetest extends AppCompatActivity implements OnClickListen
                     // END_INCLUDE(stop_release_media_recorder)*/
 
                 } else {
-
+                    tv_counter.setVisibility(View.VISIBLE);
                     timer.start();
                     // BEGIN_INCLUDE(prepare_start_media_recorder)
 
@@ -543,6 +543,7 @@ public class VideoCapturetest extends AppCompatActivity implements OnClickListen
 
     private void onVideoRecorded() {
         proceedContainer.setVisibility(View.VISIBLE);
+        iv_record.setVisibility(View.INVISIBLE);
 
     }
 
