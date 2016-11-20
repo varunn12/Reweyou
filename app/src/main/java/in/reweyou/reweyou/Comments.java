@@ -184,17 +184,8 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
         swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
         swipeLayout.setOnRefreshListener(this);
 
-        if (checknet.isConnectingToInternet())
-            new JSONTask(false).execute(i);
-        else {
-            Snackbar.make(findViewById(R.id.main_content), "No internet connectivity", Snackbar.LENGTH_LONG).setDuration(Snackbar.LENGTH_INDEFINITE)
-                    .setAction("RETRY", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            new JSONTask(false).execute(i);
-                        }
-                    }).show();
-        }
+        new JSONTask(false).execute(i);
+
 
     }
 
@@ -374,7 +365,7 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
         protected void onPreExecute() {
             super.onPreExecute();
             if (!b)
-            progressBar.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.VISIBLE);
             Empty.setVisibility(View.GONE);
         }
 
@@ -447,7 +438,7 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
         protected void onPostExecute(final List<CommentsModel> result) {
             super.onPostExecute(result);
             if (!b)
-            progressBar.setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
 
             if (result != null) {
                 setEnabledBottomBarViews(ENABLE);
@@ -473,9 +464,9 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
                         .setAction("RETRY", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                if (checknet.isConnectingToInternet()) {
-                                    onRefresh();
-                                }
+
+                                new JSONTask(false).execute(i);
+
                             }
                         }).show();
             }
