@@ -1074,6 +1074,8 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         public NewPostViewHolder(View view) {
             super(view);
             con = (LinearLayout) view.findViewById(R.id.newCon);
+            ImageView img = (ImageView) view.findViewById(R.id.pic);
+            Glide.with(mContext).load(session.getProfilePicture()).into(img);
             /*con.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
