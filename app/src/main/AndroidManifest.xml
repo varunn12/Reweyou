@@ -86,10 +86,10 @@
             android:name=".classes.HttpService"
             android:exported="false" />
 
-        <activity android:name=".VideoCapturetest"></activity>
+        <activity android:name=".VideoCapturetest" />
         <activity
             android:name=".Videorow"
-            android:theme="@style/AppTheme.NoActionBar.Preview"></activity>
+            android:theme="@style/AppTheme.NoActionBar.Preview" />
         <activity android:name=".ImageCapture" />
         <activity android:name=".MyProfile" />
         <activity
@@ -100,7 +100,7 @@
         <activity android:name=".Notifications" />
         <activity
             android:name=".FullImage"
-            android:theme="@style/AppTheme.NoActionBar.Preview"></activity>
+            android:theme="@style/AppTheme.NoActionBar.Preview" />
         <activity android:name=".PermissionsActivity" />
         <activity android:name=".MyReports" />
         <activity android:name=".Action" />
@@ -170,11 +170,12 @@
         <activity
             android:name=".Raw"
             android:label="@string/title_activity_raw"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".NavA"
             android:label="@string/title_activity_nav"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".WelcomeActivity"></activity>
     </application>
 
 </manifest>

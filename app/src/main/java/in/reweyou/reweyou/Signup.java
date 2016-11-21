@@ -61,7 +61,7 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
     public static final String KEY_TOKEN = "token";
     static final String[] PERMISSIONS = new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.READ_SMS};
     private static final int REQUEST_CODE = 0;
-    private static final String REGISTER_URL = "https://www.reweyou.in/reweyou/signup.php";
+    private static final String REGISTER_URL = "https://www.reweyou.in/reweyou/signupnew.php";
     UserSessionManager session;
     PermissionsChecker checker;
     Boolean isInternetPresent = false;

@@ -245,9 +245,9 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
         formattedDate = df.format(c.getTime());
 
         tag = "General";
-        Log.e("D", tag);
+      /*Log.e("D", tag);
         Log.e("D", location);
-        Log.e("D", formattedDate);
+        Log.e("D", formattedDate);*/
         // new JSONTask().execute(tag, location,formattedDate,number);
 
         makeRequest();

@@ -16,16 +16,19 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import in.reweyou.reweyou.Welcome;
+import in.reweyou.reweyou.WelcomeActivity;
 
 /**
  * Created by Ravi on 04/04/15.
  */
 public class HttpService extends IntentService {
-    public static final String URL_VERIFY_OTP = "https://www.reweyou.in/reweyou/verify_otp.php";
+    public static final String URL_VERIFY_OTP = "https://www.reweyou.in/reweyou/verify_otp_new.php";
     private static String TAG = HttpService.class.getSimpleName();
 
     public HttpService() {
@@ -47,7 +50,7 @@ public class HttpService extends IntentService {
      * @param
      */
     private void verifyOtp(final String otp) {
-        UserSessionManager session = new UserSessionManager(getApplicationContext());
+        final UserSessionManager session = new UserSessionManager(getApplicationContext());
         final String number = session.getMobileNumber();
         // final ProgressDialog loading = ProgressDialog.show(this, "Authenticating", "Please wait", false, false);
         StringRequest strReq = new StringRequest(Request.Method.POST,
@@ -55,24 +58,41 @@ public class HttpService extends IntentService {
 
             @Override
             public void onResponse(String response) {
-                //if the server response is success
-                if(response.equalsIgnoreCase("success")){
+                Log.d("resp", response);
+
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    session.setAuthToken(jsonObject.getString("token"));
+                    session.setUsername("name");
+                    session.setMobileNumber("number");
+                    session.setLoginLocation("location");
+                    openProfile();
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "Wrong OTP Please Try Again", Toast.LENGTH_LONG).show();
+
+                }
+
+
+              /*  //if the server response is success
+                if (response.equalsIgnoreCase("success")) {
                     //dismissing the progressbar
                     //     loading.show();
 
                     //Starting a new activity
-                    openProfile();
-                }else{
+                } else {
                     //Displaying a toast if the otp entered is wrong
-                    Toast.makeText(getApplicationContext(),"Wrong OTP Please Try Again",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Wrong OTP Please Try Again", Toast.LENGTH_LONG).show();
 
                 }
+            }*/
             }
-        },new Response.ErrorListener() {
+        }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-             //   Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
-                Toast.makeText(getApplicationContext(),"Something went wrong, Try again",Toast.LENGTH_LONG).show();
+                //   Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Something went wrong, Try again", Toast.LENGTH_LONG).show();
             }
         }) {
 
@@ -94,20 +114,20 @@ public class HttpService extends IntentService {
     }
 
     private void openProfile() {
-        //Intent intent = new Intent(this, IconTabs.class);
-        //intent.putExtra(KEY_USERNAME, username);
-        //startActivity(intent);
+
         UserSessionManager session = new UserSessionManager(getApplicationContext());
-        String place=session.getLoginLocation();
-        String number=session.getMobileNumber();
+        String place = session.getLoginLocation();
+        String number = session.getMobileNumber();
         String name = session.getUsername();
-        session.createUserRegisterSession(name,number, place);
+        session.createUserRegisterSession(name, number, place);
 
         // Starting TokenTest
-        Intent i = new Intent(this, Welcome.class);
+        Intent i = new Intent(this, WelcomeActivity.class);
+
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i); // Call once you redirect to another activity
+
         this.stopSelf();
     }
 }

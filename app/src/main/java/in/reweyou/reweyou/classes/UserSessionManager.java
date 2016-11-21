@@ -13,9 +13,7 @@ import in.reweyou.reweyou.Signup;
  */
 public class UserSessionManager {
 
-    // User name (make variable public to access from outside)
     public static final String KEY_NAME = "username";
-    // Email address (make variable public to access from outside)
     public static final String KEY_EMAIL = "email";
     public static final String KEY_PIC="pic";
     public static final String KEY_NUMBER = "number";
@@ -30,6 +28,7 @@ public class UserSessionManager {
     private static final String PREFER_NAME = "ReweyouPref";
     // All Shared Preferences Keys
     private static final String IS_USER_LOGIN = "IsUserLoggedIn";
+    private static final String KEY_AUTH_TOKEN = "authtoken";
     // Shared Preferences reference
     SharedPreferences pref;
     // Editor reference for Shared preferences
@@ -46,35 +45,6 @@ public class UserSessionManager {
         this._context = context;
         pref = _context.getSharedPreferences(PREFER_NAME, PRIVATE_MODE);
         editor = pref.edit();
-    }
-
-
-    //Create login session
-    public void createUserLoginSession(String number, String location) {
-        // Storing login value as TRUE
-        editor.putBoolean(IS_USER_LOGIN, true);
-
-        // Storing name in pref
-        editor.putString(KEY_NUMBER, number);
-
-
-        editor.putString(KEY_LOCATION, location);
-
-        //Storing number
-        //editor.putString(KEY_NUMBER, email);
-
-        // commit changes
-        editor.commit();
-    }
-
-    public void savename(String name, String number) {
-
-        // Storing name in pref
-        editor.putString(KEY_NAME, name);
-        editor.putString(KEY_NUMBER,number);
-
-        // commit changes
-        editor.commit();
     }
 
     public String getCityLocation() {
@@ -99,8 +69,7 @@ public class UserSessionManager {
         return pref.getString(KEY_PIC, null);
     }
 
-    public void setProfilePicture(String image)
-    {
+    public void setProfilePicture(String image) {
         editor.putString(KEY_PIC,image);
         editor.commit();
     }
@@ -131,16 +100,6 @@ public class UserSessionManager {
         editor.putString(KEY_LOGIN_LOCATION, location);
         editor.commit();
     }
-
-    public String getFirebaseToken(){
-        return pref.getString("token","0");
-    }
-
-    public void setFirebaseToken(String token) {
-        editor.putString("token", token);
-        editor.commit();
-    }
-
     //Create login session and Register
     public void createUserRegisterSession(String username, String number, String place) {
         // Storing login value as TRUE
@@ -164,27 +123,6 @@ public class UserSessionManager {
      * If false it will redirect user to login page
      * Else do anything
      */
-    public boolean checkLogin() {
-        // Check login status
-        if (!this.isUserLoggedIn()) {
-
-            // user is not logged in redirect him to Login Activity
-            Intent i = new Intent(_context, Signup.class);
-
-            // Closing all the Activities from stack
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-
-            // Add new Flag to start new Activity
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-            // Staring Login Activity
-            _context.startActivity(i);
-
-            return true;
-        }
-        return false;
-    }
 
     public boolean checkLoginSplash() {
         // Check login status
@@ -252,6 +190,11 @@ public class UserSessionManager {
     }
     public void saveInSp(String key,boolean value){
         editor.putBoolean(key, value);
+        editor.commit();
+    }
+
+    public void setAuthToken(String token) {
+        editor.putString(KEY_AUTH_TOKEN, token);
         editor.commit();
     }
 }
