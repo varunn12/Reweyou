@@ -3,6 +3,7 @@ package in.reweyou.reweyou;
 /**
  * Created by Reweyou on 12/20/2015.
  */
+
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -18,15 +19,18 @@ import java.net.URL;
 /**
  * Created by Belal on 11/22/2015.
  */
-public class Upload {
+public class Upload2 {
 
-    public static final String UPLOAD_URL= "https://www.reweyou.in/videoupload.php";
+
+    public static final String UPLOAD_URL = "https://www.reweyou.in/reweyou/reporting.php";
+
 
     private int serverResponseCode;
 
-    public String uploadVideo(String file, String text, String location, String date, String headline, String tag, String address, String number, String image, String type) {
+    public String uploadVideo(String fileName, String filePath, String headline, String edittag, String category, String description, String place, String address, String time, String encodedimage, boolean image, boolean video, boolean gif, String number, String username, String token) {
 
-        String fileName = file;
+        Log.d("eee", headline + "  " + edittag + "   " + category + "   " + description + "    " + place + "    " + "    " + address + "   " + time + "    " + username);
+
         HttpURLConnection conn = null;
         DataOutputStream dos = null;
         String lineEnd = "\r\n";
@@ -34,9 +38,11 @@ public class Upload {
         String boundary = "*****";
         int bytesRead, bytesAvailable, bufferSize;
         byte[] buffer;
-        int maxBufferSize = 1 * 1024 * 1024;
+        int maxBufferSize = 5 * 1024 * 1024;
 
-        File sourceFile = new File(file);
+        File sourceFile = new File(filePath);
+        Log.d("sizeeee", String.valueOf(Integer.parseInt(String.valueOf(sourceFile.length() / (1024)))));
+
         if (!sourceFile.isFile()) {
             Log.e("Huzza", "Source File Does not exist");
             return null;
@@ -54,109 +60,125 @@ public class Upload {
             conn.setRequestProperty("ENCTYPE", "multipart/form-data");
             conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
             conn.setRequestProperty("myFile", fileName);
+
             dos = new DataOutputStream(conn.getOutputStream());
 
             dos.writeBytes(twoHyphens + boundary + lineEnd);
 
-        //Adding Headline
+            //Adding Headline
 
             dos.writeBytes("Content-Disposition: form-data; name=\"headline\"" + lineEnd);
-            //dos.writeBytes("Content-Type: text/plain; charset=UTF-8" + lineEnd);
-            //dos.writeBytes("Content-Length: " + name.length() + lineEnd);
             dos.writeBytes(lineEnd);
-            dos.writeBytes(headline); // mobile_no is String variable
+            dos.writeBytes(headline);
             dos.writeBytes(lineEnd);
-
             dos.writeBytes(twoHyphens + boundary + lineEnd);
 
             //Adding NAME
 
-            dos.writeBytes("Content-Disposition: form-data; name=\"text\"" + lineEnd);
-            //dos.writeBytes("Content-Type: text/plain; charset=UTF-8" + lineEnd);
-            //dos.writeBytes("Content-Length: " + name.length() + lineEnd);
+            dos.writeBytes("Content-Disposition: form-data; name=\"description\"" + lineEnd);
             dos.writeBytes(lineEnd);
-            dos.writeBytes(text); // mobile_no is String variable
+            dos.writeBytes(description);
             dos.writeBytes(lineEnd);
-
             dos.writeBytes(twoHyphens + boundary + lineEnd);
 
-//Adding date
+            //Adding tag
 
-            dos.writeBytes("Content-Disposition: form-data; name=\"date\"" + lineEnd);
-            //dos.writeBytes("Content-Type: text/plain; charset=UTF-8" + lineEnd);
-            //dos.writeBytes("Content-Length: " + name.length() + lineEnd);
+            dos.writeBytes("Content-Disposition: form-data; name=\"tag\"" + lineEnd);
             dos.writeBytes(lineEnd);
-            dos.writeBytes(date); // mobile_no is String variable
+            dos.writeBytes(edittag);
             dos.writeBytes(lineEnd);
-
             dos.writeBytes(twoHyphens + boundary + lineEnd);
 
             //Adding number
 
             dos.writeBytes("Content-Disposition: form-data; name=\"number\"" + lineEnd);
-            //dos.writeBytes("Content-Type: text/plain; charset=UTF-8" + lineEnd);
-            //dos.writeBytes("Content-Length: " + name.length() + lineEnd);
             dos.writeBytes(lineEnd);
-            dos.writeBytes(number); // mobile_no is String variable
+            dos.writeBytes("7054392300");
+            dos.writeBytes(lineEnd);
+            dos.writeBytes(twoHyphens + boundary + lineEnd);
+
+
+            dos.writeBytes("Content-Disposition: form-data; name=\"name\"" + lineEnd);
+            dos.writeBytes(lineEnd);
+            dos.writeBytes(username);
+            dos.writeBytes(lineEnd);
+            dos.writeBytes(twoHyphens + boundary + lineEnd);
+
+            dos.writeBytes("Content-Disposition: form-data; name=\"token\"" + lineEnd);
+            dos.writeBytes(lineEnd);
+            dos.writeBytes("abc");
+            dos.writeBytes(lineEnd);
+            dos.writeBytes(twoHyphens + boundary + lineEnd);
+
+            dos.writeBytes("Content-Disposition: form-data; name=\"time\"" + lineEnd);
+            dos.writeBytes(lineEnd);
+            dos.writeBytes(time);
+            dos.writeBytes(lineEnd);
+            dos.writeBytes(twoHyphens + boundary + lineEnd);
+
+
+            dos.writeBytes("Content-Disposition: form-data; name=\"myFile\";filename=\"" + fileName + "\"" + lineEnd);
             dos.writeBytes(lineEnd);
 
-            dos.writeBytes(twoHyphens + boundary + lineEnd);
+            if (encodedimage != null) {
+                dos.writeBytes("Content-Disposition: form-data; name=\"image\"" + lineEnd);
+                dos.writeBytes(lineEnd);
+                dos.writeBytes(encodedimage);
+                dos.writeBytes(lineEnd);
+            }
 
             //Adding location
 
             dos.writeBytes("Content-Disposition: form-data; name=\"location\"" + lineEnd);
-            //dos.writeBytes("Content-Type: text/plain; charset=UTF-8" + lineEnd);
-            //dos.writeBytes("Content-Length: " + name.length() + lineEnd);
             dos.writeBytes(lineEnd);
-            dos.writeBytes(location); // mobile_no is String variable
+            dos.writeBytes(place);
             dos.writeBytes(lineEnd);
-
             dos.writeBytes(twoHyphens + boundary + lineEnd);
 
             //Adding tag
-            dos.writeBytes("Content-Disposition: form-data; name=\"tag\"" + lineEnd);
-            //dos.writeBytes("Content-Type: text/plain; charset=UTF-8" + lineEnd);
-            //dos.writeBytes("Content-Length: " + name.length() + lineEnd);
-            dos.writeBytes(lineEnd);
-            dos.writeBytes(tag); // mobile_no is String variable
-            dos.writeBytes(lineEnd);
-
-            dos.writeBytes(twoHyphens + boundary + lineEnd);
-
-           //Adding Parameter address
-
-            dos.writeBytes("Content-Disposition: form-data; name=\"address\"" + lineEnd);
-            //dos.writeBytes("Content-Type: text/plain; charset=UTF-8" + lineEnd);
-            //dos.writeBytes("Content-Length: " + name.length() + lineEnd);
-            dos.writeBytes(lineEnd);
-            dos.writeBytes(address);
-            dos.writeBytes(lineEnd);
-
-
-            dos.writeBytes(twoHyphens + boundary + lineEnd);
-
-
             dos.writeBytes("Content-Disposition: form-data; name=\"type\"" + lineEnd);
             dos.writeBytes(lineEnd);
-            dos.writeBytes(type);
+            dos.writeBytes(category);
+            dos.writeBytes(lineEnd);
+            dos.writeBytes(twoHyphens + boundary + lineEnd);
+
+            //Adding Parameter address
+
+            dos.writeBytes("Content-Disposition: form-data; name=\"address\"" + lineEnd);
+            dos.writeBytes(lineEnd);
+            dos.writeBytes(address);
             dos.writeBytes(lineEnd);
             dos.writeBytes(twoHyphens + boundary + lineEnd);
 
             //Adding Parameter image
 
-            dos.writeBytes("Content-Disposition: form-data; name=\"image\"" + lineEnd);
-            //dos.writeBytes("Content-Type: text/plain; charset=UTF-8" + lineEnd);
-            //dos.writeBytes("Content-Length: " + name.length() + lineEnd);
-            dos.writeBytes(lineEnd);
-            if (image != null)
-                dos.writeBytes(image);
-            dos.writeBytes(lineEnd);
+            if (image) {
+                dos.writeBytes("Content-Disposition: form-data; name=\"report\"" + lineEnd);
+                dos.writeBytes(lineEnd);
+                dos.writeBytes("image");
+                dos.writeBytes(lineEnd);
+                dos.writeBytes(twoHyphens + boundary + lineEnd);
+            }
 
+            if (video) {
+                Log.d("test2333", "true");
+                dos.writeBytes("Content-Disposition: form-data; name=\"report\"" + lineEnd);
+                dos.writeBytes(lineEnd);
+                dos.writeBytes("video");
+                dos.writeBytes(lineEnd);
+                dos.writeBytes(twoHyphens + boundary + lineEnd);
+            }
 
-            dos.writeBytes(twoHyphens + boundary + lineEnd);
+            if (gif) {
+                Log.d("test2333gif", "true");
 
-            dos.writeBytes("Content-Disposition: form-data; name=\"myFile\";filename=\"" + fileName + "\"" + lineEnd);
-            dos.writeBytes(lineEnd);
+                dos.writeBytes("Content-Disposition: form-data; name=\"report\"" + lineEnd);
+                dos.writeBytes(lineEnd);
+                dos.writeBytes("gif");
+                dos.writeBytes(lineEnd);
+                dos.writeBytes(twoHyphens + boundary + lineEnd);
+            }
+
 
             bytesAvailable = fileInputStream.available();
             Log.i("Huzza", "Initial .available : " + bytesAvailable);
@@ -186,7 +208,7 @@ public class Upload {
             ex.printStackTrace();
             Log.e("Huzza", "Malinformed");
         } catch (Exception e) {
-           // e.printStackTrace();
+            // e.printStackTrace();
             Log.e("Huzza", Log.getStackTraceString(e));
         }
 
@@ -203,7 +225,7 @@ public class Upload {
             } catch (IOException ioex) {
             }
             return sb.toString();
-        }else {
+        } else {
             return "Could not upload";
         }
     }

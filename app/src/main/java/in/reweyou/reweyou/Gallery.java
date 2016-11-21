@@ -163,13 +163,13 @@ public class Gallery extends AppCompatActivity implements View.OnClickListener {
                         // Messages();
                     } else {
                         // show toast select gender
-                        //            Toast.makeText(ShowImage.this,"Select a category",Toast.LENGTH_SHORT).show();
+                        //            Toast.makeText(PostReport.this,"Select a category",Toast.LENGTH_SHORT).show();
                     }
                 }
 
                 @Override
                 public void onNothingSelected(AdapterView<?> parent) {
-                    //Toast.makeText(ShowImage.this,"Select a category",Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(PostReport.this,"Select a category",Toast.LENGTH_SHORT).show();
                     // TODO Auto-generated method stub
                 }
             });

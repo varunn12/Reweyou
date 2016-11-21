@@ -7,19 +7,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -29,16 +24,16 @@ import java.util.HashMap;
 import in.reweyou.reweyou.classes.UserSessionManager;
 
 public class Welcome extends Activity implements View.OnClickListener {
-    int REQUEST_CAMERA = 1,SELECT_FILE = 0;
-    private Button CustomCamera, Gallery;
+    static final String[] PERMISSIONS = new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private static final int REQUEST_CODE = 0;
-    private Button home;
+    int REQUEST_CAMERA = 1, SELECT_FILE = 0;
     SharedPreferences sharedPreferences;
     UserSessionManager session;
     PermissionsChecker checker;
-    private String mCurrentPhotoPath;
     Uri uri;
-    static final String[] PERMISSIONS = new String[]{Manifest.permission.CAMERA,Manifest. permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    private Button CustomCamera, Gallery;
+    private Button home;
+    private String mCurrentPhotoPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,7 +151,7 @@ public class Welcome extends Activity implements View.OnClickListener {
         if (resCode == Activity.RESULT_OK && reqCode==SELECT_FILE && data != null) {
             Uri uriFromPath = data.getData();
             String show = uriFromPath.toString();
-            Intent intent = new Intent(this, ShowImage.class);
+            Intent intent = new Intent(this, PostReport.class);
             intent.putExtra("path", show);
             startActivity(intent);
         }

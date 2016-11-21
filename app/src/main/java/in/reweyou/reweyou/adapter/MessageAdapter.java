@@ -1151,7 +1151,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             /*con.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent in = new Intent(mContext, ShowImage.class);
+                    Intent in = new Intent(mContext, PostReport.class);
                     mContext.startActivity(in);
                 }
             });*/

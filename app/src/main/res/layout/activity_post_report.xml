@@ -205,11 +205,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginLeft="48dp"
-                        android:layout_marginRight="48dp"
+                        android:layout_marginLeft="56dp"
+                        android:layout_marginRight="56dp"
+                        android:adjustViewBounds="true"
                         android:background="@drawable/border_primary"
                         android:minHeight="48dp"
                         android:padding="2dp"
+                        android:paddingRight="48dp"
                         android:scaleType="centerInside" />
 
                     <ImageView
@@ -226,9 +228,9 @@
                         android:id="@+id/cancel"
                         android:layout_width="32dp"
                         android:layout_height="32dp"
-                        android:layout_alignRight="@+id/ImageShow"
-                        android:layout_marginRight="8dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginTop="2dp"
                         android:background="@drawable/solid_circle"
                         android:elevation="8dp"
                         android:padding="8dp"

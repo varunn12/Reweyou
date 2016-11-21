@@ -206,7 +206,7 @@ public class VideoCapturetest extends AppCompatActivity implements OnClickListen
             public void onClick(View v) {
                 if (mOutputFile != null) {
                     if (mOutputFile.length() > 0) {
-                        Intent i = new Intent(VideoCapturetest.this, ShowImage.class);
+                        Intent i = new Intent(VideoCapturetest.this, PostReport.class);
                         i.putExtra("dataVideo", mOutputFile.getPath());
                         Log.d("pathhh", mOutputFile.getPath());
                         startActivity(i);

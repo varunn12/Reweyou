@@ -197,4 +197,8 @@ public class UserSessionManager {
         editor.putString(KEY_AUTH_TOKEN, token);
         editor.commit();
     }
+
+    public String getKeyAuthToken() {
+        return pref.getString(KEY_AUTH_TOKEN, "default");
+    }
 }

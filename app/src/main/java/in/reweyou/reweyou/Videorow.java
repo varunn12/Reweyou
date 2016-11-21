@@ -94,18 +94,12 @@ public class Videorow extends AppCompatActivity {
         try {
             // Start the MediaController
             MediaController mediacontroller = new MediaController(
-                    Videorow.this) {
-                @Override
-                public void hide() {
-                    super.show();
-                }
-            };
-            mediacontroller.show(0);
-
+                    Videorow.this);
             // Get the URL from String VideoURL
             // Uri video = Uri.parse(url);
             videoview.setMediaController(mediacontroller);
             videoview.setVideoPath(url);
+
 
 
         } catch (Exception e) {
@@ -141,5 +135,8 @@ public class Videorow extends AppCompatActivity {
         });
     }
 
-
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
 }

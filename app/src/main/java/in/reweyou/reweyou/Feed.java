@@ -75,7 +75,7 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
             @Override
             public void onClick(View v) {
 
-                startActivity(new Intent(Feed.this, ShowImage.class));
+                startActivity(new Intent(Feed.this, PostReport.class));
                /* AlertDialog.Builder getImageFrom = new AlertDialog.Builder(Feed.this);
                 getImageFrom.setTitle("Select Image from:");
                 final CharSequence[] opsChars = {getResources().getString(R.string.takepic), getResources().getString(R.string.opengallery)};
@@ -189,7 +189,7 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
       /*  if (resCode == Activity.RESULT_OK && reqCode == SELECT_FILE && data != null) {
             Uri uriFromPath = data.getData();
             String show = uriFromPath.toString();
-            Intent intent = new Intent(this, ShowImage.class);
+            Intent intent = new Intent(this, PostReport.class);
             intent.putExtra("path", show);
             startActivity(intent);
         }
@@ -227,12 +227,12 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
             int dataType = new HandleActivityResult().handleResult(reqCode, resCode, data);
             switch (dataType) {
                 case HANDLE_IMAGE:
-                    Intent i = new Intent(this, ShowImage.class);
+                    Intent i = new Intent(this, PostReport.class);
                     i.putExtra("dataImage", data.getData().toString());
                     startActivity(i);
                     break;
                 case HANDLE_VIDEO:
-                    Intent i2 = new Intent(this, ShowImage.class);
+                    Intent i2 = new Intent(this, PostReport.class);
                     UploadOptions uploadOptions = new UploadOptions(Feed.this);
                     i2.putExtra("dataVideo", uploadOptions.getAbsolutePath(data.getData()));
                     startActivity(i2);
@@ -315,7 +315,7 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
         }
 
         this.doubleBackToExitPressedOnce = true;
-        //Toast.makeText(this, "Please click back again to exit", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Press again to exit.", Toast.LENGTH_SHORT).show();
 
         new Handler().postDelayed(new Runnable() {
 

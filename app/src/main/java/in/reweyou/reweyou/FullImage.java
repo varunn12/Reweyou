@@ -17,7 +17,7 @@ import in.reweyou.reweyou.classes.TouchImageView;
 public class FullImage extends AppCompatActivity {
     Boolean isInternetPresent = false;
     ConnectionDetector cd;
-private String i;
+    private String i;
     private ProgressBar progressBar;
     private DisplayImageOptions options;
     private TouchImageView imageView;
@@ -33,10 +33,10 @@ private String i;
         Bundle bundle = getIntent().getExtras();
         i = bundle.getString("myData");
         imageView = (TouchImageView) findViewById(R.id.image);
-         // Do it on Application start
+        // Do it on Application start
         cd = new ConnectionDetector(FullImage.this);
 
-         progressBar = (ProgressBar)findViewById(R.id.progressBar);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
         options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.irongrip)
@@ -50,11 +50,9 @@ private String i;
         // Then later, when you want to display image
 
         isInternetPresent = cd.isConnectingToInternet();
-        if(isInternetPresent) {
+        if (isInternetPresent) {
             showimage(i);
-        }
-        else
-        {
+        } else {
             Toast.makeText(this, "You are not connected to Internet", Toast.LENGTH_LONG).show();
         }
 
@@ -81,5 +79,8 @@ private String i;
         Glide.with(FullImage.this).load(i).into(imageView);
     }
 
-
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
 }
