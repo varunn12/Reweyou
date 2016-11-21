@@ -73,7 +73,7 @@
 
         <receiver android:name=".Notification" />
 
-        <activity android:name=".WelcomeScreen" />
+        <activity android:name=".TutorialScreen" />
 
         <!-- SMS Receiver -->
         <receiver android:name=".classes.SmsReceiver">

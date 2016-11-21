@@ -2,20 +2,75 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/transparent"
+    android:background="@color/colorPrimary"
     android:orientation="vertical">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/image_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48.5dp"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="240dp"
+                android:layout_height="240dp"
+                android:layout_gravity="center"
+                android:background="@drawable/solid_circle_tut1"
+                android:visibility="gone" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="240dp">
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="240dp"
+                    android:background="@color/colorPrimaryDark" />
+
+
+            </RelativeLayout>
+
+            <android.support.v4.widget.Space
+                android:layout_width="100dp"
+                android:layout_height="230dp"
+                android:layout_gravity="center_horizontal" />
+
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_marginBottom="128dp" />
 
+    <LinearLayout
+        android:id="@+id/image_cont"
+        android:layout_width="match_parent"
+        android:layout_height="470dp"
+        android:layout_marginTop="48.5dp"
+        android:orientation="vertical">
+
+        <in.reweyou.reweyou.customView.CircleOverlayView
+            android:layout_width="match_parent"
+
+            android:layout_height="240dp" />
+    </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/button_layout"
         android:layout_width="match_parent"
 
-        android:layout_height="108dp"
+        android:layout_height="118dp"
         android:layout_alignParentBottom="true">
 
         <Button
@@ -65,12 +120,11 @@
             android:layout_marginRight="12dp"
             android:background="@drawable/button_background_rectangular"
             android:text="DONE"
-            android:textColor="#ef5350"
+            android:textColor="@color/colorPrimary"
             android:textSize="14sp"
             android:textStyle="bold"
             android:visibility="invisible" />
 
 
     </RelativeLayout>
-
 </RelativeLayout>

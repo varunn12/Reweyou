@@ -1,60 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/welcome_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FF9800"
-    android:orientation="vertical">
-
-    <FrameLayout
-        android:id="@id/image_container"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:clipChildren="false">
-
-        <ImageView
-            android:id="@+id/img"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="80dp"
-            android:scaleType="centerInside"
-
-            android:src="@drawable/news" />
-
-    </FrameLayout>
+    android:background="@null">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/image_container"
+        android:layout_width="300dp"
+
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="48.5dp"
         android:orientation="vertical">
-    <TextView
-        android:id="@+id/screen_heading"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Local Information"
-        android:textColor="#000"
 
-        android:textSize="28dp" />
+        <ImageView
+            android:layout_width="240dp"
+            android:layout_height="240dp"
+            android:layout_gravity="center_horizontal"
+            android:elevation="4dp"
+            android:padding="48dp"
+            android:src="@drawable/geo" />
 
-        <TextView
-        android:id="@+id/screen_desc"
-        android:layout_width="fill_parent"
-            android:layout_height="40dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            android:layout_marginTop="4dp"
-            android:gravity="center_horizontal"
+            <TextView
+                android:id="@+id/screen_heading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingTop="52dp"
+                android:text="Local Information"
+                android:textColor="#000"
 
-            android:text="Realtime update about happenings in your city."
-        android:textColor="#fff"
-            android:textSize="16sp"
-        android:textStyle="bold" />
+                android:textSize="28dp" />
+
+            <TextView
+                android:id="@+id/screen_desc"
+                android:layout_width="match_parent"
+
+                android:layout_height="40dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="4dp"
+                android:gravity="center_horizontal"
+                android:text="Realtime update about happenings in your city."
+                android:textColor="#fff"
+
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
 
     </LinearLayout>
 
-</LinearLayout>
+
+</RelativeLayout>
