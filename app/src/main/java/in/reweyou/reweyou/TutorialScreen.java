@@ -19,10 +19,10 @@ import com.nineoldandroids.view.ViewHelper;
 import in.reweyou.reweyou.fragment.WelcomeScreenFragment;
 
 
-public class WelcomeScreen extends AppCompatActivity {
+public class TutorialScreen extends AppCompatActivity {
 
     static final int TOTAL_PAGES = 3;
-    private static final String TAG = WelcomeScreen.class.getSimpleName();
+    private static final String TAG = TutorialScreen.class.getSimpleName();
     private static final int FIRST_PAGE = 0;
 
     ViewPager pager;
@@ -34,7 +34,6 @@ public class WelcomeScreen extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
         setContentView(R.layout.welcome_layout);
@@ -50,7 +49,7 @@ public class WelcomeScreen extends AppCompatActivity {
         pager = (ViewPager) findViewById(R.id.pager);
         pagerAdapter = new ScreenSlideAdapter(getSupportFragmentManager());
         pager.setAdapter(pagerAdapter);
-        pager.setPageTransformer(true, new CrossfadePageTransformer());
+        //pager.setPageTransformer(true, new CrossfadePageTransformer());
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -142,7 +141,7 @@ public class WelcomeScreen extends AppCompatActivity {
 
     private void endTutorial() {
 
-        Intent intent = new Intent(WelcomeScreen.this, Signup.class);
+        Intent intent = new Intent(TutorialScreen.this, Signup.class);
         startActivity(intent);
         finish();
         overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out);

@@ -1,60 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/welcome_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ef5b58"
+    android:background="@null"
     android:orientation="vertical">
 
-    <FrameLayout
-        android:id="@+id/image_container"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2">
-
-        <ImageView
-            android:id="@+id/img"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="80dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/broadcast" />
-
-    </FrameLayout>
-
-
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:id="@+id/image_container"
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="56dp"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/screen_heading"
+        <ImageView
+            android:layout_width="240dp"
+            android:layout_height="240dp"
+            android:layout_gravity="center_horizontal"
+            android:elevation="4dp"
+            android:padding="52dp"
+            android:rotation="-20"
+            android:src="@drawable/s2" />
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Make Yourself Heard"
-            android:textColor="#000"
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
-            android:textSize="28dp" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/screen_desc"
-            android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/screen_heading"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Make Yourself Heard"
+                    android:textColor="#000"
 
-            android:layout_height="40dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginTop="4dp"
-            android:gravity="center_horizontal"
-            android:text="Connecting your issues with the World."
-            android:textColor="#fff"
+                    android:textSize="28dp" />
 
-            android:textSize="16sp"
-            android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/screen_desc"
+                    android:layout_width="match_parent"
+
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center_horizontal"
+                    android:text="Connecting your issues with the World."
+                    android:textColor="#fff"
+
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </RelativeLayout>
+
     </LinearLayout>
 
 
-</LinearLayout>
+</RelativeLayout>
