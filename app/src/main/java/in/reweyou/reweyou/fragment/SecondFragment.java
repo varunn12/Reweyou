@@ -279,9 +279,14 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                             for (int i = 0; i < parentArray.length(); i++) {
                                 JSONObject finalObject = parentArray.getJSONObject(i);
                                 MpModel mpModel = gson.fromJson(finalObject.toString(), MpModel.class);
-                                if (likeslist.contains(mpModel.getId())) {
+                                if (likeslist.contains(mpModel.getPostId())) {
+                                    Log.d("true", mpModel.getPostId() + "    ");
+
                                     mpModel.setLiked(true);
+
                                 }
+                                Log.d("postid", mpModel.getPostId());
+                                Log.d("number", session.getMobileNumber());
                                 messagelist.add(mpModel);
 
                                 if (i == parentArray.length() - 1) {
@@ -294,7 +299,6 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
                             swipeLayout.setRefreshing(false);
 
-                            Log.d("postid", postid);
                             cacheLoad = false;
                             MyJSON.saveData(getContext(), response);
                         } catch (JSONException e) {

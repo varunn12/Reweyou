@@ -116,6 +116,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         cd = new ConnectionDetector(mContext);
         mCustomTabActivityHelper = new CustomTabActivityHelper();
         session = new UserSessionManager(mContext);
+
     }
 
 
@@ -170,7 +171,16 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 ((ImageViewHolder) holder).upvote.setTextColor(mContext.getResources().getColor(R.color.likeText));
             }
         } else if (holder instanceof VideoViewHolder) {
-            super.onBindViewHolder(holder, position, payloads);
+            if (payloads.isEmpty())
+                super.onBindViewHolder(holder, position, payloads);
+            else if (payloads.contains("like")) {
+                ((VideoViewHolder) holder).upicon.setImageResource(R.drawable.ic_thumb_up_primary_16px);
+                ((VideoViewHolder) holder).upvote.setTextColor(mContext.getResources().getColor(R.color.rank));
+
+            } else if (payloads.contains("unlike")) {
+                ((VideoViewHolder) holder).upicon.setImageResource(R.drawable.ic_thumb_up_black_16px);
+                ((VideoViewHolder) holder).upvote.setTextColor(mContext.getResources().getColor(R.color.likeText));
+            }
         }
     }
 
@@ -361,7 +371,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             viewHolder.image.setVisibility(View.GONE);
         } else {
             viewHolder.image.setVisibility(View.VISIBLE);
-            viewHolder.image.setColorFilter(Color.argb(150, 0, 0, 0)); // White Tint
+            viewHolder.image.setColorFilter(Color.argb(120, 0, 0, 0)); // White Tint
 
             Glide.with(mContext).load(messagelist.get(position).getImage()).placeholder(R.drawable.irongrip).diskCacheStrategy(DiskCacheStrategy.SOURCE).fallback(R.drawable.ic_reload).error(R.drawable.ic_error).dontAnimate().into(viewHolder.image);
         }
@@ -727,10 +737,28 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         Log.d("ResponseLike", response);
                         if (response.equals("like")) {
                             notifyItemChanged(adapterPosition, "like");
+                            session.addlike(messagelist.get(adapterPosition).getPostId());
+                            Log.d("likeid", messagelist.get(adapterPosition).getPostId());
+
+
+
                         } else if (response.equals("unlike")) {
                             notifyItemChanged(adapterPosition, "unlike");
+                            session.removelike(messagelist.get(adapterPosition).getPostId());
+                            Log.d("unlikeid", messagelist.get(adapterPosition).getPostId());
+
 
                         } else if (response.equals("Error")) {
+
+                            if (messagelist.get(adapterPosition).isLiked()) {
+                                notifyItemChanged(adapterPosition, "like");
+
+                            } else notifyItemChanged(adapterPosition, "unlike");
+
+
+                            if (cd.isConnectingToInternet()) {
+                                Toast.makeText(mContext, "Couldn't update", Toast.LENGTH_SHORT).show();
+                            }
 
                         }
 
@@ -741,8 +769,18 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+//                        Log.d("ResponseLike", error.getMessage());
 
-                        Log.d("ResponseLike", error.getMessage());
+                        if (messagelist.get(adapterPosition).isLiked()) {
+                            notifyItemChanged(adapterPosition, "like");
+
+                        } else notifyItemChanged(adapterPosition, "unlike");
+
+
+                        if (cd.isConnectingToInternet()) {
+                            Toast.makeText(mContext, "Couldn't update", Toast.LENGTH_SHORT).show();
+                        } else
+                            Toast.makeText(mContext, "No Internet connectivity", Toast.LENGTH_SHORT).show();
 
                     }
                 }) {
@@ -752,10 +790,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 data.put("from", messagelist.get(adapterPosition).getFrom());
                 data.put("postid", messagelist.get(adapterPosition).getPostId());
                 data.put("number", session.getMobileNumber());
-
-                Log.d("mdda", messagelist.get(adapterPosition).getFrom());
-                Log.d("mdda", messagelist.get(adapterPosition).getId());
-                Log.d("mdda", session.getMobileNumber());
                 return data;
             }
         };
@@ -813,6 +847,12 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (messagelist.get(getAdapterPosition()).isLiked()) {
+                        notifyItemChanged(getAdapterPosition(), "unlike");
+
+                    } else {
+                        notifyItemChanged(getAdapterPosition(), "like");
+                    }
                     makeRequest(getAdapterPosition());
                 }
             });
@@ -1010,6 +1050,18 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             linearLayout = (LinearLayout) view.findViewById(R.id.like);
             upicon = (ImageView) view.findViewById(R.id.upicon);
 
+            linearLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (messagelist.get(getAdapterPosition()).isLiked()) {
+                        notifyItemChanged(getAdapterPosition(), "unlike");
+
+                    } else {
+                        notifyItemChanged(getAdapterPosition(), "like");
+                    }
+                    makeRequest(getAdapterPosition());
+                }
+            });
 
             image.setOnClickListener(new View.OnClickListener() {
                 @Override
