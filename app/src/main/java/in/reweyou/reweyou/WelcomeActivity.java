@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.ImageView;
 
 import io.codetail.animation.ViewAnimationUtils;
@@ -40,9 +40,9 @@ public class WelcomeActivity extends AppCompatActivity {
 
                 // Android native animator
                 animator =
-                        ViewAnimationUtils.createCircularReveal(myView, cx, cy, 0, finalRadius);
-                animator.setInterpolator(new AccelerateDecelerateInterpolator());
-                animator.setDuration(1500);
+                        ViewAnimationUtils.createCircularReveal(myView, 0, myView.getHeight(), 0, (float) (1.5 * myView.getWidth()));
+                animator.setInterpolator(new AccelerateInterpolator());
+                animator.setDuration(800);
                 animator.addListener(new Animator.AnimatorListener() {
                     @Override
                     public void onAnimationStart(Animator animation) {
@@ -51,11 +51,17 @@ public class WelcomeActivity extends AppCompatActivity {
 
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                        Intent i = new Intent(WelcomeActivity.this, Feed.class);
-                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(i);
-                        finish();
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                Intent i = new Intent(WelcomeActivity.this, Feed.class);
+                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(i);
+                                finish();
+                            }
+                        }, 400);
+
                     }
 
                     @Override
