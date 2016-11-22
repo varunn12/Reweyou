@@ -24,7 +24,7 @@ public class Upload {
 
     private int serverResponseCode;
 
-    public String uploadVideo(String file, String text, String location, String date, String headline, String tag, String address, String number, String image, String type) {
+    public String uploadVideo(String file, String text, String location, String date, String headline, String tag, String address, String number, String image) {
 
         String fileName = file;
         HttpURLConnection conn = null;
@@ -129,17 +129,10 @@ public class Upload {
             //dos.writeBytes("Content-Type: text/plain; charset=UTF-8" + lineEnd);
             //dos.writeBytes("Content-Length: " + name.length() + lineEnd);
             dos.writeBytes(lineEnd);
-            dos.writeBytes(address);
+            dos.writeBytes(address); // mobile_no is String variable
             dos.writeBytes(lineEnd);
 
 
-            dos.writeBytes(twoHyphens + boundary + lineEnd);
-
-
-            dos.writeBytes("Content-Disposition: form-data; name=\"type\"" + lineEnd);
-            dos.writeBytes(lineEnd);
-            dos.writeBytes(type);
-            dos.writeBytes(lineEnd);
             dos.writeBytes(twoHyphens + boundary + lineEnd);
 
             //Adding Parameter image
@@ -148,12 +141,12 @@ public class Upload {
             //dos.writeBytes("Content-Type: text/plain; charset=UTF-8" + lineEnd);
             //dos.writeBytes("Content-Length: " + name.length() + lineEnd);
             dos.writeBytes(lineEnd);
-            if (image != null)
-                dos.writeBytes(image);
+            dos.writeBytes(image); // mobile_no is String variable
             dos.writeBytes(lineEnd);
 
 
             dos.writeBytes(twoHyphens + boundary + lineEnd);
+//adding media file
 
             dos.writeBytes("Content-Disposition: form-data; name=\"myFile\";filename=\"" + fileName + "\"" + lineEnd);
             dos.writeBytes(lineEnd);

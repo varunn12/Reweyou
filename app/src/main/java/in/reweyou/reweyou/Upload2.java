@@ -117,8 +117,7 @@ public class Upload2 {
             dos.writeBytes(twoHyphens + boundary + lineEnd);
 
 
-            dos.writeBytes("Content-Disposition: form-data; name=\"myFile\";filename=\"" + fileName + "\"" + lineEnd);
-            dos.writeBytes(lineEnd);
+
 
             if (encodedimage != null) {
                 dos.writeBytes("Content-Disposition: form-data; name=\"image\"" + lineEnd);
@@ -179,6 +178,9 @@ public class Upload2 {
                 dos.writeBytes(twoHyphens + boundary + lineEnd);
             }
 
+
+            dos.writeBytes("Content-Disposition: form-data; name=\"myFile\";filename=\"" + fileName + "\"" + lineEnd);
+            dos.writeBytes(lineEnd);
 
             bytesAvailable = fileInputStream.available();
             Log.i("Huzza", "Initial .available : " + bytesAvailable);
