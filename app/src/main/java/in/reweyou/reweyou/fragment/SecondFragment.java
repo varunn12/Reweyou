@@ -268,6 +268,8 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                             Log.d("aaa", String.valueOf(parentArray));
                             StringBuffer finalBufferedData = new StringBuffer();
 
+                            List<String> likeslist = session.getLikesList();
+                            Log.d("likeslist", String.valueOf(likeslist));
                             List<MpModel> messagelist = new ArrayList<>();
                             MpModel newPost = new MpModel();
                             newPost.newPost = true;
@@ -277,6 +279,9 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                             for (int i = 0; i < parentArray.length(); i++) {
                                 JSONObject finalObject = parentArray.getJSONObject(i);
                                 MpModel mpModel = gson.fromJson(finalObject.toString(), MpModel.class);
+                                if (likeslist.contains(mpModel.getId())) {
+                                    mpModel.setLiked(true);
+                                }
                                 messagelist.add(mpModel);
 
                                 if (i == parentArray.length() - 1) {
@@ -304,6 +309,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show();
+                        Log.d("Response", error.getMessage());
 
                        /* if (error instanceof AuthFailureError) {
                             Log.d("Response", "a");
@@ -363,9 +369,11 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
             protected Map<String, String> getParams() {
                 Map<String, String> data = new HashMap<>();
                 //  data.put("tag", tag);
+                // location="lucknow";
                 data.put("location", location);
                 data.put("date", formattedDate);
                 //Log.d("ddd", formattedDate);
+                //number="7054392300";
                 data.put("number", number);
                 return data;
             }

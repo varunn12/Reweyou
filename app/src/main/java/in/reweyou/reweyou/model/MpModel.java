@@ -43,6 +43,7 @@ public class MpModel {
     private String from;
     private String gif;
     private boolean loadingView = false;
+    private boolean liked = false;
 
     public String getName() {
         return name;
@@ -245,6 +246,14 @@ public class MpModel {
 
     public boolean isNewPost() {
         return newPost;
+    }
+
+    public boolean isLiked() {
+        return liked;
+    }
+
+    public void setLiked(boolean liked) {
+        this.liked = liked;
     }
 
 

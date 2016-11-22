@@ -31,18 +31,17 @@
         <activity
             android:name=".SplashScreen"
             android:theme="@style/SplashTheme">
-
-        </activity>
-        <activity android:name=".Signup" />
-        <activity
-            android:name=".Feed"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:theme="@style/AppTheme.NoActionBar.Feed">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".Signup"></activity>
+        <activity
+            android:name=".Feed"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@style/AppTheme.NoActionBar.Feed">
             <meta-data
                 android:name="android.app.default_searchable"
                 android:value=".SearchResultsActivity" />
@@ -176,7 +175,13 @@
             android:name=".NavA"
             android:label="@string/title_activity_nav"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".WelcomeActivity"></activity>
+        <activity android:name=".WelcomeActivity" />
+        <activity
+            android:name=".SinglePostAcitivty"
+            android:label="@string/title_activity_single_post_acitivty"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
     </application>
 
 </manifest>

@@ -13,8 +13,8 @@ public class Constants {
     public static final String EDIT_URL = "https://www.reweyou.in/reweyou/editheadline.php";
 
 
-    public static final String FEED_URL = "https://www.reweyou.in/reweyou/testfeed.php";
-    //public static final String FEED_URL = "https://www.reweyou.in/reweyou/test_list.php";
+ // public static final String FEED_URL = "https://www.reweyou.in/reweyou/testfeed.php";
+ public static final String FEED_URL = "https://www.reweyou.in/reweyou/test_list.php";
     public static final String CAMPAIGN_URL = "https://www.reweyou.in/reweyou/campaignfeed.php";
     public static final String READING_URL = "https://www.reweyou.in/reweyou/readingfeed.php";
 

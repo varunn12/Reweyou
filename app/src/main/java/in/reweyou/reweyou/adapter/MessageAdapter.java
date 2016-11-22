@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -57,6 +58,7 @@ import java.util.Map;
 
 import in.reweyou.reweyou.CategoryActivity;
 import in.reweyou.reweyou.Comments1;
+import in.reweyou.reweyou.Feed;
 import in.reweyou.reweyou.FullImage;
 import in.reweyou.reweyou.LocationActivity;
 import in.reweyou.reweyou.R;
@@ -282,6 +284,15 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         final int total = Integer.parseInt(messagelist.get(position).getReviews());
 
+        if (messagelist.get(position).isLiked()) {
+            viewHolder.upicon.setImageResource(R.drawable.ic_thumb_up_primary_16px);
+            viewHolder.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.rank));
+
+        } else {
+            viewHolder.upicon.setImageResource(R.drawable.ic_thumb_up_black_16px);
+            viewHolder.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.likeText));
+        }
+
         /*viewHolder.linearLayout.setTag(1);
         viewHolder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -350,6 +361,8 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             viewHolder.image.setVisibility(View.GONE);
         } else {
             viewHolder.image.setVisibility(View.VISIBLE);
+            viewHolder.image.setColorFilter(Color.argb(150, 0, 0, 0)); // White Tint
+
             Glide.with(mContext).load(messagelist.get(position).getImage()).placeholder(R.drawable.irongrip).diskCacheStrategy(DiskCacheStrategy.SOURCE).fallback(R.drawable.ic_reload).error(R.drawable.ic_error).dontAnimate().into(viewHolder.image);
         }
 
@@ -415,7 +428,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         final int total = Integer.parseInt(messagelist.get(position).getReviews());
 
-        viewHolder.linearLayout.setTag(1);
+       /* viewHolder.linearLayout.setTag(1);
         viewHolder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -443,7 +456,16 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
 
             }
-        });
+        });*/
+
+        if (messagelist.get(position).isLiked()) {
+            viewHolder.upicon.setImageResource(R.drawable.ic_thumb_up_primary_16px);
+            viewHolder.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.rank));
+
+        } else {
+            viewHolder.upicon.setImageResource(R.drawable.ic_thumb_up_black_16px);
+            viewHolder.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.likeText));
+        }
     }
 
     public void add() {
@@ -798,17 +820,19 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    if (messagelist.get(getAdapterPosition()).getGif().isEmpty()) {
 
-                    isInternetPresent = cd.isConnectingToInternet();
-                    if (isInternetPresent) {
-                        Bundle bundle = new Bundle();
-                        bundle.putString("myData", messagelist.get(getAdapterPosition()).getImage());
-                        bundle.putString("headline", messagelist.get(getAdapterPosition()).getHeadline());
-                        Intent in = new Intent(mContext, FullImage.class);
-                        in.putExtras(bundle);
-                        mContext.startActivity(in);
-                    } else {
-                        Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_SHORT).show();
+                        isInternetPresent = cd.isConnectingToInternet();
+                        if (isInternetPresent) {
+                            Bundle bundle = new Bundle();
+                            bundle.putString("myData", messagelist.get(getAdapterPosition()).getImage());
+                            bundle.putString("headline", messagelist.get(getAdapterPosition()).getHeadline());
+                            Intent in = new Intent(mContext, FullImage.class);
+                            in.putExtras(bundle);
+                            mContext.startActivity(in);
+                        } else {
+                            Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
             });
@@ -862,8 +886,10 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     bundle.putString("headline", messagelist.get(getAdapterPosition()).getHeadline());
                     bundle.putString("image", messagelist.get(getAdapterPosition()).getImage());
                     Intent in = new Intent(mContext, Comments1.class);
+
                     in.putExtras(bundle);
                     mContext.startActivity(in);
+                    ((Feed) mContext).overridePendingTransition(0, 0);
                 }
             });
             reaction.setOnClickListener(new View.OnClickListener() {
@@ -876,6 +902,8 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     Intent in = new Intent(mContext, Comments1.class);
                     in.putExtras(bundle);
                     mContext.startActivity(in);
+                    ((Feed) mContext).overridePendingTransition(0, 0);
+
                 }
             });
             place.setOnClickListener(new View.OnClickListener() {
@@ -919,6 +947,8 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     bundle.putString("headline", messagelist.get(getAdapterPosition()).getHeadline());
                     bundle.putString("image", messagelist.get(getAdapterPosition()).getImage());
                     Intent in = new Intent(mContext, Comments1.class);
+                    ((Feed) mContext).overridePendingTransition(0, 0);
+
                     in.putExtras(bundle);
                     mContext.startActivity(in);
                 }
@@ -1050,6 +1080,8 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     Intent in = new Intent(mContext, Comments1.class);
                     in.putExtras(bundle);
                     mContext.startActivity(in);
+                    ((Feed) mContext).overridePendingTransition(0, 0);
+
                 }
             });
             reaction.setOnClickListener(new View.OnClickListener() {
@@ -1062,6 +1094,8 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     Intent in = new Intent(mContext, Comments1.class);
                     in.putExtras(bundle);
                     mContext.startActivity(in);
+                    ((Feed) mContext).overridePendingTransition(0, 0);
+
                 }
             });
             place.setOnClickListener(new View.OnClickListener() {
@@ -1107,6 +1141,8 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     Intent in = new Intent(mContext, Comments1.class);
                     in.putExtras(bundle);
                     mContext.startActivity(in);
+                    ((Feed) mContext).overridePendingTransition(0, 0);
+
                 }
             });
 
