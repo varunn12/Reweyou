@@ -1,5 +1,4 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,114 +6,126 @@
     android:orientation="vertical"
     tools:context=".TokenTest">
 
-    <ImageView
-        android:id="@+id/logo"
-        android:layout_width="30dp"
-        android:layout_height="50dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
-        android:src="@drawable/logo_plain"
-        android:textColor="#fff"
-        android:textSize="25sp" />
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_gravity="center"
-        android:layout_marginLeft="56dp"
+        android:isScrollContainer="false">
 
-        android:layout_marginRight="56dp"
-        android:layout_marginTop="40dp"
-        android:orientation="vertical"
-        android:paddingBottom="10dp">
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/input_layout_tag"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColorHint="#bbffffff"
-            app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
+            android:clipToPadding="true"
+            android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/editTextUsername"
-                android:layout_width="match_parent"
-                android:layout_height="36dp"
-                android:layout_margin="4dp"
-                android:layout_marginTop="4dp"
-                android:background="@drawable/signup_edittext"
-                android:hint=" Full Name"
-                android:inputType="textNoSuggestions"
-                android:paddingLeft="2dp"
+            <ImageView
+                android:id="@+id/logo"
+                android:layout_width="30dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="40dp"
+                android:src="@drawable/logo_plain"
                 android:textColor="#fff"
-                android:textSize="14sp" />
+                android:textSize="25sp" />
 
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/input_layout_number"
-            android:layout_width="match_parent"
-
-            android:layout_height="wrap_content"
-            android:textColorHint="#bbffffff"
-            app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
-
-            <EditText
-                android:id="@+id/editTextNumber"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="36dp"
-                android:layout_margin="4dp"
-                android:layout_marginLeft="10sp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/signup_edittext"
-                android:hint="10 digit mobile number"
-                android:inputType="phone|textNoSuggestions"
-
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="6dp"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="32dp"
+                android:layout_marginTop="32dp"
+                android:background="@drawable/button_background2"
+                android:elevation="4dp"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingBottom="10dp"
                 android:paddingLeft="2dp"
-                android:textColor="#fff"
+                android:paddingRight="2dp"
+                android:paddingTop="8dp">
 
-                android:textColorHint="#bbffffff"
-                android:textSize="14sp" />
-        </android.support.design.widget.TextInputLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|center_horizontal"
+                    android:text="SignUp"
+                    android:textColor="@color/colorPrimaryDark" />
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/input_layout_city"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+                <EditText
+                    android:id="@+id/editTextUsername"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginTop="20dp"
+                    android:drawableLeft="@drawable/ic_person_primary_24px"
+                    android:drawablePadding="6dp"
+                    android:hint=" Full Name"
+                    android:inputType="textPersonName|textNoSuggestions|textCapWords"
+                    android:paddingBottom="20dp"
+                    android:textColor="#424242"
+                    android:textColorHint="#44000000"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:theme="@style/EditTextStyle2" />
 
-            android:textColorHint="#bbffffff"
-            app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
 
-            <EditText
-                android:id="@+id/editLocation"
-                android:layout_width="match_parent"
-                android:layout_height="36dp"
-                android:layout_margin="4dp"
-                android:layout_marginLeft="10sp"
-                android:layout_marginTop="8dp"
+                <EditText
+                    android:id="@+id/editTextNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginTop="8dp"
+                    android:drawableLeft="@drawable/ic_phone_android_black_24px"
+                    android:drawablePadding="6dp"
+                    android:hint="10 digit mobile number"
 
-                android:background="@drawable/signup_edittext"
-                android:hint="City"
-                android:inputType="textNoSuggestions"
+                    android:inputType="phone|textNoSuggestions"
+                    android:paddingBottom="20dp"
+                    android:textColor="#424242"
+                    android:textColorHint="#44000000"
 
-                android:paddingLeft="2dp"
-                android:textColor="#fff"
+                    android:textSize="14sp"
 
-                android:textColorHint="#bbffffff"
-                android:textSize="14sp" />
-        </android.support.design.widget.TextInputLayout>
+                    android:textStyle="bold"
+                    android:theme="@style/EditTextStyle2" />
 
-        <Button
-            android:id="@+id/buttonRegister"
-            android:layout_width="120dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="72dp"
-            android:background="@drawable/button_background_rectangular_white"
-            android:text="Register"
-            android:textColor="@color/colorPrimaryDark" />
-    </LinearLayout>
+                <EditText
+                    android:id="@+id/editLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginTop="8dp"
+
+                    android:drawableLeft="@drawable/ic_location_on_black_24px"
+
+                    android:drawablePadding="6dp"
+                    android:hint="City"
+                    android:inputType="textNoSuggestions|textCapWords"
+                    android:paddingBottom="20dp"
+                    android:textColor="#424242"
+                    android:textColorHint="#44000000"
+                    android:textSize="14sp"
+
+                    android:textStyle="bold"
+                    android:theme="@style/EditTextStyle2" />
+
+                <Button
+                    android:id="@+id/buttonRegister"
+                    android:layout_width="120dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="72dp"
+                    android:background="@drawable/button_background_rectangular_white"
+                    android:text="Register"
+                    android:textColor="@color/colorPrimaryDark" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 
     <TextView
         android:id="@+id/Read"

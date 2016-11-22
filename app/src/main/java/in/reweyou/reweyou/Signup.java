@@ -114,9 +114,6 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-        inputLayoutName = (TextInputLayout) findViewById(R.id.input_layout_tag);
-        inputLayoutNumber = (TextInputLayout) findViewById(R.id.input_layout_number);
-        inputLayoutCity = (TextInputLayout) findViewById(R.id.input_layout_city);
 
         session = new UserSessionManager(getApplicationContext());
         requestQueue = Volley.newRequestQueue(this);
