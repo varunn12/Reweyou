@@ -359,10 +359,10 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
 
     private void compressVideo() {
         Glide.with(PostReport.this).load(new File(selectedVideoPath)).asBitmap()
-                .toBytes(Bitmap.CompressFormat.JPEG, 60)
+                .toBytes(Bitmap.CompressFormat.JPEG, 70)
                 .fitCenter()
                 .atMost()
-                .override(1000, 1000)
+                .override(700, 700)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .skipMemoryCache(true)
                 .into(new SimpleTarget<byte[]>() {
@@ -389,7 +389,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                             protected void onPostExecute(String s) {
                                 super.onPostExecute(s);
                                 uploading.dismiss();
-                                if (s.equals("Successfully uploaded")) {
+                                if (s.equals("Successfully Uploaded")) {
                                     Intent feed = new Intent(PostReport.this, Feed.class);
                                     startActivity(feed);
                                     Log.d("Intent not working", "Intent not working");
@@ -481,7 +481,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
 
             previewImageView.setAdjustViewBounds(true);
 
-            Glide.with(PostReport.this).load(new File(data)).into(previewImageView);
+            Glide.with(PostReport.this).load(new File(data)).override(800, 800).into(previewImageView);
             selectedVideoPath = data;
         } else {
             AlertDialogBox alertDialogBox = new AlertDialogBox(PostReport.this, "File size exceeded", "Please upload video upto 5 MB in size only...", "OKAY", null) {
@@ -584,7 +584,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
                 uploading.dismiss();
-                if (s.equals("Successfully uploaded")) {
+                if (s.equals("Successfully Uploaded")) {
                     Intent feed = new Intent(PostReport.this, Feed.class);
                     startActivity(feed);
                     Log.d("Intent not working", "Intent not working");
