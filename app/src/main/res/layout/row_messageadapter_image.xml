@@ -200,6 +200,7 @@
                 android:background="#CFD8DC" />
 
             <LinearLayout
+                android:id="@+id/cm"
                 android:layout_width="match_parent"
                 android:layout_height="42dp"
                 android:background="#fff"
