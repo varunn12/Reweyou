@@ -4,7 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import in.reweyou.reweyou.Signup;
 
@@ -15,15 +19,15 @@ public class UserSessionManager {
 
     public static final String KEY_NAME = "username";
     public static final String KEY_EMAIL = "email";
-    public static final String KEY_PIC="pic";
+    public static final String KEY_PIC = "pic";
     public static final String KEY_NUMBER = "number";
     public static final String KEY_PASSWORD = "password";
     public static final String KEY_LOCATION = "location";
-    public static final String KEY_MOBILE_NUMBER="mobilenumber";
-    public static final String KEY_LOGIN_LOCATION="loginlocation";
-    public static final String KEY_CATEGORY="category";
-    public static final String KEY_CITY_LOCATION="citylocation";
-    public static final String KEY_LOGIN_FULLNAME="fullname";
+    public static final String KEY_MOBILE_NUMBER = "mobilenumber";
+    public static final String KEY_LOGIN_LOCATION = "loginlocation";
+    public static final String KEY_CATEGORY = "category";
+    public static final String KEY_CITY_LOCATION = "citylocation";
+    public static final String KEY_LOGIN_FULLNAME = "fullname";
     // Sharedpref file name
     private static final String PREFER_NAME = "ReweyouPref";
     // All Shared Preferences Keys
@@ -37,7 +41,7 @@ public class UserSessionManager {
     Context _context;
     // Shared pref mode
     int PRIVATE_MODE = 0;
-
+    private List<String> likesList;
 
 
     // Constructor
@@ -70,7 +74,7 @@ public class UserSessionManager {
     }
 
     public void setProfilePicture(String image) {
-        editor.putString(KEY_PIC,image);
+        editor.putString(KEY_PIC, image);
         editor.commit();
     }
 
@@ -100,6 +104,7 @@ public class UserSessionManager {
         editor.putString(KEY_LOGIN_LOCATION, location);
         editor.commit();
     }
+
     //Create login session and Register
     public void createUserRegisterSession(String username, String number, String place) {
         // Storing login value as TRUE
@@ -185,10 +190,11 @@ public class UserSessionManager {
         return pref.getBoolean(IS_USER_LOGIN, false);
     }
 
-    public boolean getFromSP(String key){
-              return pref.getBoolean(key, true);
+    public boolean getFromSP(String key) {
+        return pref.getBoolean(key, true);
     }
-    public void saveInSp(String key,boolean value){
+
+    public void saveInSp(String key, boolean value) {
         editor.putBoolean(key, value);
         editor.commit();
     }
@@ -200,5 +206,20 @@ public class UserSessionManager {
 
     public String getKeyAuthToken() {
         return pref.getString(KEY_AUTH_TOKEN, "default");
+    }
+
+    public List<String> getLikesList() {
+
+
+        List<String> list = new ArrayList<String>(pref.getStringSet("likesList", null));
+
+        return list;
+    }
+
+    public void setLikesList(List<String> likesList) {
+        Set<String> list = new HashSet<String>(likesList);
+
+        editor.putStringSet("likesList", list);
+        editor.commit();
     }
 }
