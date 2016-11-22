@@ -18,7 +18,7 @@ import android.view.inputmethod.InputMethodManager;
 import in.reweyou.reweyou.fragment.CommentsFragment;
 import in.reweyou.reweyou.fragment.SinglePostFragment;
 
-public class SinglePostAcitivty extends AppCompatActivity {
+public class SinglePostActivity extends AppCompatActivity {
 
     public ViewPager viewPager;
     private Toolbar mToolbar;
@@ -50,7 +50,7 @@ public class SinglePostAcitivty extends AppCompatActivity {
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(SinglePostAcitivty.this, Feed.class));
+                startActivity(new Intent(SinglePostActivity.this, Feed.class));
                 finish();
             }
         });
@@ -111,7 +111,7 @@ public class SinglePostAcitivty extends AppCompatActivity {
             case R.id.action_home:
                 // User chose the "Favorite" action, mark the current item
                 // as a favorite...
-                startActivity(new Intent(SinglePostAcitivty.this, Feed.class));
+                startActivity(new Intent(SinglePostActivity.this, Feed.class));
                 finish();
                 return true;
 

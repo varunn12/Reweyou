@@ -40,7 +40,7 @@ import java.util.HashMap;
 
 import in.reweyou.reweyou.FullImage;
 import in.reweyou.reweyou.R;
-import in.reweyou.reweyou.SinglePostAcitivty;
+import in.reweyou.reweyou.SinglePostActivity;
 import in.reweyou.reweyou.Videorow;
 import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.CustomTabActivityHelper;
@@ -130,14 +130,14 @@ public class SinglePostFragment extends Fragment {
         rv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((SinglePostAcitivty) getActivity()).changetab();
+                ((SinglePostActivity) getActivity()).changetab();
             }
         });
 
         cm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((SinglePostAcitivty) getActivity()).changetab();
+                ((SinglePostActivity) getActivity()).changetab();
 
             }
         });

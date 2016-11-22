@@ -23,7 +23,7 @@ import java.util.Random;
 import in.reweyou.reweyou.MyProfile;
 import in.reweyou.reweyou.Notifications;
 import in.reweyou.reweyou.R;
-import in.reweyou.reweyou.SinglePostAcitivty;
+import in.reweyou.reweyou.SinglePostActivity;
 
 //Class is extending GcmListenerService
 public class GCMPushReceiverService extends GcmListenerService {
@@ -58,7 +58,7 @@ public class GCMPushReceiverService extends GcmListenerService {
     private void sendNotification(String message, String postid) {
         Bundle bundle = new Bundle();
         bundle.putString("postid", postid);
-        Intent intent = new Intent(this, SinglePostAcitivty.class);
+        Intent intent = new Intent(this, SinglePostActivity.class);
         intent.putExtras(bundle);
         intent.setAction(Long.toString(System.currentTimeMillis()));
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

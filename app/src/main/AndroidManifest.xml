@@ -177,7 +177,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".WelcomeActivity" />
         <activity
-            android:name=".SinglePostAcitivty"
+            android:name=".SinglePostActivity"
             android:label="@string/title_activity_single_post_acitivty"
             android:theme="@style/AppTheme.NoActionBar">
 
