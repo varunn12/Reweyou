@@ -211,8 +211,11 @@ public class UserSessionManager {
 
     public List<String> getLikesList() {
 
+        List<String> templist = new ArrayList<>();
+        templist.add("1");
+        Set<String> foo = new HashSet<String>(templist);
 
-        List<String> list = new ArrayList<String>(pref.getStringSet("likesList", null));
+        List<String> list = new ArrayList<String>(pref.getStringSet("likesList", foo));
 
         return list;
     }

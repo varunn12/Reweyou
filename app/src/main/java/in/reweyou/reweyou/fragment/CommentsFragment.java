@@ -108,7 +108,7 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
         name = user.get(UserSessionManager.KEY_NAME);
         number = user.get(UserSessionManager.KEY_NUMBER);
         Intent in = getActivity().getIntent();
-        i = getArguments().getString("myData");
+
         Empty = (LinearLayout) layout.findViewById(R.id.empty);
 
 
@@ -154,8 +154,10 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
 
         swipeLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipe_container);
         swipeLayout.setOnRefreshListener(this);
-
-        new JSONTask(false).execute(i);
+        if (getArguments() != null) {
+            i = getArguments().getString("myData");
+            new JSONTask(false).execute(i);
+        }
 
         return layout;
     }
@@ -304,6 +306,8 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
         this.i = i;
         this.head = head;
         this.url = url;
+        new JSONTask(false).execute(i);
+
     }
 
     /* Initializing collapsing toolbar
