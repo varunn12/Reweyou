@@ -69,13 +69,14 @@ public class HttpService extends IntentService {
                     JSONObject responseObject = jsonArray.getJSONObject(0);
                     JSONObject jsonObject = responseObject.getJSONObject("profile");
                     session.setAuthToken(jsonObject.getString("token"));
-                    session.setUsername("name");
-                    session.setMobileNumber("number");
-                    session.setLoginLocation("location");
+                    session.setUsername(jsonObject.getString("name"));
+                    session.setMobileNumber(jsonObject.getString("number"));
+                    session.setLoginLocation(jsonObject.getString("location"));
 
                     if (responseObject.has("likes")) {
                         JSONArray jsonArray1 = responseObject.getJSONArray("likes");
                         List<String> likesList = new ArrayList<>();
+                        String[] array = new String[jsonArray1.length()];
                         for (int i = 0; i < jsonArray1.length(); i++) {
                             JSONObject jsonObject1 = jsonArray1.getJSONObject(i);
                             Log.d("jsonO", String.valueOf(jsonObject1));
