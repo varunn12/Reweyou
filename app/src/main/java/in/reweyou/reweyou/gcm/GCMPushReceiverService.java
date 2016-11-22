@@ -3,6 +3,7 @@ package in.reweyou.reweyou.gcm;
 /**
  * Created by Reweyou on 5/8/2016.
  */
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -19,11 +20,10 @@ import com.google.android.gms.gcm.GcmListenerService;
 
 import java.util.Random;
 
-import in.reweyou.reweyou.Feed;
 import in.reweyou.reweyou.MyProfile;
 import in.reweyou.reweyou.Notifications;
 import in.reweyou.reweyou.R;
-import in.reweyou.reweyou.SinglePost;
+import in.reweyou.reweyou.SinglePostAcitivty;
 
 //Class is extending GcmListenerService
 public class GCMPushReceiverService extends GcmListenerService {
@@ -58,7 +58,7 @@ public class GCMPushReceiverService extends GcmListenerService {
     private void sendNotification(String message, String postid) {
         Bundle bundle = new Bundle();
         bundle.putString("postid", postid);
-        Intent intent = new Intent(this, SinglePost.class);
+        Intent intent = new Intent(this, SinglePostAcitivty.class);
         intent.putExtras(bundle);
         intent.setAction(Long.toString(System.currentTimeMillis()));
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

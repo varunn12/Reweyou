@@ -3,6 +3,7 @@ package in.reweyou.reweyou.classes;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -218,8 +219,24 @@ public class UserSessionManager {
 
     public void setLikesList(List<String> likesList) {
         Set<String> list = new HashSet<String>(likesList);
-
         editor.putStringSet("likesList", list);
         editor.commit();
+    }
+
+    public void addlike(String id) {
+        Set<String> set = new HashSet<String>(pref.getStringSet("likesList", new HashSet<String>()));
+        set.add(id);
+        Log.d("add set", String.valueOf(set));
+        editor.putStringSet("likesList", set);
+        editor.apply();
+
+    }
+
+    public void removelike(String id) {
+        Set<String> set = new HashSet<String>(pref.getStringSet("likesList", new HashSet<String>()));
+        set.remove(id);
+        Log.d("remove set", String.valueOf(set));
+        editor.putStringSet("likesList", set);
+        editor.apply();
     }
 }

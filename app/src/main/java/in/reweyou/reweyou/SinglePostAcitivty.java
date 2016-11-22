@@ -36,8 +36,7 @@ public class SinglePostAcitivty extends AppCompatActivity {
         initViewPagerAndTabs();
 
         Bundle bundle = getIntent().getExtras();
-//        query = bundle.getString("postid");
-        query = "10565";
+        query = bundle.getString("postid");
 
     }
 
