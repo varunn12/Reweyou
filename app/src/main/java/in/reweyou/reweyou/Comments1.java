@@ -84,7 +84,7 @@ public class Comments1 extends AppCompatActivity {
         head = bundle.getString("headline");
         url = bundle.getString("image");
 
-        CommentsFragment fragment = (CommentsFragment) getFragmentManager().findFragmentById(R.id.frag);
+        CommentsFragment fragment = (CommentsFragment) getSupportFragmentManager().findFragmentById(R.id.frag);
         fragment.setData(i, head, url);
 
     }
