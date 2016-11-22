@@ -118,7 +118,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                             new Handler().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    //   makeLoadMoreRequest();
+                                    makeLoadMoreRequest();
                                 }
                             }, 1000);
 

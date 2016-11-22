@@ -78,11 +78,9 @@ public class Comments1 extends AppCompatActivity {
                 onBackPressed();
             }
         });
-        Intent in = getIntent();
         Bundle bundle = getIntent().getExtras();
         i = bundle.getString("myData");
-        head = bundle.getString("headline");
-        url = bundle.getString("image");
+
 
         CommentsFragment fragment = (CommentsFragment) getSupportFragmentManager().findFragmentById(R.id.frag);
         fragment.setData(i, head, url);
