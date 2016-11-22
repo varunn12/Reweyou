@@ -2,7 +2,6 @@ package in.reweyou.reweyou.fragment;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -56,7 +55,6 @@ import in.reweyou.reweyou.UILApplication;
 import in.reweyou.reweyou.UpdateImage;
 import in.reweyou.reweyou.adapter.CommentsAdapter;
 import in.reweyou.reweyou.classes.ConnectionDetector;
-import in.reweyou.reweyou.classes.DividerItemDecoration;
 import in.reweyou.reweyou.classes.RequestHandler;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.model.CommentsModel;
@@ -105,19 +103,12 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
         commentContainer = (LinearLayout) layout.findViewById(R.id.comment);
         checknet = new ConnectionDetector(mContext);
         checker = new PermissionsChecker(mContext);
-        /*Typeface font = Typeface.createFromAsset( getAssets(), "fontawesome-webfont.ttf" );
-        Typeface tf= Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
-*/
         session = new UserSessionManager(getActivity());
         HashMap<String, String> user = session.getUserDetails();
         name = user.get(UserSessionManager.KEY_NAME);
         number = user.get(UserSessionManager.KEY_NUMBER);
         Intent in = getActivity().getIntent();
-        Bundle bundle = getActivity().getIntent().getExtras();
-        i = bundle.getString("myData");
-        head = bundle.getString("headline");
-        url = bundle.getString("image");
-
+        i = getArguments().getString("myData");
         Empty = (LinearLayout) layout.findViewById(R.id.empty);
 
 
@@ -155,21 +146,9 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
         button.setOnClickListener(this);
 
         setEnabledBottomBarViews(DISABLE);
-
-/*
-        headline=(TextView)findViewById(R.id.headline);
-        headline.setText(head);*/
-        //  headline.setVisibility(View.GONE);
-
         image = (ImageView) layout.findViewById(R.id.image);
-        // imageLoader.displayImage(url,image);
-        //  Glide.with(Comments.this).load(url).diskCacheStrategy(DiskCacheStrategy.SOURCE).skipMemoryCache(true).into(image);
-        //   image.setVisibility(View.GONE);
+
         recyclerView = (RecyclerView) layout.findViewById(R.id.recycler_view);
-
-
-        RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecoration(ContextCompat.getDrawable(mContext, R.drawable.line));
-      /*  recyclerView.addItemDecoration(dividerItemDecoration);*/
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         progressBar = (ProgressBar) layout.findViewById(R.id.progress_bar);
 
