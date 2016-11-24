@@ -285,7 +285,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                                 compressImageOrGif();
                             } else if (selectedVideoPath != null) {
                                 compressVideo();
-                            }
+                            } else uploadImage(null);
                         }
                     } else {
                         double latitude = location.getLatitude();
@@ -653,6 +653,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                 HashMap<String, String> param = new HashMap<>();
 
                 param.put(POST_REPORT_KEY_HEADLINE, parameterHeadline);
+                if (image != null)
                 param.put(POST_REPORT_KEY_IMAGE, image);
                 param.put(POST_REPORT_KEY_LOCATION, place);
                 param.put(POST_REPORT_KEY_NAME, name);
@@ -663,7 +664,8 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                 param.put(POST_REPORT_KEY_NUMBER, number);
                 param.put(POST_REPORT_KEY_DESCRIPTION, parameterDescription);
                 param.put(POST_REPORT_KEY_TOKEN, session.getKeyAuthToken());
-                param.put(POST_REPORT_KEY_REPORT, "image");
+                if (image != null)
+                    param.put(POST_REPORT_KEY_REPORT, "image");
 
 
                 String result = rh.sendPostRequest(UPLOAD_URL, param);
