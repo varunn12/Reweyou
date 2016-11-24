@@ -313,7 +313,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show();
-                        Log.d("Response", error.getMessage());
+//                        Log.d("Response", error.getMessage());
 
                        /* if (error instanceof AuthFailureError) {
                             Log.d("Response", "a");
