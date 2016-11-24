@@ -61,6 +61,7 @@ import in.reweyou.reweyou.Comments1;
 import in.reweyou.reweyou.Feed;
 import in.reweyou.reweyou.FullImage;
 import in.reweyou.reweyou.LocationActivity;
+import in.reweyou.reweyou.PostReport;
 import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.UserProfile;
 import in.reweyou.reweyou.Videorow;
@@ -165,10 +166,14 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             else if (payloads.contains("like")) {
                 ((ImageViewHolder) holder).upicon.setImageResource(R.drawable.ic_thumb_up_primary_16px);
                 ((ImageViewHolder) holder).upvote.setTextColor(mContext.getResources().getColor(R.color.rank));
+                ((ImageViewHolder) holder).reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews()) + 1) + " likes");
+
 
             } else if (payloads.contains("unlike")) {
                 ((ImageViewHolder) holder).upicon.setImageResource(R.drawable.ic_thumb_up_black_16px);
                 ((ImageViewHolder) holder).upvote.setTextColor(mContext.getResources().getColor(R.color.likeText));
+                ((ImageViewHolder) holder).reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews())) + " likes");
+
             }
         } else if (holder instanceof VideoViewHolder) {
             if (payloads.isEmpty())
@@ -176,10 +181,14 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             else if (payloads.contains("like")) {
                 ((VideoViewHolder) holder).upicon.setImageResource(R.drawable.ic_thumb_up_primary_16px);
                 ((VideoViewHolder) holder).upvote.setTextColor(mContext.getResources().getColor(R.color.rank));
+                ((VideoViewHolder) holder).reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews()) + 1) + " likes");
+
 
             } else if (payloads.contains("unlike")) {
                 ((VideoViewHolder) holder).upicon.setImageResource(R.drawable.ic_thumb_up_black_16px);
                 ((VideoViewHolder) holder).upvote.setTextColor(mContext.getResources().getColor(R.color.likeText));
+                ((VideoViewHolder) holder).reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews())) + " likes");
+
             }
         }
     }
@@ -835,7 +844,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             //  this.tv = (TextView) view.findViewById(R.id.tv);
             this.from = (TextView) view.findViewById(R.id.from);
 
-            this.reviews = (TextView) view.findViewById(R.id.reviews);
+            reviews = (TextView) view.findViewById(R.id.reviews);
             this.app = (TextView) view.findViewById(R.id.app);
             this.upvote = (TextView) view.findViewById(R.id.upvote);
             this.source = (TextView) view.findViewById(R.id.source);
@@ -1236,13 +1245,13 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             con = (LinearLayout) view.findViewById(R.id.newCon);
             ImageView img = (ImageView) view.findViewById(R.id.pic);
             Glide.with(mContext).load(session.getProfilePicture()).into(img);
-            /*con.setOnClickListener(new View.OnClickListener() {
+            con.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent in = new Intent(mContext, PostReport.class);
                     mContext.startActivity(in);
                 }
-            });*/
+            });
 
             new UploadOptions(mContext, view, true);
         }
