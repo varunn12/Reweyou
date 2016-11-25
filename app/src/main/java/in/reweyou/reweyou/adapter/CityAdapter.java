@@ -209,8 +209,7 @@ public class CityAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         final ImageViewHolder viewHolder = (ImageViewHolder) viewHolder2;
         Spannable spannable = new SpannableString(messagelist.get(position).getHeadline());
         Util.linkifyUrl(spannable, new CustomTabsOnClickListener(activity, mCustomTabActivityHelper));
-        viewHolder.headline.setText(spannable);
-        viewHolder.headline.setMovementMethod(LinkMovementMethod.getInstance());
+
 
 
         if (messagelist.get(position).getHead() == null || messagelist.get(position).getHead().isEmpty())
@@ -224,7 +223,8 @@ public class CityAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             viewHolder.headline.setVisibility(View.GONE);
         else {
             viewHolder.headline.setVisibility(View.VISIBLE);
-            viewHolder.headline.setText(messagelist.get(position).getHeadline());
+            viewHolder.headline.setText(spannable);
+            viewHolder.headline.setMovementMethod(LinkMovementMethod.getInstance());
         }
 
         if (messagelist.get(position).getDate() == null)
