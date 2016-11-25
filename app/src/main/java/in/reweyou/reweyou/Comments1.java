@@ -83,7 +83,7 @@ public class Comments1 extends AppCompatActivity {
 
 
         CommentsFragment fragment = (CommentsFragment) getSupportFragmentManager().findFragmentById(R.id.frag);
-        fragment.setData(i, head, url);
+        fragment.setData(i);
 
     }
 
