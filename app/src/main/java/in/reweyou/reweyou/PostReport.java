@@ -369,9 +369,6 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
         if (staticSpinner.getSelectedItemPosition() == 0) {
             Toast.makeText(PostReport.this, "Select a category", Toast.LENGTH_SHORT).show();
             return false;
-        } else if (headline.getText().toString().trim().length() == 0) {
-            Toast.makeText(PostReport.this, "Headline cannot be empty", Toast.LENGTH_SHORT).show();
-            return false;
         } else if (editTag.getText().toString().trim().length() == 0) {
             Toast.makeText(PostReport.this, "Tag cannot be empty", Toast.LENGTH_SHORT).show();
             return false;
@@ -687,6 +684,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                 HashMap<String, String> param = new HashMap<>();
 
                 param.put(POST_REPORT_KEY_HEADLINE, parameterHeadline);
+                param.put(POST_REPORT_KEY_DESCRIPTION,parameterDescription);
                 if (image != null)
                     param.put(POST_REPORT_KEY_IMAGE, image);
                 param.put(POST_REPORT_KEY_LOCATION, place);
@@ -707,7 +705,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
             }
         }
 
-        if (editTag.getText().toString().trim().length() > 0 && headline.getText().toString().trim().length() > 0 && description.getText().toString().trim().length() > 0) {
+        if (editTag.getText().toString().trim().length() > 0 && description.getText().toString().trim().length() > 0) {
             if (position_spinner > 0) {
                 UploadImage u = new UploadImage();
                 u.execute();
