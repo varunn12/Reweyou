@@ -83,8 +83,6 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
     private String number;
     private String result;
     private String i;
-    private String head;
-    private String url;
     private LinearLayout Empty;
     private EditText editText;
     private ImageView button;
@@ -99,7 +97,6 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_comments, container, false);
-        mContext = getActivity();
         commentContainer = (LinearLayout) layout.findViewById(R.id.comment);
         checknet = new ConnectionDetector(mContext);
         checker = new PermissionsChecker(mContext);
@@ -302,10 +299,9 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
         PermissionsActivity.startActivityForResult(getActivity(), REQUEST_CODE, PERMISSIONS);
     }
 
-    public void setData(String i, String head, String url) {
+    public void setData(String i) {
         this.i = i;
-        this.head = head;
-        this.url = url;
+
         new JSONTask(false).execute(i);
 
     }
@@ -314,6 +310,11 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
     * Will show and hide the toolbar title on scroll
     */
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mContext = activity;
+    }
 
     public class JSONTask extends AsyncTask<String, String, List<CommentsModel>> {
 
