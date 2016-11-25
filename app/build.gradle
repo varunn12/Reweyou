@@ -23,7 +23,7 @@ android {
     }
 }
 repositories
-        {
+        {   3
             maven
                     {
                         url "https://jitpack.io"
