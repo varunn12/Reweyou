@@ -179,7 +179,9 @@
         <activity
             android:name=".SinglePostActivity"
             android:label="@string/title_activity_single_post_acitivty"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden">
+
 
         </activity>
     </application>

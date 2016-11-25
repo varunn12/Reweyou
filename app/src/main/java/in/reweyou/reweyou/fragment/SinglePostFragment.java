@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,9 +62,10 @@ public class SinglePostFragment extends Fragment {
 
     private ProgressBar progressBar;
     private String query;
-    private RelativeLayout viewcontainer;
     private ConnectionDetector cd;
     private CustomTabActivityHelper mCustomTabActivityHelper;
+    private RelativeLayout aviewcontainer;
+    private ScrollView viewcontainer;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,7 +80,8 @@ public class SinglePostFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.single_post_layout, container, false);
         progressBar = (ProgressBar) layout.findViewById(R.id.progress_bar);
-        viewcontainer = (RelativeLayout) layout.findViewById(R.id.container);
+        aviewcontainer = (RelativeLayout) layout.findViewById(R.id.container);
+        viewcontainer = (ScrollView) layout.findViewById(R.id.scrollView);
         query = getArguments().getString("myData");
 
 

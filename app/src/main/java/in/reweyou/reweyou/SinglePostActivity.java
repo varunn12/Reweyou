@@ -31,12 +31,12 @@ public class SinglePostActivity extends AppCompatActivity {
         setContentView(R.layout.activity_single_post_acitivty);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        Bundle bundle = getIntent().getExtras();
+        query = bundle.getString("postid");
 
         initToolbar();
         initViewPagerAndTabs();
 
-        Bundle bundle = getIntent().getExtras();
-        query = bundle.getString("postid");
 
     }
 
