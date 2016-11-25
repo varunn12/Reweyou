@@ -509,7 +509,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void loadMore(List<MpModel> messagelist2) {
         this.messagelist.addAll(messagelist2);
         Log.d("sizeof list", String.valueOf(this.messagelist.size()));
-        notifyItemRangeInserted(this.messagelist.size() - 10, 10);
+        notifyItemRangeInserted(this.messagelist.size() - messagelist2.size(), messagelist2.size());
     }
 
     private void takeScreenshot() {
