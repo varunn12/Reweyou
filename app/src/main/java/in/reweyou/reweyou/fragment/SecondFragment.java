@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -62,7 +61,6 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private ProgressBar progressBar;
     private Spinner staticSpinner;
     private String tag, location, formattedDate, number;
-    private TextView datepick;
     private int mYear, mMonth, mDay;
     private boolean loading = true;
     private SimpleDateFormat df;
@@ -108,22 +106,22 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                     pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
 
                     if (!cacheLoad)
-                    if (loading) {
-                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
-                            loading = false;
+                        if (loading) {
+                            if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                                loading = false;
 
-                            Log.v("...", "Last Item Wow !");
-                            adapter.add();
+                                Log.v("...", "Last Item Wow !");
+                                adapter.add();
 
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    makeLoadMoreRequest();
-                                }
-                            }, 1000);
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        makeLoadMoreRequest();
+                                    }
+                                }, 1000);
 
+                            }
                         }
-                    }
                 }
             }
 
@@ -225,16 +223,15 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
         df = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss a");
 
 
-        datepick = (TextView) layout.findViewById(R.id.date);
         Typeface font = Typeface.createFromAsset(getActivity().getAssets(), "fontawesome-webfont.ttf");
-        datepick.setTypeface(font);
         formattedDate = df.format(c.getTime());
-        datepick.setText(formattedDate);
+      /*  datepick.setText(formattedDate);
         datepick.setVisibility(View.GONE);
         //  formattedDate = "2016";
         // formattedDate =c.getTime().toString();
-        datepick.setOnClickListener(this);
+        datepick.setOnClickListener(this);*/
         location = user.get(UserSessionManager.KEY_LOCATION);
+
 
         Messages();
         return layout;
@@ -266,14 +263,17 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                         try {
                             parentArray = new JSONArray(response);
                             Log.d("aaa", String.valueOf(parentArray));
-                            StringBuffer finalBufferedData = new StringBuffer();
 
                             List<String> likeslist = session.getLikesList();
                             Log.d("likeslist", String.valueOf(likeslist));
                             List<MpModel> messagelist = new ArrayList<>();
-                            MpModel newPost = new MpModel();
-                            newPost.newPost = true;
-                            messagelist.add(newPost);
+
+                            if (position == 0) {
+                                MpModel newPost = new MpModel();
+                                newPost.newPost = true;
+                                messagelist.add(newPost);
+                            }
+
                             Gson gson = new Gson();
                             Log.d("size", String.valueOf(parentArray.length()));
                             for (int i = 0; i < parentArray.length(); i++) {
@@ -432,19 +432,21 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
     }
 
     public String getUrl() {
-        /*switch (position) {
+        switch (position) {
             case 0:
                 return Constants.FEED_URL;
             case 1:
                 return Constants.CAMPAIGN_URL;
             case 2:
                 return Constants.READING_URL;
+            case 9:
+                return Constants.MY_CITY_URL;
             default:
                 return null;
 
-        }*/
+        }
 
-        return Constants.FEED_URL;
+        // return Constants.FEED_URL;
     }
 }
 
