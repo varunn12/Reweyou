@@ -36,7 +36,6 @@ public class TopicsAdapter extends RecyclerView.Adapter<TopicsAdapter.ViewHolder
     private final String number;
     private final Context context;
 
-
     public TopicsAdapter(List<String> categoriesList, Context context) {
         this.categoriesList = categoriesList;
         this.context = context;
@@ -54,6 +53,7 @@ public class TopicsAdapter extends RecyclerView.Adapter<TopicsAdapter.ViewHolder
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.checkBox.setText(categoriesList.get(position));
         holder.checkBox.setChecked(session.getFromSP(holder.checkBox.getText().toString()));
+        holder.checkBox.setTag("first");
     }
 
     @Override
@@ -71,14 +71,19 @@ public class TopicsAdapter extends RecyclerView.Adapter<TopicsAdapter.ViewHolder
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    session.saveInSp(checkBox.getText().toString(), isChecked);
-                    if (isChecked) {
-                        delete(checkBox.getText().toString());
-                    } else {
-                        insert(checkBox.getText().toString());
+                    if (buttonView.getTag() != null) {
+
+                        session.saveInSp(checkBox.getText().toString(), isChecked);
+                        if (isChecked) {
+                            delete(checkBox.getText().toString());
+                        } else {
+                            insert(checkBox.getText().toString());
+                        }
+                        Log.d("isChecked", String.valueOf(isChecked));
+
                     }
-                    Log.d("isChecked", String.valueOf(isChecked));
                 }
+
             });
         }
 
