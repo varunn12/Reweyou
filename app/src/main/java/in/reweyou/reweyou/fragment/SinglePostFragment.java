@@ -137,13 +137,22 @@ public class SinglePostFragment extends Fragment {
             }
         });
 
-        cm.setOnClickListener(new View.OnClickListener() {
+        reaction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ((SinglePostActivity) getActivity()).changetab();
 
             }
         });
+        app.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((SinglePostActivity) getActivity()).changetab();
+
+            }
+        });
+
+        linearLayout.setVisibility(View.GONE);
 
 
         image.setOnClickListener(new View.OnClickListener() {
