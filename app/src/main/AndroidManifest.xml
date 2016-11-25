@@ -179,6 +179,7 @@
         <activity
             android:name=".SinglePostActivity"
             android:label="@string/title_activity_single_post_acitivty"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden">
 
