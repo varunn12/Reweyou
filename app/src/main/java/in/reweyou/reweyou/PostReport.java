@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
@@ -24,6 +25,7 @@ import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -112,6 +114,8 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
     private String parameterHeadline;
     private String parameterEditTag;
     private String parameterDescription;
+    private LinearLayout bottomContainer;
+    private View bottomline;
 
     public static boolean isLocationEnabled(Context context) {
         int locationMode = 0;
@@ -223,6 +227,8 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
         headline = (EditText) findViewById(R.id.head);
         sendButton = (ImageView) findViewById(R.id.btn_send);
         logoContainer = (LinearLayout) findViewById(R.id.logo);
+        bottomContainer = (LinearLayout) findViewById(R.id.l1);
+        bottomline = findViewById(R.id.line);
 
         //preview layout views
         previewImageView = (ImageView) findViewById(R.id.ImageShow);
@@ -232,7 +238,35 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
         //click listners for preview layout views
         setClickListeners();
 
+        keyboardListener();
 
+    }
+
+    private void keyboardListener() {
+        findViewById(R.id.main_content).getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                Rect r = new Rect();
+                findViewById(R.id.main_content).getWindowVisibleDisplayFrame(r);
+                int heightDiff = findViewById(R.id.main_content).getRootView().getHeight() - (r.bottom - r.top);
+
+                if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
+                    //ok now we know the keyboard is up...
+                    logoContainer.setVisibility(View.GONE);
+                    bottomContainer.setVisibility(View.GONE);
+                    bottomline.setVisibility(View.GONE);
+                    toolbar.setVisibility(View.GONE);
+
+
+                } else {
+                    //ok now we know the keyboard is down...
+                    logoContainer.setVisibility(View.VISIBLE);
+                    bottomContainer.setVisibility(View.VISIBLE);
+                    bottomline.setVisibility(View.VISIBLE);
+                    toolbar.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 
     private void initCategorySpinner() {
@@ -654,7 +688,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
 
                 param.put(POST_REPORT_KEY_HEADLINE, parameterHeadline);
                 if (image != null)
-                param.put(POST_REPORT_KEY_IMAGE, image);
+                    param.put(POST_REPORT_KEY_IMAGE, image);
                 param.put(POST_REPORT_KEY_LOCATION, place);
                 param.put(POST_REPORT_KEY_NAME, name);
                 param.put(POST_REPORT_KEY_TAG, parameterEditTag);
