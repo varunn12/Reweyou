@@ -50,7 +50,6 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -161,15 +160,6 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
         recyclerView.addItemDecoration(dividerItemDecoration);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        option = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.irongrip)
-                .displayer(new RoundedBitmapDisplayer(1000))
-                .showImageForEmptyUri(R.drawable.download)
-                .showImageOnFail(R.drawable.download)
-                .considerExifParams(true)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .build();
-
         //Progress bar
         tag = "Random";
         isInternetPresent = cd.isConnectingToInternet();
@@ -184,7 +174,10 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
         button.setOnClickListener(this);
         Readers.setOnClickListener(this);
 
+        initCollapsingToolbar();
+
     }
+
 
     @Override
     public void onClick(View v) {
@@ -361,6 +354,8 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                 }
                 if (scrollRange + verticalOffset == 0) {
                     collapsingToolbar.setTitle(getString(R.string.app_name));
+
+
                     isShow = true;
                 } else if (isShow) {
                     collapsingToolbar.setTitle(" ");
