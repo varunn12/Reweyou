@@ -803,7 +803,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> data = new HashMap<>();
-                data.put("from", messagelist.get(adapterPosition).getFrom());
+                data.put("from", messagelist.get(adapterPosition).getNumber());
                 data.put("postid", messagelist.get(adapterPosition).getPostId());
                 data.put("number", session.getMobileNumber());
                 return data;
