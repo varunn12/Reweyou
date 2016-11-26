@@ -11,7 +11,7 @@ We shall be happy if you help us to erradicate bugs and performance issues. Just
 
 ##Authors and Contributors
 -Varun Pandey (CEO and founder of Reweyou)
--Ayush P Gupta (Collaborator)
+<br />-Ayush P Gupta (Collaborator)
 
 
 ##3-party libraries used
