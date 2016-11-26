@@ -52,7 +52,11 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="image/*" />
             </intent-filter>
         </activity>
         <activity android:name=".CameraActivity" />
@@ -140,15 +144,6 @@
 
         <!-- ... -->
 
-        <activity android:name=".Gallery">
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data android:mimeType="image/*" />
-            </intent-filter>
-        </activity>
         <activity android:name=".UpdateImage" />
         <activity android:name=".MyCityActivity" />
         <activity android:name=".Friends" />

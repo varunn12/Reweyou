@@ -170,13 +170,26 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
 
         Intent i = getIntent();
         if (i != null) {
+
             if (i.hasExtra("dataImage")) {
                 handleImage(i.getStringExtra("dataImage"));
             } else if (i.hasExtra("dataVideo")) {
                 handleVideo(i.getStringExtra("dataVideo"));
             }
-        }
 
+            //Image directly choosen from gallery
+            String action = i.getAction();
+            Bundle extras = i.getExtras();
+
+            if (Intent.ACTION_SEND.equals(action)) {
+                if (extras.containsKey(Intent.EXTRA_STREAM)) {
+                    Uri uri = (Uri) getIntent().getExtras().get(Intent.EXTRA_STREAM);
+                    Log.d("gallery", uri.toString());
+                    handleImage(uri.toString());
+                }
+            }
+
+        }
 
     }
 
