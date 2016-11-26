@@ -116,6 +116,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
     private String parameterDescription;
     private LinearLayout bottomContainer;
     private View bottomline;
+    private ImageView previewImageViewGif;
 
     public static boolean isLocationEnabled(Context context) {
         int locationMode = 0;
@@ -232,6 +233,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
 
         //preview layout views
         previewImageView = (ImageView) findViewById(R.id.ImageShow);
+        previewImageViewGif = (ImageView) findViewById(R.id.GifShow);
         previewImageCancel = (ImageView) findViewById(R.id.cancel);
         previewContainer = (RelativeLayout) findViewById(R.id.previewLayout);
         previewPlayVideoButton = (ImageView) findViewById(R.id.play);
@@ -485,12 +487,14 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
         super.onActivityResult(requestCode, resultCode, data);
         int dataType = new HandleActivityResult().handleResult(requestCode, resultCode, data);
         switch (dataType) {
-            case HANDLE_IMAGE:
+            case HANDLE_IMAGE: {
                 handleImage(data.getData().toString());
-                break;
-            case HANDLE_VIDEO:
+            }
+            break;
+            case HANDLE_VIDEO: {
                 handleVideo(uploadOptions.getAbsolutePath(data.getData()));
-                break;
+            }
+            break;
             default:
                 finish();
         }
@@ -510,7 +514,8 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
             logoContainer.setVisibility(View.GONE);
             previewImageView.setColorFilter(Color.argb(150, 255, 255, 255)); // White Tint
 
-            previewImageView.setAdjustViewBounds(true);
+            previewImageView.setVisibility(View.VISIBLE);
+            previewImageViewGif.setVisibility(View.GONE);
 
             Glide.with(PostReport.this).load(new File(data)).override(800, 800).into(previewImageView);
             selectedVideoPath = data;
@@ -538,21 +543,22 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
         previewPlayVideoButton.setVisibility(View.GONE);
         logoContainer.setVisibility(View.GONE);
         previewImageView.setColorFilter(null);
+        previewContainer.setVisibility(View.VISIBLE);
 
         selectedImagePath = uploadOptions.getAbsolutePath(Uri.parse(data));
 
         String type = selectedImagePath.substring(selectedImagePath.lastIndexOf(".") + 1);
         if (type.equals("gif")) {
             selectedImagePath = uploadOptions.getAbsolutePath(Uri.parse(data));
-            previewContainer.setVisibility(View.VISIBLE);
-            previewImageView.setAdjustViewBounds(false);
-            Glide.with(PostReport.this).load(selectedImagePath).asGif().into(previewImageView);
+            previewImageView.setVisibility(View.GONE);
+            previewImageViewGif.setVisibility(View.VISIBLE);
+            Glide.with(PostReport.this).load(selectedImagePath).asGif().into(previewImageViewGif);
             viewType = IMAGE;
         } else {
-            selectedImagePath = uploadOptions.getAbsolutePath(Uri.parse(data));
-            previewContainer.setVisibility(View.VISIBLE);
-            previewImageView.setAdjustViewBounds(true);
 
+            previewImageView.setVisibility(View.VISIBLE);
+            previewImageViewGif.setVisibility(View.GONE);
+            selectedImagePath = uploadOptions.getAbsolutePath(Uri.parse(data));
             Glide.with(PostReport.this).load(selectedImagePath).into(previewImageView);
             viewType = IMAGE;
         }
@@ -684,7 +690,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                 HashMap<String, String> param = new HashMap<>();
 
                 param.put(POST_REPORT_KEY_HEADLINE, parameterHeadline);
-                param.put(POST_REPORT_KEY_DESCRIPTION,parameterDescription);
+                param.put(POST_REPORT_KEY_DESCRIPTION, parameterDescription);
                 if (image != null)
                     param.put(POST_REPORT_KEY_IMAGE, image);
                 param.put(POST_REPORT_KEY_LOCATION, place);
