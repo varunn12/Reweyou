@@ -10,8 +10,8 @@ Reweyou team believes in open-sourcing app code.
 We shall be happy if you help us to erradicate bugs and performance issues. Just create a pull request and we will entertain it.
 
 ##Authors and Contributors
-- Varun Pandey (CEO and founder of Reweyou)
-<br />- Ayush P Gupta (Collaborator)
+-Varun Pandey (CEO and founder of Reweyou)
+<br />-Ayush P Gupta (Collaborator)
 
 
 ##3-party libraries used
