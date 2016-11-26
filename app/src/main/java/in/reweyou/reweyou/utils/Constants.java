@@ -12,7 +12,6 @@ public class Constants {
     public static final String SUGGEST_URL = "https://www.reweyou.in/reweyou/suggest.php";
     public static final String EDIT_URL = "https://www.reweyou.in/reweyou/editheadline.php";
 
-
     public static final String FEED_URL = "https://www.reweyou.in/reweyou/testfeed.php";
     //public static final String FEED_URL = "https://www.reweyou.in/reweyou/test_list.php";
     public static final String CAMPAIGN_URL = "https://www.reweyou.in/reweyou/campaignfeed.php";
@@ -36,6 +35,7 @@ public class Constants {
     public static final int VIEW_TYPE_GIF = 7;
     public static final int VIEW_TYPE_LOADING = 10;
     public static final int VIEW_TYPE_NEW_POST = 11;
+    public static final int VIEW_TYPE_LOCATION = 12;
 
 
     public static final String POST_REPORT_KEY_ADDRESS = "address";

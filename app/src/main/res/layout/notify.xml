@@ -1,70 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto">
+    android:layout_height="wrap_content">
+
     <android.support.v7.widget.CardView
-        android:layout_height="50dp"
-        android:layout_width="match_parent"
         android:id="@+id/cv"
-        android:background="#fff"
-        android:layout_marginBottom="5dp">
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        card_view:cardBackgroundColor="#fff"
+        card_view:cardCornerRadius="4dp"
+        card_view:cardElevation="1.5dp"
+        card_view:cardUseCompatPadding="true">
+
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#ffffff">
+            android:layout_height="wrap_content">
 
-            <ImageView
-                android:layout_width="50dp"
-                android:layout_height="45dp"
+            <in.reweyou.reweyou.customView.CircularImageView
                 android:id="@+id/image"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:layout_alignParentLeft="true"
-                android:src="@mipmap/ic_launcher"
-                android:layout_marginRight="10dp"
+                android:layout_marginBottom="1dp"
                 android:layout_marginLeft="20dp"
+                android:layout_marginRight="10dp"
                 android:layout_marginTop="1dp"
-                android:layout_marginBottom="1dp" />
+                android:src="@mipmap/ic_launcher"
+                card_view:myborderWidth="0dp" />
+
             <ProgressBar
+                android:id="@+id/progressBar"
                 style="?android:attr/progressBarStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="1dp"
+                android:layout_centerVertical="true"
                 android:layout_marginBottom="1dp"
-                android:id="@+id/progressBar"
-                android:layout_centerVertical="true" />
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="1dp" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:id="@+id/Who"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
                 android:layout_marginLeft="5dp"
-                android:text="Who?"
-                android:textSize="15sp"
-                android:textStyle="bold"
                 android:layout_toRightOf="@+id/image"
-                android:layout_centerInParent="true"
-                android:textColor="@color/colorPrimary" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/time"
-                android:layout_alignParentRight="true"
-                android:textSize="10sp"
-                android:paddingTop="1dp"
-                android:layout_marginRight="5dp"
-                android:textColor="#80000000" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/Continue"
-                android:layout_toRightOf="@+id/Who"
-                android:layout_marginLeft="2dp"
-                android:text="reacted on your post."
+                android:text="Who?"
+                android:textColor="@color/colorPrimary"
                 android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="5dp"
+                android:paddingTop="1dp"
+                android:textColor="#80000000"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/Continue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:textColor="#000" />
+                android:layout_marginLeft="2dp"
+                android:layout_toRightOf="@+id/Who"
+                android:text="reacted on your post."
+                android:textColor="#000"
+                android:textSize="15sp" />
 
         </RelativeLayout>
     </android.support.v7.widget.CardView>

@@ -178,7 +178,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
             }
 
             //Image directly choosen from gallery
-            String action = i.getAction();
+          /*  String action = i.getAction();
             Bundle extras = i.getExtras();
 
             if (Intent.ACTION_SEND.equals(action)) {
@@ -187,8 +187,27 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                     Log.d("gallery", uri.toString());
                     handleImage(uri.toString());
                 }
-            }
+            }*/
 
+
+            Intent intent = getIntent();
+            String action = intent.getAction();
+            String type = intent.getType();
+
+            if (Intent.ACTION_SEND.equals(action) && type != null) {
+
+                Log.d("type", type);
+                if (type.startsWith("image/")) {
+                    Uri uri = (Uri) getIntent().getExtras().get(Intent.EXTRA_STREAM);
+                    Log.d("gallery", uri.toString());
+                    handleImage(uri.toString());
+                } else if (type.startsWith("video/")) {
+                    Uri uri = (Uri) getIntent().getExtras().get(Intent.EXTRA_STREAM);
+                    Log.d("gallery", uri.toString());
+                    handleVideo(uploadOptions.getAbsolutePath(uri));
+                }
+
+            }
         }
 
     }

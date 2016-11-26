@@ -1,18 +1,21 @@
 package in.reweyou.reweyou;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 
 import in.reweyou.reweyou.classes.ConnectionDetector;
-import in.reweyou.reweyou.classes.TouchImageView;
+import it.sephiroth.android.library.imagezoom.ImageViewTouch;
 
 public class FullImage extends AppCompatActivity {
     Boolean isInternetPresent = false;
@@ -20,7 +23,7 @@ public class FullImage extends AppCompatActivity {
     private String i;
     private ProgressBar progressBar;
     private DisplayImageOptions options;
-    private TouchImageView imageView;
+    private ImageViewTouch imageView;
     private String text;
     private Toolbar toolbar;
 
@@ -32,21 +35,13 @@ public class FullImage extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         i = bundle.getString("myData");
-        imageView = (TouchImageView) findViewById(R.id.image);
+        imageView = (ImageViewTouch) findViewById(R.id.image);
         // Do it on Application start
         cd = new ConnectionDetector(FullImage.this);
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
-        options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.irongrip)
-                .showImageForEmptyUri(R.drawable.ic_reload)
-                .showImageOnFail(R.drawable.ic_error)
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .considerExifParams(true)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .build();
+
         // Then later, when you want to display image
 
         isInternetPresent = cd.isConnectingToInternet();
@@ -76,7 +71,19 @@ public class FullImage extends AppCompatActivity {
 
     private void showimage(String i) {
         progressBar.setVisibility(View.GONE);
-        Glide.with(FullImage.this).load(i).into(imageView);
+        Glide.with(FullImage.this).load(i).listener(new RequestListener<String, GlideDrawable>() {
+            @Override
+            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                Log.d("error", e.getMessage());
+
+                return false;
+            }
+
+            @Override
+            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                return false;
+            }
+        }).into(imageView);
     }
 
     @Override
