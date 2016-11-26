@@ -24,7 +24,7 @@ public class Upload {
 
     private int serverResponseCode;
 
-    public String uploadVideo(String file,String text, String location, String date, String headline, String tag, String address, String number, String image) {
+    public String uploadVideo(String file, String text, String location, String date, String headline, String tag, String address, String number, String image) {
 
         String fileName = file;
         HttpURLConnection conn = null;

@@ -1,13 +1,12 @@
 package in.reweyou.reweyou;
 
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -36,10 +35,10 @@ public class TokenTest extends AppCompatActivity {
 
 
     public static final String URL_TOKEN = "https://www.reweyou.in/gcm/token.php";
-    //Creating a broadcast receiver for gcm registration
-    private BroadcastReceiver mRegistrationBroadcastReceiver;
     private static String TAG="token";
     UserSessionManager session;
+    //Creating a broadcast receiver for gcm registration
+    private BroadcastReceiver mRegistrationBroadcastReceiver;
     private String token, number;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,7 +133,7 @@ public class TokenTest extends AppCompatActivity {
                 //if the server response is success
                 if(response.equalsIgnoreCase("success")){
                     //dismissing the progressbar
-                    //     loading.dismiss();
+                    //     loading.show();
 
                     //Starting a new activity
                     openProfile();

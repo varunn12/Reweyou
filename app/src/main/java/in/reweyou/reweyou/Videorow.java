@@ -1,11 +1,11 @@
 package in.reweyou.reweyou;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -17,12 +17,8 @@ import android.widget.VideoView;
 /**
  * Created by Reweyou on 2/1/2016.
  */
-public class Videorow extends Activity {
+public class Videorow extends AppCompatActivity {
 
-    // Declare variables
-    ProgressDialog pDialog;
-    VideoView videoview;
-    ProgressBar progressbar;
     protected TextView video;
     protected TextView Headline;
     protected TextView place;
@@ -31,6 +27,10 @@ public class Videorow extends Activity {
     protected Button share;
     protected TextView tv;
     protected TextView From;
+    // Declare variables
+    ProgressDialog pDialog;
+    VideoView videoview;
+    ProgressBar progressbar;
     private String url;
     private String date;
     private String from;
@@ -38,22 +38,25 @@ public class Videorow extends Activity {
     private String category;
     private String reviews;
     private String headline;
-    // Insert your Video URL
-    String VideoURL = "https://www.reweyou.in/uploads/VID1454333655915_1517396294.mp4";
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Get the layout from video_main.xml
+
         setContentView(R.layout.videorow);
         // Find your VideoView in your video_main.xml layout
         videoview = (VideoView) findViewById(R.id.video);
         progressbar = (ProgressBar) findViewById(R.id.progressBar2);
         // Execute StreamVideo AsyncTask
-        Intent in=getIntent();
+        Intent in = getIntent();
         Bundle bundle = getIntent().getExtras();
         url = bundle.getString("myData");
-        Headline = (TextView) findViewById(R.id.Who);
+
+        initToolbar();
+
+      /*  Headline = (TextView) findViewById(R.id.Who);
         place = (TextView) findViewById(R.id.place);
         Date = (TextView) findViewById(R.id.date);
         tag = (TextView) findViewById(R.id.tag);
@@ -74,7 +77,7 @@ public class Videorow extends Activity {
         tag.setText(category);
         share.setVisibility(View.GONE);
         From.setText(from);
-
+*/
 
         // Create a progressbar
       /*  pDialog = new ProgressDialog(Videorow.this);
@@ -86,16 +89,18 @@ public class Videorow extends Activity {
         pDialog.setCancelable(false);
         // Show progressbar
         pDialog.show();
-*/              progressbar.setVisibility(View.VISIBLE);
+*/
+        progressbar.setVisibility(View.VISIBLE);
         try {
             // Start the MediaController
             MediaController mediacontroller = new MediaController(
                     Videorow.this);
-            mediacontroller.setAnchorView(videoview);
             // Get the URL from String VideoURL
-            Uri video = Uri.parse(url);
+            // Uri video = Uri.parse(url);
             videoview.setMediaController(mediacontroller);
-            videoview.setVideoURI(video);
+            videoview.setVideoPath(url);
+
+
 
         } catch (Exception e) {
             Log.e("Error", e.getMessage());
@@ -106,12 +111,32 @@ public class Videorow extends Activity {
         videoview.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             // Close the progress bar and play the video
             public void onPrepared(MediaPlayer mp) {
-                // pDialog.dismiss();
+                // pDialog.show();
                 progressbar.setVisibility(View.GONE);
                 videoview.start();
             }
         });
 
+
     }
 
+    private void initToolbar() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
 }

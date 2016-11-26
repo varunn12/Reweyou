@@ -3,8 +3,13 @@ package in.reweyou.reweyou.classes;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import in.reweyou.reweyou.Signup;
 
@@ -13,23 +18,22 @@ import in.reweyou.reweyou.Signup;
  */
 public class UserSessionManager {
 
-    // User name (make variable public to access from outside)
     public static final String KEY_NAME = "username";
-    // Email address (make variable public to access from outside)
     public static final String KEY_EMAIL = "email";
-    public static final String KEY_PIC="pic";
+    public static final String KEY_PIC = "pic";
     public static final String KEY_NUMBER = "number";
     public static final String KEY_PASSWORD = "password";
     public static final String KEY_LOCATION = "location";
-    public static final String KEY_MOBILE_NUMBER="mobilenumber";
-    public static final String KEY_LOGIN_LOCATION="loginlocation";
-    public static final String KEY_CATEGORY="category";
-    public static final String KEY_CITY_LOCATION="citylocation";
-    public static final String KEY_LOGIN_FULLNAME="fullname";
+    public static final String KEY_MOBILE_NUMBER = "mobilenumber";
+    public static final String KEY_LOGIN_LOCATION = "loginlocation";
+    public static final String KEY_CATEGORY = "category";
+    public static final String KEY_CITY_LOCATION = "citylocation";
+    public static final String KEY_LOGIN_FULLNAME = "fullname";
     // Sharedpref file name
     private static final String PREFER_NAME = "ReweyouPref";
     // All Shared Preferences Keys
     private static final String IS_USER_LOGIN = "IsUserLoggedIn";
+    private static final String KEY_AUTH_TOKEN = "authtoken";
     // Shared Preferences reference
     SharedPreferences pref;
     // Editor reference for Shared preferences
@@ -38,7 +42,7 @@ public class UserSessionManager {
     Context _context;
     // Shared pref mode
     int PRIVATE_MODE = 0;
-
+    private List<String> likesList;
 
 
     // Constructor
@@ -46,35 +50,6 @@ public class UserSessionManager {
         this._context = context;
         pref = _context.getSharedPreferences(PREFER_NAME, PRIVATE_MODE);
         editor = pref.edit();
-    }
-
-
-    //Create login session
-    public void createUserLoginSession(String number, String location) {
-        // Storing login value as TRUE
-        editor.putBoolean(IS_USER_LOGIN, true);
-
-        // Storing name in pref
-        editor.putString(KEY_NUMBER, number);
-
-
-        editor.putString(KEY_LOCATION, location);
-
-        //Storing number
-        //editor.putString(KEY_NUMBER, email);
-
-        // commit changes
-        editor.commit();
-    }
-
-    public void savename(String name, String number) {
-
-        // Storing name in pref
-        editor.putString(KEY_NAME, name);
-        editor.putString(KEY_NUMBER,number);
-
-        // commit changes
-        editor.commit();
     }
 
     public String getCityLocation() {
@@ -99,9 +74,8 @@ public class UserSessionManager {
         return pref.getString(KEY_PIC, null);
     }
 
-    public void setProfilePicture(String image)
-    {
-        editor.putString(KEY_PIC,image);
+    public void setProfilePicture(String image) {
+        editor.putString(KEY_PIC, image);
         editor.commit();
     }
 
@@ -132,15 +106,6 @@ public class UserSessionManager {
         editor.commit();
     }
 
-    public String getFirebaseToken(){
-        return pref.getString("token","0");
-    }
-
-    public void setFirebaseToken(String token) {
-        editor.putString("token", token);
-        editor.commit();
-    }
-
     //Create login session and Register
     public void createUserRegisterSession(String username, String number, String place) {
         // Storing login value as TRUE
@@ -164,27 +129,6 @@ public class UserSessionManager {
      * If false it will redirect user to login page
      * Else do anything
      */
-    public boolean checkLogin() {
-        // Check login status
-        if (!this.isUserLoggedIn()) {
-
-            // user is not logged in redirect him to Login Activity
-            Intent i = new Intent(_context, Signup.class);
-
-            // Closing all the Activities from stack
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-
-            // Add new Flag to start new Activity
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-            // Staring Login Activity
-            _context.startActivity(i);
-
-            return true;
-        }
-        return false;
-    }
 
     public boolean checkLoginSplash() {
         // Check login status
@@ -247,11 +191,55 @@ public class UserSessionManager {
         return pref.getBoolean(IS_USER_LOGIN, false);
     }
 
-    public boolean getFromSP(String key){
-              return pref.getBoolean(key, true);
+    public boolean getFromSP(String key) {
+        return pref.getBoolean(key, true);
     }
-    public void saveInSp(String key,boolean value){
+
+    public void saveInSp(String key, boolean value) {
         editor.putBoolean(key, value);
         editor.commit();
+    }
+
+    public void setAuthToken(String token) {
+        editor.putString(KEY_AUTH_TOKEN, token);
+        editor.commit();
+    }
+
+    public String getKeyAuthToken() {
+        return pref.getString(KEY_AUTH_TOKEN, "default");
+    }
+
+    public List<String> getLikesList() {
+
+        List<String> templist = new ArrayList<>();
+        templist.add("1");
+        Set<String> foo = new HashSet<String>(templist);
+
+        List<String> list = new ArrayList<String>(pref.getStringSet("likesList", foo));
+
+        return list;
+    }
+
+    public void setLikesList(List<String> likesList) {
+        Set<String> list = new HashSet<String>(likesList);
+        editor.putStringSet("likesList", list);
+        editor.commit();
+    }
+
+    public void addlike(String id) {
+        Set<String> set = new HashSet<String>(pref.getStringSet("likesList", new HashSet<String>()));
+        set.add(id);
+        Log.d("add set", String.valueOf(set));
+        editor.putStringSet("likesList", set);
+        editor.apply();
+
+    }
+
+    public void removelike(String id) {
+        Set<String> set = new HashSet<String>(pref.getStringSet("likesList", new HashSet<String>()));
+        set.remove(id);
+        Log.d("remove set", String.valueOf(set));
+        editor.putStringSet("likesList", set);
+        editor.apply();
     }
 }

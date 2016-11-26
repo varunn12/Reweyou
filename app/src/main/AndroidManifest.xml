@@ -27,7 +27,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme.NoActionBar">
         <activity
             android:name=".SplashScreen"
             android:theme="@style/SplashTheme">
@@ -36,19 +36,36 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
-        <activity android:name=".Signup" />
+        <activity android:name=".Signup"></activity>
         <activity
             android:name=".Feed"
-            android:configChanges="orientation|keyboardHidden|screenSize">
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@style/AppTheme.NoActionBar.Feed">
             <meta-data
                 android:name="android.app.default_searchable"
                 android:value=".SearchResultsActivity" />
-
         </activity>
         <activity android:name=".Details" />
-        <activity android:name=".ShowImage" />
+        <activity
+            android:name=".PostReport"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="image/*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="video/*" />
+            </intent-filter>
+        </activity>
         <activity android:name=".CameraActivity" />
         <activity android:name=".VideoUpload" />
         <activity
@@ -56,6 +73,7 @@
             android:parentActivityName=".Feed">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
@@ -66,10 +84,7 @@
 
         <receiver android:name=".Notification" />
 
-        <activity android:name=".WelcomeScreen">
-
-
-        </activity>
+        <activity android:name=".TutorialScreen" />
 
         <!-- SMS Receiver -->
         <receiver android:name=".classes.SmsReceiver">
@@ -82,25 +97,25 @@
             android:name=".classes.HttpService"
             android:exported="false" />
 
-        <activity android:name=".VideoCapture" />
-        <activity android:name=".Videorow" />
-        <activity android:name=".ImageCapture">
-
-        </activity>
+        <activity android:name=".VideoCapturetest" />
+        <activity
+            android:name=".Videorow"
+            android:theme="@style/AppTheme.NoActionBar.Preview" />
+        <activity android:name=".ImageCapture" />
         <activity android:name=".MyProfile" />
         <activity
             android:name=".ImageActivity"
-            android:theme="@style/AppTheme">
-
-        </activity>
+            android:theme="@style/AppTheme" />
         <activity android:name=".Welcome" />
         <activity android:name=".Leaderboard" />
         <activity android:name=".Notifications" />
-        <activity android:name=".FullImage" />
+        <activity
+            android:name=".FullImage"
+            android:theme="@style/AppTheme.NoActionBar.Preview" />
         <activity android:name=".PermissionsActivity" />
         <activity android:name=".MyReports" />
         <activity android:name=".Action" />
-        <activity android:name=".Comments" />
+        <activity android:name=".Comments1" />
         <activity android:name=".LocationActivity" />
 
         <!-- Firebase Notifications -->
@@ -109,7 +124,6 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
         <service android:name=".fcm.MyFirebaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
@@ -118,36 +132,28 @@
         <!-- Firebase Notifications -->
 
 
-        <!-- Register AnalyticsReceiver and AnalyticsService to support background
-             dispatching on non-Google Play devices. -->
-        <receiver android:name="com.google.android.gms.analytics.AnalyticsReceiver"
+        <!--
+             Register AnalyticsReceiver and AnalyticsService to support background
+             dispatching on non-Google Play devices.
+        -->
+        <receiver
+            android:name="com.google.android.gms.analytics.AnalyticsReceiver"
             android:enabled="true">
             <intent-filter>
                 <action android:name="com.google.android.gms.analytics.ANALYTICS_DISPATCH" />
             </intent-filter>
         </receiver>
-        <service android:name="com.google.android.gms.analytics.AnalyticsService"
+
+        <service
+            android:name="com.google.android.gms.analytics.AnalyticsService"
             android:enabled="true"
-            android:exported="false"/>
+            android:exported="false" />
 
         <!-- ... -->
 
-
-        <activity android:name=".Gallery">
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data android:mimeType="image/*" />
-            </intent-filter>
-        </activity>
         <activity android:name=".UpdateImage" />
         <activity android:name=".MyCityActivity" />
-        <activity android:name=".Friends">
-
-
-        </activity>
+        <activity android:name=".Friends" />
         <activity android:name=".CategoryActivity" />
         <activity android:name=".NewActivity" />
         <activity android:name=".UserProfile" />
@@ -156,12 +162,31 @@
         <activity
             android:name=".SinglePost"
             android:parentActivityName=".Feed">
-                <intent-filter>
+            <intent-filter>
                 <action android:name="in.reweyou.reweyou_SINGLE_POST">
-                <category android:name="android.intent.category.DEFAULT"></category></action>
-                </intent-filter>
+                    <category android:name="android.intent.category.DEFAULT" />
+                </action>
+            </intent-filter>
         </activity>
-        <activity android:name=".Readers"></activity>
+        <activity android:name=".Readers" />
+        <activity
+            android:name=".Raw"
+            android:label="@string/title_activity_raw"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".NavA"
+            android:label="@string/title_activity_nav"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".WelcomeActivity" />
+        <activity
+            android:name=".SinglePostActivity"
+            android:label="@string/title_activity_single_post_acitivty"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden">
+
+
+        </activity>
     </application>
 
 </manifest>

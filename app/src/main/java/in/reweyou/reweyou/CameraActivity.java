@@ -17,12 +17,12 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -50,36 +50,53 @@ import in.reweyou.reweyou.classes.RequestHandler;
 import in.reweyou.reweyou.classes.UserSessionManager;
 
 public class CameraActivity extends AppCompatActivity implements View.OnClickListener {
+    public static final String KEY_LOCATION = "location";
+    public static final String KEY_ADDRESS = "address";
+    public static final String KEY_IMAGE = "image";
+    public static final String KEY_TIME = "time";
+    public static final String KEY_NAME = "name";
+    public static final String KEY_TAG = "tag";
+    public static final String KEY_TEXT = "headline";
+    public static final String UPLOAD_URL = "https://www.reweyou.in/reweyou/upload_report.php";
+    static final String[] PERMISSIONS = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
+    private static final int REQUEST_CODE = 0;
+    Location location;
+    String selectedImagePath;
+    UserSessionManager session;
+    int backpress;
+    PermissionsChecker checker;
+    AppLocationService appLocationService;
+    ConnectionDetector cd;
+    Boolean isInternetPresent = false;
     private Button button;
     private EditText editText, editTag, head;
     private ImageView imageview;
     private Bitmap bitmap;
     private Bitmap Correctbmp;
     private Spinner staticSpinner;
-    Location location;
     private String place, address, mycity, tag, type, result;
-    String selectedImagePath;
-    UserSessionManager session;
     private String name;
-    int backpress;
-    private static final int REQUEST_CODE = 0;
-
-    PermissionsChecker checker;
-    static final String[] PERMISSIONS = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
-
-    AppLocationService appLocationService;
-    ConnectionDetector cd;
-    Boolean isInternetPresent = false;
-
-    public static final String KEY_LOCATION="location";
-    public static final String KEY_ADDRESS="address";
-    public static final String KEY_IMAGE = "image";
-    public static final String KEY_TIME = "time";
-    public static final String KEY_NAME = "name";
-    public static final String KEY_TAG="tag";
-    public static final String KEY_TEXT = "headline";
-    public static final String UPLOAD_URL = "https://www.reweyou.in/reweyou/upload_report.php";
     private String number;
+
+    public static boolean isLocationEnabled(Context context) {
+        int locationMode = 0;
+        String locationProviders;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            try {
+                locationMode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
+
+            } catch (Settings.SettingNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            return locationMode != Settings.Secure.LOCATION_MODE_OFF;
+
+        } else {
+            locationProviders = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+            return !TextUtils.isEmpty(locationProviders);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +111,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         cd = new ConnectionDetector(CameraActivity.this);
         imageview = (ImageView)findViewById(R.id.ImageShow);
         editText = (EditText)findViewById(R.id.Who);
-        editTag=(EditText)findViewById(R.id.EditTag);
+        editTag = (EditText) findViewById(R.id.tag);
         head=(EditText)findViewById(R.id.head);
         button=(Button)findViewById(R.id.btn_send);
         button.setTypeface(font);
@@ -254,6 +271,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         UploadImage u = new UploadImage();
         u.execute();
     }
+
     private void deleteFile(File delFile) {
         if (delFile == null) {
             return;
@@ -270,6 +288,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
             }
         }.start();
     }
+
     private String getStringImage(Bitmap bitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos);
@@ -294,7 +313,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
                         double latitude = location.getLatitude();
                         double longitude = location.getLongitude();
                         LocationAddress locationAddress = new LocationAddress(CameraActivity.this);
-                        locationAddress.getAddressFromLocation(latitude, longitude,
+                        LocationAddress.getAddressFromLocation(latitude, longitude,
                                 getApplicationContext(), new GeocoderHandler());
                         // Toast.makeText(CameraActivity.this,"Detecting current location...We need your current location for authenticity.",Toast.LENGTH_LONG).show();
                         button.setBackgroundResource(R.color.colorPrimary);
@@ -309,7 +328,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
                             double latitude = location.getLatitude();
                             double longitude = location.getLongitude();
                             LocationAddress locationAddress = new LocationAddress(CameraActivity.this);
-                            locationAddress.getAddressFromLocation(latitude, longitude,
+                            LocationAddress.getAddressFromLocation(latitude, longitude,
                                     getApplicationContext(), new GeocoderHandler());
                             //     Toast.makeText(CameraActivity.this,"Detecting current location...We need your current location for authenticity.",Toast.LENGTH_LONG).show();
                             button.setBackgroundResource(R.color.colorPrimary);
@@ -331,6 +350,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
             Toast.makeText(CameraActivity.this,"You are not connected to Internet",Toast.LENGTH_SHORT).show();
         }
     }
+
     public void showSettingsAlert() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(
                 CameraActivity.this);
@@ -353,34 +373,12 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         alertDialog.show();
     }
 
-
     private void openProfile() {
         // Starting TokenTest
         Intent i = new Intent(this, Feed.class);
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
         finish(); // Call once you redirect to another activity
-    }
-
-    private class GeocoderHandler extends Handler {
-        @Override
-        public void handleMessage(Message message) {
-            String locationAddress;
-            String fulladdress;
-            switch (message.what) {
-                case 1:
-                    Bundle bundle = message.getData();
-                    locationAddress = bundle.getString("address");
-                    fulladdress=bundle.getString("add");
-                    break;
-                default:
-                    locationAddress = mycity;
-                    fulladdress=mycity;
-            }
-
-            place = locationAddress;
-            address=fulladdress;
-        }
     }
 
     public void onBackPressed(){
@@ -413,23 +411,24 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    public static boolean isLocationEnabled(Context context) {
-        int locationMode = 0;
-        String locationProviders;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
-            try {
-                locationMode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
-
-            } catch (Settings.SettingNotFoundException e) {
-                e.printStackTrace();
+    private class GeocoderHandler extends Handler {
+        @Override
+        public void handleMessage(Message message) {
+            String locationAddress;
+            String fulladdress;
+            switch (message.what) {
+                case 1:
+                    Bundle bundle = message.getData();
+                    locationAddress = bundle.getString("address");
+                    fulladdress = bundle.getString("add");
+                    break;
+                default:
+                    locationAddress = mycity;
+                    fulladdress = mycity;
             }
 
-            return locationMode != Settings.Secure.LOCATION_MODE_OFF;
-
-        }else{
-            locationProviders = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
-            return !TextUtils.isEmpty(locationProviders);
+            place = locationAddress;
+            address = fulladdress;
         }
     }
 }

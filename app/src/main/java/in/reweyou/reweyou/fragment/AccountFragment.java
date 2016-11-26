@@ -3,42 +3,27 @@ package in.reweyou.reweyou.fragment;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.location.Location;
-import android.location.LocationManager;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.text.Html;
-import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,44 +34,23 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.gson.Gson;
 
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 
-import in.reweyou.reweyou.Feed;
-import in.reweyou.reweyou.MyProfile;
 import in.reweyou.reweyou.MyReports;
 import in.reweyou.reweyou.R;
-import in.reweyou.reweyou.ShowImage;
 import in.reweyou.reweyou.classes.AppLocationService;
 import in.reweyou.reweyou.classes.ConnectionDetector;
-import in.reweyou.reweyou.classes.LocationAddress;
 import in.reweyou.reweyou.classes.RequestHandler;
 import in.reweyou.reweyou.classes.UserSessionManager;
-import in.reweyou.reweyou.adapter.MpAdapter;
-import in.reweyou.reweyou.model.MpDetail;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -98,10 +62,17 @@ import in.reweyou.reweyou.model.MpDetail;
  */
 
 public class AccountFragment extends Fragment implements View.OnClickListener{
+    public static final String KEY_NUMBER = "number";
+    public static final String KEY_IMAGE = "image";
+    public static final String UPLOAD_URL = "https://www.reweyou.in/reweyou/profile_picture.php";
+    public static final String EDIT_URL = "https://www.reweyou.in/reweyou/profile.php";
     UserSessionManager session;
     AppLocationService appLocationService;
         // Button Logout
     Button EditInfo;
+    int SELECT_FILE = 1;
+    ConnectionDetector cd;
+    Boolean isInternetPresent = false;
     private TextView Name, Info, Mobile, Location;
     private EditText editTextHeadline;
     private AppCompatButton buttonEdit;
@@ -112,17 +83,28 @@ public class AccountFragment extends Fragment implements View.OnClickListener{
     private String number;
     private String image;
     private String city;
-    int SELECT_FILE = 1;
-    public static final String KEY_NUMBER = "number";
-    public static final String KEY_IMAGE = "image";
-    public static final String UPLOAD_URL = "https://www.reweyou.in/reweyou/profile_picture.php";
-    public static final String EDIT_URL = "https://www.reweyou.in/reweyou/profile.php";
     private Button  myreports;
-    ConnectionDetector cd;
-    Boolean isInternetPresent = false;
 
     public AccountFragment() {
         // Required empty public constructor
+    }
+
+    public static String encodeTobase64(Bitmap image) {
+        Bitmap immage = image;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        immage.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] b = baos.toByteArray();
+        String imageEncoded = Base64.encodeToString(b, Base64.DEFAULT);
+
+        //  Log.d("Image Log:", imageEncoded);
+        return imageEncoded;
+
+    }
+
+    public static Bitmap decodeBase64(String input) {
+        byte[] decodedByte = Base64.decode(input, 0);
+        return BitmapFactory
+                .decodeByteArray(decodedByte, 0, decodedByte.length);
     }
 
     @Override
@@ -232,18 +214,7 @@ public class AccountFragment extends Fragment implements View.OnClickListener{
            uploadImage();
         }
     }
-    public static String encodeTobase64(Bitmap image)
-    {
-        Bitmap immage = image;
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        immage.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        byte[] b = baos.toByteArray();
-        String imageEncoded = Base64.encodeToString(b, Base64.DEFAULT);
 
-      //  Log.d("Image Log:", imageEncoded);
-        return imageEncoded;
-
-    }
     private void setPic(String imagePath, ImageView destination) {
         int targetW = 200;
         int targetH = 200;
@@ -302,12 +273,6 @@ public class AccountFragment extends Fragment implements View.OnClickListener{
             return null;
     }
 
-    public static Bitmap decodeBase64(String input)
-    {
-        byte[] decodedByte = Base64.decode(input, 0);
-        return BitmapFactory
-                .decodeByteArray(decodedByte, 0, decodedByte.length);
-    }
     @Override
     public void onViewCreated(View layout, Bundle savedInstanceState)
     {

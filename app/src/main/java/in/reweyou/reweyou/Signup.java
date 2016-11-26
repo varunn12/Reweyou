@@ -61,11 +61,41 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
     public static final String KEY_TOKEN = "token";
     static final String[] PERMISSIONS = new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.READ_SMS};
     private static final int REQUEST_CODE = 0;
-    private static final String REGISTER_URL = "https://www.reweyou.in/reweyou/signup.php";
+    private static final String REGISTER_URL = "https://www.reweyou.in/reweyou/signupnew.php";
     UserSessionManager session;
     PermissionsChecker checker;
     Boolean isInternetPresent = false;
     ConnectionDetector cd;
+    AsyncTask<Void, Void, String> task = new AsyncTask<Void, Void, String>() {
+        @Override
+        protected String doInBackground(Void... params) {
+            AdvertisingIdClient.Info idInfo = null;
+            try {
+                idInfo = AdvertisingIdClient.getAdvertisingIdInfo(getApplicationContext());
+            } catch (GooglePlayServicesNotAvailableException e) {
+                e.printStackTrace();
+            } catch (GooglePlayServicesRepairableException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            advertId = null;
+            try {
+                advertId = idInfo.getId();
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
+
+            return advertId;
+        }
+
+        @Override
+        protected void onPostExecute(String advertId) {
+            // Toast.makeText(getApplicationContext(), advertId, Toast.LENGTH_SHORT).show();
+            remarket();
+        }
+
+    };
     private EditText editTextUsername, editTextNumber,editTextConfirmOtp, editLocation;
     private AppCompatButton buttonConfirm;
     private Button buttonRegister;
@@ -84,9 +114,6 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-        inputLayoutName = (TextInputLayout) findViewById(R.id.input_layout_username);
-        inputLayoutNumber = (TextInputLayout) findViewById(R.id.input_layout_number);
-        inputLayoutCity = (TextInputLayout) findViewById(R.id.input_layout_city);
 
         session = new UserSessionManager(getApplicationContext());
         requestQueue = Volley.newRequestQueue(this);
@@ -225,6 +252,7 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
             requestQueue.add(stringRequest);
         }
     }
+
     private void openProfile() {
         //Intent intent = new Intent(this, IconTabs.class);
         //intent.putExtra(KEY_USERNAME, username);
@@ -238,7 +266,6 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
         startActivity(i);
         finish(); // Call once you redirect to another activity
     }
-
 
     @Override
     public void onClick(View v) {
@@ -272,7 +299,6 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
         }
     }
 
-
     public void showSettingsAlert() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(
                 Signup.this);
@@ -294,8 +320,6 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
                 });
         alertDialog.show();
     }
-
-
 
     //This method would confirm the otp
     public void confirmOtp() throws JSONException {
@@ -327,6 +351,7 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
             }
         });
     }
+
     private void verifyOtp() {
         otp = editTextConfirmOtp.getText().toString().trim();
         if (!otp.isEmpty()) {
@@ -337,6 +362,7 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
             Toast.makeText(getApplicationContext(), "Please enter the OTP", Toast.LENGTH_SHORT).show();
         }
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -352,6 +378,7 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
     private void startPermissionsActivity() {
         PermissionsActivity.startActivityForResult(this, REQUEST_CODE, PERMISSIONS);
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -388,34 +415,4 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(getRequest);
     }
-    AsyncTask<Void, Void, String> task = new AsyncTask<Void, Void, String>() {
-        @Override
-        protected String doInBackground(Void... params) {
-            AdvertisingIdClient.Info idInfo = null;
-            try {
-                idInfo = AdvertisingIdClient.getAdvertisingIdInfo(getApplicationContext());
-            } catch (GooglePlayServicesNotAvailableException e) {
-                e.printStackTrace();
-            } catch (GooglePlayServicesRepairableException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            advertId = null;
-            try{
-                advertId = idInfo.getId();
-            }catch (NullPointerException e){
-                e.printStackTrace();
-            }
-
-            return advertId;
-        }
-
-        @Override
-        protected void onPostExecute(String advertId) {
-           // Toast.makeText(getApplicationContext(), advertId, Toast.LENGTH_SHORT).show();
-            remarket();
-        }
-
-    };
 }

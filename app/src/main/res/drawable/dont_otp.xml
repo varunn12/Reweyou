@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:bottom="8dp"
+        android:drawable="@drawable/ic_done_white_100px"
+        android:left="8dp"
+        android:right="8dp"
+        android:top="8dp">
+
+    </item>
+
+    <item>
+        <shape xmlns:android="http://schemas.android.com/apk/res/android"
+            android:shape="oval">
+
+            <stroke
+                android:width="8dp"
+                android:color="@android:color/white" />
+
+
+        </shape>
+    </item>
+</layer-list>

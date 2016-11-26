@@ -17,7 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import in.reweyou.reweyou.MyProfile;
-import in.reweyou.reweyou.SinglePost;
+import in.reweyou.reweyou.SinglePostActivity;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
@@ -98,7 +98,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 else {
                     Bundle bundle = new Bundle();
                     bundle.putString("postid", postid);
-                    Intent resultIntent = new Intent(this, SinglePost.class);
+                    Intent resultIntent = new Intent(this, SinglePostActivity.class);
                     resultIntent.putExtras(bundle);
                     resultIntent.setAction(Long.toString(System.currentTimeMillis()));
                     // check for image attachment
@@ -118,7 +118,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 {
                     Bundle bundle = new Bundle();
                 bundle.putString("postid", postid);
-                Intent resultIntent = new Intent(this, SinglePost.class);
+                    Intent resultIntent = new Intent(this, SinglePostActivity.class);
                 resultIntent.putExtras(bundle);
                 resultIntent.setAction(Long.toString(System.currentTimeMillis()));
                 // check for image attachment

@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "in.reweyou.reweyou"
-        minSdkVersion 15
+        minSdkVersion 16
 
         targetSdkVersion 24
         versionCode 49
@@ -22,6 +22,13 @@ android {
         }
     }
 }
+repositories
+        {
+            maven
+                    {
+                        url "https://jitpack.io"
+                    }
+        }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
@@ -42,8 +49,13 @@ dependencies {
     compile 'com.android.volley:volley:1.0.0'
 
     compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile('com.github.ozodrukh:CircularReveal:2.0.1@aar')
 
+            {
+                transitive = true;
+            }
 
+    compile 'it.sephiroth.android.library.imagezoom:imagezoom:+'
 }
 
 apply plugin: 'com.google.gms.google-services'

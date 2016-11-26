@@ -8,7 +8,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import in.reweyou.reweyou.utils.Constants;
+
 import static android.text.format.DateUtils.getRelativeTimeSpanString;
+import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_IMAGE;
+import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_LOADING;
+import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_NEW_POST;
+import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_VIDEO;
 
 /**
  * Created by Reweyou on 10/5/2015.
@@ -16,7 +22,9 @@ import static android.text.format.DateUtils.getRelativeTimeSpanString;
 
 public class MpModel {
 
-    SimpleDateFormat dfs = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss a", Locale.US);
+    public boolean newPost = false;
+    public boolean locationPost = false;
+    private SimpleDateFormat dfs = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss a", Locale.US);
     private String name;
     private String number;
     private String head;
@@ -36,6 +44,9 @@ public class MpModel {
     private String comments;
     private String reaction;
     private String from;
+    private String gif;
+    private boolean loadingView = false;
+    private boolean liked = false;
 
     public String getName() {
         return name;
@@ -129,9 +140,6 @@ public class MpModel {
         return video;
     }
 
-    public void setVideo(String video) {
-        this.video = video;
-    }
 
     public String getCategory() {
         return category;
@@ -212,4 +220,58 @@ public class MpModel {
     public void setFrom(String from) {
         this.from = from;
     }
+
+    public String getGif() {
+        return gif;
+    }
+
+    public void setGif(String gif) {
+        this.gif = gif;
+    }
+
+    public boolean hasVideo() {
+        return getVideo() != null;
+    }
+
+    public boolean hasImage() {
+        return getImage() != null;
+    }
+
+    public int getViewType() {
+        if (getImage() == null && getVideo() == null && getGif() == null) {
+            if (isNewPost()) {
+                return VIEW_TYPE_NEW_POST;
+            } else if (isLocationPost())
+                return Constants.VIEW_TYPE_LOCATION;
+            return VIEW_TYPE_LOADING;
+        } else if (!getVideo().isEmpty()) {
+            return VIEW_TYPE_VIDEO;
+        } else return VIEW_TYPE_IMAGE;
+    }
+
+    public boolean isNewPost() {
+        return newPost;
+    }
+
+    public boolean isLiked() {
+        return liked;
+    }
+
+    public void setLiked(boolean liked) {
+        this.liked = liked;
+    }
+
+    public boolean isLocationPost() {
+        return locationPost;
+    }
+
+
+
+
+
+    /*private boolean hasGIF() {
+        if(get==null){
+            return false;
+        }else return true;
+    }*/
 }

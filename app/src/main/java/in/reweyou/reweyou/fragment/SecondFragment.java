@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -62,7 +61,6 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private ProgressBar progressBar;
     private Spinner staticSpinner;
     private String tag, location, formattedDate, number;
-    private TextView datepick;
     private int mYear, mMonth, mDay;
     private boolean loading = true;
     private SimpleDateFormat df;
@@ -96,6 +94,8 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
         final LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
         DefaultItemAnimator defaultItemAnimator = new DefaultItemAnimator();
         recyclerView.setItemAnimator(defaultItemAnimator);
+        recyclerView.setItemViewCacheSize(3);
+
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -106,22 +106,22 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                     pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
 
                     if (!cacheLoad)
-                    if (loading) {
-                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
-                            loading = false;
+                        if (loading) {
+                            if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                                loading = false;
 
-                            Log.v("...", "Last Item Wow !");
-                            adapter.add();
+                                Log.v("...", "Last Item Wow !");
+                                adapter.add();
 
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    makeLoadMoreRequest();
-                                }
-                            }, 1000);
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        makeLoadMoreRequest();
+                                    }
+                                }, 1000);
 
+                            }
                         }
-                    }
                 }
             }
 
@@ -142,6 +142,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                                     adapter.remove();
 
                                     Gson gson = new Gson();
+                                    Log.d("lenght", String.valueOf(parentArray.length()));
                                     for (int i = 0; i < parentArray.length(); i++) {
                                         JSONObject finalObject = parentArray.getJSONObject(i);
                                         MpModel mpModel = gson.fromJson(finalObject.toString(), MpModel.class);
@@ -202,6 +203,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
             }
         });
 
+
         recyclerView.setItemViewCacheSize(4);
 
         session = new UserSessionManager(getActivity());
@@ -222,16 +224,15 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
         df = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss a");
 
 
-        datepick = (TextView) layout.findViewById(R.id.date);
         Typeface font = Typeface.createFromAsset(getActivity().getAssets(), "fontawesome-webfont.ttf");
-        datepick.setTypeface(font);
         formattedDate = df.format(c.getTime());
-        datepick.setText(formattedDate);
+      /*  datepick.setText(formattedDate);
         datepick.setVisibility(View.GONE);
         //  formattedDate = "2016";
         // formattedDate =c.getTime().toString();
-        datepick.setOnClickListener(this);
+        datepick.setOnClickListener(this);*/
         location = user.get(UserSessionManager.KEY_LOCATION);
+
 
         Messages();
         return layout;
@@ -242,9 +243,9 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
         formattedDate = df.format(c.getTime());
 
         tag = "General";
-        Log.e("D", tag);
+      /*Log.e("D", tag);
         Log.e("D", location);
-        Log.e("D", formattedDate);
+        Log.e("D", formattedDate);*/
         // new JSONTask().execute(tag, location,formattedDate,number);
 
         makeRequest();
@@ -263,15 +264,36 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                         try {
                             parentArray = new JSONArray(response);
                             Log.d("aaa", String.valueOf(parentArray));
-                            StringBuffer finalBufferedData = new StringBuffer();
 
+                            List<String> likeslist = session.getLikesList();
+                            Log.d("likeslist", String.valueOf(likeslist));
                             List<MpModel> messagelist = new ArrayList<>();
+
+                            if (position == 0) {
+                                MpModel newPost = new MpModel();
+                                newPost.newPost = true;
+                                messagelist.add(newPost);
+                            }
+
+                            if (position == 9) {
+                                MpModel locationFilter = new MpModel();
+                                locationFilter.locationPost = true;
+                                messagelist.add(locationFilter);
+                            }
 
                             Gson gson = new Gson();
                             Log.d("size", String.valueOf(parentArray.length()));
                             for (int i = 0; i < parentArray.length(); i++) {
                                 JSONObject finalObject = parentArray.getJSONObject(i);
                                 MpModel mpModel = gson.fromJson(finalObject.toString(), MpModel.class);
+                                if (likeslist.contains(mpModel.getPostId())) {
+                                    Log.d("true", mpModel.getPostId() + "    ");
+
+                                    mpModel.setLiked(true);
+
+                                }
+                                Log.d("postid", mpModel.getPostId());
+                                Log.d("number", session.getMobileNumber());
                                 messagelist.add(mpModel);
 
                                 if (i == parentArray.length() - 1) {
@@ -284,10 +306,10 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
                             swipeLayout.setRefreshing(false);
 
-                            Log.d("postid", postid);
                             cacheLoad = false;
                             MyJSON.saveData(getContext(), response);
                         } catch (JSONException e) {
+                            Log.e("ecec", e.getMessage());
                             e.printStackTrace();
                         }
 
@@ -298,6 +320,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show();
+//                        Log.d("Response", error.getMessage());
 
                        /* if (error instanceof AuthFailureError) {
                             Log.d("Response", "a");
@@ -357,9 +380,11 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
             protected Map<String, String> getParams() {
                 Map<String, String> data = new HashMap<>();
                 //  data.put("tag", tag);
+                // location="lucknow";
                 data.put("location", location);
                 data.put("date", formattedDate);
                 //Log.d("ddd", formattedDate);
+                //number="7054392300";
                 data.put("number", number);
                 return data;
             }
@@ -421,11 +446,14 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                 return Constants.CAMPAIGN_URL;
             case 2:
                 return Constants.READING_URL;
+            case 9:
+                return Constants.MY_CITY_URL;
             default:
                 return null;
 
         }
 
+        // return Constants.FEED_URL;
     }
 }
 

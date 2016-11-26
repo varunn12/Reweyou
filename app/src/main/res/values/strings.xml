@@ -16,9 +16,19 @@
 
     <string-array name="tabs">
         <item>@string/tab_1</item>
-        <item>@string/tab_2</item>
+        <item>@string/tab_4</item>
         <item>@string/tab_5</item>
     </string-array>
+
+    <string name="tab_8">POST</string>
+    <string name="tab_9">Reactions</string>
+
+    <string-array name="tabs_single_activity">
+        <item>@string/tab_8</item>
+        <item>@string/tab_9</item>
+    </string-array>
+
+
     <string name="action_logout">Delete Account</string>
     <string name="action_help">Mail Feedback</string>
     <string name="screen1_title">Screen1</string>
@@ -94,5 +104,13 @@
     <string name="opengallery">Gallery</string>
     <string name="emptyStatus">Add your status here</string>
     <string name="emptyStatusHint">Your Status</string>
+    <string name="takevideo">Shoot video</string>
+    <string name="title_activity_raw">Raw</string>
+    <string name="shootVideo">Shoot Video</string>
+    <string name="title_activity_nav">NavA</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="title_activity_single_post_acitivty">SinglePostAcitivty</string>
 
 </resources>

@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -172,11 +173,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         switch (v.getId()) {
             case R.id.button:
                 final int status = (Integer) button.getTag();
-                if (status == 1) {
-                    read(i);
-                } else {
-                    reading(i);
-                }
+                reading(i);
                 break;
            /*case R.id.click:
                Bundle bundle = new Bundle();
@@ -199,7 +196,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 //if the server response is success
                 if (response.equalsIgnoreCase("success")) {
                     //dismissing the progressbar
-                    //     loading.dismiss();
+                    //     loading.show();
 
                     //Starting a new activity
                     button.setVisibility(View.VISIBLE);
@@ -247,17 +244,25 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
                     @Override
                     public void onResponse(String response) {
-                        if (response.trim().equals("success")) {
-                            //button.setText("Reviewed");
-                            loading.dismiss();
+                        Log.d("userw", response);
+                        loading.dismiss();
+
+                        if (response.trim().equals("unread")) {
+                            button.setTextColor(ContextCompat.getColor(UserProfile.this, R.color.colorPrimaryDark));
+                            button.setBackgroundResource(R.drawable.button_background_rectangular);
+                            button.setText("Read");
+                            Readers.setText("" + (Integer.parseInt(Readers.getText().toString()) - 1));
+
+
+                        } else if (response.trim().equals("read")) {
                             button.setTextColor(ContextCompat.getColor(UserProfile.this, android.R.color.white));
                             button.setBackgroundResource(R.drawable.button_background_rectangular_red);
                             button.setText("Unread");
-                            button.setTag(1);
-                        } else {
-                            loading.dismiss();
-                            Toast.makeText(UserProfile.this, "Try Again", Toast.LENGTH_LONG).show();
-                        }
+                            Readers.setText("" + (Integer.parseInt(Readers.getText().toString()) + 1));
+
+                        } else
+                            Toast.makeText(UserProfile.this, "Something went wrong!", Toast.LENGTH_LONG).show();
+
                     }
                 },
                 new Response.ErrorListener() {
@@ -273,44 +278,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 map.put("number", number);
                 map.put("user", i);
                 map.put("name", name);
-                map.put("unread", "reading");
-                return map;
-            }
-        };
-        RequestQueue requestQueue = Volley.newRequestQueue(UserProfile.this);
-        requestQueue.add(stringRequest);
-    }
-
-    private void read(final String i) {
-        HashMap<String, String> user = session.getUserDetails();
-        number = session.getMobileNumber();
-
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, USER_PROFILE_URL_FOLLOW,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        if (response.trim().equals("success")) {
-                            //button.setText("Reviewed");
-                            button.setTextColor(ContextCompat.getColor(UserProfile.this, R.color.colorPrimaryDark));
-                            button.setBackgroundResource(R.drawable.button_background_rectangular);
-                            button.setText("Read");
-                            button.setTag(0);
-                        } else {
-                            Toast.makeText(UserProfile.this, "Try Again", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(UserProfile.this, error.toString(), Toast.LENGTH_LONG).show();
-                    }
-                }) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> map = new HashMap<String, String>();
-                map.put("number", number);
-                map.put("user", i);
                 return map;
             }
         };

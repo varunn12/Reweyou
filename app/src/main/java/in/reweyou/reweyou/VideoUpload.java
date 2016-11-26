@@ -12,12 +12,12 @@ import android.location.LocationManager;
 import android.media.ThumbnailUtils;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -26,7 +26,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -44,6 +43,13 @@ import in.reweyou.reweyou.classes.UserSessionManager;
 
 public class VideoUpload extends AppCompatActivity implements View.OnClickListener {
 
+    private static final int SELECT_VIDEO = 3;
+    Bitmap bmThumbnail;
+    Location location;
+    Boolean isInternetPresent = false;
+    AppLocationService appLocationService;
+    UserSessionManager session;
+    ConnectionDetector cd;
     private Button button;
     private EditText editText;
     private  VideoView videoView;
@@ -53,17 +59,28 @@ public class VideoUpload extends AppCompatActivity implements View.OnClickListen
     private String place;
     private String name;
     private String address;
-    Bitmap bmThumbnail;
     private String image;
-    Location location;
-    Boolean isInternetPresent = false;
-    AppLocationService appLocationService;
-    UserSessionManager session;
-    ConnectionDetector cd;
     private String number;
 
-    private static final int SELECT_VIDEO = 3;
+    public static boolean isLocationEnabled(Context context) {
+        int locationMode = 0;
+        String locationProviders;
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            try {
+                locationMode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
+
+            } catch (Settings.SettingNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            return locationMode != Settings.Secure.LOCATION_MODE_OFF;
+
+        } else {
+            locationProviders = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+            return !TextUtils.isEmpty(locationProviders);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,6 +137,7 @@ public class VideoUpload extends AppCompatActivity implements View.OnClickListen
         String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
         return encodedImage;
     }
+
     private void uploadVideo() {
         final String text = editText.getText().toString().trim();
         String format = "dd-MMM-yyyy hh:mm:ss a";
@@ -130,7 +148,7 @@ public class VideoUpload extends AppCompatActivity implements View.OnClickListen
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
         LocationAddress locationAddress = new LocationAddress(VideoUpload.this);
-        locationAddress.getAddressFromLocation(latitude, longitude,
+        LocationAddress.getAddressFromLocation(latitude, longitude,
                 VideoUpload.this, new GeocoderHandler());
 
 
@@ -166,15 +184,15 @@ public class VideoUpload extends AppCompatActivity implements View.OnClickListen
 
             @Override
             protected String doInBackground(Void... params) {
-                Upload u = new Upload();
+               /* Upload u = new Upload();
                 String msg = u.uploadVideo(show,name,place,timeStamp,text,tag,address,number,image);
-                return msg;
+                return msg;*/
+                return null;
             }
         }
         UploadVideo uv = new UploadVideo();
         uv.execute();
     }
-
 
     @Override
     public void onClick(View v) {
@@ -190,7 +208,7 @@ public class VideoUpload extends AppCompatActivity implements View.OnClickListen
                         double latitude = location.getLatitude();
                         double longitude = location.getLongitude();
                         LocationAddress locationAddress = new LocationAddress(VideoUpload.this);
-                        locationAddress.getAddressFromLocation(latitude, longitude,
+                        LocationAddress.getAddressFromLocation(latitude, longitude,
                                 getApplicationContext(), new GeocoderHandler());
                         // Toast.makeText(CameraActivity.this,"Detecting current location...We need your current location for authenticity.",Toast.LENGTH_LONG).show();
                         button.setBackgroundResource(R.color.colorPrimary);
@@ -205,7 +223,7 @@ public class VideoUpload extends AppCompatActivity implements View.OnClickListen
                             double latitude = location.getLatitude();
                             double longitude = location.getLongitude();
                             LocationAddress locationAddress = new LocationAddress(VideoUpload.this);
-                            locationAddress.getAddressFromLocation(latitude, longitude,
+                            LocationAddress.getAddressFromLocation(latitude, longitude,
                                     getApplicationContext(), new GeocoderHandler());
                             //     Toast.makeText(CameraActivity.this,"Detecting current location...We need your current location for authenticity.",Toast.LENGTH_LONG).show();
                             button.setBackgroundResource(R.color.colorPrimary);
@@ -225,26 +243,6 @@ public class VideoUpload extends AppCompatActivity implements View.OnClickListen
         else
         {
             Toast.makeText(VideoUpload.this,"You are not connected to Internet",Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private class GeocoderHandler extends Handler {
-        @Override
-        public void handleMessage(Message message) {
-            String locationAddress;
-            String fulladdress;
-            switch (message.what) {
-                case 1:
-                    Bundle bundle = message.getData();
-                    locationAddress = bundle.getString("address");
-                    fulladdress=bundle.getString("add");
-                    break;
-                default:
-                    locationAddress = "Unknown";
-                    fulladdress="Unknown";
-            }
-            place = locationAddress;
-            address=fulladdress;
         }
     }
 
@@ -269,23 +267,24 @@ public class VideoUpload extends AppCompatActivity implements View.OnClickListen
                 });
         alertDialog.show();
     }
-    public static boolean isLocationEnabled(Context context) {
-        int locationMode = 0;
-        String locationProviders;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
-            try {
-                locationMode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
-
-            } catch (Settings.SettingNotFoundException e) {
-                e.printStackTrace();
+    private class GeocoderHandler extends Handler {
+        @Override
+        public void handleMessage(Message message) {
+            String locationAddress;
+            String fulladdress;
+            switch (message.what) {
+                case 1:
+                    Bundle bundle = message.getData();
+                    locationAddress = bundle.getString("address");
+                    fulladdress = bundle.getString("add");
+                    break;
+                default:
+                    locationAddress = "Unknown";
+                    fulladdress = "Unknown";
             }
-
-            return locationMode != Settings.Secure.LOCATION_MODE_OFF;
-
-        }else{
-            locationProviders = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
-            return !TextUtils.isEmpty(locationProviders);
+            place = locationAddress;
+            address = fulladdress;
         }
     }
 
