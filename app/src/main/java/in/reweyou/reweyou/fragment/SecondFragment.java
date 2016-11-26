@@ -142,6 +142,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                                     adapter.remove();
 
                                     Gson gson = new Gson();
+                                    Log.d("lenght", String.valueOf(parentArray.length()));
                                     for (int i = 0; i < parentArray.length(); i++) {
                                         JSONObject finalObject = parentArray.getJSONObject(i);
                                         MpModel mpModel = gson.fromJson(finalObject.toString(), MpModel.class);
@@ -272,6 +273,12 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                                 MpModel newPost = new MpModel();
                                 newPost.newPost = true;
                                 messagelist.add(newPost);
+                            }
+
+                            if (position == 9) {
+                                MpModel locationFilter = new MpModel();
+                                locationFilter.locationPost = true;
+                                messagelist.add(locationFilter);
                             }
 
                             Gson gson = new Gson();

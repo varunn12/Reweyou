@@ -80,6 +80,7 @@ import static in.reweyou.reweyou.utils.Constants.SUGGEST_URL;
 import static in.reweyou.reweyou.utils.Constants.URL_LIKE;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_IMAGE;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_LOADING;
+import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_LOCATION;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_NEW_POST;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_VIDEO;
 
@@ -132,6 +133,9 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 return new LoadingViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_messageadapter_loading, viewGroup, false));
             case VIEW_TYPE_NEW_POST:
                 return new NewPostViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_messageadapter_new_post, viewGroup, false));
+            case VIEW_TYPE_LOCATION:
+                return new LocationViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_messageadapter_location, viewGroup, false));
+
             default:
                 return null;
 
@@ -150,6 +154,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             case VIEW_TYPE_IMAGE:
                 bindImageOrGif(position, viewHolder2);
                 break;
+
           /*  default:
                 bindImageOrGif(position, viewHolder2);
                 break;*/
@@ -204,6 +209,8 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 return VIEW_TYPE_LOADING;
             case VIEW_TYPE_NEW_POST:
                 return VIEW_TYPE_NEW_POST;
+            case VIEW_TYPE_LOCATION:
+                return VIEW_TYPE_LOCATION;
             default:
                 return super.getItemViewType(position);
         }
@@ -1258,4 +1265,9 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     }
 
+    private class LocationViewHolder extends RecyclerView.ViewHolder {
+        public LocationViewHolder(View inflate) {
+            super(inflate);
+        }
+    }
 }

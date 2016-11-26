@@ -8,6 +8,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import in.reweyou.reweyou.utils.Constants;
+
 import static android.text.format.DateUtils.getRelativeTimeSpanString;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_IMAGE;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_LOADING;
@@ -21,6 +23,7 @@ import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_VIDEO;
 public class MpModel {
 
     public boolean newPost = false;
+    public boolean locationPost = false;
     private SimpleDateFormat dfs = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss a", Locale.US);
     private String name;
     private String number;
@@ -238,7 +241,9 @@ public class MpModel {
         if (getImage() == null && getVideo() == null && getGif() == null) {
             if (isNewPost()) {
                 return VIEW_TYPE_NEW_POST;
-            } else return VIEW_TYPE_LOADING;
+            } else if (isLocationPost())
+                return Constants.VIEW_TYPE_LOCATION;
+            return VIEW_TYPE_LOADING;
         } else if (!getVideo().isEmpty()) {
             return VIEW_TYPE_VIDEO;
         } else return VIEW_TYPE_IMAGE;
@@ -254,6 +259,10 @@ public class MpModel {
 
     public void setLiked(boolean liked) {
         this.liked = liked;
+    }
+
+    public boolean isLocationPost() {
+        return locationPost;
     }
 
 
