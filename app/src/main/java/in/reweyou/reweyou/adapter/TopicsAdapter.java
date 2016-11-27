@@ -30,7 +30,7 @@ import in.reweyou.reweyou.classes.UserSessionManager;
  */
 
 public class TopicsAdapter extends RecyclerView.Adapter<TopicsAdapter.ViewHolder> {
-    private static String URL_FOLLOW = "https://www.reweyou.in/reweyou/topic.php";
+    private static String URL_FOLLOW = "https://www.reweyou.in/reweyou/report_topic.php";
     private final List<String> categoriesList;
     private final UserSessionManager session;
     private final String number;
@@ -112,6 +112,8 @@ public class TopicsAdapter extends RecyclerView.Adapter<TopicsAdapter.ViewHolder
                     map.put("number", number);
                     map.put("topic", i);
                     map.put("unread", "reading");
+                    map.put("token", session.getKeyAuthToken());
+                    map.put("deviceid", session.getDeviceid());
                     return map;
                 }
             };
@@ -145,6 +147,8 @@ public class TopicsAdapter extends RecyclerView.Adapter<TopicsAdapter.ViewHolder
                     map.put("number", number);
                     map.put("topic", i);
                     map.put("unread", "delete");
+                    map.put("token", session.getKeyAuthToken());
+                    map.put("deviceid", session.getDeviceid());
                     return map;
                 }
             };

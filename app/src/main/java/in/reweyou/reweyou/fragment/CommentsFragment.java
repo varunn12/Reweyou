@@ -64,7 +64,7 @@ import in.reweyou.reweyou.model.CommentsModel;
  */
 
 public class CommentsFragment extends Fragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
-    public static final String UPLOAD_URL = "https://www.reweyou.in/reweyou/post_comments_new.php";
+    public static final String UPLOAD_URL = "https://www.reweyou.in/reweyou/reporting_comment.php";
     public static final String KEY_TEXT = "comments";
     public static final String KEY_NAME = "name";
     public static final String KEY_TIME = "time";
@@ -104,7 +104,6 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
         HashMap<String, String> user = session.getUserDetails();
         name = user.get(UserSessionManager.KEY_NAME);
         number = user.get(UserSessionManager.KEY_NUMBER);
-        Intent in = getActivity().getIntent();
 
         Empty = (LinearLayout) layout.findViewById(R.id.empty);
 
@@ -272,6 +271,8 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
                     param.put(KEY_NAME, name);
                     param.put(KEY_TIME, timeStamp);
                     param.put(KEY_ID, i);
+                    param.put("token", session.getKeyAuthToken());
+                    param.put("deviceid", session.getDeviceid());
                     result = rh.sendPostRequest(UPLOAD_URL, param);
                     return result;
                 }

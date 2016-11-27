@@ -16,6 +16,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import in.reweyou.reweyou.classes.UserSessionManager;
+
 /**
  * Created by Belal on 11/22/2015.
  */
@@ -23,9 +25,17 @@ public class Upload2 {
 
 
     public static final String UPLOAD_URL = "https://www.reweyou.in/reweyou/reporting.php";
+    private final String token1;
+    private final String deviceid;
 
 
     private int serverResponseCode;
+
+    public Upload2(PostReport postReport) {
+        UserSessionManager userSessionManager = new UserSessionManager(postReport);
+        this.token1 = userSessionManager.getKeyAuthToken();
+        this.deviceid = userSessionManager.getDeviceid();
+    }
 
     public String uploadVideo(String fileName, String filePath, String headline, String edittag, String category, String description, String place, String address, String time, String encodedimage, boolean image, boolean video, boolean gif, String number, String username, String token) {
 
@@ -67,17 +77,32 @@ public class Upload2 {
 
             //Adding Headline
 
-            dos.writeBytes("Content-Disposition: form-data; name=\"headline\"" + lineEnd);
-            dos.writeBytes(lineEnd);
-            dos.writeBytes(headline);
-            dos.writeBytes(lineEnd);
-            dos.writeBytes(twoHyphens + boundary + lineEnd);
+            if (headline != null) {
+                dos.writeBytes("Content-Disposition: form-data; name=\"head\"" + lineEnd);
+                dos.writeBytes(lineEnd);
+                dos.writeBytes(headline);
+                dos.writeBytes(lineEnd);
+                dos.writeBytes(twoHyphens + boundary + lineEnd);
+            }
 
             //Adding NAME
 
-            dos.writeBytes("Content-Disposition: form-data; name=\"description\"" + lineEnd);
+
+            dos.writeBytes("Content-Disposition: form-data; name=\"headline\"" + lineEnd);
             dos.writeBytes(lineEnd);
             dos.writeBytes(description);
+            dos.writeBytes(lineEnd);
+            dos.writeBytes(twoHyphens + boundary + lineEnd);
+
+            dos.writeBytes("Content-Disposition: form-data; name=\"token\"" + lineEnd);
+            dos.writeBytes(lineEnd);
+            dos.writeBytes(token1);
+            dos.writeBytes(lineEnd);
+            dos.writeBytes(twoHyphens + boundary + lineEnd);
+
+            dos.writeBytes("Content-Disposition: form-data; name=\"deviceid\"" + lineEnd);
+            dos.writeBytes(lineEnd);
+            dos.writeBytes(deviceid);
             dos.writeBytes(lineEnd);
             dos.writeBytes(twoHyphens + boundary + lineEnd);
 
@@ -104,19 +129,11 @@ public class Upload2 {
             dos.writeBytes(lineEnd);
             dos.writeBytes(twoHyphens + boundary + lineEnd);
 
-            dos.writeBytes("Content-Disposition: form-data; name=\"token\"" + lineEnd);
-            dos.writeBytes(lineEnd);
-            dos.writeBytes("abc");
-            dos.writeBytes(lineEnd);
-            dos.writeBytes(twoHyphens + boundary + lineEnd);
-
             dos.writeBytes("Content-Disposition: form-data; name=\"time\"" + lineEnd);
             dos.writeBytes(lineEnd);
             dos.writeBytes(time);
             dos.writeBytes(lineEnd);
             dos.writeBytes(twoHyphens + boundary + lineEnd);
-
-
 
 
             if (encodedimage != null) {

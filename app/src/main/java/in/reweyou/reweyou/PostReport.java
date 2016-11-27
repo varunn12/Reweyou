@@ -68,7 +68,6 @@ import static in.reweyou.reweyou.utils.Constants.POST_REPORT_KEY_NUMBER;
 import static in.reweyou.reweyou.utils.Constants.POST_REPORT_KEY_REPORT;
 import static in.reweyou.reweyou.utils.Constants.POST_REPORT_KEY_TAG;
 import static in.reweyou.reweyou.utils.Constants.POST_REPORT_KEY_TIME;
-import static in.reweyou.reweyou.utils.Constants.POST_REPORT_KEY_TOKEN;
 
 public class PostReport extends AppCompatActivity implements View.OnClickListener {
 
@@ -468,7 +467,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
 
                             @Override
                             protected String doInBackground(Void... params) {
-                                Upload2 u = new Upload2();
+                                Upload2 u = new Upload2(PostReport.this);
                                 String s = u.uploadVideo(selectedVideoPath, selectedVideoPath, parameterHeadline, parameterEditTag, currentSpinnerPositionString, parameterDescription, place, address, sdf.format(new Date()), encodedImage, false, true, false, number, name, session.getKeyAuthToken());
                                 return s;
                             }
@@ -666,7 +665,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
 
             @Override
             protected String doInBackground(Void... params) {
-                Upload2 u = new Upload2();
+                Upload2 u = new Upload2(PostReport.this);
                 String s = u.uploadVideo(selectedImagePath, selectedImagePath, parameterHeadline, parameterEditTag, currentSpinnerPositionString, parameterDescription, place, address, sdf.format(new Date()), null, false, false, true, number, name, session.getKeyAuthToken());
                 return s;
             }
@@ -721,19 +720,24 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
 
                 HashMap<String, String> param = new HashMap<>();
 
-                param.put(POST_REPORT_KEY_HEADLINE, parameterHeadline);
-                param.put(POST_REPORT_KEY_DESCRIPTION, parameterDescription);
+
                 if (image != null)
                     param.put(POST_REPORT_KEY_IMAGE, image);
                 param.put(POST_REPORT_KEY_LOCATION, place);
                 param.put(POST_REPORT_KEY_NAME, name);
-                param.put(POST_REPORT_KEY_TAG, parameterEditTag);
                 param.put(POST_REPORT_KEY_CATEGORY, currentSpinnerPositionString);
                 param.put(POST_REPORT_KEY_TIME, timeStamp);
                 param.put(POST_REPORT_KEY_ADDRESS, address);
                 param.put(POST_REPORT_KEY_NUMBER, number);
+                param.put(POST_REPORT_KEY_TAG, parameterEditTag);
+                if (parameterHeadline != null)
+                    param.put(POST_REPORT_KEY_HEADLINE, parameterHeadline);
                 param.put(POST_REPORT_KEY_DESCRIPTION, parameterDescription);
-                param.put(POST_REPORT_KEY_TOKEN, session.getKeyAuthToken());
+
+                param.put("token", session.getKeyAuthToken());
+                param.put("deviceid", session.getDeviceid());
+
+
                 if (image != null)
                     param.put(POST_REPORT_KEY_REPORT, "image");
 
