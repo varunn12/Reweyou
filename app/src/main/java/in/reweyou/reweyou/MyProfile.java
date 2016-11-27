@@ -85,7 +85,7 @@ import static in.reweyou.reweyou.utils.Constants.MY_PROFILE_URL_FOLLOW;
 public class MyProfile extends AppCompatActivity implements View.OnClickListener {
 
 
-    private final String MY_PROFILE_UPLOAD_URL = "https://www.reweyou.in/reweyou/profilepic.php";
+    private final String MY_PROFILE_UPLOAD_URL = "https://www.reweyou.in/reweyou/report_pic.php";
     Boolean isInternetPresent = false;
     ConnectionDetector cd;
     UserSessionManager session;
@@ -444,7 +444,8 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                 HashMap<String, String> param = new HashMap<String, String>();
                 param.put("number", i);
                 param.put("image", encodedImage);
-
+                param.put("token", session.getKeyAuthToken());
+                param.put("deviceid", session.getDeviceid());
 
                 String result = rh.sendPostRequest(MY_PROFILE_UPLOAD_URL, param);
                 return result;
@@ -578,7 +579,13 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                                 public void onErrorResponse(VolleyError error) {
                                     alertDialog.dismiss();
                                     loading.dismiss();
+
                                     Toast.makeText(MyProfile.this, "Try again later", Toast.LENGTH_LONG).show();
+                                    String body;
+                                    //get status code here
+                                    String statusCode = String.valueOf(error.networkResponse.statusCode);
+                                    Log.d("bodsssy", statusCode);
+
                                 }
                             }) {
                         @Override
@@ -588,6 +595,8 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                             params.put("number", i);
                             params.put("info", headline);
                             params.put("location", location);
+                            params.put("token", session.getKeyAuthToken());
+                            params.put("deviceid", session.getDeviceid());
                             // params.put("number",number);
                             return params;
                         }
@@ -661,6 +670,8 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
             RequestHandler rh = new RequestHandler();
             HashMap<String, String> data = new HashMap<String, String>();
             data.put("number", params[0]);
+            data.put("token", session.getKeyAuthToken());
+            data.put("deviceid", session.getDeviceid());
             try {
                 URL url = new URL("https://www.reweyou.in/reweyou/user_list.php");
                 connection = (HttpURLConnection) url.openConnection();
