@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkError;
@@ -69,6 +68,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private String postid;
     private int position = -1;
     private boolean cacheLoad = false;
+    private String placename;
 
     public SecondFragment() {
     }
@@ -79,6 +79,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
         super.onCreate(savedInstanceState);
 
         position = getArguments().getInt("position");
+        placename = getArguments().getString("place");
 
         Log.d("pos", String.valueOf(position));
     }
@@ -319,7 +320,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show();
+                        // Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show();
 //                        Log.d("Response", error.getMessage());
 
                        /* if (error instanceof AuthFailureError) {
@@ -381,7 +382,12 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                 Map<String, String> data = new HashMap<>();
                 //  data.put("tag", tag);
                 // location="lucknow";
-                data.put("location", location);
+                if (position == 10)
+                    data.put("location", placename);
+                else
+                    data.put("location", location);
+
+                Log.d("dwedw", placename + "  efe" + location);
                 data.put("date", formattedDate);
                 //Log.d("ddd", formattedDate);
                 //number="7054392300";
@@ -447,6 +453,8 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
             case 2:
                 return Constants.READING_URL;
             case 9:
+                return Constants.MY_CITY_URL;
+            case 10:
                 return Constants.MY_CITY_URL;
             default:
                 return null;
