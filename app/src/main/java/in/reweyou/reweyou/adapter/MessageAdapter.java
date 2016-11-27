@@ -60,7 +60,7 @@ import in.reweyou.reweyou.CategoryActivity;
 import in.reweyou.reweyou.Comments1;
 import in.reweyou.reweyou.Feed;
 import in.reweyou.reweyou.FullImage;
-import in.reweyou.reweyou.LocationActivity;
+import in.reweyou.reweyou.MyCityActivity;
 import in.reweyou.reweyou.PostReport;
 import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.UserProfile;
@@ -73,6 +73,7 @@ import in.reweyou.reweyou.classes.UploadOptions;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.classes.Util;
 import in.reweyou.reweyou.model.MpModel;
+import in.reweyou.reweyou.utils.Constants;
 
 import static in.reweyou.reweyou.utils.Constants.EDIT_URL;
 import static in.reweyou.reweyou.utils.Constants.REVIEW_URL;
@@ -225,7 +226,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         final ImageViewHolder viewHolder = (ImageViewHolder) viewHolder2;
         Spannable spannable = new SpannableString(messagelist.get(position).getHeadline());
         Util.linkifyUrl(spannable, new CustomTabsOnClickListener(activity, mCustomTabActivityHelper));
-
 
 
         if (messagelist.get(position).getHead() == null || messagelist.get(position).getHead().isEmpty())
@@ -757,7 +757,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                             Log.d("likeid", messagelist.get(adapterPosition).getPostId());
 
 
-
                         } else if (response.equals("unlike")) {
                             notifyItemChanged(adapterPosition, "unlike");
                             session.removelike(messagelist.get(adapterPosition).getPostId());
@@ -774,6 +773,18 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
                             if (cd.isConnectingToInternet()) {
                                 Toast.makeText(mContext, "Couldn't update", Toast.LENGTH_SHORT).show();
+                            }
+
+                        } else if (response.equals(Constants.AUTH_ERROR)) {
+
+                            if (messagelist.get(adapterPosition).isLiked()) {
+                                notifyItemChanged(adapterPosition, "like");
+
+                            } else notifyItemChanged(adapterPosition, "unlike");
+
+
+                            if (cd.isConnectingToInternet()) {
+                                Toast.makeText(mContext, "Authentication error", Toast.LENGTH_SHORT).show();
                             }
 
                         }
@@ -806,6 +817,8 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 data.put("from", messagelist.get(adapterPosition).getNumber());
                 data.put("postid", messagelist.get(adapterPosition).getPostId());
                 data.put("number", session.getMobileNumber());
+                data.put("token", session.getKeyAuthToken());
+                // data.put("deviceid", session.getDeviceid());
                 return data;
             }
         };
@@ -945,7 +958,8 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
                     in.putExtras(bundle);
                     mContext.startActivity(in);
-                    ((Feed) mContext).overridePendingTransition(0, 0);
+
+                    ((Activity) mContext).overridePendingTransition(0, 0);
                 }
             });
             reaction.setOnClickListener(new View.OnClickListener() {
@@ -965,9 +979,8 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             place.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    session = new UserSessionManager(mContext);
-                    session.setCityLocation(messagelist.get(getAdapterPosition()).getLocation());
-                    Intent in = new Intent(mContext, LocationActivity.class);
+                    Intent in = new Intent(mContext, MyCityActivity.class);
+                    in.putExtra("place", messagelist.get(getAdapterPosition()).getLocation());
                     mContext.startActivity(in);
                 }
             });
@@ -1148,7 +1161,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     Intent in = new Intent(mContext, Comments1.class);
                     in.putExtras(bundle);
                     mContext.startActivity(in);
-                    ((Feed) mContext).overridePendingTransition(0, 0);
+                    ((Activity) mContext).overridePendingTransition(0, 0);
 
                 }
             });
@@ -1162,16 +1175,16 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     Intent in = new Intent(mContext, Comments1.class);
                     in.putExtras(bundle);
                     mContext.startActivity(in);
-                    ((Feed) mContext).overridePendingTransition(0, 0);
+                    ((Activity) mContext).overridePendingTransition(0, 0);
 
                 }
             });
             place.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    session = new UserSessionManager(mContext);
-                    session.setCityLocation(messagelist.get(getAdapterPosition()).getLocation());
-                    Intent in = new Intent(mContext, LocationActivity.class);
+
+                    Intent in = new Intent(mContext, MyCityActivity.class);
+                    in.putExtra("place", messagelist.get(getAdapterPosition()).getLocation());
                     mContext.startActivity(in);
                 }
             });
@@ -1209,7 +1222,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     Intent in = new Intent(mContext, Comments1.class);
                     in.putExtras(bundle);
                     mContext.startActivity(in);
-                    ((Feed) mContext).overridePendingTransition(0, 0);
+                    ((Activity) mContext).overridePendingTransition(0, 0);
 
                 }
             });

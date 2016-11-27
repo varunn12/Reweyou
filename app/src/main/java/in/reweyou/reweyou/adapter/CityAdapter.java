@@ -58,7 +58,6 @@ import java.util.Map;
 
 import in.reweyou.reweyou.CategoryActivity;
 import in.reweyou.reweyou.Comments1;
-import in.reweyou.reweyou.Feed;
 import in.reweyou.reweyou.FullImage;
 import in.reweyou.reweyou.LocationActivity;
 import in.reweyou.reweyou.R;
@@ -929,7 +928,7 @@ public class CityAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
                     in.putExtras(bundle);
                     mContext.startActivity(in);
-                    ((Feed) mContext).overridePendingTransition(0, 0);
+                    ((Activity) mContext).overridePendingTransition(0, 0);
                 }
             });
             reaction.setOnClickListener(new View.OnClickListener() {
@@ -942,7 +941,7 @@ public class CityAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     Intent in = new Intent(mContext, Comments1.class);
                     in.putExtras(bundle);
                     mContext.startActivity(in);
-                    ((Feed) mContext).overridePendingTransition(0, 0);
+                    ((Activity) mContext).overridePendingTransition(0, 0);
 
                 }
             });
@@ -987,7 +986,7 @@ public class CityAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     bundle.putString("headline", messagelist.get(getAdapterPosition()).getHeadline());
                     bundle.putString("image", messagelist.get(getAdapterPosition()).getImage());
                     Intent in = new Intent(mContext, Comments1.class);
-                    ((Feed) mContext).overridePendingTransition(0, 0);
+                    ((Activity) mContext).overridePendingTransition(0, 0);
 
                     in.putExtras(bundle);
                     mContext.startActivity(in);
@@ -1132,7 +1131,7 @@ public class CityAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     Intent in = new Intent(mContext, Comments1.class);
                     in.putExtras(bundle);
                     mContext.startActivity(in);
-                    ((Feed) mContext).overridePendingTransition(0, 0);
+                    ((Activity) mContext).overridePendingTransition(0, 0);
 
                 }
             });
@@ -1146,7 +1145,7 @@ public class CityAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     Intent in = new Intent(mContext, Comments1.class);
                     in.putExtras(bundle);
                     mContext.startActivity(in);
-                    ((Feed) mContext).overridePendingTransition(0, 0);
+                    ((Activity) mContext).overridePendingTransition(0, 0);
 
                 }
             });
@@ -1193,7 +1192,7 @@ public class CityAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     Intent in = new Intent(mContext, Comments1.class);
                     in.putExtras(bundle);
                     mContext.startActivity(in);
-                    ((Feed) mContext).overridePendingTransition(0, 0);
+                    ((Activity) mContext).overridePendingTransition(0, 0);
 
                 }
             });
