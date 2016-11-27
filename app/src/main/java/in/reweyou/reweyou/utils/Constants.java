@@ -28,6 +28,9 @@ public class Constants {
     public static final String USER_PROFILE_URL_FOLLOW = "https://www.reweyou.in/reweyou/read_new.php";
 
     public static final String URL_LIKE = "https://www.reweyou.in/reweyou/likes.php";
+    public static final String URL_NOTI_READ_STATUS = "https://www.reweyou.in/reweyou/readstatus.php";
+    public static final String MY_NOTIFICATIONS_URL = "https://www.reweyou.in/reweyou/notification.php";
+    public static final String MY_TOTAL_NOTIFICATIONS_URL = "https://www.reweyou.in/reweyou/total_notifications.php";
 
 
     public static final int VIEW_TYPE_IMAGE = 5;
