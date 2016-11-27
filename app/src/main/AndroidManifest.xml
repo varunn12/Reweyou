@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <uses-feature android:name="android.hardware.camera" />
 
@@ -41,6 +42,7 @@
         <activity
             android:name=".Feed"
             android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar.Feed">
             <meta-data
                 android:name="android.app.default_searchable"
@@ -108,7 +110,9 @@
             android:theme="@style/AppTheme" />
         <activity android:name=".Welcome" />
         <activity android:name=".Leaderboard" />
-        <activity android:name=".Notifications" />
+        <activity
+            android:name=".Notifications"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".FullImage"
             android:theme="@style/AppTheme.NoActionBar.Preview" />
