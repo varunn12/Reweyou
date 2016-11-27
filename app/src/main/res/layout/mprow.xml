@@ -2,9 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
+    android:background="#ffffff"
     android:orientation="vertical"
-    android:padding="4dp"
-    android:background="#ffffff">
+    android:padding="4dp">
 
     <FrameLayout
         android:layout_width="wrap_content"
@@ -15,21 +15,21 @@
             android:id="@+id/image"
             android:layout_width="160dp"
             android:layout_height="120dp"
-            android:src="@mipmap/ic_launcher"
-            android:contentDescription="@string/Image" />
+            android:contentDescription="@string/Image"
+            android:src="@mipmap/ic_launcher" />
 
         <ProgressBar
+            android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/progressBar"
             android:layout_gravity="center" />
     </FrameLayout>
 
     <LinearLayout
+        android:id="@+id/linear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/linear">
+        android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -40,81 +40,85 @@
                 android:id="@+id/Who"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="Name"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:layout_gravity="center" />
+                android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <TextView
                 android:id="@+id/tvType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="Type"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:layout_gravity="center" />
+                android:textAppearance="?android:attr/textAppearanceSmall" />
 
             <TextView
                 android:id="@+id/Post"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="Party"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:layout_gravity="center" />
+                android:textAppearance="?android:attr/textAppearanceSmall" />
 
             <TextView
                 android:id="@+id/place"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="Place"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:layout_gravity="center" />
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
             <TextView
                 android:id="@+id/tvState"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="State"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:layout_gravity="center" />
+                android:textAppearance="?android:attr/textAppearanceSmall" />
 
             <TextView
                 android:id="@+id/tvEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="Email id"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:layout_gravity="center" />
+                android:textAppearance="?android:attr/textAppearanceSmall" />
 
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Reviews"
-            android:id="@+id/tvCast"
-            android:layout_gravity="center"
-            android:paddingLeft="12dp"
-            android:paddingRight="12dp" />
             <TextView
+                android:id="@+id/tvCast"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:layout_gravity="center"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
                 android:text="Reviews"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            <TextView
                 android:id="@+id/tvContact"
-                android:layout_gravity="center" />
-            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:layout_gravity="center"
                 android:text="Reviews"
-                android:id="@+id/tvOffice"
-                android:layout_gravity="center" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="Reviews"
-                android:id="@+id/tvAddress"
-                android:layout_gravity="center" />
+                android:textAppearance="?android:attr/textAppearanceSmall" />
 
+            <TextView
+                android:id="@+id/tvOffice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Reviews"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            <TextView
+                android:id="@+id/tvAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Reviews"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        </LinearLayout>
     </LinearLayout>
-    </LinearLayout>
-    </LinearLayout>
+</LinearLayout>

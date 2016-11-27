@@ -30,5 +30,5 @@
             android:id="@+id/logout"
             android:icon="@drawable/ic_delete_black_24px"
             android:title="Delete Account"></item>
-            </group>
+    </group>
 </menu>

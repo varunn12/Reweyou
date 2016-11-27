@@ -181,7 +181,7 @@
                         android:layout_below="@id/Info"
                         android:layout_centerHorizontal="true"
                         android:layout_marginRight="32dp"
-                        android:alpha=".80"
+                        android:alpha=".90"
 
                         android:drawableLeft="@drawable/ic_location_on_black_18px_profile"
                         android:drawablePadding="2dp"
@@ -198,7 +198,7 @@
                         android:layout_below="@id/Location"
                         android:layout_centerHorizontal="true"
                         android:layout_marginLeft="32dp"
-                        android:alpha=".80"
+                        android:alpha=".90"
                         android:drawableLeft="@drawable/ic_call_black_24dp"
                         android:drawablePadding="2dp"
 
