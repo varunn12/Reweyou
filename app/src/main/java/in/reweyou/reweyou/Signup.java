@@ -59,6 +59,7 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
     public static final String KEY_LOCATION="location";
     public static final String KEY_OTP = "otp";
     public static final String KEY_TOKEN = "token";
+    public static final String KEY_DEVICE_ID = "deviceid";
     static final String[] PERMISSIONS = new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.READ_SMS};
     private static final int REQUEST_CODE = 0;
     private static final String REGISTER_URL = "https://www.reweyou.in/reweyou/signupnew.php";
@@ -191,6 +192,11 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
         SharedPreferences pref = getApplicationContext().getSharedPreferences(Config.SHARED_PREF, 0);
         token = pref.getString("regId", "0");
 
+        final String deviceid = Settings.Secure.getString(this.getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+
+        Log.d("deviceid", deviceid);
+
 
         if (editTextUsername.getText().toString().trim().equals("")) {
             editTextUsername.setError("Required!");
@@ -243,6 +249,8 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
                     params.put(KEY_NUMBER, number);
                     params.put(KEY_LOCATION, place);
                     params.put(KEY_TOKEN, token);
+                    params.put(KEY_DEVICE_ID, deviceid);
+
                     Log.e("Check", "Posting params: " + token);
                     Log.e("Check", "Posting params: " + place);
                     return params;
@@ -275,6 +283,7 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
                 if (checker.lacksPermissions(PERMISSIONS)) {
                     //   Snackbar.make(mToolbar, R.string.no_permissions, Snackbar.LENGTH_INDEFINITE).show();
                     // Toast.makeText(this,R.string.sms_permissions,Toast.LENGTH_LONG).show();
+
                 }
                 else {
                     registerUser();
@@ -369,6 +378,26 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
 
         if (checker.lacksPermissions(PERMISSIONS)) {
             startPermissionsActivity();
+/*
+
+            AlertDialogBox alertDialogBox=new AlertDialogBox(Signup.this,"Verify Number","") {
+                @Override
+                void onNegativeButtonClick(DialogInterface dialog) {
+
+                }
+
+                @Override
+                void onPositiveButtonClick(DialogInterface dialog) {
+
+                }
+            };
+*/
+
+
+
+
+
+
         }
             Log.w("Signup", "onResume");
             LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,

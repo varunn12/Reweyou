@@ -73,6 +73,7 @@ public class HttpService extends IntentService {
                     session.setMobileNumber(jsonObject.getString("number"));
                     session.setLoginLocation(jsonObject.getString("location"));
                     session.setProfilePicture(jsonObject.getString("profilepic"));
+                    session.setDeviceid(jsonObject.getString("deviceid"));
                     // session.setAuthToken(jsonObject.getString("token"));
 
                     if (responseObject.has("likes")) {

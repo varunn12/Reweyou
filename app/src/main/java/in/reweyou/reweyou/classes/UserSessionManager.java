@@ -34,6 +34,7 @@ public class UserSessionManager {
     // All Shared Preferences Keys
     private static final String IS_USER_LOGIN = "IsUserLoggedIn";
     private static final String KEY_AUTH_TOKEN = "authtoken";
+    private static final String KEY_DEVICE_ID = "deviceid";
     // Shared Preferences reference
     SharedPreferences pref;
     // Editor reference for Shared preferences
@@ -77,6 +78,16 @@ public class UserSessionManager {
     public void setProfilePicture(String image) {
         editor.putString(KEY_PIC, image);
         editor.commit();
+    }
+
+    public String getDeviceid() {
+        return pref.getString(KEY_DEVICE_ID, null);
+    }
+
+    public void setDeviceid(String deviceid) {
+        editor.putString(KEY_DEVICE_ID, deviceid);
+        editor.commit();
+
     }
 
     public String getMobileNumber() {
@@ -135,7 +146,6 @@ public class UserSessionManager {
         return !this.isUserLoggedIn();
     }
 
-
     /**
      * Get stored session data
      */
@@ -184,7 +194,6 @@ public class UserSessionManager {
         // Staring Login Activity
         _context.startActivity(i);
     }
-
 
     // Check for login
     public boolean isUserLoggedIn() {

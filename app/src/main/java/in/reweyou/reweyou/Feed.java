@@ -16,6 +16,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -28,20 +29,31 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.HandleActivityResult;
 import in.reweyou.reweyou.classes.UploadOptions;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.fragment.SecondFragment;
+import in.reweyou.reweyou.utils.Constants;
 
 import static in.reweyou.reweyou.classes.HandleActivityResult.HANDLE_IMAGE;
 import static in.reweyou.reweyou.classes.HandleActivityResult.HANDLE_VIDEO;
@@ -64,6 +76,7 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
     private Toolbar mToolbar;
     private FloatingActionButton floatingActionButton;
     private ImageView image;
+    private TextView tv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,6 +137,7 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
         initViewPagerAndTabs();
         initNavigationDrawer();
 
+        makeRequest();
 
     }
 
@@ -256,6 +270,28 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
 
+
+        MenuItem item = menu.findItem(R.id.action_notification);
+        MenuItemCompat.setActionView(item, R.layout.notification_icon_layout);
+        RelativeLayout notifCount = (RelativeLayout) MenuItemCompat.getActionView(item);
+
+        tv = (TextView) notifCount.findViewById(R.id.actionbar_notifcation_textview);
+        tv.setText("1");
+
+        ImageView im = (ImageView) notifCount.findViewById(R.id.im);
+        im.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isInternetPresent = cd.isConnectingToInternet();
+                if (isInternetPresent) {
+                    Intent notifications = new Intent(Feed.this, Notifications.class);
+                    startActivity(notifications);
+                } else {
+                    Toast.makeText(Feed.this, "You are not connected to Internet", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
         return true;
     }
 
@@ -271,7 +307,7 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
                 // as a favorite...
                 return true;
 
-            case R.id.action_notification:
+            /*case R.id.action_notification:
                 isInternetPresent = cd.isConnectingToInternet();
                 if (isInternetPresent) {
                     Intent notifications = new Intent(Feed.this, Notifications.class);
@@ -279,7 +315,7 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
                 } else {
                     Toast.makeText(this, "You are not connected to Internet", Toast.LENGTH_LONG).show();
                 }
-                return true;
+                return true;*/
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
@@ -306,6 +342,52 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
         } catch (android.content.ActivityNotFoundException ex) {
             Toast.makeText(Feed.this, "There is no email client installed.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void makeRequest() {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.MY_TOTAL_NOTIFICATIONS_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("responsetotallikes", response);
+                        if (response != null) {
+                            if (!response.isEmpty()) {
+                                setnotificationnNumber(Integer.parseInt(response));
+                            }
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> map = new HashMap<String, String>();
+
+                map.put("number", session.getMobileNumber());
+                map.put("token", session.getKeyAuthToken());
+                map.put("deviceid", session.getDeviceid());
+
+                return map;
+            }
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(Feed.this);
+        requestQueue.add(stringRequest);
+    }
+
+    private void setnotificationnNumber(int i) {
+        if (tv != null) {
+            if (i == 0) {
+                tv.setVisibility(View.INVISIBLE);
+            } else {
+                tv.setVisibility(View.VISIBLE);
+                tv.setText("" + (i));
+            }
+        }
+
     }
 
     @Override
@@ -452,4 +534,6 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
             return tabs[position];
         }
     }
+
+
 }
