@@ -1,6 +1,8 @@
 package in.reweyou.reweyou.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +25,7 @@ import java.util.Map;
 
 import in.reweyou.reweyou.Notifications;
 import in.reweyou.reweyou.R;
+import in.reweyou.reweyou.SinglePostActivity;
 import in.reweyou.reweyou.customView.CircularImageView;
 import in.reweyou.reweyou.model.NotificationCommentsModel;
 import in.reweyou.reweyou.model.NotificationLikesModel;
@@ -48,7 +51,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-
         if (list.get(position) instanceof NotificationLikesModel) {
             holder.who.setText(((NotificationLikesModel) list.get(position)).getName());
             holder.Continue.setText(" likes your report.");
@@ -104,18 +106,38 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 @Override
                 public void onClick(View v) {
                     Log.d("clicked", "clidked");
-                    makeRequestforReadchange();
+                    makeRequestforReadchange(getAdapterPosition());
+
+
+                    Bundle bundle = new Bundle();
+                    if (list.get(getAdapterPosition()) instanceof NotificationLikesModel)
+                        bundle.putString("postid", ((NotificationLikesModel) list.get(getAdapterPosition())).getPostid());
+                    else if (list.get(getAdapterPosition()) instanceof NotificationCommentsModel)
+                        bundle.putString("postid", ((NotificationCommentsModel) list.get(getAdapterPosition())).getPostid());
+                    Intent resultIntent = new Intent(context, SinglePostActivity.class);
+                    resultIntent.putExtras(bundle);
+                    context.startActivity(resultIntent);
+
                 }
             });
         }
 
-        private void makeRequestforReadchange() {
+        private void makeRequestforReadchange(final int adapterPosition) {
             StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_NOTI_READ_STATUS,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
                             Log.d("ResponseLike", response);
+                            if (response.equals("true ")) {
 
+                                if (list.get(adapterPosition) instanceof NotificationLikesModel) {
+                                    ((NotificationLikesModel) list.get(getAdapterPosition())).setReadstatus("true");
+                                    notifyItemChanged(getAdapterPosition());
+                                } else if (list.get(adapterPosition) instanceof NotificationCommentsModel) {
+                                    ((NotificationCommentsModel) list.get(getAdapterPosition())).setReadstatus("true");
+                                    notifyItemChanged(getAdapterPosition());
+                                }
+                            }
 
                         }
 
@@ -135,13 +157,10 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                     if (list.get(getAdapterPosition()) instanceof NotificationLikesModel) {
                         data.put("notid", ((NotificationLikesModel) list.get(getAdapterPosition())).getNotid());
                         data.put("type", "like");
-
-                        Log.d("reach", "1");
                         Log.d("reach", ((NotificationLikesModel) list.get(getAdapterPosition())).getNotid());
                     } else if (list.get(getAdapterPosition()) instanceof NotificationCommentsModel) {
                         data.put("notid", ((NotificationCommentsModel) list.get(getAdapterPosition())).getNotid());
                         data.put("type", "comment");
-                        Log.d("reach", "2");
                         Log.d("reach", ((NotificationCommentsModel) list.get(getAdapterPosition())).getNotid());
 
                     }
