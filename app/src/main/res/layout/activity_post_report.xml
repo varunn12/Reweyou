@@ -130,7 +130,7 @@
                         android:layout_marginRight="16dp"
                         android:layout_marginTop="8dp"
                         android:background="@null"
-                        android:drawableLeft="@drawable/ic_timeline_black_18px"
+                        android:drawableLeft="@drawable/ic_timeline_black_18px_layout"
                         android:drawablePadding="16dp"
                         android:hint="one line headline (optional)"
                         android:inputType="textMultiLine"
