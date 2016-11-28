@@ -117,7 +117,7 @@
         <activity
             android:name=".Notifications"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar.Preview" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".PermissionsActivity" />
         <activity android:name=".MyReports" />
         <activity android:name=".Action" />
@@ -193,6 +193,11 @@
 
 
         </activity>
+
+        <activity
+            android:name=".FullImage"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar.Preview" />
     </application>
 
 </manifest>
