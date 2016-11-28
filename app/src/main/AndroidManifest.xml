@@ -31,6 +31,7 @@
         android:theme="@style/AppTheme.NoActionBar">
         <activity
             android:name=".SplashScreen"
+            android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -40,8 +41,8 @@
         </activity>
         <activity
             android:name=".Signup"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"></activity>
         <activity
             android:name=".Feed"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -115,9 +116,7 @@
         <activity android:name=".Leaderboard" />
         <activity
             android:name=".Notifications"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".FullImage"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar.Preview" />
         <activity android:name=".PermissionsActivity" />
         <activity android:name=".MyReports" />

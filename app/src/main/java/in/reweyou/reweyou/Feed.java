@@ -146,6 +146,7 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
         if (session.getDeviceid() == null)
             checkforolduserstatus();
         else {
+            pd.setVisibility(View.GONE);
             viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
             makeRequest();
         }
