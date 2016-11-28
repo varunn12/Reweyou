@@ -534,64 +534,71 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
 
     private void handleVideo(String data) {
 
-        File videoFile = new File(data);
-        int file_size = Integer.parseInt(String.valueOf(videoFile.length() / (1024 * 1024)));
-        if (file_size < 5) {
-            viewType = VIDEO;
-            //Log.d("path2", data);
-            // selectedVideoPath = uploadOptions.getAbsolutePath(Uri.parse(data));//Log.d("path", selectedVideoPath);
-            previewContainer.setVisibility(View.VISIBLE);
-            previewPlayVideoButton.setVisibility(View.VISIBLE);
-            logoContainer.setVisibility(View.GONE);
-            previewImageView.setColorFilter(Color.argb(150, 255, 255, 255)); // White Tint
-
-            previewImageView.setVisibility(View.VISIBLE);
-            previewImageViewGif.setVisibility(View.GONE);
-
-            Glide.with(PostReport.this).load(new File(data)).override(800, 800).into(previewImageView);
-            selectedVideoPath = data;
+        if (data == null) {
+            Toast.makeText(PostReport.this, "File path not supported", Toast.LENGTH_SHORT).show();
         } else {
-            AlertDialogBox alertDialogBox = new AlertDialogBox(PostReport.this, "File size exceeded", "Please upload video upto 5 MB in size only...", "OKAY", null) {
-                @Override
-                void onNegativeButtonClick(DialogInterface dialog) {
+            File videoFile = new File(data);
+            int file_size = Integer.parseInt(String.valueOf(videoFile.length() / (1024 * 1024)));
+            if (file_size < 5) {
+                viewType = VIDEO;
+                //Log.d("path2", data);
+                // selectedVideoPath = uploadOptions.getAbsolutePath(Uri.parse(data));//Log.d("path", selectedVideoPath);
+                previewContainer.setVisibility(View.VISIBLE);
+                previewPlayVideoButton.setVisibility(View.VISIBLE);
+                logoContainer.setVisibility(View.GONE);
+                previewImageView.setColorFilter(Color.argb(150, 255, 255, 255)); // White Tint
+
+                previewImageView.setVisibility(View.VISIBLE);
+                previewImageViewGif.setVisibility(View.GONE);
+
+                Glide.with(PostReport.this).load(new File(data)).override(800, 800).into(previewImageView);
+                selectedVideoPath = data;
+            } else {
+                AlertDialogBox alertDialogBox = new AlertDialogBox(PostReport.this, "File size exceeded", "Please upload video upto 5 MB in size only...", "OKAY", null) {
+                    @Override
+                    void onNegativeButtonClick(DialogInterface dialog) {
                     /*Not define*/
-                }
+                    }
 
-                @Override
-                void onPositiveButtonClick(DialogInterface dialog) {
-                    dialog.dismiss();
+                    @Override
+                    void onPositiveButtonClick(DialogInterface dialog) {
+                        dialog.dismiss();
 
-                }
-            };
-            alertDialogBox.setCancellable(true);
-            alertDialogBox.show();
+                    }
+                };
+                alertDialogBox.setCancellable(true);
+                alertDialogBox.show();
+            }
         }
     }
 
     private void handleImage(String data) {
 
-
-        previewPlayVideoButton.setVisibility(View.GONE);
-        logoContainer.setVisibility(View.GONE);
-        previewImageView.setColorFilter(null);
-        previewContainer.setVisibility(View.VISIBLE);
-
-        selectedImagePath = uploadOptions.getAbsolutePath(Uri.parse(data));
-
-        String type = selectedImagePath.substring(selectedImagePath.lastIndexOf(".") + 1);
-        if (type.equals("gif")) {
-            selectedImagePath = uploadOptions.getAbsolutePath(Uri.parse(data));
-            previewImageView.setVisibility(View.GONE);
-            previewImageViewGif.setVisibility(View.VISIBLE);
-            Glide.with(PostReport.this).load(selectedImagePath).asGif().into(previewImageViewGif);
-            viewType = IMAGE;
+        if (data == null) {
+            Toast.makeText(PostReport.this, "File path not supported", Toast.LENGTH_SHORT).show();
         } else {
+            previewPlayVideoButton.setVisibility(View.GONE);
+            logoContainer.setVisibility(View.GONE);
+            previewImageView.setColorFilter(null);
+            previewContainer.setVisibility(View.VISIBLE);
 
-            previewImageView.setVisibility(View.VISIBLE);
-            previewImageViewGif.setVisibility(View.GONE);
             selectedImagePath = uploadOptions.getAbsolutePath(Uri.parse(data));
-            Glide.with(PostReport.this).load(selectedImagePath).into(previewImageView);
-            viewType = IMAGE;
+
+            String type = selectedImagePath.substring(selectedImagePath.lastIndexOf(".") + 1);
+            if (type.equals("gif")) {
+                selectedImagePath = uploadOptions.getAbsolutePath(Uri.parse(data));
+                previewImageView.setVisibility(View.GONE);
+                previewImageViewGif.setVisibility(View.VISIBLE);
+                Glide.with(PostReport.this).load(selectedImagePath).asGif().into(previewImageViewGif);
+                viewType = IMAGE;
+            } else {
+
+                previewImageView.setVisibility(View.VISIBLE);
+                previewImageViewGif.setVisibility(View.GONE);
+                selectedImagePath = uploadOptions.getAbsolutePath(Uri.parse(data));
+                Glide.with(PostReport.this).load(selectedImagePath).into(previewImageView);
+                viewType = IMAGE;
+            }
         }
     }
 
@@ -733,7 +740,6 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                 if (parameterHeadline != null)
                     param.put(POST_REPORT_KEY_HEADLINE, parameterHeadline);
                 param.put(POST_REPORT_KEY_DESCRIPTION, parameterDescription);
-
                 param.put("token", session.getKeyAuthToken());
                 param.put("deviceid", session.getDeviceid());
 

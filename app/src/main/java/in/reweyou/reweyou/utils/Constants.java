@@ -56,4 +56,5 @@ public class Constants {
     public static final String POST_REPORT_KEY_REPORT = "report";
 
     public static final String AUTH_ERROR = "Autherror";
+    public static final String URL_OLD_USER_STATUS = "https://www.reweyou.in/reweyou/old_users.php";
 }
