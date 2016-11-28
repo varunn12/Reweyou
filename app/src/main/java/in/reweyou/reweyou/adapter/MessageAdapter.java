@@ -818,7 +818,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 data.put("postid", messagelist.get(adapterPosition).getPostId());
                 data.put("number", session.getMobileNumber());
                 data.put("token", session.getKeyAuthToken());
-                // data.put("deviceid", session.getDeviceid());
+                data.put("deviceid", session.getDeviceid());
                 return data;
             }
         };
