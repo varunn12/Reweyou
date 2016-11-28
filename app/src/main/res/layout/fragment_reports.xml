@@ -1,20 +1,20 @@
-<RelativeLayout
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:layout_height="match_parent">
     <TextView
+        android:id="@+id/Total"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
-        android:id="@+id/Total"
-        android:textSize="15sp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="2dp"
+        android:layout_marginTop="4dp"
         android:textColor="#049799"
-        android:layout_marginLeft="5dp"
-        android:layout_centerHorizontal="true" />
+        android:textSize="12dp" />
     <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/swipe_container"
         android:layout_width="match_parent"
-        android:layout_below="@id/Total"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@id/Total">
 
         <view
             android:id="@+id/recycler_view"
@@ -22,8 +22,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:scrollbars="vertical"
-            android:fadeScrollbars="true"/>
+            android:fadeScrollbars="true"
+            android:scrollbars="vertical" />
 
     </android.support.v4.widget.SwipeRefreshLayout>
 

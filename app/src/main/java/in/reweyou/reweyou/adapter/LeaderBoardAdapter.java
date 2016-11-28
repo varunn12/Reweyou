@@ -1,70 +1,54 @@
 package in.reweyou.reweyou.adapter;
 
 
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import java.util.List;
 
-import in.reweyou.reweyou.Details;
 import in.reweyou.reweyou.R;
-import in.reweyou.reweyou.Signup;
 import in.reweyou.reweyou.UserProfile;
-import in.reweyou.reweyou.model.UserModel;
+import in.reweyou.reweyou.model.LeaderboardModel;
 
 
-public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
-    private List<UserModel> mpModelList;
+public class LeaderBoardAdapter extends RecyclerView.Adapter<LeaderBoardAdapter.ViewHolder> {
+    ImageLoader imageLoader = ImageLoader.getInstance();
+    private List<LeaderboardModel> mpModelList;
     private Context mContext;
     private DisplayImageOptions options;
-    ImageLoader imageLoader = ImageLoader.getInstance();
 
-    public UserAdapter(Context context, List<UserModel> mpsList) {
+    public LeaderBoardAdapter(Context context, List<LeaderboardModel> mpsList) {
         this.mpModelList = mpsList;
         this.mContext = context;
-        options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.irongrip)
-                .displayer(new RoundedBitmapDisplayer(1000))
-                .showImageForEmptyUri(R.drawable.cup)
-                .showImageOnFail(R.drawable.cup)
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .considerExifParams(true)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .build();
     }
 
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.user_row, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_leaderboard_row, viewGroup, false);
 
         ViewHolder holder = new ViewHolder(view);
         return holder;
     }
 
     @Override
-    public void onBindViewHolder(UserAdapter.ViewHolder viewHolder, final int position) {
+    public void onBindViewHolder(LeaderBoardAdapter.ViewHolder viewHolder, final int position) {
         String rank = String.valueOf(position+1);
-        viewHolder.userName.setText((rank+"       "+mpModelList.get(position).getName()));
+        viewHolder.rank.setText("#" + rank);
+        viewHolder.userName.setText(mpModelList.get(position).getName());
+
         viewHolder.userName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -78,8 +62,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
 
         viewHolder.reviews.setText(mpModelList.get(position).getTotal_points());
-        final ViewHolder viewHolderFinal = viewHolder;
-        imageLoader.displayImage(mpModelList.get(position).getProfilePic(), viewHolder.image, options);
+        Glide.with(mContext).load(mpModelList.get(position).getProfilePic()).error(R.drawable.download).into(viewHolder.image);
     }
 
 
@@ -92,6 +75,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     class ViewHolder extends RecyclerView.ViewHolder{
         protected TextView userName;
         protected TextView reviews;
+        protected TextView rank;
         protected ImageView image;
 
         public ViewHolder(View view) {
@@ -100,6 +84,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             String fontPath = "fonts/Roboto-Regular.ttf";
             Typeface tf = Typeface.createFromAsset(mContext.getAssets(), fontPath);
             this.userName = (TextView) view.findViewById(R.id.Who);
+            this.rank = (TextView) view.findViewById(R.id.rank);
             this.userName.setTypeface(tf);
             this.reviews=(TextView)view.findViewById(R.id.Continue);
             this.image=(ImageView)view.findViewById(R.id.image);
