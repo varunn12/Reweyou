@@ -3,14 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/colorPrimary"
-    android:orientation="vertical"
     tools:context=".TokenTest">
 
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:isScrollContainer="false">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -23,19 +22,21 @@
                 android:layout_width="30dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="40dp"
+                android:layout_weight="0.2"
                 android:src="@drawable/logo_plain"
                 android:textColor="#fff"
                 android:textSize="25sp" />
 
+
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="320dp"
+                android:layout_centerInParent="true"
                 android:layout_gravity="center"
                 android:layout_marginBottom="6dp"
+
                 android:layout_marginLeft="32dp"
                 android:layout_marginRight="32dp"
-                android:layout_marginTop="32dp"
                 android:background="@drawable/button_background2"
                 android:elevation="4dp"
                 android:gravity="center_horizontal"
@@ -48,9 +49,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center|center_horizontal"
+                    android:layout_gravity="top|center_horizontal"
                     android:text="SignUp"
                     android:textColor="@color/colorPrimaryDark" />
+
 
                 <EditText
                     android:id="@+id/editTextUsername"
@@ -58,8 +60,8 @@
                     android:layout_height="48dp"
                     android:layout_marginLeft="12dp"
                     android:layout_marginRight="12dp"
-                    android:layout_marginTop="20dp"
-                    android:drawableLeft="@drawable/ic_person_primary_24px"
+                    android:layout_marginTop="24dp"
+                    android:drawableLeft="@drawable/ic_person_primary_24px_layer"
                     android:drawablePadding="6dp"
                     android:hint=" Full Name"
                     android:inputType="textPersonName|textNoSuggestions|textCapWords"
@@ -78,7 +80,7 @@
                     android:layout_marginLeft="12dp"
                     android:layout_marginRight="12dp"
                     android:layout_marginTop="8dp"
-                    android:drawableLeft="@drawable/ic_phone_android_black_24px"
+                    android:drawableLeft="@drawable/ic_phone_android_black_24px_layer"
                     android:drawablePadding="6dp"
                     android:hint="10 digit mobile number"
 
@@ -100,7 +102,7 @@
                     android:layout_marginRight="12dp"
                     android:layout_marginTop="8dp"
 
-                    android:drawableLeft="@drawable/ic_location_on_black_24px"
+                    android:drawableLeft="@drawable/ic_location_on_black_24px_layer"
 
                     android:drawablePadding="6dp"
                     android:hint="City"
@@ -113,31 +115,38 @@
                     android:textStyle="bold"
                     android:theme="@style/EditTextStyle2" />
 
+
                 <Button
                     android:id="@+id/buttonRegister"
                     android:layout_width="120dp"
                     android:layout_height="40dp"
+                    android:layout_centerInParent="true"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginTop="72dp"
+
+                    android:layout_marginBottom="6dp"
+                    android:layout_marginTop="40dp"
                     android:background="@drawable/button_background_rectangular_white"
                     android:text="Register"
+
                     android:textColor="@color/colorPrimaryDark" />
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/Read"
+                android:layout_width="wrap_content"
+
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.2"
+                android:gravity="bottom|center_horizontal"
+                android:paddingBottom="24dp"
+                android:text="By signing up you agree to\nTerms and Conditions"
+                android:textColor="#fff"
+                android:textSize="12sp" />
         </LinearLayout>
     </ScrollView>
-
-    <TextView
-        android:id="@+id/Read"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp"
-        android:gravity="center"
-        android:text="By signing up you agree to\nTerms and Conditions"
-        android:textColor="#fff"
-        android:textSize="12sp" />
 
 
 </RelativeLayout>
