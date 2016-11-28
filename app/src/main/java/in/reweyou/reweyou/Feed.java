@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -29,6 +30,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -77,12 +79,16 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
     private FloatingActionButton floatingActionButton;
     private ImageView image;
     private TextView tv;
+    private ProgressBar pd;
+    private ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
 
+        pd = (ProgressBar) findViewById(R.id.pd);
+        pd.setVisibility(View.VISIBLE);
         floatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,7 +143,65 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
         initViewPagerAndTabs();
         initNavigationDrawer();
 
-        makeRequest();
+        if (session.getDeviceid() == null)
+            checkforolduserstatus();
+        else {
+            viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
+            makeRequest();
+        }
+
+
+    }
+
+    private void checkforolduserstatus() {
+
+        tabLayout.setVisibility(View.GONE);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.URL_OLD_USER_STATUS,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        pd.setVisibility(View.GONE);
+
+                        Log.d("responseolduser", response);
+                        if (response != null) {
+                            if (!response.isEmpty()) {
+                                if (response.equals("error")) {
+                                    Toast.makeText(Feed.this, "wrong", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Log.d("readched", "22323");
+                                    session.setAuthToken(response);
+                                    session.setDeviceid(Settings.Secure.getString(Feed.this.getContentResolver(), Settings.Secure.ANDROID_ID));
+
+                                    Log.d("readched oid", Settings.Secure.getString(Feed.this.getContentResolver(), Settings.Secure.ANDROID_ID));
+
+                                    tabLayout.setVisibility(View.VISIBLE);
+
+                                    // viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
+                                    // makeRequest();
+                                }
+                            }
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        pd.setVisibility(View.GONE);
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> map = new HashMap<String, String>();
+
+                map.put("number", session.getMobileNumber());
+                map.put("deviceid", Settings.Secure.getString(Feed.this.getContentResolver(), Settings.Secure.ANDROID_ID));
+
+                return map;
+            }
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(Feed.this);
+        requestQueue.add(stringRequest);
+
 
     }
 
@@ -147,9 +211,9 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void initViewPagerAndTabs() {
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
+        viewPager = (ViewPager) findViewById(R.id.viewPager);
         viewPager.setOffscreenPageLimit(2);
-        viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
+        // viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
 
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
@@ -458,7 +522,7 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
                         drawerLayout.closeDrawers();
                         break;
                     case R.id.New:
-                        Intent New = new Intent(Feed.this, NewActivity.class);
+                        Intent New = new Intent(Feed.this, WhatsNew.class);
                         startActivity(New);
                         drawerLayout.closeDrawers();
                         break;

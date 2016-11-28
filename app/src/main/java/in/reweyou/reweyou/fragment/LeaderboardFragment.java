@@ -9,14 +9,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -29,22 +23,19 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import in.reweyou.reweyou.classes.HidingScrollListener;
 import in.reweyou.reweyou.R;
+import in.reweyou.reweyou.adapter.LeaderBoardAdapter;
+import in.reweyou.reweyou.classes.HidingScrollListener;
 import in.reweyou.reweyou.classes.RequestHandler;
 import in.reweyou.reweyou.classes.UserSessionManager;
-import in.reweyou.reweyou.adapter.UserAdapter;
-import in.reweyou.reweyou.model.UserModel;
+import in.reweyou.reweyou.model.LeaderboardModel;
 
 
 public class LeaderboardFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
@@ -52,9 +43,9 @@ public class LeaderboardFragment extends Fragment implements SwipeRefreshLayout.
 
     SwipeRefreshLayout swipeLayout;
     private RecyclerView recyclerView;
-    private List<UserModel> messagelist;
+    private List<LeaderboardModel> messagelist;
     private TextView total;
-    private UserAdapter adapter;
+    private LeaderBoardAdapter adapter;
     private ProgressBar progressBar;
     private String tag;
     private Button button8;
@@ -77,7 +68,7 @@ public class LeaderboardFragment extends Fragment implements SwipeRefreshLayout.
         recyclerView=(RecyclerView)layout.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         total=(TextView)layout.findViewById(R.id.Total);
-        total.setText("Rank is based on total reviews on your post.");
+        total.setText("Rank is based on total reviews on your post");
         //Progress bar
         tag="Random";
         progressBar = (ProgressBar)layout. findViewById(R.id.progress_bar);
@@ -110,7 +101,7 @@ public class LeaderboardFragment extends Fragment implements SwipeRefreshLayout.
         HashMap<String, String> user = session.getUserDetails();
         number = user.get(UserSessionManager.KEY_NUMBER);
         Messages();
-        adapter=new UserAdapter(getActivity(),messagelist);
+        adapter = new LeaderBoardAdapter(getActivity(), messagelist);
         recyclerView.setAdapter(adapter);
 
     }
@@ -126,8 +117,7 @@ public class LeaderboardFragment extends Fragment implements SwipeRefreshLayout.
     }
 
 
-
-    public class JSONTask extends AsyncTask<String, String, List<UserModel>> {
+    public class JSONTask extends AsyncTask<String, String, List<LeaderboardModel>> {
 
         @Override
         protected void onPreExecute() {
@@ -136,7 +126,7 @@ public class LeaderboardFragment extends Fragment implements SwipeRefreshLayout.
         }
 
         @Override
-        protected List<UserModel> doInBackground(String... params) {
+        protected List<LeaderboardModel> doInBackground(String... params) {
             HttpURLConnection connection = null;
             BufferedReader reader = null;
             RequestHandler rh= new RequestHandler();
@@ -170,13 +160,13 @@ public class LeaderboardFragment extends Fragment implements SwipeRefreshLayout.
                 length = parentArray.length();
                 StringBuffer finalBufferedData = new StringBuffer();
 
-                List<UserModel> messagelist = new ArrayList<>();
+                List<LeaderboardModel> messagelist = new ArrayList<>();
 
                 Gson gson = new Gson();
                 for (int i = 0; i < parentArray.length(); i++) {
                     JSONObject finalObject = parentArray.getJSONObject(i);
-                    UserModel UserModel = gson.fromJson(finalObject.toString(), UserModel.class);
-                    messagelist.add(UserModel);
+                    LeaderboardModel LeaderboardModel = gson.fromJson(finalObject.toString(), LeaderboardModel.class);
+                    messagelist.add(LeaderboardModel);
                 }
 
                 return messagelist;
@@ -203,10 +193,10 @@ public class LeaderboardFragment extends Fragment implements SwipeRefreshLayout.
         }
 
         @Override
-        protected void onPostExecute(List<UserModel> result) {
+        protected void onPostExecute(List<LeaderboardModel> result) {
             super.onPostExecute(result);
             progressBar.setVisibility(View.GONE);
-            UserAdapter adapter = new UserAdapter(getActivity(),result);
+            LeaderBoardAdapter adapter = new LeaderBoardAdapter(getActivity(), result);
             recyclerView.setAdapter(adapter);
             swipeLayout.setRefreshing(false);
             //need to set data to the list

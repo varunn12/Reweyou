@@ -1,46 +1,34 @@
 package in.reweyou.reweyou.adapter;
 
 
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.content.Context;
-import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
-import in.reweyou.reweyou.Details;
 import in.reweyou.reweyou.FullImage;
 import in.reweyou.reweyou.R;
-import in.reweyou.reweyou.Signup;
 import in.reweyou.reweyou.classes.TouchImageView;
-import in.reweyou.reweyou.model.UserModel;
+import in.reweyou.reweyou.model.LeaderboardModel;
 
 
 public class ActionAdapter extends RecyclerView.Adapter<ActionAdapter.ViewHolder> {
-    private List<UserModel> mpModelList;
+    ImageLoader imageLoader = ImageLoader.getInstance();
+    private List<LeaderboardModel> mpModelList;
     private Context mContext;
     private DisplayImageOptions options;
-    ImageLoader imageLoader = ImageLoader.getInstance();
 
-    public ActionAdapter(Context context, List<UserModel> mpsList) {
+    public ActionAdapter(Context context, List<LeaderboardModel> mpsList) {
         this.mpModelList = mpsList;
         this.mContext = context;
 

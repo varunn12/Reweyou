@@ -162,7 +162,7 @@
         <activity android:name=".MyCityActivity" />
         <activity android:name=".Friends" />
         <activity android:name=".CategoryActivity" />
-        <activity android:name=".NewActivity" />
+        <activity android:name=".WhatsNew" />
         <activity android:name=".UserProfile" />
         <activity android:name=".AddressBook" />
         <activity android:name=".Topic" />

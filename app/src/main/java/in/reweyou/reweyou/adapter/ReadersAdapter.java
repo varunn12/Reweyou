@@ -1,43 +1,37 @@
 package in.reweyou.reweyou.adapter;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import java.util.List;
 
-import in.reweyou.reweyou.Details;
 import in.reweyou.reweyou.R;
-import in.reweyou.reweyou.Signup;
 import in.reweyou.reweyou.UserProfile;
-import in.reweyou.reweyou.model.UserModel;
+import in.reweyou.reweyou.model.LeaderboardModel;
 
 
 public class ReadersAdapter extends RecyclerView.Adapter<ReadersAdapter.ViewHolder> {
-    private List<UserModel> mpModelList;
+    ImageLoader imageLoader = ImageLoader.getInstance();
+    private List<LeaderboardModel> mpModelList;
     private Context mContext;
     private DisplayImageOptions options;
-    ImageLoader imageLoader = ImageLoader.getInstance();
 
-    public ReadersAdapter(Context context, List<UserModel> mpsList) {
+    public ReadersAdapter(Context context, List<LeaderboardModel> mpsList) {
         this.mpModelList = mpsList;
         this.mContext = context;
         options = new DisplayImageOptions.Builder()
@@ -55,7 +49,7 @@ public class ReadersAdapter extends RecyclerView.Adapter<ReadersAdapter.ViewHold
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.user_row, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_leaderboard_row, viewGroup, false);
 
         ViewHolder holder = new ViewHolder(view);
         return holder;

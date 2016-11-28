@@ -4,8 +4,10 @@ package in.reweyou.reweyou.model;
  * Created by Reweyou on 10/5/2015.
  */
 
-public class UserModel {
+public class LeaderboardModel {
 
+    public String time;
+    public String comments;
     private String name;
     private String id;
     private String number;
@@ -16,10 +18,6 @@ public class UserModel {
     private String total_reviews;
     private String profilepic;
     private String action;
-    public String time;
-    public String comments;
-
-
 
     public String getName() {
         return name;
@@ -48,67 +46,73 @@ public class UserModel {
         // String ProfilePic = ProfilePic + url;
     }
 
-    public void setNumber(String number)
-    {
-        this.number=number;
-    }
     public String getNumber()
     {
         return number;
     }
 
-    public void setId(String id)
+    public void setNumber(String number)
     {
-        this.id=id;
+        this.number = number;
     }
+
     public String getId()
     {
         return id;
     }
 
-    public void setTotal_points(String id)
+    public void setId(String id)
     {
-        this.total_points=total_points;
+        this.id = id;
     }
+
     public String getTotal_points()
     {
         return total_points;
     }
 
-    public void setTotal_reviews(String id)
+    public void setTotal_points(String id)
     {
-        this.total_reviews=total_reviews;
+        this.total_points = total_points;
     }
+
     public String getTotal_reviews()
     {
         return total_reviews;
     }
 
-    public void setAction(String action)
+    public void setTotal_reviews(String id)
     {
-        this.action=action;
+        this.total_reviews = total_reviews;
     }
+
     public String getAction()
     {
         return action;
     }
 
-    public void setTime(String time)
+    public void setAction(String action)
     {
-        this.time=time;
+        this.action = action;
     }
+
     public String getTime()
     {
         return time;
     }
 
-    public void setComments(String comments)
+    public void setTime(String time)
     {
-        this.comments=comments;
+        this.time = time;
     }
+
     public String getComments()
     {
         return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
     }
 
     public String getFollower_name() {

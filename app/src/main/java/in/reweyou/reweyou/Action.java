@@ -3,9 +3,9 @@ package in.reweyou.reweyou;
 import android.app.ProgressDialog;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -22,7 +22,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -39,24 +38,24 @@ import java.util.TimeZone;
 import in.reweyou.reweyou.adapter.ActionAdapter;
 import in.reweyou.reweyou.classes.RequestHandler;
 import in.reweyou.reweyou.classes.UserSessionManager;
-import in.reweyou.reweyou.model.UserModel;
+import in.reweyou.reweyou.model.LeaderboardModel;
 
 public class Action extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, View.OnClickListener {
-    private RecyclerView recyclerView;
-    private Button button;
-    private EditText editText;
-    private List<UserModel> mpModelList;
-    private ActionAdapter adapter;
-    SwipeRefreshLayout swipeLayout;
-    private Toolbar toolbar;
-    private String name;
-    private String result;
-    UserSessionManager session;
-    private ProgressBar progressBar;
     public static final String UPLOAD_URL = "https://www.reweyou.in/reweyou/actions.php";
     public static final String KEY_TEXT = "headline";
     public static final String KEY_NAME = "name";
     public static final String KEY_TIME = "time";
+    SwipeRefreshLayout swipeLayout;
+    UserSessionManager session;
+    private RecyclerView recyclerView;
+    private Button button;
+    private EditText editText;
+    private List<LeaderboardModel> mpModelList;
+    private ActionAdapter adapter;
+    private Toolbar toolbar;
+    private String name;
+    private String result;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,89 +94,6 @@ public class Action extends AppCompatActivity implements SwipeRefreshLayout.OnRe
     @Override
     public void onClick(View v) {
         uploadText();
-    }
-
-    public class JSONTask extends AsyncTask<String, String, List<UserModel>> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            //setProgressBarIndeterminateVisibility(true);
-        }
-
-        @Override
-        protected List<UserModel> doInBackground(String... params) {
-            HttpURLConnection connection = null;
-            BufferedReader reader = null;
-            RequestHandler rh = new RequestHandler();
-            HashMap<String, String> data = new HashMap<String, String>();
-            // data.put("query",params[0]);
-            try {
-                URL url = new URL("https://www.reweyou.in/reweyou/actions_list.php");
-                connection = (HttpURLConnection) url.openConnection();
-
-                connection.setDoOutput(true);
-                connection.setRequestMethod("POST");
-
-                //   OutputStreamWriter wr = new OutputStreamWriter(connection.getOutputStream());
-                // wr.write(rh.getPostDataString(data));
-                //wr.flush();
-
-                InputStream stream = connection.getInputStream();
-                reader = new BufferedReader(new InputStreamReader(stream));
-                StringBuffer buffer = new StringBuffer();
-
-                String line = "";
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line);
-                }
-                String finalJson = buffer.toString();
-
-                JSONArray parentArray = new JSONArray(finalJson);
-                StringBuffer finalBufferedData = new StringBuffer();
-
-                List<UserModel> mpModelList = new ArrayList<>();
-
-                Gson gson = new Gson();
-                for (int i = 0; i < parentArray.length(); i++) {
-                    JSONObject finalObject = parentArray.getJSONObject(i);
-                    UserModel mpModel = gson.fromJson(finalObject.toString(), UserModel.class);
-                    mpModelList.add(mpModel);
-                }
-
-                return mpModelList;
-
-                //return buffer.toString();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } finally {
-                if (connection != null) {
-                    connection.disconnect();
-                }
-                try {
-                    if (reader != null) {
-                        reader.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(List<UserModel> result) {
-            super.onPostExecute(result);
-            progressBar.setVisibility(View.GONE);
-            ActionAdapter adapter = new ActionAdapter(Action.this, result);
-            recyclerView.setAdapter(adapter);
-            swipeLayout.setRefreshing(false);
-            //need to set data to the list
-        }
     }
 
     public void uploadText() {
@@ -225,6 +141,89 @@ public class Action extends AppCompatActivity implements SwipeRefreshLayout.OnRe
             }
             UploadText u = new UploadText();
             u.execute();
+        }
+    }
+
+    public class JSONTask extends AsyncTask<String, String, List<LeaderboardModel>> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            //setProgressBarIndeterminateVisibility(true);
+        }
+
+        @Override
+        protected List<LeaderboardModel> doInBackground(String... params) {
+            HttpURLConnection connection = null;
+            BufferedReader reader = null;
+            RequestHandler rh = new RequestHandler();
+            HashMap<String, String> data = new HashMap<String, String>();
+            // data.put("query",params[0]);
+            try {
+                URL url = new URL("https://www.reweyou.in/reweyou/actions_list.php");
+                connection = (HttpURLConnection) url.openConnection();
+
+                connection.setDoOutput(true);
+                connection.setRequestMethod("POST");
+
+                //   OutputStreamWriter wr = new OutputStreamWriter(connection.getOutputStream());
+                // wr.write(rh.getPostDataString(data));
+                //wr.flush();
+
+                InputStream stream = connection.getInputStream();
+                reader = new BufferedReader(new InputStreamReader(stream));
+                StringBuffer buffer = new StringBuffer();
+
+                String line = "";
+                while ((line = reader.readLine()) != null) {
+                    buffer.append(line);
+                }
+                String finalJson = buffer.toString();
+
+                JSONArray parentArray = new JSONArray(finalJson);
+                StringBuffer finalBufferedData = new StringBuffer();
+
+                List<LeaderboardModel> mpModelList = new ArrayList<>();
+
+                Gson gson = new Gson();
+                for (int i = 0; i < parentArray.length(); i++) {
+                    JSONObject finalObject = parentArray.getJSONObject(i);
+                    LeaderboardModel mpModel = gson.fromJson(finalObject.toString(), LeaderboardModel.class);
+                    mpModelList.add(mpModel);
+                }
+
+                return mpModelList;
+
+                //return buffer.toString();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } finally {
+                if (connection != null) {
+                    connection.disconnect();
+                }
+                try {
+                    if (reader != null) {
+                        reader.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(List<LeaderboardModel> result) {
+            super.onPostExecute(result);
+            progressBar.setVisibility(View.GONE);
+            ActionAdapter adapter = new ActionAdapter(Action.this, result);
+            recyclerView.setAdapter(adapter);
+            swipeLayout.setRefreshing(false);
+            //need to set data to the list
         }
     }
 }

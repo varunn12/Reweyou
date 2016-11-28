@@ -2,13 +2,12 @@ package in.reweyou.reweyou;
 
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -30,24 +29,23 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import in.reweyou.reweyou.adapter.CityAdapter;
 import in.reweyou.reweyou.adapter.ReadersAdapter;
 import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.DividerItemDecoration;
 import in.reweyou.reweyou.classes.RequestHandler;
 import in.reweyou.reweyou.classes.UserSessionManager;
-import in.reweyou.reweyou.model.MpModel;
-import in.reweyou.reweyou.model.UserModel;
+import in.reweyou.reweyou.model.LeaderboardModel;
 
 public class Readers extends AppCompatActivity {
 UserSessionManager session;
+    Boolean isInternetPresent = false;
+    ConnectionDetector cd;
     private ProgressBar progressBar;
     private ReadersAdapter adapter;
     private RecyclerView recyclerView;
     private String i;
-    private List<UserModel> messagelist;
-    Boolean isInternetPresent = false;
-    ConnectionDetector cd;
+    private List<LeaderboardModel> messagelist;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,7 +71,8 @@ UserSessionManager session;
             Toast.makeText(this, "You are not connected to Internet", Toast.LENGTH_LONG).show();
         }
     }
-    public class JSONTask extends AsyncTask<String, String, List<UserModel>> {
+
+    public class JSONTask extends AsyncTask<String, String, List<LeaderboardModel>> {
 
         @Override
         protected void onPreExecute() {
@@ -82,7 +81,7 @@ UserSessionManager session;
         }
 
         @Override
-        protected List<UserModel> doInBackground(String... params) {
+        protected List<LeaderboardModel> doInBackground(String... params) {
             HttpURLConnection connection = null;
             BufferedReader reader = null;
             RequestHandler rh= new RequestHandler();
@@ -115,13 +114,13 @@ UserSessionManager session;
                 JSONArray parentArray = new JSONArray(finalJson);
                 StringBuffer finalBufferedData = new StringBuffer();
 
-                List<UserModel> messagelist = new ArrayList<>();
+                List<LeaderboardModel> messagelist = new ArrayList<>();
 
                 Gson gson = new Gson();
                 for (int i = 0; i < parentArray.length(); i++) {
                     JSONObject finalObject = parentArray.getJSONObject(i);
-                    UserModel UserModel = gson.fromJson(finalObject.toString(), UserModel.class);
-                    messagelist.add(UserModel);
+                    LeaderboardModel LeaderboardModel = gson.fromJson(finalObject.toString(), LeaderboardModel.class);
+                    messagelist.add(LeaderboardModel);
                 }
 
                 return messagelist;
@@ -148,7 +147,7 @@ UserSessionManager session;
         }
 
         @Override
-        protected void onPostExecute(List<UserModel> result) {
+        protected void onPostExecute(List<LeaderboardModel> result) {
             super.onPostExecute(result);
            // progressBar.setVisibility(View.GONE);
             ReadersAdapter adapter = new ReadersAdapter(Readers.this,result);
