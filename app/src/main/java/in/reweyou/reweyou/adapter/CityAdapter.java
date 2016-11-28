@@ -123,13 +123,13 @@ public class CityAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         switch (viewType) {
             case VIEW_TYPE_IMAGE:
-                return new ImageViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_messageadapter_image, viewGroup, false));
+                return new ImageViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_feed_adapter_image, viewGroup, false));
             case VIEW_TYPE_VIDEO:
-                return new VideoViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_messageadapter_video, viewGroup, false));
+                return new VideoViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_feed_adapter_video, viewGroup, false));
             case VIEW_TYPE_LOADING:
-                return new LoadingViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_messageadapter_loading, viewGroup, false));
+                return new LoadingViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_feed_adapter_loading, viewGroup, false));
             case VIEW_TYPE_NEW_POST:
-                return new NewPostViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_messageadapter_new_post, viewGroup, false));
+                return new NewPostViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_feed_adapter_new_post, viewGroup, false));
             default:
                 return null;
 

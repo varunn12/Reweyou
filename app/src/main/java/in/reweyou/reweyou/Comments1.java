@@ -76,6 +76,7 @@ public class Comments1 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 onBackPressed();
+                overridePendingTransition(0, 0);
             }
         });
         Bundle bundle = getIntent().getExtras();

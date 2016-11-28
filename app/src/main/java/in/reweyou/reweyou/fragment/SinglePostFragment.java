@@ -112,14 +112,12 @@ public class SinglePostFragment extends Fragment {
         name = (TextView) view.findViewById(R.id.name);
         userName = (TextView) view.findViewById(R.id.userName);
         rv = (RelativeLayout) view.findViewById(R.id.rv);
-        LinearLayout cm = (LinearLayout) view.findViewById(R.id.cm);
         place = (TextView) view.findViewById(R.id.place);
         reaction = (ImageView) view.findViewById(R.id.comment);
         date = (TextView) view.findViewById(R.id.date);
         image = (ImageView) view.findViewById(R.id.image);
         overflow = (ImageView) view.findViewById(R.id.overflow);
         profilepic = (ImageView) view.findViewById(R.id.profilepic);
-        //  tv = (TextView) view.findViewById(R.id.tv);
         from = (TextView) view.findViewById(R.id.from);
 
         reviews = (TextView) view.findViewById(R.id.reviews);
@@ -390,19 +388,19 @@ public class SinglePostFragment extends Fragment {
                 int viewType = 0;
                 switch (result.getViewType()) {
                     case VIEW_TYPE_IMAGE:
-                        inflatedLayout = inflater.inflate(R.layout.row_messageadapter_image, viewcontainer, false);
+                        inflatedLayout = inflater.inflate(R.layout.item_feed_adapter_image, viewcontainer, false);
                         viewType = 1;
                         break;
                     case VIEW_TYPE_VIDEO:
-                        inflatedLayout = inflater.inflate(R.layout.row_messageadapter_video, viewcontainer, false);
+                        inflatedLayout = inflater.inflate(R.layout.item_feed_adapter_video, viewcontainer, false);
                         viewType = 2;
                         break;
                     case VIEW_TYPE_GIF:
-                        inflatedLayout = inflater.inflate(R.layout.row_messageadapter_image, viewcontainer, false);
+                        inflatedLayout = inflater.inflate(R.layout.item_feed_adapter_image, viewcontainer, false);
                         viewType = 3;
                         break;
                     default:
-                        inflatedLayout = inflater.inflate(R.layout.row_messageadapter_image, viewcontainer, false);
+                        inflatedLayout = inflater.inflate(R.layout.item_feed_adapter_image, viewcontainer, false);
                         break;
 
                 }

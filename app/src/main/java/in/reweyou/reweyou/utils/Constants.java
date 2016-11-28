@@ -35,9 +35,9 @@ public class Constants {
     public static final int VIEW_TYPE_IMAGE = 5;
     public static final int VIEW_TYPE_VIDEO = 6;
     public static final int VIEW_TYPE_GIF = 7;
-    public static final int VIEW_TYPE_LOADING = 10;
-    public static final int VIEW_TYPE_NEW_POST = 11;
-    public static final int VIEW_TYPE_LOCATION = 12;
+    public static final int VIEW_TYPE_LOADING = 8;
+    public static final int VIEW_TYPE_NEW_POST = 9;
+    public static final int VIEW_TYPE_LOCATION = 10;
 
 
     public static final String POST_REPORT_KEY_ADDRESS = "address";

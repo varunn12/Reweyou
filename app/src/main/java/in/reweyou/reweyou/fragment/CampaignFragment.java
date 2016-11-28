@@ -42,7 +42,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import in.reweyou.reweyou.R;
-import in.reweyou.reweyou.adapter.MessageAdapter;
+import in.reweyou.reweyou.adapter.FeedAdapter;
 import in.reweyou.reweyou.classes.DividerItemDecoration;
 import in.reweyou.reweyou.classes.HidingScrollListener;
 import in.reweyou.reweyou.classes.RequestHandler;
@@ -56,7 +56,7 @@ public class CampaignFragment extends Fragment implements SwipeRefreshLayout.OnR
     UserSessionManager session;
     private RecyclerView recyclerView;
     private List<MpModel> messagelist;
-    private MessageAdapter adapter;
+    private FeedAdapter adapter;
     private ProgressBar progressBar;
     private Spinner staticSpinner;
     private String tag, location, formattedDate;
@@ -141,7 +141,7 @@ public class CampaignFragment extends Fragment implements SwipeRefreshLayout.OnR
         super.onActivityCreated(savedInstanceState);
 
         Messages();
-        adapter=new MessageAdapter(getActivity(),messagelist);
+        adapter = new FeedAdapter(getActivity(), messagelist);
         recyclerView.setAdapter(adapter);
         // Create an ArrayAdapter using the string array and a default spinner
     /*    ArrayAdapter<CharSequence> staticAdapter = ArrayAdapter
@@ -314,7 +314,7 @@ public class CampaignFragment extends Fragment implements SwipeRefreshLayout.OnR
         protected void onPostExecute(List<MpModel> result) {
             super.onPostExecute(result);
             progressBar.setVisibility(View.GONE);
-            MessageAdapter adapter = new MessageAdapter(getActivity(),result);
+            FeedAdapter adapter = new FeedAdapter(getActivity(), result);
             recyclerView.setAdapter(adapter);
             swipeLayout.setRefreshing(false);
             //need to set data to the list

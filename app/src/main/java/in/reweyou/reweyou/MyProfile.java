@@ -68,7 +68,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import in.reweyou.reweyou.adapter.MessageAdapter;
+import in.reweyou.reweyou.adapter.FeedAdapter;
 import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.DividerItemDecoration;
 import in.reweyou.reweyou.classes.HandleActivityResult;
@@ -94,7 +94,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
     int SELECT_FILE = 1;
     private String i, tag, number, user, result, image, selectedImagePath;
     private TextView Name, Reports, Info, Readers, Location, Mobile;
-    private Bitmap bitmap, Correctbmp, btmap;
+    private Bitmap bitmap, Correctbmp;
     private ImageView profilepic;
     private EditText editTextHeadline, editLocation;
     private AppCompatButton buttonEdit;
@@ -110,6 +110,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_profile2);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Profile");
@@ -121,6 +122,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                 onBackPressed();
             }
         });
+
         //initCollapsingToolbar();
         session = new UserSessionManager(MyProfile.this);
         i = session.getMobileNumber();
@@ -128,7 +130,6 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
         session = new UserSessionManager(getApplicationContext());
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.VISIBLE);
-
 
         Name = (TextView) findViewById(R.id.Name);
         Reports = (TextView) findViewById(R.id.Reports);
@@ -854,7 +855,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
             if (result.isEmpty()) {
                 Empty.setVisibility(View.VISIBLE);
             }
-            MessageAdapter adapter = new MessageAdapter(MyProfile.this, result);
+            FeedAdapter adapter = new FeedAdapter(MyProfile.this, result);
             // total.setText("You have reported "+ String.valueOf(length)+ " stories.");
             recyclerView.setAdapter(adapter);
             //need to set data to the list

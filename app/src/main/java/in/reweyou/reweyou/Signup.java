@@ -378,25 +378,6 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
 
         if (checker.lacksPermissions(PERMISSIONS)) {
             startPermissionsActivity();
-/*
-
-            AlertDialogBox alertDialogBox=new AlertDialogBox(Signup.this,"Verify Number","") {
-                @Override
-                void onNegativeButtonClick(DialogInterface dialog) {
-
-                }
-
-                @Override
-                void onPositiveButtonClick(DialogInterface dialog) {
-
-                }
-            };
-*/
-
-
-
-
-
 
         }
             Log.w("Signup", "onResume");

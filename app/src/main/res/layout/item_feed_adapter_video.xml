@@ -28,6 +28,7 @@
 
                 android:alpha=".48"
                 android:background="#CFD8DC" />
+
             <RelativeLayout
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
@@ -128,14 +129,31 @@
                 android:textColor="#424242"
                 android:textSize="14sp" />
 
-
-            <ImageView
-                android:id="@+id/image"
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:adjustViewBounds="true"
-                android:scaleType="centerInside" />
+                android:layout_gravity="center">
+
+
+                <ImageView
+                    android:id="@+id/image"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:scaleType="centerInside" />
+
+                <ImageView
+                    android:id="@+id/play"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    card_view:srcCompat="@drawable/ic_play_circle_filled_black_24px" />
+            </RelativeLayout>
+
 
             <LinearLayout
                 android:id="@+id/top"
@@ -200,7 +218,6 @@
                 android:background="#CFD8DC" />
 
             <LinearLayout
-                android:id="@+id/cm"
                 android:layout_width="match_parent"
                 android:layout_height="42dp"
                 android:background="#fff"
@@ -224,7 +241,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
-                    android:layout_toRightOf="@id/reacticon"
                     android:layout_weight="1"
 
                     android:gravity="center_vertical"

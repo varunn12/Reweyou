@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.Map;
 
 import in.reweyou.reweyou.R;
-import in.reweyou.reweyou.adapter.MessageAdapter;
+import in.reweyou.reweyou.adapter.FeedAdapter;
 import in.reweyou.reweyou.classes.DividerItemDecoration;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.model.MpModel;
@@ -63,7 +63,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private int mYear, mMonth, mDay;
     private boolean loading = true;
     private SimpleDateFormat df;
-    private MessageAdapter adapter;
+    private FeedAdapter adapter;
     private Calendar c;
     private String postid;
     private int position = -1;
@@ -91,8 +91,10 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
         recyclerView = (RecyclerView) layout.findViewById(R.id.recycler_view);
         RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecoration(ContextCompat.getDrawable(getActivity(), R.drawable.line));
         recyclerView.addItemDecoration(dividerItemDecoration);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         final LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+
         DefaultItemAnimator defaultItemAnimator = new DefaultItemAnimator();
         recyclerView.setItemAnimator(defaultItemAnimator);
         recyclerView.setItemViewCacheSize(3);
@@ -205,8 +207,6 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
         });
 
 
-        recyclerView.setItemViewCacheSize(4);
-
         session = new UserSessionManager(getActivity());
         HashMap<String, String> user = session.getUserDetails();
         number = session.getMobileNumber();
@@ -302,7 +302,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                                 }
                             }
                             progressBar.setVisibility(View.GONE);
-                            adapter = new MessageAdapter(getActivity(), messagelist);
+                            adapter = new FeedAdapter(getActivity(), messagelist);
                             recyclerView.setAdapter(adapter);
 
                             swipeLayout.setRefreshing(false);
@@ -352,7 +352,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                                         messagelist.add(mpModel);
                                     }
                                     progressBar.setVisibility(View.GONE);
-                                    adapter = new MessageAdapter(getActivity(), messagelist);
+                                    adapter = new FeedAdapter(getActivity(), messagelist);
 
                                     recyclerView.setAdapter(adapter);
 

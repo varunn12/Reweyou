@@ -1,10 +1,8 @@
 package in.reweyou.reweyou.fragment;
 
-import android.app.DatePickerDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,24 +11,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
-import android.widget.TextView;
 
-import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,34 +28,25 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import in.reweyou.reweyou.adapter.FriendsAdapter;
-import in.reweyou.reweyou.classes.HidingScrollListener;
 import in.reweyou.reweyou.R;
+import in.reweyou.reweyou.adapter.FriendsAdapter;
 import in.reweyou.reweyou.classes.RequestHandler;
-import in.reweyou.reweyou.adapter.MessageAdapter;
-import in.reweyou.reweyou.classes.UserSessionManager;
-import in.reweyou.reweyou.model.MpModel;
 
 
 public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     SwipeRefreshLayout swipeLayout;
-    private RecyclerView recyclerView;
     ArrayList<String> messagelist = new ArrayList<>();
-    private FriendsAdapter adapter;
-    private ProgressBar progressBar;
     String phoneNumber;
     ArrayList<String> aa = new ArrayList<>();
     ArrayList<String> conname=new ArrayList<>();
+    private RecyclerView recyclerView;
+    private FriendsAdapter adapter;
+    private ProgressBar progressBar;
 
     public FriendsFragment() {
         // Required empty public constructor
@@ -110,6 +90,52 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         Messages();
     }
 
+    public void getNumber(ContentResolver cr) {
+        Cursor phones = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
+        while (phones.moveToNext()) {
+            String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+            phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+            System.out.println(".................." + phoneNumber);
+            name = phoneNumber.substring(3);
+            name = name.replace(" ", "");
+            aa.add(name);
+        }
+        phones.close();// close cursor
+        //display contact numbers in the list
+    }
+
+    public void getContactName(Context context, String phoneNumber) {
+        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
+        Cursor cursor = context.getContentResolver().query(uri,
+                new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup._ID}, null, null, null);
+        List<String> listIds = new ArrayList<String>(); //Arraylist to hold the unique ids
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                String contactId = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup._ID));
+                if (!listIds.contains(contactId))
+                    listIds.add(contactId); //adding unique id to arraylist
+            }
+            //pass unique ids to get contact names
+            for (int i = 0; i < listIds.size(); i++) {
+                String newId = listIds.get(i);
+                Cursor cursorDetails = context.getContentResolver().query(
+                        ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                        null,
+                        ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+                        new String[]{newId}, null);
+                if (cursorDetails != null) {
+                    if (cursorDetails.moveToFirst()) {
+                        String contactName = cursorDetails.getString(cursorDetails.getColumnIndexOrThrow(ContactsContract.PhoneLookup.DISPLAY_NAME));
+                        System.out.println("ID : " + newId + " Name : " + contactName + " Number : " + phoneNumber);
+                        conname.add(contactName);
+                    }
+                    cursorDetails.close();
+                }
+            }
+            cursor.close();
+        }
+
+    }
 
     public class JSONTask extends AsyncTask<String, String, List<String>> {
 
@@ -212,53 +238,6 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
             swipeLayout.setRefreshing(false);
             //need to set data to the list
         }
-    }
-
-    public void getNumber(ContentResolver cr) {
-        Cursor phones = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
-        while (phones.moveToNext()) {
-            String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-            phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-            System.out.println(".................." + phoneNumber);
-            name = phoneNumber.substring(3);
-            name = name.replace(" ", "");
-            aa.add(name);
-        }
-        phones.close();// close cursor
-        //display contact numbers in the list
-    }
-
-    public void getContactName(Context context, String phoneNumber) {
-        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
-        Cursor cursor = context.getContentResolver().query(uri,
-                new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup._ID},null, null, null);
-        List<String> listIds = new ArrayList<String>(); //Arraylist to hold the unique ids
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                String contactId = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup._ID));
-                if(!listIds.contains(contactId))
-                    listIds.add(contactId); //adding unique id to arraylist
-            }
-            //pass unique ids to get contact names
-            for (int i = 0; i < listIds.size(); i++) {
-                String newId = listIds.get(i);
-                Cursor cursorDetails = context.getContentResolver().query(
-                        ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                        null,
-                        ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
-                        new String[]{newId}, null);
-                if (cursorDetails != null) {
-                    if (cursorDetails.moveToFirst()) {
-                        String contactName = cursorDetails.getString(cursorDetails.getColumnIndexOrThrow(ContactsContract.PhoneLookup.DISPLAY_NAME));
-                        System.out.println("ID : " + newId + " Name : " + contactName + " Number : " + phoneNumber);
-                        conname.add(contactName);
-                    }
-                    cursorDetails.close();
-                }
-            }
-            cursor.close();
-        }
-
     }
 
 }

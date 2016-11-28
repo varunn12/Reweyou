@@ -52,7 +52,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import in.reweyou.reweyou.adapter.MessageAdapter;
+import in.reweyou.reweyou.adapter.FeedAdapter;
 import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.DividerItemDecoration;
 import in.reweyou.reweyou.classes.RequestHandler;
@@ -494,7 +494,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         protected void onPostExecute(List<MpModel> result) {
             super.onPostExecute(result);
             progressBar.setVisibility(View.GONE);
-            MessageAdapter adapter = new MessageAdapter(UserProfile.this, result);
+            FeedAdapter adapter = new FeedAdapter(UserProfile.this, result);
             // total.setText("You have reported "+ String.valueOf(length)+ " stories.");
             recyclerView.setAdapter(adapter);
             //need to set data to the list

@@ -13,20 +13,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,11 +41,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import in.reweyou.reweyou.R;
+import in.reweyou.reweyou.adapter.FeedAdapter;
 import in.reweyou.reweyou.classes.DividerItemDecoration;
 import in.reweyou.reweyou.classes.HidingScrollListener;
-import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.classes.RequestHandler;
-import in.reweyou.reweyou.adapter.MessageAdapter;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.model.MpModel;
 
@@ -56,13 +53,13 @@ import in.reweyou.reweyou.model.MpModel;
 public class MyFeed extends Fragment implements SwipeRefreshLayout.OnRefreshListener, View.OnClickListener {
 
     SwipeRefreshLayout swipeLayout;
+    UserSessionManager session;
     private RecyclerView recyclerView;
     private List<MpModel> messagelist;
-    private MessageAdapter adapter;
+    private FeedAdapter adapter;
     private ProgressBar progressBar;
     private Spinner staticSpinner;
     private String tag, location, formattedDate, number;
-    UserSessionManager session;
     private TextView datepick;
     private int mYear, mMonth, mDay;
 
@@ -144,7 +141,7 @@ public class MyFeed extends Fragment implements SwipeRefreshLayout.OnRefreshList
         number=session.getMobileNumber();
         location = user.get(UserSessionManager.KEY_LOCATION);
         Messages();
-        adapter=new MessageAdapter(getActivity(),messagelist);
+        adapter = new FeedAdapter(getActivity(), messagelist);
         recyclerView.setAdapter(adapter);
         // Create an ArrayAdapter using the string array and a default spinner
     /*    ArrayAdapter<CharSequence> staticAdapter = ArrayAdapter
@@ -317,7 +314,7 @@ public class MyFeed extends Fragment implements SwipeRefreshLayout.OnRefreshList
         protected void onPostExecute(List<MpModel> result) {
             super.onPostExecute(result);
             progressBar.setVisibility(View.GONE);
-            MessageAdapter adapter = new MessageAdapter(getActivity(),result);
+            FeedAdapter adapter = new FeedAdapter(getActivity(), result);
             recyclerView.setAdapter(adapter);
             swipeLayout.setRefreshing(false);
             //need to set data to the list
