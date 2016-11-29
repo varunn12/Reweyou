@@ -3,11 +3,13 @@ package in.reweyou.reweyou;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -59,6 +61,7 @@ public class Comments1 extends AppCompatActivity {
     private LinearLayout Empty;
     private ConnectionDetector checknet;
     private LinearLayout commentContainer;
+    private CommentsFragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,22 +86,28 @@ public class Comments1 extends AppCompatActivity {
         i = bundle.getString("myData");
 
 
-        CommentsFragment fragment = (CommentsFragment) getSupportFragmentManager().findFragmentById(R.id.frag);
+        fragment = (CommentsFragment) getSupportFragmentManager().findFragmentById(R.id.frag);
         fragment.setData(i);
 
     }
 
     @Override
     protected void onActivityResult(int reqCode, int resCode, Intent data) {
+        Log.d("result", "" + reqCode + "    " + resCode + "     " + data);
+
         if (resCode == Activity.RESULT_OK && reqCode == SELECT_FILE && data != null) {
-           /* Uri uriFromPath = data.getData();
-            String show = uriFromPath.toString();
-            Intent intent = new Intent(this, UpdateImage.class);
+
+            Uri uriFromPath = data.getData();
+            String path = uriFromPath.toString();
+            /*Intent intent = new Intent(Comments1.this, UpdateImage.class);
             intent.putExtra("path", show);
             intent.putExtra("postid", i);
             startActivity(intent);*/
+            if (fragment != null) {
+                fragment.setpreviewImage(path, i);
+            }
         } else {
-            Toast.makeText(this, "There is some error!", Toast.LENGTH_LONG).show();
+            Toast.makeText(Comments1.this, "There is some error!", Toast.LENGTH_LONG).show();
         }
     }
 }

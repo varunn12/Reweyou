@@ -5,7 +5,8 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,6 +18,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +30,10 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -52,7 +59,6 @@ import in.reweyou.reweyou.PermissionsActivity;
 import in.reweyou.reweyou.PermissionsChecker;
 import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.UILApplication;
-import in.reweyou.reweyou.UpdateImage;
 import in.reweyou.reweyou.adapter.CommentsAdapter;
 import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.RequestHandler;
@@ -71,6 +77,8 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
     public static final String KEY_TIME = "time";
     public static final String KEY_ID = "postid";
     public static final String KEY_NUMBER = "number";
+    public static final String KEY_IMAGE = "image";
+
     static final String[] PERMISSIONS = new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private static final int DISABLE = 0;
     private static final int ENABLE = 1;
@@ -93,6 +101,8 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
     private ProgressBar progressBar;
     private SwipeRefreshLayout swipeLayout;
     private Context mContext;
+    private ImageView previewImageView;
+    private String selectedImagePath;
 
     @Nullable
     @Override
@@ -107,6 +117,8 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
         number = user.get(UserSessionManager.KEY_NUMBER);
 
         Empty = (LinearLayout) layout.findViewById(R.id.empty);
+
+        previewImageView = (ImageView) layout.findViewById(R.id.previewImageView);
 
 
         editText = (EditText) layout.findViewById(R.id.Who);
@@ -183,7 +195,9 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
     @Override
     public void onClick(View v) {
         if (v == button) {
+            if (selectedImagePath == null)
             uploadText();
+            else uploadSelectedImage();
         } else {
             editText.clearFocus();
             new Handler().post(new Runnable() {
@@ -192,12 +206,9 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
                     if (checker.lacksPermissions(PERMISSIONS)) {
                         startPermissionsActivity();
                     } else {
-                        Intent intent = new Intent(Intent.ACTION_PICK,
-                                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                        // 2. pick image only
+                        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                         intent.setType("image/*");
-                        // 3. start activity
-                        startActivityForResult(intent, SELECT_FILE);
+                        getActivity().startActivityForResult(intent, SELECT_FILE);
                         UILApplication.getInstance().trackEvent("Gallery", "Gallery", "For Pics");
                     }
                 }
@@ -285,19 +296,6 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
         }
     }
 
-    @Override
-    public void onActivityResult(int reqCode, int resCode, Intent data) {
-        if (resCode == Activity.RESULT_OK && reqCode == SELECT_FILE && data != null) {
-            Uri uriFromPath = data.getData();
-            String show = uriFromPath.toString();
-            Intent intent = new Intent(mContext, UpdateImage.class);
-            intent.putExtra("path", show);
-            intent.putExtra("postid", i);
-            startActivity(intent);
-        } else {
-            Toast.makeText(mContext, "There is some error!", Toast.LENGTH_LONG).show();
-        }
-    }
 
     private void startPermissionsActivity() {
         PermissionsActivity.startActivityForResult(getActivity(), REQUEST_CODE, PERMISSIONS);
@@ -318,6 +316,95 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         mContext = activity;
+    }
+
+    public void setpreviewImage(String path, String i) {
+        if (path != null) {
+            selectedImagePath = path;
+        }
+        previewImageView.setVisibility(View.VISIBLE);
+        Glide.with(getActivity()).load(path).into(previewImageView);
+    }
+
+    public void uploadImage(String encodedImage) {
+
+        final String text = editText.getText().toString().trim();
+        final String image = encodedImage;
+        String format = "dd-MMM-yyyy hh:mm:ss a";
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Calcutta"));
+        final String timeStamp = sdf.format(new Date());
+
+
+        class UploadImage extends AsyncTask<Void, Void, String> {
+            ProgressDialog loading;
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                loading = ProgressDialog.show(mContext, "Please wait...", "uploading", false, false);
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                loading.dismiss();
+                if (s.trim().equals("Successfully Uploaded")) {
+                    //openProfile();
+                } else {
+                    Toast.makeText(mContext, "Try Again", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            protected String doInBackground(Void... params) {
+                RequestHandler rh = new RequestHandler();
+                HashMap<String, String> param = new HashMap<String, String>();
+                param.put(KEY_TEXT, text);
+                param.put(KEY_IMAGE, image);
+                param.put(KEY_NAME, name);
+                param.put(KEY_TIME, timeStamp);
+                param.put("number", number);
+                param.put("postid", i);
+
+                String result = rh.sendPostRequest(UPLOAD_URL, param);
+                return result;
+            }
+        }
+        UploadImage u = new UploadImage();
+        u.execute();
+    }
+
+    private void uploadSelectedImage() {
+        if (selectedImagePath != null) {
+            Glide
+                    .with(this)
+                    .load(selectedImagePath)
+                    .asBitmap()
+                    .toBytes(Bitmap.CompressFormat.JPEG, 90)
+                    .fitCenter()
+                    .atMost()
+                    .override(1000, 1000)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
+                    .into(new SimpleTarget<byte[]>() {
+                        @Override
+                        public void onLoadStarted(Drawable ignore) {
+                            // started async load
+                        }
+
+                        @Override
+                        public void onResourceReady(byte[] resource, GlideAnimation<? super byte[]> ignore) {
+                            String encodedImage = Base64.encodeToString(resource, Base64.DEFAULT);
+                            uploadImage(encodedImage);
+                        }
+
+                        @Override
+                        public void onLoadFailed(Exception ex, Drawable ignore) {
+                            Log.d("ex", ex.getMessage());
+                        }
+                    });
+        } else Log.w("uploadSelectedImage", "selected path is null");
     }
 
     public class JSONTask extends AsyncTask<String, String, List<CommentsModel>> {
@@ -441,4 +528,5 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
 
         }
     }
+
 }

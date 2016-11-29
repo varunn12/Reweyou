@@ -1,6 +1,8 @@
 package in.reweyou.reweyou;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -14,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import in.reweyou.reweyou.fragment.CommentsFragment;
 import in.reweyou.reweyou.fragment.SinglePostFragment;
@@ -21,6 +24,7 @@ import in.reweyou.reweyou.fragment.SinglePostFragment;
 public class SinglePostActivity extends AppCompatActivity {
 
     public ViewPager viewPager;
+    int SELECT_FILE = 1;
     private Toolbar mToolbar;
     private TabLayout tabLayout;
     private String query;
@@ -119,6 +123,20 @@ public class SinglePostActivity extends AppCompatActivity {
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int reqCode, int resCode, Intent data) {
+        if (resCode == Activity.RESULT_OK && reqCode == SELECT_FILE && data != null) {
+            Uri uriFromPath = data.getData();
+            String show = uriFromPath.toString();
+            Intent intent = new Intent(SinglePostActivity.this, UpdateImage.class);
+            intent.putExtra("path", show);
+            intent.putExtra("postid", query);
+            startActivity(intent);
+        } else {
+            Toast.makeText(SinglePostActivity.this, "There is some error!", Toast.LENGTH_LONG).show();
         }
     }
 
