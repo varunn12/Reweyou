@@ -42,6 +42,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.target.Target;
 
 import org.json.JSONException;
 
@@ -351,7 +352,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             } else
                 Glide.with(mContext).load(messagelist.get(position).getGif()).asGif().placeholder(R.drawable.irongrip).diskCacheStrategy(DiskCacheStrategy.SOURCE).error(R.drawable.ic_error).dontAnimate().into(viewHolder.image);
         } else
-            Glide.with(mContext).load(messagelist.get(position).getImage()).diskCacheStrategy(DiskCacheStrategy.SOURCE).error(R.drawable.ic_error).dontAnimate().into(viewHolder.image);
+            Glide.with(mContext).load(messagelist.get(position).getImage()).diskCacheStrategy(DiskCacheStrategy.SOURCE).override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).error(R.drawable.ic_error).dontAnimate().into(viewHolder.image);
 
     }
 
@@ -693,10 +694,13 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 BaseViewHolder baseViewHolder = (BaseViewHolder) holder;
                 Glide.clear(baseViewHolder.profilepic);
                 if (baseViewHolder instanceof ImageViewHolder) {
+                    Log.d("onviewclear", "called");
                     Glide.clear(((ImageViewHolder) baseViewHolder).image);
                 } else if (baseViewHolder instanceof VideoViewHolder) {
                     Glide.clear(((VideoViewHolder) baseViewHolder).image);
+
                 }
+
             }
         }
         super.onViewRecycled(holder);
