@@ -151,13 +151,13 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
         Read.setOnClickListener(this);
         buttonRegister.setOnClickListener(this);
         checker = new PermissionsChecker(this);
-        if (checker.lacksPermissions(PERMISSIONS)) {
+      /*  if (checker.lacksPermissions(PERMISSIONS)) {
             //   Snackbar.make(mToolbar, R.string.no_permissions, Snackbar.LENGTH_INDEFINITE).show();
             Toast.makeText(this, R.string.sms_permissions, Toast.LENGTH_LONG).show();
         } else {
 
         }
-
+*/
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
 
             //When the broadcast received
@@ -183,7 +183,7 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
             //If play service is supported but not installed
             if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
                 //Displaying message that play service is not installed
-                Toast.makeText(getApplicationContext(), "Google Play Service is not install/enabled in this device!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Google Play Service is not install/enabled on this device!", Toast.LENGTH_LONG).show();
                 GooglePlayServicesUtil.showErrorNotification(resultCode, getApplicationContext());
                 //If play service is not supported
                 //Displaying an error message
@@ -216,17 +216,17 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
 
 
         if (editTextUsername.getText().toString().trim().equals("")) {
-            editTextUsername.setError("Required!");
+            Toast.makeText(Signup.this, "username cannot be empty", Toast.LENGTH_LONG).show();
             // editTextUsername.setHint("Enter Email");
         } else if (editTextNumber.getText().toString().trim().equals("")) {
-            editTextNumber.setError("Required!");
+            editTextNumber.setError("phone number cannot be empty");
 
             //editTextPassword.setHint("Enter password");
         } else if (editLocation.getText().toString().trim().equals("")) {
-            editLocation.setError("Required!");
+            Toast.makeText(Signup.this, "location cannot be empty", Toast.LENGTH_LONG).show();
             //editTextPassword.setHint("Enter password");
         } else {
-            final ProgressDialog loading = ProgressDialog.show(Signup.this, "Authenticating", "Please wait", false, false);
+            final ProgressDialog loading = ProgressDialog.show(Signup.this, "Signing in", "Please wait", false, false);
             StringRequest stringRequest = new StringRequest(Request.Method.POST, REGISTER_URL,
                     new Response.Listener<String>() {
 
