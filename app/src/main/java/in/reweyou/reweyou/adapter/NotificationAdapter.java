@@ -52,14 +52,14 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         if (list.get(position) instanceof NotificationLikesModel) {
-            holder.who.setText(((NotificationLikesModel) list.get(position)).getName());
+            holder.who.setText(((NotificationLikesModel) list.get(position)).getReviewer_name());
             holder.Continue.setText(" likes your report.");
             holder.time.setText(((NotificationLikesModel) list.get(position)).getFormattedTime());
             Glide.with(context).load(((NotificationLikesModel) list.get(position)).getProfilepic()).into(holder.image);
             if (((NotificationLikesModel) list.get(position)).getReadstatus().equals("false"))
-                holder.rv.setBackgroundResource(R.drawable.noti_back_tint);
-            else
                 holder.rv.setBackgroundResource(R.drawable.noti_back);
+            else
+                holder.rv.setBackgroundResource(R.drawable.noti_back_tint);
 
 
         } else if (list.get(position) instanceof NotificationCommentsModel) {
@@ -68,8 +68,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             holder.time.setText(((NotificationCommentsModel) list.get(position)).getFormattedTime());
             Glide.with(context).load(((NotificationCommentsModel) list.get(position)).getProfilepic()).into(holder.image);
             if (((NotificationCommentsModel) list.get(position)).getReadstatus().equals("false"))
-                holder.rv.setBackgroundResource(R.drawable.noti_back_tint);
-            else holder.rv.setBackgroundResource(R.drawable.noti_back);
+                holder.rv.setBackgroundResource(R.drawable.noti_back);
+            else holder.rv.setBackgroundResource(R.drawable.noti_back_tint);
 
         }
 

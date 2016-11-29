@@ -19,7 +19,7 @@ public class NotificationLikesModel {
     private String notid;
     private String postid;
     private String number;
-    private String name;
+    private String reviewer_name;
     private String time;
     private String profilepic;
     private String readstatus;
@@ -37,8 +37,8 @@ public class NotificationLikesModel {
         return null;
     }
 
-    public String getName() {
-        return name;
+    public String getReviewer_name() {
+        return reviewer_name;
     }
 
     public String getFormattedTime() {
