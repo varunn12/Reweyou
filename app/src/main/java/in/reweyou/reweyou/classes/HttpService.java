@@ -4,8 +4,13 @@ package in.reweyou.reweyou.classes;
  * Created by Reweyou on 1/23/2016.
  */
 
-import android.app.IntentService;
+import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.IBinder;
+import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -27,32 +32,65 @@ import java.util.Map;
 
 import in.reweyou.reweyou.WelcomeActivity;
 
+import static in.reweyou.reweyou.utils.Constants.URL_VERIFY_OTP;
+
 /**
  * Created by Ravi on 04/04/15.
  */
-public class HttpService extends IntentService {
-    public static final String URL_VERIFY_OTP = "https://www.reweyou.in/reweyou/verify_otp_new.php";
+public class HttpService extends Service {
     private static String TAG = HttpService.class.getSimpleName();
 
-    public HttpService() {
-        super(HttpService.class.getSimpleName());
-    }
+    private final BroadcastReceiver mybroadcast = new SmsReceiver();
+
 
     @Override
-    protected void onHandleIntent(Intent intent) {
-        if (intent != null) {
-            String otp = intent.getStringExtra("otp");
-            verifyOtp(otp);
+    public void onCreate() {
+        super.onCreate();
 
-        }
+        Log.d(TAG, "onCreate: called");
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.provider.Telephony.SMS_RECEIVED");
+        registerReceiver(mybroadcast, filter);
+
     }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        Log.d(TAG, "onDestroy: called");
+
+        try {
+            unregisterReceiver(mybroadcast);
+
+        } catch (Exception e) {
+            Log.d(TAG, "onDestroy: register exception");
+        }
+
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
 
     /**
      * Posting the OTP to server and activating the user
      *
      * @param
      */
-    private void verifyOtp(final String otp) {
+    public void verifyOtp(final String otp) {
+
+        unregisterReceiver(mybroadcast);
+
+        Log.d("verifff", "called");
+
+        sendMessageShowVerifyDialog();
+
         final UserSessionManager session = new UserSessionManager(getApplicationContext());
         final String number = session.getMobileNumber();
         // final ProgressDialog loading = ProgressDialog.show(this, "Authenticating", "Please wait", false, false);
@@ -62,7 +100,7 @@ public class HttpService extends IntentService {
             @Override
             public void onResponse(String response) {
                 Log.d("resp", response);
-
+                sendMessageDismissVerifyDialog();
                 try {
                     JSONArray jsonArray = new JSONArray(response);
 
@@ -94,23 +132,11 @@ public class HttpService extends IntentService {
 
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    sendMessageDismissVerifyDialog();
                     Toast.makeText(getApplicationContext(), "Wrong OTP Please Try Again", Toast.LENGTH_LONG).show();
 
                 }
 
-
-              /*  //if the server response is success
-                if (response.equalsIgnoreCase("success")) {
-                    //dismissing the progressbar
-                    //     loading.show();
-
-                    //Starting a new activity
-                } else {
-                    //Displaying a toast if the otp entered is wrong
-                    Toast.makeText(getApplicationContext(), "Wrong OTP Please Try Again", Toast.LENGTH_LONG).show();
-
-                }
-            }*/
             }
         }, new Response.ErrorListener() {
             @Override
@@ -151,7 +177,19 @@ public class HttpService extends IntentService {
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i); // Call once you redirect to another activity
+        stopSelf();
 
-        this.stopSelf();
+        Log.d("called", "serviice");
+    }
+
+
+    private void sendMessageShowVerifyDialog() {
+        Intent intent = new Intent("verifyshow");
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
+
+    private void sendMessageDismissVerifyDialog() {
+        Intent intent = new Intent("verifydismiss");
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 }

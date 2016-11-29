@@ -92,13 +92,14 @@
 
         <activity android:name=".TutorialScreen" />
 
-        <!-- SMS Receiver -->
-        <receiver android:name=".classes.SmsReceiver">
-            <intent-filter android:priority="99999">
-                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
-            </intent-filter>
-        </receiver>
+        <!-- &lt;!&ndash; SMS Receiver &ndash;&gt;
+         <receiver android:name=".classes.SmsReceiver">
+             <intent-filter android:priority="99999">
+                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+             </intent-filter>
+         </receiver>-->
         <!-- Intent service -->
+
         <service
             android:name=".classes.HttpService"
             android:exported="false" />

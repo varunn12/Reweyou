@@ -20,7 +20,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -40,23 +39,29 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.HttpService;
 import in.reweyou.reweyou.classes.UserSessionManager;
+import in.reweyou.reweyou.customView.CustomDialogClass;
 import in.reweyou.reweyou.fcm.Config;
 import in.reweyou.reweyou.fcm.MyFirebaseInstanceIDService;
 
+import static in.reweyou.reweyou.utils.Constants.URL_VERIFY_OTP;
+
 public class Signup extends AppCompatActivity implements View.OnClickListener {
-    public static final String URL_VERIFY_OTP = "https://www.reweyou.in/reweyou/verify_otp.php";
     public static final String KEY_USERNAME = "username";
     public static final String KEY_NUMBER = "number";
-    public static final String KEY_LOCATION="location";
+    public static final String KEY_LOCATION = "location";
     public static final String KEY_OTP = "otp";
     public static final String KEY_TOKEN = "token";
     public static final String KEY_DEVICE_ID = "deviceid";
@@ -97,18 +102,32 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
         }
 
     };
-    private EditText editTextUsername, editTextNumber,editTextConfirmOtp, editLocation;
+    private EditText editTextUsername, editTextNumber, editTextConfirmOtp, editLocation;
     private AppCompatButton buttonConfirm;
     private Button buttonRegister;
     private Location location;
     private TextView Read;
-    private String otp;
     private RequestQueue requestQueue;
     private String username, number, place, token, advertId;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     private TextInputLayout inputLayoutName;
     private TextInputLayout inputLayoutNumber;
     private TextInputLayout inputLayoutCity;
+    private boolean active;
+    private ProgressDialog pd;
+    private CustomDialogClass customDialogClass;
+    private BroadcastReceiver showVerifyDialogReciever = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            showVerifiyingDialog();
+        }
+    };
+    private BroadcastReceiver dismissVerifyDialogReciever = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            dismissVerifiyingDialog();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,10 +139,10 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
         requestQueue = Volley.newRequestQueue(this);
         cd = new ConnectionDetector(Signup.this);
         editTextUsername = (EditText) findViewById(R.id.editTextUsername);
-        editTextNumber= (EditText) findViewById(R.id.editTextNumber);
-        editLocation=(EditText)findViewById(R.id.editLocation);
+        editTextNumber = (EditText) findViewById(R.id.editTextNumber);
+        editLocation = (EditText) findViewById(R.id.editLocation);
         buttonRegister = (Button) findViewById(R.id.buttonRegister);
-        Read = (TextView)findViewById(R.id.Read);
+        Read = (TextView) findViewById(R.id.Read);
 
 
         Read.setPaintFlags(Read.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
@@ -134,9 +153,8 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
         checker = new PermissionsChecker(this);
         if (checker.lacksPermissions(PERMISSIONS)) {
             //   Snackbar.make(mToolbar, R.string.no_permissions, Snackbar.LENGTH_INDEFINITE).show();
-            Toast.makeText(this,R.string.sms_permissions,Toast.LENGTH_LONG).show();
-        }
-        else {
+            Toast.makeText(this, R.string.sms_permissions, Toast.LENGTH_LONG).show();
+        } else {
 
         }
 
@@ -149,11 +167,11 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
             public void onReceive(Context context, Intent intent) {
                 //If the broadcast has received with success
                 //that means device is registered successfully
-                if(intent.getAction().equals(MyFirebaseInstanceIDService.REGISTRATION_SUCCESS)){
+                if (intent.getAction().equals(MyFirebaseInstanceIDService.REGISTRATION_SUCCESS)) {
                     //Getting the registration token from the intent
                     token = intent.getStringExtra("token");
                     //Displaying the token as toast
-              //      Toast.makeText(getApplicationContext(), "Registration token:" + token, Toast.LENGTH_LONG).show();
+                    //      Toast.makeText(getApplicationContext(), "Registration token:" + token, Toast.LENGTH_LONG).show();
                     //if the intent is not with success then displaying error messages
                 }
             }
@@ -161,9 +179,9 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
         //  Log.e("Token",token);
         //Checking play service is available or not
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
-        if(ConnectionResult.SUCCESS != resultCode) {
+        if (ConnectionResult.SUCCESS != resultCode) {
             //If play service is supported but not installed
-            if(GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
                 //Displaying message that play service is not installed
                 Toast.makeText(getApplicationContext(), "Google Play Service is not install/enabled in this device!", Toast.LENGTH_LONG).show();
                 GooglePlayServicesUtil.showErrorNotification(resultCode, getApplicationContext());
@@ -182,13 +200,12 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
         }
 
 
-
     }
 
     private void registerUser() {
         username = editTextUsername.getText().toString().trim();
         number = editTextNumber.getText().toString().trim();
-        place=editLocation.getText().toString().trim();
+        place = editLocation.getText().toString().trim();
         SharedPreferences pref = getApplicationContext().getSharedPreferences(Config.SHARED_PREF, 0);
         token = pref.getString("regId", "0");
 
@@ -201,17 +218,14 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
         if (editTextUsername.getText().toString().trim().equals("")) {
             editTextUsername.setError("Required!");
             // editTextUsername.setHint("Enter Email");
-        }
-        else if (editTextNumber.getText().toString().trim().equals("")) {
+        } else if (editTextNumber.getText().toString().trim().equals("")) {
             editTextNumber.setError("Required!");
 
             //editTextPassword.setHint("Enter password");
-        }
-        else if (editLocation.getText().toString().trim().equals("")) {
+        } else if (editLocation.getText().toString().trim().equals("")) {
             editLocation.setError("Required!");
             //editTextPassword.setHint("Enter password");
-        }
-        else {
+        } else {
             final ProgressDialog loading = ProgressDialog.show(Signup.this, "Authenticating", "Please wait", false, false);
             StringRequest stringRequest = new StringRequest(Request.Method.POST, REGISTER_URL,
                     new Response.Listener<String>() {
@@ -219,7 +233,7 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
                         @Override
                         public void onResponse(String response) {
                             if (response.trim().equals("success")) {
-                               loading.dismiss();
+                                loading.dismiss();
                                 try {
                                     //Asking user to enter otp again
                                     session.setMobileNumber(number);
@@ -230,7 +244,7 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
                                     e.printStackTrace();
                                 }
                             } else {
-                               loading.dismiss();
+                                loading.dismiss();
                                 Toast.makeText(Signup.this, response, Toast.LENGTH_LONG).show();
                             }
                         }
@@ -277,32 +291,27 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if(v == buttonRegister){
+        if (v == buttonRegister) {
             isInternetPresent = cd.isConnectingToInternet();
-            if(isInternetPresent) {
+            if (isInternetPresent) {
                 if (checker.lacksPermissions(PERMISSIONS)) {
                     //   Snackbar.make(mToolbar, R.string.no_permissions, Snackbar.LENGTH_INDEFINITE).show();
                     // Toast.makeText(this,R.string.sms_permissions,Toast.LENGTH_LONG).show();
 
-                }
-                else {
+                } else {
                     registerUser();
                 }
-            }
-            else
-            {
+            } else {
                 Toast.makeText(this, "You are not connected to Internet", Toast.LENGTH_LONG).show();
             }
         }
-        if(v==Read){
+        if (v == Read) {
             isInternetPresent = cd.isConnectingToInternet();
-            if(isInternetPresent) {
+            if (isInternetPresent) {
                 Uri uri = Uri.parse("https://www.reweyou.in/reweyou/termsConditions.php"); // missing 'http://' will cause crashed
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 startActivity(intent);
-            }
-            else
-            {
+            } else {
                 Toast.makeText(this, "You are not connected to Internet", Toast.LENGTH_LONG).show();
             }
         }
@@ -332,44 +341,80 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
 
     //This method would confirm the otp
     public void confirmOtp() throws JSONException {
-        //Creating a LayoutInflater object for the dialog box
-        LayoutInflater li = LayoutInflater.from(this);
-        //Creating a view to get the dialog box
-        View confirmDialog = li.inflate(R.layout.dialog_confirm, null);
 
-        //Initizliaing confirm button fo dialog box and edittext of dialog box
-        buttonConfirm = (AppCompatButton) confirmDialog.findViewById(R.id.buttonConfirm);
-        editTextConfirmOtp = (EditText) confirmDialog.findViewById(R.id.editTextOtp);
-        //Creating an alertdialog builder
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
-        //Adding our dialog box to the view of alert dialog
-        alert.setView(confirmDialog);
+        Intent i = new Intent(getApplicationContext(), HttpService.class);
+        startService(i);
 
-        //Creating an alert dialog
-        final AlertDialog alertDialog = alert.create();
+        customDialogClass = new CustomDialogClass(Signup.this);
+        customDialogClass.show();
 
-        //Displaying the alert dialog
-        alertDialog.show();
-
-        //On the click of the confirm button from alert dialog
-        buttonConfirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                verifyOtp();
-            }
-        });
     }
 
-    private void verifyOtp() {
-        otp = editTextConfirmOtp.getText().toString().trim();
-        if (!otp.isEmpty()) {
-            Intent grabIntent = new Intent(getApplicationContext(), HttpService.class);
-            grabIntent.putExtra("otp", otp);
-            startService(grabIntent);
-        } else {
-            Toast.makeText(getApplicationContext(), "Please enter the OTP", Toast.LENGTH_SHORT).show();
-        }
+    public void verifyOtp(final String otp) {
+
+        StringRequest strReq = new StringRequest(Request.Method.POST,
+                URL_VERIFY_OTP, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                Log.d("resp", response);
+
+                try {
+                    JSONArray jsonArray = new JSONArray(response);
+
+                    JSONObject responseObject = jsonArray.getJSONObject(0);
+                    JSONObject jsonObject = responseObject.getJSONObject("profile");
+                    session.setAuthToken(jsonObject.getString("token"));
+                    session.setUsername(jsonObject.getString("name"));
+                    session.setMobileNumber(jsonObject.getString("number"));
+                    session.setLoginLocation(jsonObject.getString("location"));
+                    session.setProfilePicture(jsonObject.getString("profilepic"));
+                    session.setDeviceid(jsonObject.getString("deviceid"));
+                    // session.setAuthToken(jsonObject.getString("token"));
+
+                    if (responseObject.has("likes")) {
+                        JSONArray jsonArray1 = responseObject.getJSONArray("likes");
+                        List<String> likesList = new ArrayList<>();
+                        String[] array = new String[jsonArray1.length()];
+                        for (int i = 0; i < jsonArray1.length(); i++) {
+                            JSONObject jsonObject1 = jsonArray1.getJSONObject(i);
+                            Log.d("jsonO", String.valueOf(jsonObject1));
+                            likesList.add(jsonObject1.getString("postid"));
+
+                        }
+                        session.setLikesList(likesList);
+                        Log.d("jsonlist", String.valueOf(likesList));
+                    }
+                    openProfile();
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "Wrong OTP Please Try Again", Toast.LENGTH_LONG).show();
+
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), "Something went wrong, Try again", Toast.LENGTH_LONG).show();
+            }
+        }) {
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("otp", otp);
+                params.put("number", session.getMobileNumber());
+                return params;
+            }
+
+        };
+
+        // Adding request to request queue
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(strReq);
     }
 
     @Override
@@ -380,9 +425,9 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
             startPermissionsActivity();
 
         }
-            Log.w("Signup", "onResume");
-            LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                    new IntentFilter(MyFirebaseInstanceIDService.REGISTRATION_SUCCESS));
+        Log.w("Signup", "onResume");
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(MyFirebaseInstanceIDService.REGISTRATION_SUCCESS));
     }
 
     private void startPermissionsActivity() {
@@ -397,23 +442,21 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
         }
     }
 
-    private void remarket(){
+    private void remarket() {
 
         String uri = String.format("https://www.googleadservices.com/pagead/conversion/870227648/?rdid=%1$s&lat=0&bundleid=in.reweyou.reweyou&idtype=advertisingid&remarketing_only=1&appversion=1.3.3.0&usage_tracking_enabled=1",
                 advertId);
 
 // prepare the Request
         StringRequest getRequest = new StringRequest(Request.Method.GET, uri,
-                new Response.Listener<String>()
-                {
+                new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         // display response
                         Log.d("Response", response.toString());
                     }
                 },
-                new Response.ErrorListener()
-                {
+                new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         System.out.println("volley Error .................");
@@ -421,8 +464,44 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
                 }
         );
 
-// add it to the RequestQueue
+        // add it to the RequestQueue
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(getRequest);
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        active = true;
+        LocalBroadcastManager.getInstance(this).registerReceiver(showVerifyDialogReciever, new IntentFilter("verifyshow"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(dismissVerifyDialogReciever, new IntentFilter("verifydismiss"));
+    }
+
+    @Override
+    protected void onStop() {
+        active = false;
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(showVerifyDialogReciever);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(dismissVerifyDialogReciever);
+
+        super.onStop();
+    }
+
+    public void showVerifiyingDialog() {
+        if (active) {
+            if (customDialogClass != null)
+                customDialogClass.dismiss();
+            pd = new ProgressDialog(Signup.this);
+            pd.setMessage("Verifying");
+            pd.setCancelable(false);
+            pd.show();
+        }
+    }
+
+    public void dismissVerifiyingDialog() {
+        if (pd != null) {
+
+            pd.dismiss();
+        }
+    }
+
 }

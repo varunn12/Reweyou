@@ -11,9 +11,9 @@ import android.util.Log;
  * Created by Ravi on 09/07/15.
  */
 public class SmsReceiver extends BroadcastReceiver {
-    private static final String TAG = SmsReceiver.class.getSimpleName();
-    public static final String SMS_ORIGIN="REWEYU";
+    public static final String SMS_ORIGIN = "REWEYU";
     public static final String OTP_DELIMITER = ":";
+    private static final String TAG = SmsReceiver.class.getSimpleName();
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -39,9 +39,13 @@ public class SmsReceiver extends BroadcastReceiver {
 
                     Log.e(TAG, "OTP received: " + verificationCode);
 
+                   /*
                     Intent hhtpIntent = new Intent(context, HttpService.class);
                     hhtpIntent.putExtra("otp", verificationCode);
-                    context.startService(hhtpIntent);
+                    context.startService(hhtpIntent);*/
+
+                    ((HttpService) context).verifyOtp(verificationCode);
+
                 }
             }
         } catch (Exception e) {
