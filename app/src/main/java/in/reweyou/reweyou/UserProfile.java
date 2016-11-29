@@ -123,6 +123,16 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         Reports = (TextView) findViewById(R.id.Reports);
         Info = (TextView) findViewById(R.id.Info);
         Readers = (TextView) findViewById(R.id.Readers);
+        Readers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putString("myData", user);
+                Intent in = new Intent(UserProfile.this, Readers.class);
+                in.putExtras(bundle);
+                startActivity(in);
+            }
+        });
 
         button = (Button) findViewById(R.id.button);
         profilepic = (ImageView) findViewById(R.id.profilepic);
@@ -175,13 +185,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 final int status = (Integer) button.getTag();
                 reading(i);
                 break;
-           /*case R.id.click:
-               Bundle bundle = new Bundle();
-               bundle.putString("myData", user);
-               Intent in = new Intent(this, Readers.class);
-               in.putExtras(bundle);
-               startActivity(in);
-               break;*/
+
         }
     }
 
@@ -455,6 +459,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 }
                 String finalJson = buffer.toString();
 
+                Log.d("final", finalJson);
                 JSONArray parentArray = new JSONArray(finalJson);
                 StringBuffer finalBufferedData = new StringBuffer();
                 length = parentArray.length();
