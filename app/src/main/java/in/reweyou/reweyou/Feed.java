@@ -59,6 +59,7 @@ import in.reweyou.reweyou.utils.Constants;
 
 import static in.reweyou.reweyou.classes.HandleActivityResult.HANDLE_IMAGE;
 import static in.reweyou.reweyou.classes.HandleActivityResult.HANDLE_VIDEO;
+import static in.reweyou.reweyou.utils.Constants.AUTH_ERROR;
 
 public class Feed extends AppCompatActivity implements View.OnClickListener {
     static final String[] PERMISSIONS = new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -148,7 +149,7 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
         else {
             pd.setVisibility(View.GONE);
             viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
-            makeRequest();
+            makeNotificationsRequest();
         }
 
 
@@ -178,7 +179,7 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
                                     tabLayout.setVisibility(View.VISIBLE);
 
                                     // viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
-                                    // makeRequest();
+                                    // makeNotificationsRequest();
                                 }
                             }
                         }
@@ -409,7 +410,7 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
         }
     }
 
-    private void makeRequest() {
+    private void makeNotificationsRequest() {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.MY_TOTAL_NOTIFICATIONS_URL,
                 new Response.Listener<String>() {
                     @Override
@@ -417,7 +418,11 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
                         Log.d("responsetotallikes", response);
                         if (response != null) {
                             if (!response.isEmpty()) {
-                                setnotificationnNumber(Integer.parseInt(response));
+                                if (response.equals(AUTH_ERROR)) {
+                                    session.logoutUser();
+
+                                } else
+                                    setnotificationnNumber(Integer.parseInt(response));
                             }
                         }
                     }
@@ -480,7 +485,7 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // FIRE ZE MISSILES!
-                        session.logoutUser();
+                        session.logoutUser1();
                         finish();
                     }
                 })

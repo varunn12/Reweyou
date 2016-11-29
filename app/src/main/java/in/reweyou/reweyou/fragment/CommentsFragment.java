@@ -58,6 +58,7 @@ import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.RequestHandler;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.model.CommentsModel;
+import in.reweyou.reweyou.utils.Constants;
 
 /**
  * Created by master on 20/11/16.
@@ -237,6 +238,8 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
                         editText.setText("");
                         InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+                    } else if (s.trim().equals(Constants.AUTH_ERROR)) {
+                        session.logoutUser();
                     } else {
                         InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);

@@ -65,66 +65,71 @@ public class Notifications extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         Log.d("response", response);
-                        try {
-                            JSONArray jsonArray = new JSONArray(response);
+                        if (response.trim().equals(Constants.AUTH_ERROR)) {
+                            session.logoutUser();
+                        } else {
 
-                            JSONObject jsonObject = jsonArray.getJSONObject(0);
-                            if (jsonObject.has("likes")) {
-                                JSONArray jsonArray1 = jsonObject.getJSONArray("likes");
-                                for (int i = 0; i < jsonArray1.length(); i++) {
-                                    JSONObject jsonObject1 = jsonArray1.getJSONObject(i);
-                                    Gson gson = new Gson();
-                                    NotificationLikesModel notificationLikesModel = gson.fromJson(jsonObject1.toString(), NotificationLikesModel.class);
-                                    list.add(notificationLikesModel);
+                            try {
+                                JSONArray jsonArray = new JSONArray(response);
+
+                                JSONObject jsonObject = jsonArray.getJSONObject(0);
+                                if (jsonObject.has("likes")) {
+                                    JSONArray jsonArray1 = jsonObject.getJSONArray("likes");
+                                    for (int i = 0; i < jsonArray1.length(); i++) {
+                                        JSONObject jsonObject1 = jsonArray1.getJSONObject(i);
+                                        Gson gson = new Gson();
+                                        NotificationLikesModel notificationLikesModel = gson.fromJson(jsonObject1.toString(), NotificationLikesModel.class);
+                                        list.add(notificationLikesModel);
+                                    }
+
+
                                 }
 
+                                if (jsonObject.has("comments")) {
+                                    JSONArray jsonArray1 = jsonObject.getJSONArray("comments");
+                                    for (int i = 0; i < jsonArray1.length(); i++) {
+                                        JSONObject jsonObject1 = jsonArray1.getJSONObject(i);
+                                        Gson gson = new Gson();
+                                        NotificationCommentsModel notificationCommentsModel = gson.fromJson(jsonObject1.toString(), NotificationCommentsModel.class);
+                                        list.add(notificationCommentsModel);
+                                    }
 
+                                }
+
+                                for (int i = 0; i < list.size(); i++)
+                                    Log.d("list", String.valueOf(list.get(i)));
+
+
+                                Collections.sort(list, new Comparator<Object>() {
+                                    public int compare(Object o1, Object o2) {
+                                        if (o1 instanceof NotificationCommentsModel && o2 instanceof NotificationCommentsModel)
+                                            return ((NotificationCommentsModel) o1).getTime().compareTo(((NotificationCommentsModel) o2).getTime());
+                                        else if (o1 instanceof NotificationCommentsModel && o2 instanceof NotificationLikesModel)
+                                            return ((NotificationCommentsModel) o1).getTime().compareTo(((NotificationLikesModel) o2).getTime());
+                                        else if (o1 instanceof NotificationLikesModel && o2 instanceof NotificationCommentsModel)
+                                            return ((NotificationLikesModel) o1).getTime().compareTo(((NotificationCommentsModel) o2).getTime());
+                                        else if (o1 instanceof NotificationLikesModel && o2 instanceof NotificationLikesModel)
+                                            return ((NotificationLikesModel) o1).getTime().compareTo(((NotificationLikesModel) o2).getTime());
+                                        else return 0;
+                                    }
+                                });
+
+                                Collections.reverse(list);
+
+
+                                for (int i = 0; i < list.size(); i++)
+                                    Log.d("list", String.valueOf(list.get(i)));
+
+
+                                notificationAdapter.add(list);
+                                recyclerView.setAdapter(notificationAdapter);
+
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
 
-                            if (jsonObject.has("comments")) {
-                                JSONArray jsonArray1 = jsonObject.getJSONArray("comments");
-                                for (int i = 0; i < jsonArray1.length(); i++) {
-                                    JSONObject jsonObject1 = jsonArray1.getJSONObject(i);
-                                    Gson gson = new Gson();
-                                    NotificationCommentsModel notificationCommentsModel = gson.fromJson(jsonObject1.toString(), NotificationCommentsModel.class);
-                                    list.add(notificationCommentsModel);
-                                }
-
-                            }
-
-                            for (int i = 0; i < list.size(); i++)
-                                Log.d("list", String.valueOf(list.get(i)));
-
-
-                            Collections.sort(list, new Comparator<Object>() {
-                                public int compare(Object o1, Object o2) {
-                                    if (o1 instanceof NotificationCommentsModel && o2 instanceof NotificationCommentsModel)
-                                        return ((NotificationCommentsModel) o1).getTime().compareTo(((NotificationCommentsModel) o2).getTime());
-                                    else if (o1 instanceof NotificationCommentsModel && o2 instanceof NotificationLikesModel)
-                                        return ((NotificationCommentsModel) o1).getTime().compareTo(((NotificationLikesModel) o2).getTime());
-                                    else if (o1 instanceof NotificationLikesModel && o2 instanceof NotificationCommentsModel)
-                                        return ((NotificationLikesModel) o1).getTime().compareTo(((NotificationCommentsModel) o2).getTime());
-                                    else if (o1 instanceof NotificationLikesModel && o2 instanceof NotificationLikesModel)
-                                        return ((NotificationLikesModel) o1).getTime().compareTo(((NotificationLikesModel) o2).getTime());
-                                    else return 0;
-                                }
-                            });
-
-                            Collections.reverse(list);
-
-
-                            for (int i = 0; i < list.size(); i++)
-                                Log.d("list", String.valueOf(list.get(i)));
-
-
-                            notificationAdapter.add(list);
-                            recyclerView.setAdapter(notificationAdapter);
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
                         }
-
                     }
                 },
                 new Response.ErrorListener() {
@@ -137,8 +142,8 @@ public class Notifications extends AppCompatActivity {
                 Map<String, String> map = new HashMap<String, String>();
 
                 map.put("number", session.getMobileNumber());
-                // map.put("user", i);
-                //map.put("unread", "reading");*/
+              /*  map.put("token", session.getKeyAuthToken());
+                map.put("deviceid", session.getDeviceid());*/
                 return map;
             }
         };

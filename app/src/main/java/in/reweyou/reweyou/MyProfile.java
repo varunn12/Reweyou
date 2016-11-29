@@ -427,9 +427,9 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                 loading.dismiss();
                 Log.d("result", s);
                 if (s.trim().equals("Error")) {
-                    // session.setProfilePicture(image);
                     Toast.makeText(MyProfile.this, "Couldn't set", Toast.LENGTH_LONG).show();
-
+                } else if (s.trim().equals(Constants.AUTH_ERROR)) {
+                    session.logoutUser();
                 } else {
                     Toast.makeText(MyProfile.this, "Profile Picture updated", Toast.LENGTH_LONG).show();
                     session.setProfilePicture(s);

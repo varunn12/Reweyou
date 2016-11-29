@@ -54,6 +54,7 @@ import in.reweyou.reweyou.classes.LocationAddress;
 import in.reweyou.reweyou.classes.RequestHandler;
 import in.reweyou.reweyou.classes.UploadOptions;
 import in.reweyou.reweyou.classes.UserSessionManager;
+import in.reweyou.reweyou.utils.Constants;
 
 import static in.reweyou.reweyou.classes.HandleActivityResult.HANDLE_IMAGE;
 import static in.reweyou.reweyou.classes.HandleActivityResult.HANDLE_VIDEO;
@@ -459,8 +460,10 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                                     Log.d("Intent not working", "Intent not working");
                                     finish();
                                     //  Toast.makeText(VideoUpload.this,s,Toast.LENGTH_SHORT).show();
+                                } else if (s.trim().equals(Constants.AUTH_ERROR)) {
+                                    session.logoutUser();
                                 } else {
-                                    Toast.makeText(PostReport.this, s, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(PostReport.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
                                 }
 
                             }
@@ -664,8 +667,10 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                     startActivity(feed);
                     Log.d("Intent not working", "Intent not working");
                     finish();
+                } else if (s.trim().equals(Constants.AUTH_ERROR)) {
+                    session.logoutUser();
                 } else {
-                    Toast.makeText(PostReport.this, s, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PostReport.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -716,6 +721,8 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
 
                 if (s.trim().equals("Successfully Uploaded")) {
                     openProfile();
+                } else if (s.trim().equals(Constants.AUTH_ERROR)) {
+                    session.logoutUser();
                 } else {
                     Toast.makeText(PostReport.this, "Check details and try again.", Toast.LENGTH_LONG).show();
                 }
