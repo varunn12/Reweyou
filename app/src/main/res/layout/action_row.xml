@@ -57,6 +57,7 @@
                     android:id="@+id/userName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginRight="4dp"
                     android:paddingTop="1dp"
                     android:text="TextView"
                     android:textColor="#424242"

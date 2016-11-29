@@ -196,7 +196,7 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
     public void onClick(View v) {
         if (v == button) {
             if (selectedImagePath == null)
-            uploadText();
+                uploadText();
             else uploadSelectedImage();
         } else {
             editText.clearFocus();
@@ -350,8 +350,12 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
                 super.onPostExecute(s);
                 loading.dismiss();
                 if (s.trim().equals("Successfully Uploaded")) {
-                    //openProfile();
+                    onRefresh();
+                    editText.setText("");
+                    InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
                 } else {
+                    Log.d("s", s);
                     Toast.makeText(mContext, "Try Again", Toast.LENGTH_LONG).show();
                 }
             }
@@ -360,12 +364,16 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
             protected String doInBackground(Void... params) {
                 RequestHandler rh = new RequestHandler();
                 HashMap<String, String> param = new HashMap<String, String>();
+
                 param.put(KEY_TEXT, text);
-                param.put(KEY_IMAGE, image);
+                param.put(KEY_NUMBER, number);
                 param.put(KEY_NAME, name);
                 param.put(KEY_TIME, timeStamp);
-                param.put("number", number);
-                param.put("postid", i);
+                param.put(KEY_ID, i);
+                param.put("token", session.getKeyAuthToken());
+                param.put("deviceid", session.getDeviceid());
+                param.put(KEY_IMAGE, image);
+
 
                 String result = rh.sendPostRequest(UPLOAD_URL, param);
                 return result;

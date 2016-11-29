@@ -94,11 +94,10 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
             }
         });
 
-        viewHolder.time.setText(mpModelList.get(position).getTime().substring(0, 12));
+        viewHolder.time.setText(mpModelList.get(position).getTime());
 
         Glide.with(mContext).load(mpModelList.get(position).getProfilepic()).placeholder(R.drawable.download).error(R.drawable.download).fallback(R.drawable.download).dontAnimate().into(viewHolder.profilepic);
 
-        imageLoader.displayImage(mpModelList.get(position).getR_Image(), viewHolder.image, options);
 
         if (mpModelList.get(position).getR_Image().isEmpty() || mpModelList.get(position).getR_Image() == null) {
             viewHolder.image.setVisibility(View.GONE);

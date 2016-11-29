@@ -1,7 +1,6 @@
 package in.reweyou.reweyou.model;
 
 import android.text.format.DateUtils;
-import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -97,7 +96,7 @@ public class MpModel {
             try {
                 dates = dfs.parse(date);
                 long epochs = dates.getTime();
-                Log.e("Time", String.valueOf(epochs));
+                //   Log.e("Time", String.valueOf(epochs));
                 CharSequence timePassedString = getRelativeTimeSpanString(epochs, System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS);
                 return (String) timePassedString;
             } catch (ParseException e) {
