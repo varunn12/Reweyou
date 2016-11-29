@@ -7,7 +7,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -35,6 +37,7 @@ import in.reweyou.reweyou.classes.DividerItemDecoration;
 import in.reweyou.reweyou.classes.RequestHandler;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.model.LeaderboardModel;
+import in.reweyou.reweyou.model.ReadersModel;
 
 public class Readers extends AppCompatActivity {
 UserSessionManager session;
@@ -45,11 +48,24 @@ UserSessionManager session;
     private RecyclerView recyclerView;
     private String i;
     private List<LeaderboardModel> messagelist;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_readers);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Readers");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         session = new UserSessionManager(Readers.this);
         Intent in=getIntent();
         cd = new ConnectionDetector(Readers.this);
@@ -59,20 +75,19 @@ UserSessionManager session;
 
         recyclerView=(RecyclerView)findViewById(R.id.recycler_view);
         RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecoration(ContextCompat.getDrawable(this, R.drawable.line));
-        recyclerView.addItemDecoration(dividerItemDecoration);
+        // recyclerView.addItemDecoration(dividerItemDecoration);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         isInternetPresent = cd.isConnectingToInternet();
         if(isInternetPresent) {
             new JSONTask().execute(i);
-            adapter=new ReadersAdapter(Readers.this,messagelist);
-            recyclerView.setAdapter(adapter);
+
         }
         else {
             Toast.makeText(this, "You are not connected to Internet", Toast.LENGTH_LONG).show();
         }
     }
 
-    public class JSONTask extends AsyncTask<String, String, List<LeaderboardModel>> {
+    public class JSONTask extends AsyncTask<String, String, List<ReadersModel>> {
 
         @Override
         protected void onPreExecute() {
@@ -81,7 +96,7 @@ UserSessionManager session;
         }
 
         @Override
-        protected List<LeaderboardModel> doInBackground(String... params) {
+        protected List<ReadersModel> doInBackground(String... params) {
             HttpURLConnection connection = null;
             BufferedReader reader = null;
             RequestHandler rh= new RequestHandler();
@@ -111,16 +126,17 @@ UserSessionManager session;
                 }
                 String finalJson = buffer.toString();
 
+                Log.d("json", finalJson);
                 JSONArray parentArray = new JSONArray(finalJson);
                 StringBuffer finalBufferedData = new StringBuffer();
 
-                List<LeaderboardModel> messagelist = new ArrayList<>();
+                List<ReadersModel> messagelist = new ArrayList<>();
 
                 Gson gson = new Gson();
                 for (int i = 0; i < parentArray.length(); i++) {
                     JSONObject finalObject = parentArray.getJSONObject(i);
-                    LeaderboardModel LeaderboardModel = gson.fromJson(finalObject.toString(), LeaderboardModel.class);
-                    messagelist.add(LeaderboardModel);
+                    ReadersModel readersModel = gson.fromJson(finalObject.toString(), ReadersModel.class);
+                    messagelist.add(readersModel);
                 }
 
                 return messagelist;
@@ -147,7 +163,7 @@ UserSessionManager session;
         }
 
         @Override
-        protected void onPostExecute(List<LeaderboardModel> result) {
+        protected void onPostExecute(List<ReadersModel> result) {
             super.onPostExecute(result);
            // progressBar.setVisibility(View.GONE);
             ReadersAdapter adapter = new ReadersAdapter(Readers.this,result);
