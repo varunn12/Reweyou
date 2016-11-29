@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -128,12 +129,12 @@ public class UserSessionManager {
         //Storing number
         editor.putString(KEY_NUMBER, number);
 
-
         editor.putString(KEY_LOCATION, place);
 
         // commit changes
         editor.commit();
     }
+
 
     /**
      * Check login method will check user login status
@@ -174,7 +175,13 @@ public class UserSessionManager {
     /**
      * Clear session details
      */
+
     public void logoutUser() {
+        Toast.makeText(_context, "invalid session! please login again", Toast.LENGTH_SHORT).show();
+        logoutUser1();
+    }
+
+    public void logoutUser1() {
 
         // Clearing all user data from Shared Preferences
         editor.clear();
