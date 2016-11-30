@@ -59,7 +59,7 @@
     <string name="videohint">&#xf144;</string>
     <string name="action_users">Users</string>
     <string name="action_notifications">Notifications</string>
-    <string name="confirm_logout">Do you really want to delete your account?</string>
+    <string name="confirm_logout">Do you really want to logout?</string>
     <string name="yes">Yes</string>
     <string name="cancel">No</string>
     <string name="action_leaderboard">Leaderboard</string>
