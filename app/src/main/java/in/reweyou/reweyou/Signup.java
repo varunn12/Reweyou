@@ -9,12 +9,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Paint;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
@@ -67,6 +71,9 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
     static final String[] PERMISSIONS = new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.READ_SMS};
     private static final int REQUEST_CODE = 0;
     private static final String REGISTER_URL = "https://www.reweyou.in/reweyou/signupnew.php";
+    private static final int PERMISSION_ALL = 1;
+    private static final String TAG = Signup.class.getSimpleName();
+    private static final String PACKAGE_URL_SCHEME = "package:";
     UserSessionManager session;
     PermissionsChecker checker;
     Boolean isInternetPresent = false;
@@ -125,6 +132,17 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
             dismissVerifiyingDialog();
         }
     };
+
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -291,13 +309,10 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
         if (v == buttonRegister) {
             isInternetPresent = cd.isConnectingToInternet();
             if (isInternetPresent) {
-                if (checker.lacksPermissions(PERMISSIONS)) {
-                    //   Snackbar.make(mToolbar, R.string.no_permissions, Snackbar.LENGTH_INDEFINITE).show();
-                    // Toast.makeText(this,R.string.sms_permissions,Toast.LENGTH_LONG).show();
 
-                } else {
-                    registerUser();
-                }
+                startPermissionsActivity();
+                // registerUser();
+
             } else {
                 Toast.makeText(this, "You are not connected to Internet", Toast.LENGTH_LONG).show();
             }
@@ -342,6 +357,7 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
 
         Intent i = new Intent(getApplicationContext(), HttpService.class);
         startService(i);
+
 
         customDialogClass = new CustomDialogClass(Signup.this);
         customDialogClass.show();
@@ -418,17 +434,86 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
     protected void onResume() {
         super.onResume();
 
-        if (checker.lacksPermissions(PERMISSIONS)) {
+      /*  if (checker.lacksPermissions(PERMISSIONS)) {
             startPermissionsActivity();
 
-        }
+        }*/
         Log.w("Signup", "onResume");
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
                 new IntentFilter(MyFirebaseInstanceIDService.REGISTRATION_SUCCESS));
     }
 
     private void startPermissionsActivity() {
-        PermissionsActivity.startActivityForResult(this, REQUEST_CODE, PERMISSIONS);
+        // PermissionsActivity.startActivityForResult(this, REQUEST_CODE, PERMISSIONS);
+
+        if (!hasPermissions(this, PERMISSIONS)) {
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_ALL: {
+
+                for (int i = 0, len = permissions.length; i < len; i++) {
+                    String permission = permissions[i];
+                    if (grantResults[i] == PackageManager.PERMISSION_DENIED) {
+                        // user rejected the permission
+
+                        boolean showRationale = ActivityCompat.shouldShowRequestPermissionRationale(Signup.this, permission);
+                        if (!showRationale) {
+                            showMissingPermissionDialog();
+                        } else if (Manifest.permission.READ_SMS.equals(permission)) {
+                            // user did NOT check "never ask again"
+
+                            String[] p = {permission};
+                            ActivityCompat.requestPermissions(this, p, PERMISSION_ALL);
+                        } else if (Manifest.permission.RECEIVE_SMS.equals(permission)) {
+                            // user did NOT check "never ask again"
+
+                            String[] p = {permission};
+                            ActivityCompat.requestPermissions(this, p, PERMISSION_ALL);
+
+                        }
+                    }
+
+                }
+
+
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    registerUser();
+                }
+            }
+        }
+    }
+
+    private void showMissingPermissionDialog() {
+        android.support.v7.app.AlertDialog.Builder dialogBuilder = new android.support.v7.app.AlertDialog.Builder(Signup.this);
+        dialogBuilder.setTitle(R.string.help);
+        dialogBuilder.setMessage(R.string.string_help_text);
+        dialogBuilder.setNegativeButton(R.string.quit, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // setResult(PERMISSIONS_DENIED);
+                // finish();
+                registerUser();
+            }
+        });
+        dialogBuilder.setPositiveButton(R.string.settings, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                startAppSettings();
+            }
+        });
+        dialogBuilder.show();
+    }
+
+    private void startAppSettings() {
+        Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        intent.setData(Uri.parse(PACKAGE_URL_SCHEME + getPackageName()));
+        startActivity(intent);
     }
 
     @Override
