@@ -80,6 +80,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private TextView topBar;
     private LinearLayout hangingNoti;
     private View layout;
+    private String query;
 
     public SecondFragment() {
     }
@@ -92,6 +93,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
         position = getArguments().getInt("position");
         placename = getArguments().getString("place");
 
+        query = getArguments().getString("query");
         Log.d("pos", String.valueOf(position));
     }
 
@@ -243,11 +245,6 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
         Typeface font = Typeface.createFromAsset(getActivity().getAssets(), "fontawesome-webfont.ttf");
         formattedDate = df.format(c.getTime());
-      /*  datepick.setText(formattedDate);
-        datepick.setVisibility(View.GONE);
-        //  formattedDate = "2016";
-        // formattedDate =c.getTime().toString();
-        datepick.setOnClickListener(this);*/
         location = user.get(UserSessionManager.KEY_LOCATION);
 
 
@@ -270,11 +267,6 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
         formattedDate = df.format(c.getTime());
 
         tag = "General";
-      /*Log.e("D", tag);
-        Log.e("D", location);
-        Log.e("D", formattedDate);*/
-        // new JSONTask().execute(tag, location,formattedDate,number);
-
         makeRequest();
 
     }
@@ -424,12 +416,16 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
             protected Map<String, String> getParams() {
                 Map<String, String> data = new HashMap<>();
 
-                if (position == 10)
-                    data.put("location", placename);
-                else
-                    data.put("location", location);
-                data.put("date", formattedDate);
-                data.put("number", number);
+                if (position != 12) {
+                    if (position == 10)
+                        data.put("location", placename);
+                    else
+                        data.put("location", location);
+                    data.put("date", formattedDate);
+                    data.put("number", number);
+
+                } else data.put("query", query);
+
                 return data;
             }
         };
@@ -494,6 +490,8 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                 return Constants.MY_CITY_URL;
             case 10:
                 return Constants.MY_CITY_URL;
+            case 12:
+                return Constants.SEARCH_QUERY;
             default:
                 return null;
 
