@@ -23,18 +23,12 @@ public class HandleActivityResult {
     public int handleResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE && resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
             return 0;
-        }
-
-        if (resultCode == RESULT_OK && requestCode == SELECT_FILE && data != null) {
+        } else if (resultCode == RESULT_OK && requestCode == SELECT_FILE && data != null) {
             return HANDLE_IMAGE;
-        }
-
-        if (requestCode == REQUEST_TAKE_GALLERY_VIDEO && resultCode == RESULT_OK) {
+        } else if (requestCode == REQUEST_TAKE_GALLERY_VIDEO && resultCode == RESULT_OK) {
             return HANDLE_VIDEO;
         }
-        if (requestCode == REQUEST_CODE && resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
-            return 0;
-        }
+
         return requestCode;
     }
 }

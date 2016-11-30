@@ -5,14 +5,13 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -36,17 +35,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,7 +62,7 @@ import static in.reweyou.reweyou.classes.HandleActivityResult.HANDLE_IMAGE;
 import static in.reweyou.reweyou.classes.HandleActivityResult.HANDLE_VIDEO;
 import static in.reweyou.reweyou.utils.Constants.AUTH_ERROR;
 
-public class Feed extends AppCompatActivity implements View.OnClickListener {
+public class Feed extends AppCompatActivity {
     static final String[] PERMISSIONS = new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private static final int REQUEST_CODE = 0;
     private final int REQ_CODE_PROFILE = 56;
@@ -82,104 +83,80 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
     private TextView tv;
     private ProgressBar pd;
     private ViewPager viewPager;
+    private PagerAdapter pagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
 
-        pd = (ProgressBar) findViewById(R.id.pd);
-        pd.setVisibility(View.VISIBLE);
-        floatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                startActivity(new Intent(Feed.this, PostReport.class));
-               /* AlertDialog.Builder getImageFrom = new AlertDialog.Builder(Feed.this);
-                getImageFrom.setTitle("Select Image from:");
-                final CharSequence[] opsChars = {getResources().getString(R.string.takepic), getResources().getString(R.string.opengallery)};
-                getImageFrom.setItems(opsChars, new android.content.DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (which == 0) {
-                            if (checker.lacksPermissions(PERMISSION)) {
-                                startPermissionsActivity();
-                            } else {
-
-                                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                                File photoFile = null;
-                                photoFile = getOutputMediaFile();
-                                uri = Uri.fromFile(photoFile);
-                                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                                startActivityForResult(takePictureIntent, REQUEST_CAMERA);
-                                UILApplication.getInstance().trackEvent("Image", "Camera", "For Pics");
-                            }
-
-                        } else if (which == 1) {
-                            if (checker.lacksPermissions(PERMISSION)) {
-                                startPermissionsActivity();
-                            } else {
-                                Intent intent = new Intent(Intent.ACTION_PICK,
-                                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                                // 2. pick image only
-                                intent.setType("image*//*");
-                                // 3. start activity
-                                startActivityForResult(intent, SELECT_FILE);
-                                UILApplication.getInstance().trackEvent("Gallery", "Gallery", "For Pics");
-                            }
-                        }
-                        dialog.show();
-                    }
-                });
-                getImageFrom.show();*/
-            }
-        });
         session = new UserSessionManager(getApplicationContext());
         cd = new ConnectionDetector(Feed.this);
         checker = new PermissionsChecker(this);
 
-        initToolbar();
-        initViewPagerAndTabs();
-        initNavigationDrawer();
+        initViews();
 
-        if (session.getDeviceid() == null)
+
+
+        /*method to check for users who were using old versions of the app*/
+
+        //device id must be null for the users using old version of app
+        if (session.getDeviceid() == null) {
             checkforolduserstatus();
-        else {
-            pd.setVisibility(View.GONE);
-            viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
+        } else {                              //for new users we didnt need this check
+            pagerAdapter = new PagerAdapter(getSupportFragmentManager());
+            viewPager.setAdapter(pagerAdapter);
             makeNotificationsRequest();
         }
 
 
     }
 
+    private void initViews() {
+        initToolbar();
+        initFAB();
+        initViewPagerAndTabs();
+        initNavigationDrawer();
+    }
+
+    private void initFAB() {
+        floatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Feed.this, PostReport.class));
+            }
+        });
+    }
+
+    private void showProgressBarforOldUserCheck() {
+        pd = (ProgressBar) findViewById(R.id.pd);
+        pd.setVisibility(View.VISIBLE);
+    }
+
     private void checkforolduserstatus() {
 
-        tabLayout.setVisibility(View.GONE);
+        showProgressBarforOldUserCheck();    //show progress bar when making request to update old user data
+        tabLayout.setVisibility(View.GONE); //hide tabs bar as it empty(no tabs name) because we havent set adapter
+
         StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.URL_OLD_USER_STATUS,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         pd.setVisibility(View.GONE);
-
                         Log.d("responseolduser", response);
                         if (response != null) {
                             if (!response.isEmpty()) {
                                 if (response.equals("error")) {
-                                    Toast.makeText(Feed.this, "wrong", Toast.LENGTH_SHORT).show();
+                                    Log.d("olduser", "error");
                                 } else {
-                                    Log.d("readched", "22323");
                                     session.setAuthToken(response);
                                     session.setDeviceid(Settings.Secure.getString(Feed.this.getContentResolver(), Settings.Secure.ANDROID_ID));
-
-                                    Log.d("readched oid", Settings.Secure.getString(Feed.this.getContentResolver(), Settings.Secure.ANDROID_ID));
-
                                     tabLayout.setVisibility(View.VISIBLE);
-
-                                    // viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
-                                    // makeNotificationsRequest();
+                                    pagerAdapter = new PagerAdapter(getSupportFragmentManager());
+                                    viewPager.setAdapter(pagerAdapter);
+                                    makeNotificationsRequest();
                                 }
                             }
                         }
@@ -189,15 +166,21 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         pd.setVisibility(View.GONE);
+                        if (error instanceof NoConnectionError) {
+                            showSnackBar("no internet connectivity");
+                        } else if (error instanceof TimeoutError) {
+                            showSnackBar("poor internet connectivity");
+                        } else if (error instanceof NetworkError || error instanceof ParseError || error instanceof ServerError) {
+                            showSnackBar("something went wrong");
+                        }
+
                     }
                 }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> map = new HashMap<String, String>();
-
                 map.put("number", session.getMobileNumber());
                 map.put("deviceid", Settings.Secure.getString(Feed.this.getContentResolver(), Settings.Secure.ANDROID_ID));
-
                 return map;
             }
         };
@@ -205,6 +188,26 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
         requestQueue.add(stringRequest);
 
 
+    }
+
+    private void showSnackBar(String msg) {
+        Snackbar.make(findViewById(R.id.coordinatorLayout), msg, Snackbar.LENGTH_LONG).setDuration(Snackbar.LENGTH_INDEFINITE)
+                .setAction("RETRY", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        checkforolduserstatus();
+                    }
+                }).show();
+    }
+
+    private void showSnackBar1(String msg) {
+        Snackbar.make(findViewById(R.id.coordinatorLayout), msg, Snackbar.LENGTH_LONG).setDuration(Snackbar.LENGTH_INDEFINITE)
+                .setAction("RETRY", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        makeNotificationsRequest();
+                    }
+                }).show();
     }
 
     private void initToolbar() {
@@ -215,95 +218,61 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
     private void initViewPagerAndTabs() {
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         viewPager.setOffscreenPageLimit(2);
-        // viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
-
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
     }
 
 
-    private boolean isDeviceSupportCamera() {
-        return getApplicationContext().getPackageManager().hasSystemFeature(
-                PackageManager.FEATURE_CAMERA);
-    }
+    private void makeNotificationsRequest() {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.MY_TOTAL_NOTIFICATIONS_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("responsetotallikes", response);
+                        if (response != null) {
+                            if (!response.isEmpty()) {
+                                if (response.equals(AUTH_ERROR)) {
+                                    session.logoutUser();
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
+                                } else
+                                    setnotificationNumber(Integer.parseInt(response));
+                            }
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                       /* if (error instanceof NoConnectionError) {
+                            showSnackBar1("no internet connectivity");
+                        } else if (error instanceof TimeoutError) {
+                            showSnackBar1("poor internet connectivity");
+                        } else if (error instanceof NetworkError || error instanceof ParseError || error instanceof ServerError) {
+                            showSnackBar1("something went wrong");
+                        }*/
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("number", session.getMobileNumber());
+                map.put("token", session.getKeyAuthToken());
+                map.put("deviceid", session.getDeviceid());
 
-            case R.id.text:
-                Intent profile = new Intent(Feed.this, MyProfile.class);
-                startActivity(profile);
-                break;
-
-            case R.id.fab:
-                Toast.makeText(Feed.this, "hey", Toast.LENGTH_SHORT).show();
-                break;
-        }
-    }
-
-    private File getOutputMediaFile() {
-        // To be safe, you should check that the SDCard is mounted
-        // using Environment.getExternalStorageState() before doing this.
-        File mediaStorageDir = new File(Environment.getExternalStorageDirectory(), "Reweyou");
-        // This location works best if you want the created images to be shared
-        // between applications and persist after your app has been uninstalled.
-        // Create the storage directory if it does not exist
-        if (!mediaStorageDir.exists()) {
-            if (!mediaStorageDir.mkdirs()) {
-                Log.d("Reweyou", "failed to create directory");
-                return null;
+                return map;
             }
-        }
-        // Create a media file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        File mediaFile;
-        mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                "IMG_" + timeStamp + ".jpg");
-        mCurrentPhotoPath = "file:" + mediaFile.getAbsolutePath();
-        return mediaFile;
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(Feed.this);
+        requestQueue.add(stringRequest);
     }
 
     @Override
     protected void onActivityResult(int reqCode, int resCode, Intent data) {
-      /*  if (resCode == Activity.RESULT_OK && reqCode == SELECT_FILE && data != null) {
-            Uri uriFromPath = data.getData();
-            String show = uriFromPath.toString();
-            Intent intent = new Intent(this, PostReport.class);
-            intent.putExtra("path", show);
-            startActivity(intent);
-        }
-        if (resCode == Activity.RESULT_OK && reqCode == REQUEST_CAMERA) {
-            String show = uri.toString();
-            Intent intent = new Intent(Feed.this, CameraActivity.class);
-            Log.d("URI", show);
-            Log.d("Intent", mCurrentPhotoPath);
-            intent.putExtra("path", mCurrentPhotoPath);
-            startActivity(intent);
-        }
-        if (reqCode == REQUEST_VIDEO
-                && resCode == RESULT_OK) {
-
-            if (data != null && data.getStringExtra("videopath") != null)
-                videoFilePath = data.getStringExtra("videopath");
-            Intent intent = new Intent(Feed.this, VideoUpload.class);
-            intent.putExtra("path", videoFilePath);
-            startActivity(intent);
-        }
-        if (reqCode == REQUEST_CODE && resCode == PermissionsActivity.PERMISSIONS_DENIED) {
-            finish();
-        }*/
-
-        Log.d("reacheddewdd", "wwqd   hereeeeeee");
-
 
         if (reqCode == REQ_CODE_PROFILE && resCode == RESULT_OK) {
-
-            Log.d("reached", "ewjdkejdu   hereeeeeee");
+            //called when profilepicture is updated by user
             Glide.with(Feed.this).load(session.getProfilePicture()).error(R.drawable.download).into(image);
-
         } else {
-
             int dataType = new HandleActivityResult().handleResult(reqCode, resCode, data);
             switch (dataType) {
                 case HANDLE_IMAGE:
@@ -316,8 +285,6 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
                     UploadOptions uploadOptions = new UploadOptions(Feed.this);
                     i2.putExtra("dataVideo", uploadOptions.getAbsolutePath(data.getData()));
                     startActivity(i2);
-                default:
-                    return;
             }
         }
     }
@@ -325,10 +292,8 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_feed, menu);
-        // Retrieve the SearchView and plug it into SearchManager
-        // Associate searchable configuration with the SearchView
+
         SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView =
@@ -342,19 +307,13 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
         RelativeLayout notifCount = (RelativeLayout) MenuItemCompat.getActionView(item);
 
         tv = (TextView) notifCount.findViewById(R.id.actionbar_notifcation_textview);
-        tv.setText("1");
 
         ImageView im = (ImageView) notifCount.findViewById(R.id.im);
         im.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isInternetPresent = cd.isConnectingToInternet();
-                if (isInternetPresent) {
-                    Intent notifications = new Intent(Feed.this, Notifications.class);
-                    startActivity(notifications);
-                } else {
-                    Toast.makeText(Feed.this, "You are not connected to Internet", Toast.LENGTH_LONG).show();
-                }
+                Intent notifications = new Intent(Feed.this, Notifications.class);
+                startActivity(notifications);
             }
         });
 
@@ -369,22 +328,9 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
         switch (item.getItemId()) {
 
             case R.id.action_search:
-                // User chose the "Favorite" action, mark the current item
-                // as a favorite...
                 return true;
 
-            /*case R.id.action_notification:
-                isInternetPresent = cd.isConnectingToInternet();
-                if (isInternetPresent) {
-                    Intent notifications = new Intent(Feed.this, Notifications.class);
-                    startActivity(notifications);
-                } else {
-                    Toast.makeText(this, "You are not connected to Internet", Toast.LENGTH_LONG).show();
-                }
-                return true;*/
             default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
         }
     }
@@ -410,45 +356,8 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
         }
     }
 
-    private void makeNotificationsRequest() {
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.MY_TOTAL_NOTIFICATIONS_URL,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.d("responsetotallikes", response);
-                        if (response != null) {
-                            if (!response.isEmpty()) {
-                                if (response.equals(AUTH_ERROR)) {
-                                    session.logoutUser();
 
-                                } else
-                                    setnotificationnNumber(Integer.parseInt(response));
-                            }
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-
-                    }
-                }) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> map = new HashMap<String, String>();
-
-                map.put("number", session.getMobileNumber());
-                map.put("token", session.getKeyAuthToken());
-                map.put("deviceid", session.getDeviceid());
-
-                return map;
-            }
-        };
-        RequestQueue requestQueue = Volley.newRequestQueue(Feed.this);
-        requestQueue.add(stringRequest);
-    }
-
-    private void setnotificationnNumber(int i) {
+    private void setnotificationNumber(int i) {
         if (tv != null) {
             if (i == 0) {
                 tv.setVisibility(View.INVISIBLE);
@@ -484,18 +393,15 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
         builder.setMessage(R.string.confirm_logout)
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        // FIRE ZE MISSILES!
                         session.logoutUser1();
                         finish();
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        // User cancelled the dialog
                         dialog.cancel();
                     }
                 });
-        // Create the AlertDialog object and return it
         builder.show();
     }
 
@@ -545,7 +451,7 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
             }
         });
         View header = navigationView.getHeaderView(0);
-        TextView tv_email = (TextView) header.findViewById(R.id.tv_email);
+        TextView tv_name = (TextView) header.findViewById(R.id.tv_name);
         image = (ImageView) header.findViewById(R.id.image);
         ImageView profileSetting = (ImageView) header.findViewById(R.id.profile_settings);
         profileSetting.setOnClickListener(new View.OnClickListener() {
@@ -556,7 +462,7 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
                 startActivityForResult(profile, REQ_CODE_PROFILE);
             }
         });
-        tv_email.setText(session.getUsername());
+        tv_name.setText(session.getUsername());
         Glide.with(Feed.this).load(session.getProfilePicture()).error(R.drawable.download).into(image);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
 
@@ -576,6 +482,7 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
         actionBarDrawerToggle.syncState();
     }
 
+
     private class PagerAdapter extends FragmentStatePagerAdapter {
 
         private String[] tabs = getResources().getStringArray(R.array.tabs);
@@ -590,7 +497,6 @@ public class Feed extends AppCompatActivity implements View.OnClickListener {
             Bundle bundle = new Bundle();
             bundle.putInt("position", position);
             fragment.setArguments(bundle);
-            Log.d("getItem", "" + position);
             return fragment;
         }
 

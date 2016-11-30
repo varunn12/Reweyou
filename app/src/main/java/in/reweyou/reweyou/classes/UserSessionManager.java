@@ -45,6 +45,7 @@ public class UserSessionManager {
     // Shared pref mode
     int PRIVATE_MODE = 0;
     private List<String> likesList;
+    private String FIRST_LOAD_TUT = "firsttimeload";
 
 
     // Constructor
@@ -257,5 +258,14 @@ public class UserSessionManager {
         Log.d("remove set", String.valueOf(set));
         editor.putStringSet("likesList", set);
         editor.apply();
+    }
+
+    public void setFirstLoad() {
+        editor.putBoolean(FIRST_LOAD_TUT, true);
+        editor.commit();
+    }
+
+    public boolean getFirstLoad() {
+        return pref.getBoolean(FIRST_LOAD_TUT, false);
     }
 }

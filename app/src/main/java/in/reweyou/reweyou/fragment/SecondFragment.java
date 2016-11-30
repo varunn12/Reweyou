@@ -1,5 +1,6 @@
 package in.reweyou.reweyou.fragment;
 
+import android.app.Activity;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,10 +12,16 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkError;
@@ -69,6 +76,10 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private int position = -1;
     private boolean cacheLoad = false;
     private String placename;
+    private Activity mContext;
+    private TextView topBar;
+    private LinearLayout hangingNoti;
+    private View layout;
 
     public SecondFragment() {
     }
@@ -87,7 +98,12 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View layout = inflater.inflate(R.layout.fragment_second, container, false);
+        layout = inflater.inflate(R.layout.fragment_second, container, false);
+
+        hangingNoti = (LinearLayout) layout.findViewById(R.id.hanging_noti);
+
+
+        topBar = (TextView) layout.findViewById(R.id.no);
         recyclerView = (RecyclerView) layout.findViewById(R.id.recycler_view);
         RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecoration(ContextCompat.getDrawable(getActivity(), R.drawable.line));
         recyclerView.addItemDecoration(dividerItemDecoration);
@@ -241,6 +257,16 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
 
     private void Messages() {
+
+        topBar.setVisibility(View.GONE);
+        Log.d("context", String.valueOf(mContext));
+        c = Calendar.getInstance();
+        mYear = c.get(Calendar.YEAR);
+        mMonth = c.get(Calendar.MONTH);
+        mDay = c.get(Calendar.DAY_OF_MONTH);
+
+        df = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss a");
+
         formattedDate = df.format(c.getTime());
 
         tag = "General";
@@ -320,59 +346,76 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show();
-//                        Log.d("Response", error.getMessage());
 
-                       /* if (error instanceof AuthFailureError) {
-                            Log.d("Response", "a");
+                        if (error instanceof NoConnectionError) {
+                            showNoti("No internet connectivity");
+                        } else if (error instanceof TimeoutError) {
+                            showNoti("poor internet connectivity");
+                        } else if (error instanceof NetworkError || error instanceof ParseError || error instanceof ServerError) {
+                            showNoti("something went wrong");
+                        }
 
-                        } else */
-                        if (error instanceof NetworkError || error instanceof NoConnectionError || error instanceof TimeoutError) {
-                            Log.d("ResponseError", error.toString());
+                        String respo = MyJSON.getData(getContext());
+                        if (respo != null) {
+                            JSONArray parentArray = null;
+                            try {
+                                parentArray = new JSONArray(respo);
+                                Log.d("aaa", String.valueOf(parentArray));
+                                StringBuffer finalBufferedData = new StringBuffer();
 
-                            /*getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(getActivity(), "No internet Connection", Toast.LENGTH_SHORT).show();
+
+                                Gson gson = new Gson();
+                                for (int i = 0; i < parentArray.length(); i++) {
+                                    JSONObject finalObject = parentArray.getJSONObject(i);
+                                    MpModel mpModel = gson.fromJson(finalObject.toString(), MpModel.class);
+                                    messagelist.add(mpModel);
                                 }
-                            });*/
-                            String respo = MyJSON.getData(getContext());
-                            if (respo != null) {
-                                JSONArray parentArray = null;
-                                try {
-                                    parentArray = new JSONArray(respo);
-                                    Log.d("aaa", String.valueOf(parentArray));
-                                    StringBuffer finalBufferedData = new StringBuffer();
+                                progressBar.setVisibility(View.GONE);
+                                adapter = new FeedAdapter(getActivity(), messagelist);
 
+                                recyclerView.setAdapter(adapter);
 
-                                    Gson gson = new Gson();
-                                    for (int i = 0; i < parentArray.length(); i++) {
-                                        JSONObject finalObject = parentArray.getJSONObject(i);
-                                        MpModel mpModel = gson.fromJson(finalObject.toString(), MpModel.class);
-                                        messagelist.add(mpModel);
-                                    }
-                                    progressBar.setVisibility(View.GONE);
-                                    adapter = new FeedAdapter(getActivity(), messagelist);
-
-                                    recyclerView.setAdapter(adapter);
-
-                                    swipeLayout.setRefreshing(false);
-                                    cacheLoad = true;
-                                    //   MyJSON.saveData(getContext(), respo);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
+                                swipeLayout.setRefreshing(false);
+                                cacheLoad = true;
+                                //   MyJSON.saveData(getContext(), respo);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
+                        }
 
 
-                        } else if (error instanceof ParseError) {
-                            Log.d("Response", "p");
+                    }
+
+                    private void showNoti(String msg) {
+                        topBar.setText(msg);
+                        topBar.setVisibility(View.VISIBLE);
+
+                        if (!session.getFirstLoad()) {
+                            session.setFirstLoad();
+                            hangingNoti.setVisibility(View.VISIBLE);
+                            TranslateAnimation mAnimation = new TranslateAnimation(
+                                    TranslateAnimation.ABSOLUTE, 0f,
+                                    TranslateAnimation.ABSOLUTE, 0f,
+                                    TranslateAnimation.RELATIVE_TO_PARENT, 0f,
+                                    TranslateAnimation.RELATIVE_TO_PARENT, 0.05f);
+                            mAnimation.setDuration(500);
+                            mAnimation.setRepeatCount(-1);
+                            mAnimation.setRepeatMode(Animation.REVERSE);
+                            mAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
+                            hangingNoti.setAnimation(mAnimation);
+                            // recyclerView.setBackground((Color.parseColor("#50000000")));
+                            hangingNoti.setOnTouchListener(new View.OnTouchListener() {
+                                @Override
+                                public boolean onTouch(View v, MotionEvent event) {
+                                    hangingNoti.setAnimation(null);
+                                    hangingNoti.setVisibility(View.GONE);
+                                    hangingNoti.setOnTouchListener(null);
+
+                                    return true;
+                                }
 
 
-                        } else if (error instanceof ServerError) {
-                            Log.d("Response", "s");
-
-
+                            });
                         }
 
                     }
@@ -380,17 +423,12 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> data = new HashMap<>();
-                //  data.put("tag", tag);
-                // location="lucknow";
+
                 if (position == 10)
                     data.put("location", placename);
                 else
                     data.put("location", location);
-
-                Log.d("dwedw", placename + "  efe" + location);
                 data.put("date", formattedDate);
-                //Log.d("ddd", formattedDate);
-                //number="7054392300";
                 data.put("number", number);
                 return data;
             }
@@ -399,7 +437,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
         stringRequest.setRetryPolicy(new DefaultRetryPolicy(10 * 1000, 0,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+        RequestQueue requestQueue = Volley.newRequestQueue(mContext);
         requestQueue.add(stringRequest);
     }
 
@@ -463,5 +501,14 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
         // return Constants.FEED_URL;
     }
+
+    @Override
+    public void onAttach(Activity context) {
+        super.onAttach(context);
+        mContext = context;
+
+    }
+
+
 }
 
