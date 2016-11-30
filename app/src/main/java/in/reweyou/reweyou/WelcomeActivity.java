@@ -78,7 +78,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
                 animator.start();
             }
-        }, 1000);
+        }, 800);
 
 
     }

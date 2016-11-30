@@ -12,16 +12,11 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="in.reweyou.reweyou.WelcomeActivity">
 
-    <io.codetail.widget.RevealLinearLayout
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:orientation="vertical">
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp">
 
         <ImageView
             android:id="@+id/im"
@@ -32,6 +27,12 @@
 
             />
 
+        <io.codetail.widget.RevealLinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
             <ImageView
                 android:id="@+id/img"
                 android:layout_width="180dp"
@@ -40,18 +41,22 @@
                 app:srcCompat="@drawable/dont_otp_tick"
 
                 />
-        </RelativeLayout>
+
+
+        </io.codetail.widget.RevealLinearLayout>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_below="@+id/im"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="60dp"
             android:fontFamily="sans-serif-condensed"
 
             android:gravity="center"
             android:text="OTP Verified"
             android:textColor="#fff"
             android:textSize="28dp" />
-    </io.codetail.widget.RevealLinearLayout>
-
+    </RelativeLayout>
 
 </RelativeLayout>
