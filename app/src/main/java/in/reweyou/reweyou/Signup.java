@@ -232,14 +232,12 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
 
         if (editTextUsername.getText().toString().trim().equals("")) {
             Toast.makeText(Signup.this, "username cannot be empty", Toast.LENGTH_LONG).show();
-            // editTextUsername.setHint("Enter Email");
         } else if (editTextNumber.getText().toString().trim().equals("")) {
-            editTextNumber.setError("phone number cannot be empty");
-
-            //editTextPassword.setHint("Enter password");
+            Toast.makeText(Signup.this, "mobile number cannot be empty", Toast.LENGTH_LONG).show();
+        } else if (editTextNumber.getText().toString().trim().length() != 10) {
+            Toast.makeText(Signup.this, "mobile number must be of 10 digits", Toast.LENGTH_LONG).show();
         } else if (editLocation.getText().toString().trim().equals("")) {
             Toast.makeText(Signup.this, "location cannot be empty", Toast.LENGTH_LONG).show();
-            //editTextPassword.setHint("Enter password");
         } else {
             final ProgressDialog loading = ProgressDialog.show(Signup.this, "Signing in", "Please wait", false, false);
             StringRequest stringRequest = new StringRequest(Request.Method.POST, REGISTER_URL,
@@ -448,7 +446,7 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
 
         if (!hasPermissions(this, PERMISSIONS)) {
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
-        }
+        } else registerUser();
 
     }
 
@@ -457,57 +455,61 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
         switch (requestCode) {
             case PERMISSION_ALL: {
 
-                for (int i = 0, len = permissions.length; i < len; i++) {
-                    String permission = permissions[i];
-                    if (grantResults[i] == PackageManager.PERMISSION_DENIED) {
-                        // user rejected the permission
+                String permission = permissions[0];
+                if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                    // user rejected the permission
 
-                        boolean showRationale = ActivityCompat.shouldShowRequestPermissionRationale(Signup.this, permission);
-                        if (!showRationale) {
-                            showMissingPermissionDialog();
-                        } else if (Manifest.permission.READ_SMS.equals(permission)) {
-                            // user did NOT check "never ask again"
-
-                            String[] p = {permission};
-                            ActivityCompat.requestPermissions(this, p, PERMISSION_ALL);
-                        } else if (Manifest.permission.RECEIVE_SMS.equals(permission)) {
-                            // user did NOT check "never ask again"
-
-                            String[] p = {permission};
-                            ActivityCompat.requestPermissions(this, p, PERMISSION_ALL);
-
-                        }
-                    }
-
-                }
+                    boolean showRationale = ActivityCompat.shouldShowRequestPermissionRationale(Signup.this, permission);
+                    if (!showRationale) {
+                        showPermissionDeniedDialog();
+                    } else
+                        showPermissionRequiredDialog(permission);
 
 
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                } else if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     registerUser();
                 }
             }
         }
     }
 
-    private void showMissingPermissionDialog() {
-        android.support.v7.app.AlertDialog.Builder dialogBuilder = new android.support.v7.app.AlertDialog.Builder(Signup.this);
-        dialogBuilder.setTitle(R.string.help);
-        dialogBuilder.setMessage(R.string.string_help_text);
-        dialogBuilder.setNegativeButton(R.string.quit, new DialogInterface.OnClickListener() {
+    private void showPermissionRequiredDialog(final String permission) {
+        AlertDialogBox alertDialogBox = new AlertDialogBox(Signup.this, "Permission Required", getResources().getString(R.string.permission_required), "grant", "deny") {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // setResult(PERMISSIONS_DENIED);
-                // finish();
+            void onNegativeButtonClick(DialogInterface dialog) {
+                dialog.dismiss();
                 registerUser();
             }
-        });
-        dialogBuilder.setPositiveButton(R.string.settings, new DialogInterface.OnClickListener() {
+
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                startAppSettings();
+            void onPositiveButtonClick(DialogInterface dialog) {
+                dialog.dismiss();
+                String[] p = {permission};
+                ActivityCompat.requestPermissions(Signup.this, p, PERMISSION_ALL);
+
             }
-        });
-        dialogBuilder.show();
+        };
+        alertDialogBox.setCancellable(true);
+        alertDialogBox.show();
+    }
+
+    private void showPermissionDeniedDialog() {
+        AlertDialogBox alertDialogBox = new AlertDialogBox(Signup.this, "Permission Denied", getResources().getString(R.string.permission_denied), "settings", "okay") {
+            @Override
+            void onNegativeButtonClick(DialogInterface dialog) {
+                dialog.dismiss();
+                registerUser();
+            }
+
+            @Override
+            void onPositiveButtonClick(DialogInterface dialog) {
+                dialog.dismiss();
+                startAppSettings();
+
+            }
+        };
+        alertDialogBox.setCancellable(true);
+        alertDialogBox.show();
     }
 
     private void startAppSettings() {

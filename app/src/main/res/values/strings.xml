@@ -112,5 +112,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="title_activity_single_post_acitivty">SinglePostAcitivty</string>
+    <string name="permission_required">Reweyou will be verifying your mobile number. In order to read the otp automatically, allow the sms read permission to the app.</string>
+    <string name="permission_denied">Allow Reweyou the sms read permission or else enter the otp manually</string>
 
 </resources>
