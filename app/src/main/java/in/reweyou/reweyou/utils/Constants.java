@@ -60,4 +60,5 @@ public class Constants {
     public static final String URL_VERIFY_OTP = "https://www.reweyou.in/reweyou/verify_otp_new.php";
 
     public static final String SEARCH_QUERY = "https://www.reweyou.in/reweyou/searchresults.php";
+    public static final String FEED_LIKES = "https://www.reweyou.in/reweyou/liked.php";
 }

@@ -177,9 +177,9 @@
         </activity>
         <activity android:name=".Readers" />
         <activity
-            android:name=".Raw"
+            android:name=".LikesActivity"
             android:label="@string/title_activity_raw"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/Theme.AppCompat.Dialog" />
         <activity
             android:name=".NavA"
             android:label="@string/title_activity_nav"
