@@ -15,7 +15,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
@@ -110,9 +109,7 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
     private RequestQueue requestQueue;
     private String username, number, place, token, advertId;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
-    private TextInputLayout inputLayoutName;
-    private TextInputLayout inputLayoutNumber;
-    private TextInputLayout inputLayoutCity;
+
     private boolean active;
     private ProgressDialog pd;
     private CustomDialogClass customDialogClass;
@@ -283,7 +280,7 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
         session.createUserRegisterSession(username, number, place);
 
         // Starting TokenTest
-        Intent i = new Intent(this, Welcome.class);
+        Intent i = new Intent(this, WelcomeActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
         finish(); // Call once you redirect to another activity

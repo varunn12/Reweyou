@@ -23,7 +23,7 @@ public class SplashScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sharedPreferences = getSharedPreferences("ShaPreferences", Context.MODE_PRIVATE);
-        session=new UserSessionManager(SplashScreen.this);
+        session = new UserSessionManager(SplashScreen.this);
         appLocationService = new AppLocationService(SplashScreen.this);
 
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -41,14 +41,11 @@ public class SplashScreen extends AppCompatActivity {
             startActivity(intent);
             finish();
         } else {
-            if(!session.checkLoginSplash()) {
-
+            if (!session.checkLoginSplash()) {
                 Intent intent = new Intent(SplashScreen.this, Feed.class);
                 startActivity(intent);
                 finish();
-            }
-            else
-            {
+            } else {
                 Intent intent = new Intent(SplashScreen.this, Signup.class);
                 startActivity(intent);
                 finish();
