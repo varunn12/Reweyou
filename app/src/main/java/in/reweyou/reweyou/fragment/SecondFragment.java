@@ -81,6 +81,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private LinearLayout hangingNoti;
     private View layout;
     private String query;
+    private int minPostid;
 
     public SecondFragment() {
     }
@@ -203,14 +204,18 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                     @Override
                     protected Map<String, String> getParams() {
                         Map<String, String> data = new HashMap<>();
-                        //data.put("tag", tag);
-                        data.put("location", location);
-                        data.put("postid", postid);
-                        // data.put("date", formattedDate);
-                        //  Log.d("ddd", formattedDate);
-                        data.put("number", number);
+                        if (position != 1) {
 
-                        Log.d("data", String.valueOf(data));
+
+                            //data.put("tag", tag);
+                            data.put("location", location);
+                            data.put("postid", postid);
+                            // data.put("date", formattedDate);
+                            //  Log.d("ddd", formattedDate);
+                            data.put("number", number);
+                        } else
+                            data.put("postid", String.valueOf(minPostid));
+                        Log.d("minid", String.valueOf(data));
                         return data;
                     }
                 };
@@ -300,6 +305,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                                 messagelist.add(locationFilter);
                             }
 
+
                             Gson gson = new Gson();
                             Log.d("size", String.valueOf(parentArray.length()));
                             for (int i = 0; i < parentArray.length(); i++) {
@@ -311,8 +317,18 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                                     mpModel.setLiked(true);
 
                                 }
+                                if (i == 0) {
+                                    minPostid = Integer.parseInt(mpModel.getPostId());
+                                }
+
+                                if (minPostid > Integer.parseInt(mpModel.getPostId())) {
+                                    minPostid = Integer.parseInt(mpModel.getPostId());
+                                }
+
                                 Log.d("postid", mpModel.getPostId());
+                                Log.d("minpostid", String.valueOf(minPostid));
                                 Log.d("number", session.getMobileNumber());
+
                                 messagelist.add(mpModel);
 
                                 if (i == parentArray.length() - 1) {
@@ -422,16 +438,17 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
             protected Map<String, String> getParams() {
                 Map<String, String> data = new HashMap<>();
 
-                if (position != 12) {
-                    if (position == 10)
-                        data.put("location", placename);
-                    else
-                        data.put("location", location);
-                    data.put("date", formattedDate);
-                    data.put("number", number);
+                if (position != 1) {
+                    if (position != 12) {
+                        if (position == 10)
+                            data.put("location", placename);
+                        else
+                            data.put("location", location);
+                        data.put("date", formattedDate);
+                        data.put("number", number);
 
-                } else data.put("query", query);
-
+                    } else data.put("query", query);
+                }
                 return data;
             }
         };
@@ -489,7 +506,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
             case 0:
                 return Constants.FEED_URL;
             case 1:
-                return Constants.CAMPAIGN_URL;
+                return Constants.TRENDING_URL;
             case 2:
                 return Constants.READING_URL;
             case 10:
