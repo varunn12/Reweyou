@@ -10,7 +10,7 @@
     <color name="whiteDot">#fff</color>
     <color name="greyDot">#54000000</color>
 
-    <color name="likeText">#9c9c9c</color>
+    <color name="likeText">#80000000</color>
     <color name="ReviewColor">#80000000</color>
     <color name="randoms">#4D05A8AA</color>
 
@@ -30,5 +30,6 @@
     <color name="divider">#BDBDBD</color>
     <color name="camera_grey">#BDBDBD</color>
     <color name="greylight">#25000000</color>
+    <color name="main">#75000000</color>
     -
 </resources>
