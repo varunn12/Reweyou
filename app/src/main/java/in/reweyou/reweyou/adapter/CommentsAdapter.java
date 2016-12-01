@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.Target;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -29,7 +30,6 @@ import in.reweyou.reweyou.UserProfile;
 import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.CustomTabActivityHelper;
 import in.reweyou.reweyou.classes.CustomTabsOnClickListener;
-import in.reweyou.reweyou.classes.TouchImageView;
 import in.reweyou.reweyou.classes.Util;
 import in.reweyou.reweyou.model.CommentsModel;
 
@@ -103,7 +103,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
             viewHolder.image.setVisibility(View.GONE);
         } else {
             viewHolder.image.setVisibility(View.VISIBLE);
-            Glide.with(mContext).load(mpModelList.get(position).getR_Image()).into(viewHolder.image);
+            Glide.with(mContext).load(mpModelList.get(position).getR_Image()).override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).into(viewHolder.image);
 
         }
         viewHolder.image.setOnClickListener(new View.OnClickListener() {
@@ -131,7 +131,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
         protected CardView cv;
         protected TextView name;
         protected TextView time;
-        protected TouchImageView image;
+        protected ImageView image;
         protected ImageView profilepic;
 
         public ViewHolder(View view) {
@@ -141,7 +141,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
             this.name = (TextView) view.findViewById(R.id.name);
             this.time = (TextView) view.findViewById(R.id.time);
             this.cv = (CardView) view.findViewById(R.id.cv);
-            this.image = (TouchImageView) view.findViewById(R.id.image);
+            this.image = (ImageView) view.findViewById(R.id.image);
             this.profilepic = (ImageView) view.findViewById(R.id.profilepic);
             //userName.setTypeface(font);
         }
