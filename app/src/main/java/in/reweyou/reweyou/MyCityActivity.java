@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.fragment.SecondFragment;
 
 public class MyCityActivity extends AppCompatActivity {
@@ -38,30 +39,23 @@ public class MyCityActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-       /* session= new UserSessionManager(getApplicationContext());
-        String city= session.getLoginLocation();
-        String fontPath = "fonts/Roboto-Medium.ttf";*/
-        /*Typeface tf = Typeface.createFromAsset(getAssets(), fontPath);
-        headline = (TextView) findViewById(R.id.headline);
-        headline.setText(city);
-        headline.setTypeface(tf);*/
+
+        UserSessionManager userSessionManager = new UserSessionManager(this);
 
         Intent i = getIntent();
         String place = null;
-        if (i != null)
+        if (i.hasExtra("place"))
             place = i.getStringExtra("place");
+        else place = userSessionManager.getLoginLocation();
 
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         SecondFragment frag = new SecondFragment();
         Bundle bundle = new Bundle();
-        if (!i.hasExtra("place")) {
-            bundle.putInt("position", 9);
-        } else {
-            bundle.putInt("position", 10);
-            bundle.putString("place", place);
-        }
+        bundle.putInt("position", 10);
+        bundle.putString("place", place);
+
 
         frag.setArguments(bundle);
         fragmentTransaction.add(R.id.myfragment, frag, "MyCITY");

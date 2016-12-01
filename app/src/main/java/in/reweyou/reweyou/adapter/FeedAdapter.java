@@ -3,6 +3,7 @@ package in.reweyou.reweyou.adapter;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +27,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -56,6 +58,7 @@ import java.util.Map;
 import in.reweyou.reweyou.CategoryActivity;
 import in.reweyou.reweyou.Comments1;
 import in.reweyou.reweyou.FullImage;
+import in.reweyou.reweyou.LikesActivity;
 import in.reweyou.reweyou.MyCityActivity;
 import in.reweyou.reweyou.PostReport;
 import in.reweyou.reweyou.R;
@@ -67,6 +70,7 @@ import in.reweyou.reweyou.classes.CustomTabsOnClickListener;
 import in.reweyou.reweyou.classes.UploadOptions;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.classes.Util;
+import in.reweyou.reweyou.fragment.SecondFragment;
 import in.reweyou.reweyou.model.MpModel;
 import in.reweyou.reweyou.utils.Constants;
 
@@ -94,6 +98,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     CustomTabActivityHelper mCustomTabActivityHelper;
     UserSessionManager session;
     Uri uri;
+    private SecondFragment fragment;
+    private String placename;
     private List<MpModel> messagelist;
     private Context mContext;
     private Bitmap bm;
@@ -103,9 +109,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private String number;
     private String username;
 
-    public FeedAdapter() {
-
-    }
 
     public FeedAdapter(Context context, List<MpModel> mlist) {
         this.mContext = context;
@@ -115,6 +118,21 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         mCustomTabActivityHelper = new CustomTabActivityHelper();
         session = new UserSessionManager(mContext);
 
+    }
+
+    public FeedAdapter(Context context, List<MpModel> mlist, String placename, SecondFragment secondFragment) {
+
+        Log.d("reach", "constr");
+        this.mContext = context;
+        activity = (Activity) context;
+        this.messagelist = mlist;
+        cd = new ConnectionDetector(mContext);
+        mCustomTabActivityHelper = new CustomTabActivityHelper();
+        session = new UserSessionManager(mContext);
+        this.placename = placename;
+        Log.d("reach", "constr    " + this.placename + "   " + placename);
+
+        this.fragment = secondFragment;
     }
 
 
@@ -139,6 +157,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder2, final int position) {
+        Log.d("view", String.valueOf(viewHolder2.getItemViewType()));
 
         switch (viewHolder2.getItemViewType()) {
             case VIEW_TYPE_LOADING:
@@ -149,12 +168,22 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             case VIEW_TYPE_IMAGE:
                 bindImageOrGif(position, viewHolder2);
                 break;
-
+            case VIEW_TYPE_LOCATION:
+                bindLocation(position, viewHolder2);
+                break;
           /*  default:
                 bindImageOrGif(position, viewHolder2);
                 break;*/
 
         }
+    }
+
+    private void bindLocation(int position, RecyclerView.ViewHolder viewHolder2) {
+        Log.d("locaton", "here");
+        LocationViewHolder locationViewHolder = (LocationViewHolder) viewHolder2;
+        if (placename != null)
+            locationViewHolder.location.setText(placename);
+
     }
 
     @Override
@@ -189,7 +218,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 holder.upvote.setTextColor(mContext.getResources().getColor(R.color.rank));
                 holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews())) + " likes");
             }
-        }
+        } else super.onBindViewHolder(mHolder, position, payloads);
 
     }
 
@@ -293,7 +322,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         } else {
             viewHolder.upicon.setImageResource(R.drawable.ic_thumb_up_black_16px);
-            viewHolder.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.likeText));
+            viewHolder.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.main));
         }
     }
 
@@ -746,6 +775,14 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             upicon = (ImageView) view.findViewById(R.id.upicon);
 
 
+            reviews.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(mContext, LikesActivity.class);
+                    i.putExtra("postid", messagelist.get(getAdapterPosition()).getPostId());
+                    mContext.startActivity(i);
+                }
+            });
             linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -789,16 +826,13 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             from.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    isInternetPresent = cd.isConnectingToInternet();
-                    if (isInternetPresent) {
-                        Bundle bundle = new Bundle();
-                        bundle.putString("myData", messagelist.get(getAdapterPosition()).getNumber());
-                        Intent in = new Intent(mContext, UserProfile.class);
-                        in.putExtras(bundle);
-                        mContext.startActivity(in);
-                    } else {
-                        Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_SHORT).show();
-                    }
+
+                    Bundle bundle = new Bundle();
+                    bundle.putString("myData", messagelist.get(getAdapterPosition()).getNumber());
+                    Intent in = new Intent(mContext, UserProfile.class);
+                    in.putExtras(bundle);
+                    mContext.startActivity(in);
+
                 }
             });
 
@@ -969,8 +1003,44 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     private class LocationViewHolder extends RecyclerView.ViewHolder {
+        private TextView edit;
+        private TextView location;
+
         public LocationViewHolder(View inflate) {
             super(inflate);
+
+            edit = (TextView) inflate.findViewById(R.id.edit);
+            location = (TextView) inflate.findViewById(R.id.locationText);
+
+            edit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final Dialog dialog = new Dialog(mContext);
+                    // Include dialog.xml file
+                    dialog.setContentView(R.layout.dialog_edit_location);
+                    // Set dialog title
+                    dialog.setTitle("Custom Dialog");
+
+                    // set values for custom dialog components - text, image and button
+                    final EditText editText = (EditText) dialog.findViewById(R.id.editTextLocation);
+                    Button button = (Button) dialog.findViewById(R.id.buttonConfirm);
+                    dialog.show();
+
+                    button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+
+                            if (editText.getText().toString().trim().length() == 0) {
+
+                            } else {
+                                fragment.onLocationSet(editText.getText().toString());
+                            }
+                        }
+                    });
+
+                }
+            });
         }
     }
 

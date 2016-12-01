@@ -294,7 +294,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                                 messagelist.add(newPost);
                             }
 
-                            if (position == 9) {
+                            if (position == 10) {
                                 MpModel locationFilter = new MpModel();
                                 locationFilter.locationPost = true;
                                 messagelist.add(locationFilter);
@@ -320,13 +320,19 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                                 }
                             }
                             progressBar.setVisibility(View.GONE);
-                            adapter = new FeedAdapter(getActivity(), messagelist);
+
+
+                            if (position == 10)
+                                adapter = new FeedAdapter(getActivity(), messagelist, placename, SecondFragment.this);
+                            else
+                                adapter = new FeedAdapter(getActivity(), messagelist);
+
                             recyclerView.setAdapter(adapter);
 
                             swipeLayout.setRefreshing(false);
 
                             cacheLoad = false;
-                            MyJSON.saveData(getContext(), response);
+                            MyJSON.saveData(getContext(), response, position);
                         } catch (JSONException e) {
                             Log.e("ecec", e.getMessage());
                             e.printStackTrace();
@@ -486,8 +492,6 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                 return Constants.CAMPAIGN_URL;
             case 2:
                 return Constants.READING_URL;
-            case 9:
-                return Constants.MY_CITY_URL;
             case 10:
                 return Constants.MY_CITY_URL;
             case 12:
@@ -508,5 +512,9 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
     }
 
 
+    public void onLocationSet(String location) {
+        this.placename = location;
+        onRefresh();
+    }
 }
 
