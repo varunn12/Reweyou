@@ -15,9 +15,9 @@ public class MyJSON {
 
     static String fileName = "Reweyou.json";
 
-    public static void saveData(Context context, String mJsonResponse) {
+    public static void saveData(Context context, String mJsonResponse, int position) {
         try {
-            FileWriter file = new FileWriter(context.getFilesDir().getPath() + "/" + fileName);
+            FileWriter file = new FileWriter(context.getFilesDir().getPath() + "/" + position + fileName);
             file.write(mJsonResponse);
             file.flush();
             file.close();
