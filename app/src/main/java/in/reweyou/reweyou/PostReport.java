@@ -14,6 +14,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -53,6 +54,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
 
+import fr.quentinklein.slt.LocationTracker;
+import fr.quentinklein.slt.TrackerSettings;
 import in.reweyou.reweyou.classes.AppLocationService;
 import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.HandleActivityResult;
@@ -64,7 +67,6 @@ import in.reweyou.reweyou.utils.Constants;
 import io.nlopez.smartlocation.OnLocationUpdatedListener;
 import io.nlopez.smartlocation.OnReverseGeocodingListener;
 import io.nlopez.smartlocation.SmartLocation;
-import io.nlopez.smartlocation.location.providers.LocationManagerProvider;
 
 import static in.reweyou.reweyou.classes.HandleActivityResult.HANDLE_IMAGE;
 import static in.reweyou.reweyou.classes.HandleActivityResult.HANDLE_VIDEO;
@@ -89,7 +91,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
     public static final String UPLOAD_URL = "https://www.reweyou.in/reweyou/reporting.php";
 
     static final String[] PERMISSIONS = new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-    static final String[] PERMISSIONS_LOCATION = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
+    static final String[] PERMISSIONS_LOCATION = new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
 
     private static final int IMAGE = 11;
     private static final int VIDEO = 12;
@@ -543,7 +545,110 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
         if (SmartLocation.with(PostReport.this).location().state().locationServicesEnabled()) {
             Log.d("rea", "123321e12e");
             if (isGooglePlayServicesAvailable(this)) {
-                if (SmartLocation.with(PostReport.this).location(new LocationManagerProvider()).state().isGpsAvailable() && !SmartLocation.with(PostReport.this).location().state().isNetworkAvailable()) {
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+
+                }
+
+                final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+                if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) && !manager.isProviderEnabled(LocationManager.PASSIVE_PROVIDER)) {
+                    // Call your Alert message
+
+                    LocationTracker tracker = new LocationTracker(
+                            PostReport.this,
+                            new TrackerSettings()
+                                    .setUseGPS(true)
+                                    .setTimeout(5000)
+                                    .setUseNetwork(false)
+                                    .setUsePassive(false)
+                    ) {
+
+                        @Override
+                        public void onLocationFound(Location location) {
+                            // Do some stuff when a new GPS Location has been found
+                            Log.d("hey", String.valueOf(location.getLatitude()));
+                            Toast.makeText(PostReport.this, "location gps  " + location.getLatitude(), Toast.LENGTH_SHORT).show();
+
+                            stopListening();
+                        }
+
+                        @Override
+                        public void onTimeout() {
+                            Log.d("timeout", "gps");
+
+                        }
+                    };
+                    tracker.startListening();
+
+                } else if (manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                    LocationTracker tracker = new LocationTracker(
+                            PostReport.this,
+                            new TrackerSettings()
+                                    .setUseGPS(false)
+                                    .setTimeout(5000)
+                                    .setUseNetwork(true)
+                                    .setUsePassive(false)
+                    ) {
+
+                        @Override
+                        public void onLocationFound(Location location) {
+                            // Do some stuff when a new GPS Location has been found
+                            Log.d("hey", String.valueOf(location.getLatitude()));
+                            Toast.makeText(PostReport.this, "location network  " + location.getLatitude(), Toast.LENGTH_SHORT).show();
+                            stopListening();
+                        }
+
+                        @Override
+                        public void onTimeout() {
+                            Log.d("timeout", "network");
+
+                        }
+                    };
+                    tracker.startListening();
+                } else if (manager.isProviderEnabled(LocationManager.PASSIVE_PROVIDER)) {
+                    LocationTracker tracker = new LocationTracker(
+                            PostReport.this,
+                            new TrackerSettings()
+                                    .setUseGPS(false)
+                                    .setTimeout(5000)
+                                    .setUseNetwork(false)
+                                    .setUsePassive(true)
+                    ) {
+
+                        @Override
+                        public void onLocationFound(Location location) {
+                            // Do some stuff when a new GPS Location has been found
+                            Toast.makeText(PostReport.this, "location passive  " + location.getLatitude(), Toast.LENGTH_SHORT).show();
+
+                            Log.d("hey", String.valueOf(location.getLatitude()));
+                            stopListening();
+                        }
+
+                        @Override
+                        public void onTimeout() {
+                            Log.d("timeout", "passive");
+
+                        }
+                    };
+                    tracker.startListening();
+                }
+
+
+
+
+
+
+
+
+
+                /*if (SmartLocation.with(PostReport.this).location(new LocationManagerProvider()).state().isGpsAvailable() && !SmartLocation.with(PostReport.this).location().state().isNetworkAvailable()) {
                     final ProgressDialog pd = new ProgressDialog(PostReport.this);
                     pd.setMessage("Fetching current location! Please Wait.");
                     pd.show();
@@ -572,7 +677,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                     getLocation(pd);
 
                 }
-
+*/
             }
         } else {
             showSettingsAlert();

@@ -46,6 +46,9 @@ dependencies {
     compile 'com.google.android.gms:play-services-gcm:9.8.0'
     compile "com.google.firebase:firebase-messaging:9.8.0"
 
+
+    compile 'com.github.quentin7b:android-location-tracker:3.2'
+
     compile 'com.android.volley:volley:1.0.0'
     compile 'io.nlopez.smartlocation:library:3.2.9'
 
