@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group android:checkableBehavior="all">
+    <group android:checkableBehavior="none">
         <item
             android:id="@+id/mycity"
-            android:checkable="true"
-            android:icon="@drawable/ic_location_on_black_24px"
+            android:icon="@drawable/ic_location_on_black_24px_nave"
             android:title="My City" />
         <item
             android:id="@+id/myreports"
-            android:checkable="true"
             android:icon="@drawable/ic_assignment_black_24px"
             android:title="Feed Settings" />
         <item
             android:id="@+id/notifications"
-            android:checkable="true"
             android:icon="@drawable/ic_notifications_black_24px"
             android:title="Notifications" />
         <item
@@ -23,7 +20,6 @@
             android:title="Leaderboard" />
         <item
             android:id="@+id/New"
-            android:checkable="true"
             android:icon="@drawable/ic_new_releases_black_24px"
             android:title="What's New?"></item>
         <item
