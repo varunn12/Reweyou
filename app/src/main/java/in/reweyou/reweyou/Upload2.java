@@ -39,7 +39,7 @@ public class Upload2 {
 
     public String uploadVideo(String fileName, String filePath, String headline, String edittag, String category, String description, String place, String address, String time, String encodedimage, boolean image, boolean video, boolean gif, String number, String username, String token) {
 
-        Log.d("eee", headline + "  " + edittag + "   " + category + "   " + description + "    " + place + "    " + "    " + address + "   " + time + "    " + username);
+        Log.d("eee", token1+" "+ deviceid+" " +headline + "  " + edittag + "   " + category + "   " + description + "    " + place + "    " + "    " + address + "   " + time + "    " + username);
 
         HttpURLConnection conn = null;
         DataOutputStream dos = null;
