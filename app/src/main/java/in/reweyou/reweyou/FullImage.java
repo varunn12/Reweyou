@@ -68,7 +68,7 @@ public class FullImage extends AppCompatActivity {
 
     private void showimage(String i) {
         progressBar.setVisibility(View.GONE);
-        Glide.with(FullImage.this).load(i).diskCacheStrategy(DiskCacheStrategy.SOURCE).error(R.drawable.ic_error).into(imageView);
+        Glide.with(FullImage.this).load(i).diskCacheStrategy(DiskCacheStrategy.SOURCE).fitCenter().error(R.drawable.ic_error).into(imageView);
     }
 
     @Override
