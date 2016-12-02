@@ -51,6 +51,9 @@
             <meta-data
                 android:name="android.app.default_searchable"
                 android:value=".SearchResultsActivity" />
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
         </activity>
         <activity android:name=".Details" />
         <activity
@@ -150,6 +153,7 @@
                 <action android:name="com.google.android.gms.analytics.ANALYTICS_DISPATCH" />
             </intent-filter>
         </receiver>
+
 
         <service
             android:name="com.google.android.gms.analytics.AnalyticsService"

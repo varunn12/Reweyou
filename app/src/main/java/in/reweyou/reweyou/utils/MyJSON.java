@@ -26,9 +26,9 @@ public class MyJSON {
         }
     }
 
-    public static String getData(Context context) {
+    public static String getData(Context context, int position) {
         try {
-            File f = new File(context.getFilesDir().getPath() + "/" + fileName);
+            File f = new File(context.getFilesDir().getPath() + "/" + position + fileName);
             //check whether file exists
             FileInputStream is = new FileInputStream(f);
             int size = is.available();
