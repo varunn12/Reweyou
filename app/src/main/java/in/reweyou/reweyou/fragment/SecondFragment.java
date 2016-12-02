@@ -8,16 +8,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -48,16 +43,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import in.reweyou.reweyou.Feed;
+import in.reweyou.reweyou.FragmentCommunicator;
 import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.adapter.FeedAdapter;
 import in.reweyou.reweyou.classes.DividerItemDecoration;
 import in.reweyou.reweyou.classes.UserSessionManager;
+import in.reweyou.reweyou.customView.PreCachingLayoutManager;
 import in.reweyou.reweyou.model.MpModel;
 import in.reweyou.reweyou.utils.Constants;
 import in.reweyou.reweyou.utils.MyJSON;
 
 
-public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, View.OnClickListener {
+public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, View.OnClickListener, FragmentCommunicator {
 
     SwipeRefreshLayout swipeLayout;
     UserSessionManager session;
@@ -96,6 +94,14 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
         query = getArguments().getString("query");
         Log.d("pos", String.valueOf(position));
+
+        if (position == 0)
+            ((Feed) mContext).fragmentCommunicator = this;
+        if (position == 1)
+            ((Feed) mContext).fragmentCommunicator2 = this;
+        if (position == 2)
+            ((Feed) mContext).fragmentCommunicator3 = this;
+
     }
 
     @Override
@@ -111,12 +117,11 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
         RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecoration(ContextCompat.getDrawable(getActivity(), R.drawable.line));
         recyclerView.addItemDecoration(dividerItemDecoration);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        final LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-
+        recyclerView.setLayoutManager(new PreCachingLayoutManager(getActivity()));
+        final PreCachingLayoutManager layoutManager = (PreCachingLayoutManager) recyclerView.getLayoutManager();
         DefaultItemAnimator defaultItemAnimator = new DefaultItemAnimator();
         recyclerView.setItemAnimator(defaultItemAnimator);
-        recyclerView.setItemViewCacheSize(3);
+        recyclerView.setItemViewCacheSize(4);
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -369,7 +374,8 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                             showNoti("something went wrong");
                         }
 
-                        String respo = MyJSON.getData(getContext());
+
+                        String respo = MyJSON.getData(getContext(), position);
                         if (respo != null) {
                             JSONArray parentArray = null;
                             try {
@@ -403,6 +409,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                     private void showNoti(String msg) {
                         topBar.setText(msg);
                         topBar.setVisibility(View.VISIBLE);
+/*
 
                         if (!session.getFirstLoad()) {
                             session.setFirstLoad();
@@ -431,6 +438,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
                             });
                         }
+*/
 
                     }
                 }) {
@@ -526,6 +534,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
         super.onAttach(context);
         mContext = context;
 
+
     }
 
 
@@ -533,5 +542,12 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
         this.placename = location;
         onRefresh();
     }
+
+    @Override
+    public void passDataToFragment() {
+        Log.d("posi", String.valueOf(position));
+        onRefresh();
+    }
+
 }
 

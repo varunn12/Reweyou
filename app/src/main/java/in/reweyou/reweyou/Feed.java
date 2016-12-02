@@ -2,9 +2,11 @@ package in.reweyou.reweyou;
 
 import android.Manifest;
 import android.app.SearchManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -66,6 +68,9 @@ public class Feed extends AppCompatActivity {
     static final String[] PERMISSIONS = new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private static final int REQUEST_CODE = 0;
     private final int REQ_CODE_PROFILE = 56;
+    public FragmentCommunicator fragmentCommunicator;
+    public FragmentCommunicator fragmentCommunicator2;
+    public FragmentCommunicator fragmentCommunicator3;
     int REQUEST_CAMERA = 0, SELECT_FILE = 1, REQUEST_VIDEO = 3;
     UserSessionManager session;
     Uri uri;
@@ -98,7 +103,6 @@ public class Feed extends AppCompatActivity {
         initViews();
 
 
-
         /*method to check for users who were using old versions of the app*/
 
         //device id must be null for the users using old version of app
@@ -109,6 +113,23 @@ public class Feed extends AppCompatActivity {
             viewPager.setAdapter(pagerAdapter);
             makeNotificationsRequest();
         }
+
+        registerReceiver(new BroadcastReceiver() {
+            public void onReceive(Context context, Intent intent) {
+                Log.d("netchange", "called");
+                Log.d("netchange", "yes");
+
+
+                if (fragmentCommunicator != null)
+                    fragmentCommunicator.passDataToFragment();
+                if (fragmentCommunicator2 != null)
+                    fragmentCommunicator2.passDataToFragment();
+                if (fragmentCommunicator3 != null)
+                    fragmentCommunicator3.passDataToFragment();
+
+
+            }
+        }, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
 
 
     }
@@ -264,6 +285,8 @@ public class Feed extends AppCompatActivity {
         };
         RequestQueue requestQueue = Volley.newRequestQueue(Feed.this);
         requestQueue.add(stringRequest);
+
+
     }
 
     @Override
