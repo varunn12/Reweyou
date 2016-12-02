@@ -1,6 +1,7 @@
 package in.reweyou.reweyou;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -42,6 +43,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -61,6 +64,7 @@ import in.reweyou.reweyou.utils.Constants;
 import io.nlopez.smartlocation.OnLocationUpdatedListener;
 import io.nlopez.smartlocation.OnReverseGeocodingListener;
 import io.nlopez.smartlocation.SmartLocation;
+import io.nlopez.smartlocation.location.providers.LocationManagerProvider;
 
 import static in.reweyou.reweyou.classes.HandleActivityResult.HANDLE_IMAGE;
 import static in.reweyou.reweyou.classes.HandleActivityResult.HANDLE_VIDEO;
@@ -477,43 +481,57 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
     private void permissionGranted() {
         Log.d("rea", "1233");
 
+
         if (SmartLocation.with(PostReport.this).location().state().locationServicesEnabled()) {
+            Log.d("rea", "123321e12e");
+            if (isGooglePlayServicesAvailable(this)) {
+                if (SmartLocation.with(PostReport.this).location(new LocationManagerProvider()).state().isGpsAvailable()) {
+                    final ProgressDialog pd = new ProgressDialog(PostReport.this);
+                    pd.setMessage("Fetching current location! Please Wait.");
+                    pd.show();
+                    getLocation(pd);
 
-            if (SmartLocation.with(PostReport.this).location().state().isGpsAvailable()) {
-                final ProgressDialog pd = new ProgressDialog(PostReport.this);
-                pd.setMessage("Fetching current location! Please Wait.");
-                pd.show();
-                getLocation(pd);
 
-
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (activityOpen) {
-                            if (!gotLocation) {
-                                reachedHere = true;
-                                pd.dismiss();
-                                showGPStimedialog();
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (activityOpen) {
+                                if (!gotLocation) {
+                                    reachedHere = true;
+                                    pd.dismiss();
+                                    showGPStimedialog();
+                                }
                             }
                         }
-                    }
-                }, 5500);
+                    }, 5500);
 
-            } else if (SmartLocation.with(PostReport.this).location().state().isNetworkAvailable()) {
-                Log.d("rea", "1666");
-                final ProgressDialog pd = new ProgressDialog(PostReport.this);
-                pd.setMessage("Fetching current location! Please Wait.");
-                pd.show();
-                getLocation(pd);
+                } else if (SmartLocation.with(PostReport.this).location().state().isNetworkAvailable()) {
+                    Log.d("rea", "1666");
+                    final ProgressDialog pd = new ProgressDialog(PostReport.this);
+                    pd.setMessage("Fetching current location! Please Wait.");
+                    pd.show();
+                    getLocation(pd);
+
+                }
 
             }
-
-
         } else {
             showSettingsAlert();
         }
 
 
+    }
+
+    public boolean isGooglePlayServicesAvailable(Activity activity) {
+        GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
+        int status = googleApiAvailability.isGooglePlayServicesAvailable(activity);
+        if (status != ConnectionResult.SUCCESS) {
+            if (googleApiAvailability.isUserResolvableError(status)) {
+                googleApiAvailability.getErrorDialog(activity, status, 2404).show();
+            }
+            return false;
+        }
+        return true;
     }
 
     private void showGPStimedialog() {
@@ -552,13 +570,13 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                                             Log.d("result", list.get(0).getLocality() + "     " + list.get(0).toString());
                                             address = list.get(0).toString();
                                             place = list.get(0).getLocality();
-                                            if (validateFields()) {
+                                            /*if (validateFields()) {
                                                 if (selectedImagePath != null) {
                                                     compressImageOrGif();
                                                 } else if (selectedVideoPath != null) {
                                                     compressVideo();
                                                 } else uploadImage(null);
-                                            }
+                                            }*/
 
                                         }
                                     });
@@ -748,6 +766,8 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        Log.d("reached", "activigty");
         super.onActivityResult(requestCode, resultCode, data);
         int dataType = new HandleActivityResult().handleResult(requestCode, resultCode, data);
         switch (dataType) {
