@@ -540,11 +540,10 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
     private void permissionGranted() {
         Log.d("rea", "1233");
 
-
         if (SmartLocation.with(PostReport.this).location().state().locationServicesEnabled()) {
             Log.d("rea", "123321e12e");
             if (isGooglePlayServicesAvailable(this)) {
-                if (SmartLocation.with(PostReport.this).location(new LocationManagerProvider()).state().isGpsAvailable()) {
+                if (SmartLocation.with(PostReport.this).location(new LocationManagerProvider()).state().isGpsAvailable() && !SmartLocation.with(PostReport.this).location().state().isNetworkAvailable()) {
                     final ProgressDialog pd = new ProgressDialog(PostReport.this);
                     pd.setMessage("Fetching current location! Please Wait.");
                     pd.show();
@@ -557,6 +556,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                             if (activityOpen) {
                                 if (!gotLocation) {
                                     reachedHere = true;
+                                    SmartLocation.with(PostReport.this).location().stop();
                                     pd.dismiss();
                                     showGPStimedialog();
                                 }
@@ -629,6 +629,8 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                                             Log.d("result", list.get(0).getLocality() + "     " + list.get(0).toString());
                                             address = list.get(0).toString();
                                             place = list.get(0).getLocality();
+
+                                            Log.d("sizedd", String.valueOf(list.size()));
                                             if (validateFields()) {
                                                 if (selectedImagePath != null) {
                                                     compressImageOrGif();
