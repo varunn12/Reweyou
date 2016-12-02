@@ -1,6 +1,7 @@
 package in.reweyou.reweyou;
 
 import android.app.Application;
+import android.support.v7.app.AppCompatDelegate;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
@@ -22,6 +23,15 @@ public class UILApplication extends Application{
     public static final String TAG = UILApplication.class
             .getSimpleName();
     private static UILApplication mInstance;
+
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
+
+    public static synchronized UILApplication getInstance() {
+        return mInstance;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -46,10 +56,6 @@ public class UILApplication extends Application{
 
         ImageLoader.getInstance().init(config);
         // END - UNIVERSAL IMAGE LOADER SETUP
-    }
-
-    public static synchronized UILApplication getInstance() {
-        return mInstance;
     }
 
     public synchronized Tracker getGoogleAnalyticsTracker() {

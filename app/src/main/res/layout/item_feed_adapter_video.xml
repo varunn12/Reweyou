@@ -92,7 +92,7 @@
                 android:paddingRight="16dp"
                 android:paddingTop="8dp"
                 android:text="From"
-                android:textColor="#212121"
+                android:textColor="@color/colorPrimary"
                 android:textSize="14dp"
                 android:textStyle="bold" />
 

@@ -186,7 +186,7 @@
                         android:layout_marginRight="32dp"
                         android:alpha=".90"
 
-                        android:drawableLeft="@drawable/ic_location_on_black_18px_profile"
+                        android:drawableLeft="@drawable/ic_location_on_black_18px_profile_layer"
                         android:drawablePadding="2dp"
 
                         android:gravity="center"
@@ -202,7 +202,7 @@
                         android:layout_centerHorizontal="true"
                         android:layout_marginLeft="32dp"
                         android:alpha=".90"
-                        android:drawableLeft="@drawable/ic_call_black_24dp"
+                        android:drawableLeft="@drawable/ic_call_black_24dp_layer"
                         android:drawablePadding="2dp"
 
                         android:gravity="center_vertical"
