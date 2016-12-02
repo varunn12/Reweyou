@@ -570,13 +570,13 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                                             Log.d("result", list.get(0).getLocality() + "     " + list.get(0).toString());
                                             address = list.get(0).toString();
                                             place = list.get(0).getLocality();
-                                            /*if (validateFields()) {
+                                            if (validateFields()) {
                                                 if (selectedImagePath != null) {
                                                     compressImageOrGif();
                                                 } else if (selectedVideoPath != null) {
                                                     compressVideo();
                                                 } else uploadImage(null);
-                                            }*/
+                                            }
 
                                         }
                                     });
