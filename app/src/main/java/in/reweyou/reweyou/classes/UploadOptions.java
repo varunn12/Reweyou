@@ -44,9 +44,9 @@ public class UploadOptions {
     public UploadOptions(Activity context) {
         this.context = context;
         checker = new PermissionsChecker(context);
-        if (checker.lacksPermissions(PERMISSION)) {
+       /* if (checker.lacksPermissions(PERMISSION)) {
             startPermissionsActivity();
-        }
+        }*/
     }
 
     public UploadOptions(Context mContext, View view, boolean b) {
@@ -54,9 +54,9 @@ public class UploadOptions {
         this.view = view;
         this.b = b;
         checker = new PermissionsChecker(context);
-        if (checker.lacksPermissions(PERMISSION)) {
+      /*  if (checker.lacksPermissions(PERMISSION)) {
             startPermissionsActivity();
-        }
+        }*/
         initOptions();
     }
 

@@ -133,7 +133,7 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
         }
     };
 
-    public static boolean hasPermissions(Context context, String... permissions) {
+    private boolean hasPermissions(Context context, String... permissions) {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
             for (String permission : permissions) {
                 if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {

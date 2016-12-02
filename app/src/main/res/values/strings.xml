@@ -113,6 +113,8 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="title_activity_single_post_acitivty">SinglePostAcitivty</string>
     <string name="permission_required">Reweyou will be verifying your mobile number. In order to read the otp automatically, allow the sms read permission to the app.</string>
+    <string name="permission_required_location">Posting a report requires the location to be turned on.</string>
     <string name="permission_denied">Allow Reweyou the sms read permission or else enter the otp manually</string>
+    <string name="permission_denied_location">Cannot post a report without a location. Grant location permission from settings in order to upload.</string>
 
 </resources>

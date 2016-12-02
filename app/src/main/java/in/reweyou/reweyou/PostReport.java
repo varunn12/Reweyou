@@ -6,12 +6,13 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.location.Address;
 import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -19,6 +20,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -44,17 +47,20 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.TimeZone;
 
 import in.reweyou.reweyou.classes.AppLocationService;
 import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.HandleActivityResult;
 import in.reweyou.reweyou.classes.ImageLoadingUtils;
-import in.reweyou.reweyou.classes.LocationAddress;
 import in.reweyou.reweyou.classes.RequestHandler;
 import in.reweyou.reweyou.classes.UploadOptions;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.utils.Constants;
+import io.nlopez.smartlocation.OnLocationUpdatedListener;
+import io.nlopez.smartlocation.OnReverseGeocodingListener;
+import io.nlopez.smartlocation.SmartLocation;
 
 import static in.reweyou.reweyou.classes.HandleActivityResult.HANDLE_IMAGE;
 import static in.reweyou.reweyou.classes.HandleActivityResult.HANDLE_VIDEO;
@@ -76,11 +82,14 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
     public static final String UPLOAD_URL = "https://www.reweyou.in/reweyou/reporting.php";
 
     static final String[] PERMISSIONS = new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    static final String[] PERMISSIONS_LOCATION = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
 
     private static final int IMAGE = 11;
     private static final int VIDEO = 12;
     private static final int TYPE_GIF = 19;
     private static final int TYPE_IMAGE = 20;
+    private static final String PACKAGE_URL_SCHEME = "package:";
+    private static final int PERMISSION_ALL = 1;
     Location location;
     AppLocationService appLocationService;
     ConnectionDetector cd;
@@ -99,7 +108,6 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
     private Spinner staticSpinner;
     private String number;
     private Toolbar toolbar;
-
     private int position_spinner = -1;
 
     private RelativeLayout previewContainer;
@@ -117,6 +125,9 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
     private LinearLayout bottomContainer;
     private View bottomline;
     private ImageView previewImageViewGif;
+    private boolean activityOpen;
+    private boolean gotLocation;
+    private boolean reachedHere;
 
     public static boolean isLocationEnabled(Context context) {
         int locationMode = 0;
@@ -210,6 +221,23 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
             }
         }
 
+        SmartLocation.with(PostReport.this).location()
+                .oneFix()
+                .start(new OnLocationUpdatedListener() {
+                    @Override
+                    public void onLocationUpdated(Location location) {
+                        SmartLocation.with(PostReport.this).geocoding()
+                                .reverse(location, new OnReverseGeocodingListener() {
+                                    @Override
+                                    public void onAddressResolved(Location location, List<Address> list) {
+                                        for (int i = 0; i < list.size(); i++) {
+                                            Log.d("result", list.get(0).getLocality());
+                                        }
+
+                                    }
+                                });
+                    }
+                });
     }
 
     private void setClickListeners() {
@@ -341,6 +369,10 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
+
+        onbutoon();
+
+/*
         isInternetPresent = cd.isConnectingToInternet();
         if (isInternetPresent) {
             if (isLocationEnabled(this)) {
@@ -396,7 +428,205 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
 
         } else {
             Toast.makeText(PostReport.this, "You are not connected to Internet", Toast.LENGTH_SHORT).show();
+        }*/
+    }
+
+    private void onbutoon() {
+        gotLocation = false;
+        reachedHere = false;
+        if (!hasPermissions(this, PERMISSIONS_LOCATION)) {
+            ActivityCompat.requestPermissions(this, PERMISSIONS_LOCATION, PERMISSION_ALL);
+        } else
+            permissionGranted();
+    }
+
+    private boolean hasPermissions(Context context, String... permissions) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
         }
+        return true;
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_ALL: {
+
+                String permission = permissions[0];
+                if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                    // user rejected the permission
+
+                    boolean showRationale = ActivityCompat.shouldShowRequestPermissionRationale(PostReport.this, permission);
+                    if (!showRationale) {
+                        showPermissionDeniedDialog();
+                    } else
+                        showPermissionRequiredDialog(permission);
+                } else if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // registerUser();
+                    permissionGranted();
+                }
+            }
+        }
+    }
+
+    private void permissionGranted() {
+        Log.d("rea", "1233");
+
+        if (SmartLocation.with(PostReport.this).location().state().locationServicesEnabled()) {
+
+            if (SmartLocation.with(PostReport.this).location().state().isGpsAvailable()) {
+                final ProgressDialog pd = new ProgressDialog(PostReport.this);
+                pd.setMessage("Fetching current location! Please Wait.");
+                pd.show();
+                getLocation(pd);
+
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (activityOpen) {
+                            if (!gotLocation) {
+                                reachedHere = true;
+                                pd.dismiss();
+                                showGPStimedialog();
+                            }
+                        }
+                    }
+                }, 5500);
+
+            } else if (SmartLocation.with(PostReport.this).location().state().isNetworkAvailable()) {
+                Log.d("rea", "1666");
+                final ProgressDialog pd = new ProgressDialog(PostReport.this);
+                pd.setMessage("Fetching current location! Please Wait.");
+                pd.show();
+                getLocation(pd);
+
+            }
+
+
+        } else {
+            showSettingsAlert();
+        }
+
+
+    }
+
+    private void showGPStimedialog() {
+        final AlertDialogBox alertDialogBox = new AlertDialogBox(PostReport.this, "Time out", "Please change your location accuracy to either Network or High Accuracy", "Settings", "Dismiss") {
+            @Override
+            void onNegativeButtonClick(DialogInterface dialog) {
+                dialog.dismiss();
+            }
+
+            @Override
+            void onPositiveButtonClick(DialogInterface dialog) {
+                dialog.dismiss();
+                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                PostReport.this.startActivity(intent);
+
+            }
+        };
+        alertDialogBox.show();
+    }
+
+    private void getLocation(final ProgressDialog pd) {
+        SmartLocation.with(PostReport.this).location()
+                .oneFix()
+                .start(new OnLocationUpdatedListener() {
+                    @Override
+                    public void onLocationUpdated(Location location) {
+
+                        gotLocation = true;
+                        if (!reachedHere) {
+
+                            SmartLocation.with(PostReport.this).geocoding()
+                                    .reverse(location, new OnReverseGeocodingListener() {
+                                        @Override
+                                        public void onAddressResolved(Location location, List<Address> list) {
+                                            pd.dismiss();
+                                            Log.d("result", list.get(0).getLocality() + "     " + list.get(0).toString());
+                                            address = list.get(0).toString();
+                                            place = list.get(0).getLocality();
+                                            if (validateFields()) {
+                                                if (selectedImagePath != null) {
+                                                    compressImageOrGif();
+                                                } else if (selectedVideoPath != null) {
+                                                    compressVideo();
+                                                } else uploadImage(null);
+                                            }
+
+                                        }
+                                    });
+                        }
+                    }
+                });
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        activityOpen = true;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        activityOpen = false;
+    }
+
+    private void showPermissionRequiredDialog(final String permission) {
+        AlertDialogBox alertDialogBox = new AlertDialogBox(PostReport.this, "Permission Required", getResources().getString(R.string.permission_required_location), "grant", "deny") {
+            @Override
+            void onNegativeButtonClick(DialogInterface dialog) {
+                dialog.dismiss();
+                //registerUser();
+                permissionGranted();
+            }
+
+            @Override
+            void onPositiveButtonClick(DialogInterface dialog) {
+                dialog.dismiss();
+                String[] p = {permission};
+                ActivityCompat.requestPermissions(PostReport.this, p, PERMISSION_ALL);
+
+            }
+        };
+        alertDialogBox.setCancellable(true);
+        alertDialogBox.show();
+    }
+
+
+    private void showPermissionDeniedDialog() {
+        AlertDialogBox alertDialogBox = new AlertDialogBox(PostReport.this, "Permission Denied", getResources().getString(R.string.permission_denied_location), "settings", "okay") {
+            @Override
+            void onNegativeButtonClick(DialogInterface dialog) {
+                dialog.dismiss();
+                // registerUser();
+                permissionGranted();
+            }
+
+            @Override
+            void onPositiveButtonClick(DialogInterface dialog) {
+                dialog.dismiss();
+                startAppSettings();
+
+            }
+        };
+        alertDialogBox.setCancellable(true);
+        alertDialogBox.show();
+    }
+
+    private void startAppSettings() {
+        Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        intent.setData(Uri.parse(PACKAGE_URL_SCHEME + getPackageName()));
+        startActivity(intent);
     }
 
     private boolean validateFields() {
@@ -492,8 +722,8 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
     public void showSettingsAlert() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(
                 PostReport.this);
-        alertDialog.setTitle("SETTINGS");
-        alertDialog.setMessage("Enable Location Provider! Go to settings menu?");
+        alertDialog.setTitle("Location disabled");
+        alertDialog.setMessage("Enable Location Provider from settings menu.");
         alertDialog.setPositiveButton("Settings",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
