@@ -6,6 +6,7 @@ But that's not all. Every week, our team will analyze and create infographics of
 
 Reweyou team believes in open-sourcing app code. 
 
+Download app & start reporting: https://play.google.com/store/apps/details?id=in.reweyou.reweyou
 ##find bugs???
 We shall be happy if you help us to erradicate bugs and performance issues. Just create a pull request and we will entertain it.
 
