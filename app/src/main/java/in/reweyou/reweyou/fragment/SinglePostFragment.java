@@ -150,7 +150,6 @@ public class SinglePostFragment extends Fragment {
             }
         });
 
-        linearLayout.setVisibility(View.GONE);
 
 
         image.setOnClickListener(new View.OnClickListener() {
