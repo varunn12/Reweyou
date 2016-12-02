@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -333,10 +334,20 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     private void setLikesNumber(BaseViewHolder viewHolder, int position) {
-        if (messagelist.get(position).getReviews().isEmpty() || messagelist.get(position).getReviews() == null)
-            viewHolder.reviews.setText("0 likes");
-        else
+        if (messagelist.get(position).getReviews().equals("0")) {
+            viewHolder.reviews.setText("0 like");
+            viewHolder.reviews.setTypeface(Typeface.DEFAULT);
+            viewHolder.reviews.setTextColor(mContext.getResources().getColor(R.color.main));
+        } else if (messagelist.get(position).getReviews().equals("1")) {
+            viewHolder.reviews.setText("1 like");
+            viewHolder.reviews.setTypeface(Typeface.DEFAULT_BOLD);
+            viewHolder.reviews.setTextColor(mContext.getResources().getColor(R.color.rank));
+        } else {
             viewHolder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews())) + " likes");
+            viewHolder.reviews.setTypeface(Typeface.DEFAULT_BOLD);
+
+            viewHolder.reviews.setTextColor(mContext.getResources().getColor(R.color.rank));
+        }
 
     }
 

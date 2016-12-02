@@ -147,7 +147,7 @@
                     android:layout_height="24dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="6dp"
-                    android:layout_weight="1">
+                    android:layout_weight="1.5">
 
                     <ImageView
                         android:id="@+id/locationicon"
@@ -159,6 +159,7 @@
 
                     <TextView
                         android:id="@+id/place"
+
                         android:layout_width="wrap_content"
                         android:layout_height="18dp"
                         android:layout_centerVertical="true"
@@ -173,11 +174,13 @@
 
                 <TextView
                     android:id="@+id/reviews"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="24dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginRight="10dp"
-                    android:gravity="center_vertical"
+
+                    android:layout_weight="1"
+                    android:gravity="center_vertical|right"
                     android:paddingTop="1dp"
                     android:text="0 Likes"
                     android:textColor="@color/main"
