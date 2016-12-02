@@ -181,7 +181,7 @@ public class VideoCapturetest extends AppCompatActivity implements OnClickListen
 
                 AlertDialogBox alertDialogBox = new AlertDialogBox(VideoCapturetest.this, "Alert", "Do you want to save the recording for future usage?", "Yes", "Discard") {
                     @Override
-                    void onNegativeButtonClick(DialogInterface dialog) {
+                    public void onNegativeButtonClick(DialogInterface dialog) {
                         if (mOutputFile != null) {
                             mOutputFile.delete();
                             dialog.dismiss();
@@ -190,7 +190,7 @@ public class VideoCapturetest extends AppCompatActivity implements OnClickListen
                     }
 
                     @Override
-                    void onPositiveButtonClick(DialogInterface dialog) {
+                    public void onPositiveButtonClick(DialogInterface dialog) {
                         dialog.dismiss();
                         finish();
                     }

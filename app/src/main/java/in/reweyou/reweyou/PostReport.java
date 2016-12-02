@@ -68,6 +68,9 @@ import io.nlopez.smartlocation.location.providers.LocationManagerProvider;
 
 import static in.reweyou.reweyou.classes.HandleActivityResult.HANDLE_IMAGE;
 import static in.reweyou.reweyou.classes.HandleActivityResult.HANDLE_VIDEO;
+import static in.reweyou.reweyou.classes.UploadOptions.PERMISSION_ALL_IMAGE;
+import static in.reweyou.reweyou.classes.UploadOptions.PERMISSION_ALL_VIDEO;
+import static in.reweyou.reweyou.classes.UploadOptions.PERMISSION_ALL_VIDEO_CAPTURE;
 import static in.reweyou.reweyou.utils.Constants.POST_REPORT_KEY_ADDRESS;
 import static in.reweyou.reweyou.utils.Constants.POST_REPORT_KEY_CATEGORY;
 import static in.reweyou.reweyou.utils.Constants.POST_REPORT_KEY_DESCRIPTION;
@@ -474,7 +477,63 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                     // registerUser();
                     permissionGranted();
                 }
+                break;
             }
+            case PERMISSION_ALL_IMAGE:
+
+                String permission = permissions[0];
+                if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                    // user rejected the permission
+
+                    boolean showRationale = ActivityCompat.shouldShowRequestPermissionRationale(PostReport.this, permission);
+                    if (!showRationale) {
+                        showPermissionDeniedDialog();
+                    } else
+                        showPermissionRequiredDialog(permission);
+
+
+                } else if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    UploadOptions uploadOptions = new UploadOptions(PostReport.this);
+                    uploadOptions.showImageOptions();
+                }
+
+                break;
+            case PERMISSION_ALL_VIDEO_CAPTURE:
+                boolean temp = false;
+                if (grantResults.length > 0) {
+                    for (int i = 0; i < grantResults.length; i++) {
+                        if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                            temp = true;
+                            break;
+                        }
+                    }
+                    if (temp)
+                        Toast.makeText(PostReport.this, "Please allow all permissions", Toast.LENGTH_SHORT).show();
+                    else {
+                        UploadOptions uploadOptions = new UploadOptions(PostReport.this);
+                        uploadOptions.captureVideo();
+
+                    }
+                } else
+                    Toast.makeText(PostReport.this, "Please allow all permissions", Toast.LENGTH_SHORT).show();
+                break;
+            case PERMISSION_ALL_VIDEO:
+                String permission2 = permissions[0];
+                if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                    // user rejected the permission
+
+                    boolean showRationale = ActivityCompat.shouldShowRequestPermissionRationale(PostReport.this, permission2);
+                    if (!showRationale) {
+                        showPermissionDeniedDialog();
+                    } else
+                        showPermissionRequiredDialog(permission2);
+
+
+                } else if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    UploadOptions uploadOptions = new UploadOptions(PostReport.this);
+                    uploadOptions.showVideogallery();
+                }
+
         }
     }
 
@@ -535,14 +594,14 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
     }
 
     private void showGPStimedialog() {
-        final AlertDialogBox alertDialogBox = new AlertDialogBox(PostReport.this, "Time out", "Please change your location accuracy to either Network or High Accuracy", "Settings", "Dismiss") {
+        final AlertDialogBox alertDialogBox = new AlertDialogBox(PostReport.this, "Time out", "You have GPS based location provider.Please change it to either Network or High Accuracy", "Settings", "Dismiss") {
             @Override
-            void onNegativeButtonClick(DialogInterface dialog) {
+            public void onNegativeButtonClick(DialogInterface dialog) {
                 dialog.dismiss();
             }
 
             @Override
-            void onPositiveButtonClick(DialogInterface dialog) {
+            public void onPositiveButtonClick(DialogInterface dialog) {
                 dialog.dismiss();
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 PostReport.this.startActivity(intent);
@@ -602,14 +661,14 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
     private void showPermissionRequiredDialog(final String permission) {
         AlertDialogBox alertDialogBox = new AlertDialogBox(PostReport.this, "Permission Required", getResources().getString(R.string.permission_required_location), "grant", "deny") {
             @Override
-            void onNegativeButtonClick(DialogInterface dialog) {
+            public void onNegativeButtonClick(DialogInterface dialog) {
                 dialog.dismiss();
                 //registerUser();
                 permissionGranted();
             }
 
             @Override
-            void onPositiveButtonClick(DialogInterface dialog) {
+            public void onPositiveButtonClick(DialogInterface dialog) {
                 dialog.dismiss();
                 String[] p = {permission};
                 ActivityCompat.requestPermissions(PostReport.this, p, PERMISSION_ALL);
@@ -624,14 +683,14 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
     private void showPermissionDeniedDialog() {
         AlertDialogBox alertDialogBox = new AlertDialogBox(PostReport.this, "Permission Denied", getResources().getString(R.string.permission_denied_location), "settings", "okay") {
             @Override
-            void onNegativeButtonClick(DialogInterface dialog) {
+            public void onNegativeButtonClick(DialogInterface dialog) {
                 dialog.dismiss();
                 // registerUser();
                 permissionGranted();
             }
 
             @Override
-            void onPositiveButtonClick(DialogInterface dialog) {
+            public void onPositiveButtonClick(DialogInterface dialog) {
                 dialog.dismiss();
                 startAppSettings();
 
@@ -809,12 +868,12 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
             } else {
                 AlertDialogBox alertDialogBox = new AlertDialogBox(PostReport.this, "File size exceeded", "Please upload video upto 5 MB in size only...", "OKAY", null) {
                     @Override
-                    void onNegativeButtonClick(DialogInterface dialog) {
+                    public void onNegativeButtonClick(DialogInterface dialog) {
                     /*Not define*/
                     }
 
                     @Override
-                    void onPositiveButtonClick(DialogInterface dialog) {
+                    public void onPositiveButtonClick(DialogInterface dialog) {
                         dialog.dismiss();
 
                     }
@@ -1049,12 +1108,12 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
         if (previewContainer.getVisibility() == View.VISIBLE || headline.getText().toString().trim().length() > 0 || editTag.getText().toString().trim().length() > 0 || description.getText().toString().trim().length() > 0) {
             AlertDialogBox alertDialogBox = new AlertDialogBox(PostReport.this, "Discard Report?", "All your changes will be lost", "Yes", "No") {
                 @Override
-                void onNegativeButtonClick(DialogInterface dialog) {
+                public void onNegativeButtonClick(DialogInterface dialog) {
 
                 }
 
                 @Override
-                void onPositiveButtonClick(DialogInterface dialog) {
+                public void onPositiveButtonClick(DialogInterface dialog) {
                     dialog.dismiss();
                     PostReport.super.onBackPressed();
                 }

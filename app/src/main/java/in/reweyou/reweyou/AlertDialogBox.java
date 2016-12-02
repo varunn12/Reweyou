@@ -37,9 +37,9 @@ public abstract class AlertDialogBox {
     }
 
 
-    abstract void onNegativeButtonClick(DialogInterface dialog);
+    public abstract void onNegativeButtonClick(DialogInterface dialog);
 
-    abstract void onPositiveButtonClick(DialogInterface dialog);
+    public abstract void onPositiveButtonClick(DialogInterface dialog);
 
     public void show() {
         dialog.show();

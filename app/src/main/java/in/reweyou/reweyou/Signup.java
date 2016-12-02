@@ -476,13 +476,13 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
     private void showPermissionRequiredDialog(final String permission) {
         AlertDialogBox alertDialogBox = new AlertDialogBox(Signup.this, "Permission Required", getResources().getString(R.string.permission_required), "grant", "deny") {
             @Override
-            void onNegativeButtonClick(DialogInterface dialog) {
+            public void onNegativeButtonClick(DialogInterface dialog) {
                 dialog.dismiss();
                 registerUser();
             }
 
             @Override
-            void onPositiveButtonClick(DialogInterface dialog) {
+            public void onPositiveButtonClick(DialogInterface dialog) {
                 dialog.dismiss();
                 String[] p = {permission};
                 ActivityCompat.requestPermissions(Signup.this, p, PERMISSION_ALL);
@@ -496,13 +496,13 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
     private void showPermissionDeniedDialog() {
         AlertDialogBox alertDialogBox = new AlertDialogBox(Signup.this, "Permission Denied", getResources().getString(R.string.permission_denied), "settings", "okay") {
             @Override
-            void onNegativeButtonClick(DialogInterface dialog) {
+            public void onNegativeButtonClick(DialogInterface dialog) {
                 dialog.dismiss();
                 registerUser();
             }
 
             @Override
-            void onPositiveButtonClick(DialogInterface dialog) {
+            public void onPositiveButtonClick(DialogInterface dialog) {
                 dialog.dismiss();
                 startAppSettings();
 

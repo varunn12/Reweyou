@@ -6,14 +6,16 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
-import in.reweyou.reweyou.PermissionsActivity;
 import in.reweyou.reweyou.PermissionsChecker;
 import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.UILApplication;
@@ -25,8 +27,12 @@ import in.reweyou.reweyou.VideoCapturetest;
 
 public class UploadOptions {
 
-    private final String[] PERMISSION = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
-    private final String[] PERMISSION_VIDEO = new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    public static final int PERMISSION_ALL_IMAGE = 24;
+    public static final int PERMISSION_ALL_VIDEO_CAPTURE = 25;
+    public static final int PERMISSION_ALL_VIDEO = 26;
+    private static final int PERMISSION_ALL = 23;
+    private final String[] PERMISSION_IMAGE = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
+    private final String[] PERMISSION_VIDEO = new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private final int REQUEST_CODE = 0;
     private final int REQUEST_TAKE_GALLERY_VIDEO = 5;
     private boolean b;
@@ -61,11 +67,9 @@ public class UploadOptions {
     }
 
 
-    private void showVideoOptions() {
+    public void showVideoOptions() {
 
-        if (checker.lacksPermissions(PERMISSION_VIDEO)) {
-            startPermissionsActivityForVideo();
-        } else {
+
             AlertDialog.Builder getImageFrom = new AlertDialog.Builder(context);
             getImageFrom.setTitle("Select Video from:");
             final CharSequence[] opsChars = {context.getResources().getString(R.string.shootVideo), context.getResources().getString(R.string.opengallery)};
@@ -74,21 +78,38 @@ public class UploadOptions {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     if (which == 0) {
-                        context.startActivity(new Intent(context, VideoCapturetest.class));
+
+                        captureVideo();
+
 
                     } else if (which == 1) {
 
-                        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
-                        intent.setType("video/*");
-                        ((Activity) context).startActivityForResult(intent, REQUEST_TAKE_GALLERY_VIDEO);
+                        showVideogallery();
 
                     }
                     dialog.dismiss();
                 }
             });
             getImageFrom.show();
-        }
 
+
+    }
+
+    public void showVideogallery() {
+        if (!hasPermissions(context, PERMISSION_IMAGE)) {
+            ActivityCompat.requestPermissions((Activity) context, PERMISSION_IMAGE, PERMISSION_ALL_VIDEO);
+        }
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("video/*");
+        ((Activity) context).startActivityForResult(intent, REQUEST_TAKE_GALLERY_VIDEO);
+
+    }
+
+    public void captureVideo() {
+        if (!hasPermissions(context, PERMISSION_VIDEO)) {
+            ActivityCompat.requestPermissions((Activity) context, PERMISSION_VIDEO, PERMISSION_ALL_VIDEO_CAPTURE);
+        } else
+            context.startActivity(new Intent(context, VideoCapturetest.class));
     }
 
     private void showGIFptions() {
@@ -96,24 +117,15 @@ public class UploadOptions {
 
     }
 
-    private void showImageOptions() {
-        if (checker.lacksPermissions(PERMISSION)) {
-            startPermissionsActivity();
+    public void showImageOptions() {
+        if (!hasPermissions(context, PERMISSION_IMAGE)) {
+            ActivityCompat.requestPermissions((Activity) context, PERMISSION_IMAGE, PERMISSION_ALL_IMAGE);
         } else {
             Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             intent.setType("image/*");
             ((Activity) context).startActivityForResult(intent, SELECT_FILE);
             UILApplication.getInstance().trackEvent("Gallery", "Gallery", "For Pics");
         }
-    }
-
-    private void startPermissionsActivity() {
-        PermissionsActivity.startActivityForResult(((Activity) context), REQUEST_CODE, PERMISSION);
-    }
-
-
-    private void startPermissionsActivityForVideo() {
-        PermissionsActivity.startActivityForResult(((Activity) context), REQUEST_CODE, PERMISSION_VIDEO);
     }
 
     public void initOptions() {
@@ -158,4 +170,17 @@ public class UploadOptions {
         } else
             return null;
     }
+
+    private boolean hasPermissions(Context context, String... permissions) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+
 }

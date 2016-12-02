@@ -116,5 +116,7 @@
     <string name="permission_required_location">Posting a report requires the location to be turned on.</string>
     <string name="permission_denied">Allow Reweyou the sms read permission or else enter the otp manually</string>
     <string name="permission_denied_location">Cannot post a report without a location. Grant location permission from settings in order to upload.</string>
+    <string name="permission_required_image">Allow Reweyou to access your storage in order to upload a media.</string>
+    <string name="permission_denied_image">Grant Reweyou the access to storage in order to attach a media in a report</string>
 
 </resources>
