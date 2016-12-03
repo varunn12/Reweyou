@@ -70,27 +70,27 @@ public class UploadOptions {
     public void showVideoOptions() {
 
 
-            AlertDialog.Builder getImageFrom = new AlertDialog.Builder(context);
-            getImageFrom.setTitle("Select Video from:");
-            final CharSequence[] opsChars = {context.getResources().getString(R.string.shootVideo), context.getResources().getString(R.string.opengallery)};
-            getImageFrom.setItems(opsChars, new android.content.DialogInterface.OnClickListener() {
+        AlertDialog.Builder getImageFrom = new AlertDialog.Builder(context);
+        getImageFrom.setTitle("Select Video from:");
+        final CharSequence[] opsChars = {context.getResources().getString(R.string.shootVideo), context.getResources().getString(R.string.opengallery)};
+        getImageFrom.setItems(opsChars, new android.content.DialogInterface.OnClickListener() {
 
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    if (which == 0) {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == 0) {
 
-                        captureVideo();
+                    captureVideo();
 
 
-                    } else if (which == 1) {
+                } else if (which == 1) {
 
-                        showVideogallery();
+                    showVideogallery();
 
-                    }
-                    dialog.dismiss();
                 }
-            });
-            getImageFrom.show();
+                dialog.dismiss();
+            }
+        });
+        getImageFrom.show();
 
 
     }
@@ -98,10 +98,11 @@ public class UploadOptions {
     public void showVideogallery() {
         if (!hasPermissions(context, PERMISSION_IMAGE)) {
             ActivityCompat.requestPermissions((Activity) context, PERMISSION_IMAGE, PERMISSION_ALL_VIDEO);
+        } else {
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+            intent.setType("video/*");
+            ((Activity) context).startActivityForResult(intent, REQUEST_TAKE_GALLERY_VIDEO);
         }
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
-        intent.setType("video/*");
-        ((Activity) context).startActivityForResult(intent, REQUEST_TAKE_GALLERY_VIDEO);
 
     }
 

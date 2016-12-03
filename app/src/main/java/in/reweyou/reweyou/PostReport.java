@@ -13,14 +13,12 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -52,14 +50,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 
-import fr.quentinklein.slt.LocationTracker;
-import fr.quentinklein.slt.TrackerSettings;
 import in.reweyou.reweyou.classes.AppLocationService;
 import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.HandleActivityResult;
 import in.reweyou.reweyou.classes.ImageLoadingUtils;
+import in.reweyou.reweyou.classes.MyLocation;
 import in.reweyou.reweyou.classes.RequestHandler;
 import in.reweyou.reweyou.classes.UploadOptions;
 import in.reweyou.reweyou.classes.UserSessionManager;
@@ -91,7 +89,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
     public static final String UPLOAD_URL = "https://www.reweyou.in/reweyou/reporting.php";
 
     static final String[] PERMISSIONS = new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-    static final String[] PERMISSIONS_LOCATION = new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+    static final String[] PERMISSIONS_LOCATION = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
 
     private static final int IMAGE = 11;
     private static final int VIDEO = 12;
@@ -173,7 +171,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
         uploadOptions = new UploadOptions(this);
         uploadOptions.initOptions();
 
-        session = new UserSessionManager(getApplicationContext());
+        session = new UserSessionManager(this);
         checker = new PermissionsChecker(this);
         mycity = session.getLoginLocation();
         cd = new ConnectionDetector(PostReport.this);
@@ -230,7 +228,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
             }
         }
 
-        SmartLocation.with(PostReport.this).location()
+      /*  SmartLocation.with(PostReport.this).location()
                 .oneFix()
                 .start(new OnLocationUpdatedListener() {
                     @Override
@@ -246,7 +244,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                                     }
                                 });
                     }
-                });
+                });*/
     }
 
     private void setClickListeners() {
@@ -542,113 +540,39 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
     private void permissionGranted() {
         Log.d("rea", "1233");
 
-        if (SmartLocation.with(PostReport.this).location().state().locationServicesEnabled()) {
+
+        MyLocation.LocationResult locationResult = new MyLocation.LocationResult() {
+            @Override
+            public void gotLocation(Location location) {
+                //Got the location!
+                if (location != null) {
+                    Log.d("location", String.valueOf(location.getLatitude()));
+                    String getaddress = getCompleteAddressString(location.getLatitude(), location.getLongitude());
+                    if (!getaddress.isEmpty()) {
+                        address = getaddress;
+                    } else {
+                        address = session.getLoginLocation();
+                        place = address;
+                    }
+                } else {
+                    place = session.getLoginLocation();
+                    address = place;
+                }
+
+
+                Log.d("place", place);
+                Log.d("address", address);
+
+                Toast.makeText(PostReport.this, place + "     " + address, Toast.LENGTH_SHORT).show();
+            }
+        };
+        MyLocation myLocation = new MyLocation();
+        myLocation.getLocation(this, locationResult);
+
+       /* if (SmartLocation.with(PostReport.this).location().state().locationServicesEnabled()) {
             Log.d("rea", "123321e12e");
             if (isGooglePlayServicesAvailable(this)) {
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-
-                }
-
-                final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-                if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) && !manager.isProviderEnabled(LocationManager.PASSIVE_PROVIDER)) {
-                    // Call your Alert message
-
-                    LocationTracker tracker = new LocationTracker(
-                            PostReport.this,
-                            new TrackerSettings()
-                                    .setUseGPS(true)
-                                    .setTimeout(5000)
-                                    .setUseNetwork(false)
-                                    .setUsePassive(false)
-                    ) {
-
-                        @Override
-                        public void onLocationFound(Location location) {
-                            // Do some stuff when a new GPS Location has been found
-                            Log.d("hey", String.valueOf(location.getLatitude()));
-                            Toast.makeText(PostReport.this, "location gps  " + location.getLatitude(), Toast.LENGTH_SHORT).show();
-
-                            stopListening();
-                        }
-
-                        @Override
-                        public void onTimeout() {
-                            Log.d("timeout", "gps");
-
-                        }
-                    };
-                    tracker.startListening();
-
-                } else if (manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-                    LocationTracker tracker = new LocationTracker(
-                            PostReport.this,
-                            new TrackerSettings()
-                                    .setUseGPS(false)
-                                    .setTimeout(5000)
-                                    .setUseNetwork(true)
-                                    .setUsePassive(false)
-                    ) {
-
-                        @Override
-                        public void onLocationFound(Location location) {
-                            // Do some stuff when a new GPS Location has been found
-                            Log.d("hey", String.valueOf(location.getLatitude()));
-                            Toast.makeText(PostReport.this, "location network  " + location.getLatitude(), Toast.LENGTH_SHORT).show();
-                            stopListening();
-                        }
-
-                        @Override
-                        public void onTimeout() {
-                            Log.d("timeout", "network");
-
-                        }
-                    };
-                    tracker.startListening();
-                } else if (manager.isProviderEnabled(LocationManager.PASSIVE_PROVIDER)) {
-                    LocationTracker tracker = new LocationTracker(
-                            PostReport.this,
-                            new TrackerSettings()
-                                    .setUseGPS(false)
-                                    .setTimeout(5000)
-                                    .setUseNetwork(false)
-                                    .setUsePassive(true)
-                    ) {
-
-                        @Override
-                        public void onLocationFound(Location location) {
-                            // Do some stuff when a new GPS Location has been found
-                            Toast.makeText(PostReport.this, "location passive  " + location.getLatitude(), Toast.LENGTH_SHORT).show();
-
-                            Log.d("hey", String.valueOf(location.getLatitude()));
-                            stopListening();
-                        }
-
-                        @Override
-                        public void onTimeout() {
-                            Log.d("timeout", "passive");
-
-                        }
-                    };
-                    tracker.startListening();
-                }
-
-
-
-
-
-
-
-
-
-                /*if (SmartLocation.with(PostReport.this).location(new LocationManagerProvider()).state().isGpsAvailable() && !SmartLocation.with(PostReport.this).location().state().isNetworkAvailable()) {
+                if (SmartLocation.with(PostReport.this).location(new LocationManagerProvider()).state().isGpsAvailable() && !SmartLocation.with(PostReport.this).location().state().isNetworkAvailable()) {
                     final ProgressDialog pd = new ProgressDialog(PostReport.this);
                     pd.setMessage("Fetching current location! Please Wait.");
                     pd.show();
@@ -667,7 +591,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                                 }
                             }
                         }
-                    }, 5500);
+                    }, 7500);
 
                 } else if (SmartLocation.with(PostReport.this).location().state().isNetworkAvailable()) {
                     Log.d("rea", "1666");
@@ -677,14 +601,13 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                     getLocation(pd);
 
                 }
-*/
+
             }
         } else {
             showSettingsAlert();
-        }
-
-
+        }*/
     }
+
 
     public boolean isGooglePlayServicesAvailable(Activity activity) {
         GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
@@ -732,9 +655,9 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                                         public void onAddressResolved(Location location, List<Address> list) {
                                             pd.dismiss();
                                             Log.d("result", list.get(0).getLocality() + "     " + list.get(0).toString());
-                                            address = list.get(0).toString();
-                                            place = list.get(0).getLocality();
 
+                                            place = list.get(0).getLocality();
+                                            address = place;
                                             Log.d("sizedd", String.valueOf(list.size()));
                                             if (validateFields()) {
                                                 if (selectedImagePath != null) {
@@ -763,6 +686,8 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
     protected void onStop() {
         super.onStop();
         activityOpen = false;
+        SmartLocation.with(PostReport.this).location().stop();
+
     }
 
     private void showPermissionRequiredDialog(final String permission) {
@@ -875,8 +800,11 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                                     finish();
                                     //  Toast.makeText(VideoUpload.this,s,Toast.LENGTH_SHORT).show();
                                 } else if (s.trim().equals(Constants.AUTH_ERROR)) {
-                                    session.logoutUser();
+                                    Log.d("locaaaaa", "errorauth");
+
+                                    //  session.logoutUser();
                                 } else {
+                                    Log.d("s", s);
                                     Toast.makeText(PostReport.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
                                 }
 
@@ -885,6 +813,8 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                             @Override
                             protected String doInBackground(Void... params) {
                                 Upload2 u = new Upload2(PostReport.this);
+                                Log.d("locaaaaa", place + "   " + address);
+                                Log.d("idww", session.getKeyAuthToken() + "          " + session.getDeviceid());
                                 String s = u.uploadVideo(selectedVideoPath, selectedVideoPath, parameterHeadline, parameterEditTag, currentSpinnerPositionString, parameterDescription, place, address, sdf.format(new Date()), encodedImage, false, true, false, number, name, session.getKeyAuthToken());
                                 return s;
                             }
@@ -1084,7 +1014,9 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                     Log.d("Intent not working", "Intent not working");
                     finish();
                 } else if (s.trim().equals(Constants.AUTH_ERROR)) {
-                    session.logoutUser();
+                    Log.d("locaaaaa", "errorauth");
+
+                    //session.logoutUser();
                 } else {
                     Toast.makeText(PostReport.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
                 }
@@ -1138,7 +1070,9 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                 if (s.trim().equals("Successfully Uploaded")) {
                     openProfile();
                 } else if (s.trim().equals(Constants.AUTH_ERROR)) {
-                    session.logoutUser();
+                    Log.d("locaaaaa", "errorauth");
+
+                    //  session.logoutUser();
                 } else {
                     Toast.makeText(PostReport.this, "Check details and try again.", Toast.LENGTH_LONG).show();
                 }
@@ -1230,24 +1164,29 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
         } else super.onBackPressed();
     }
 
-    private class GeocoderHandler extends Handler {
-        @Override
-        public void handleMessage(Message message) {
-            String locationAddress;
-            String fulladdress;
-            switch (message.what) {
-                case 1:
-                    Bundle bundle = message.getData();
-                    locationAddress = bundle.getString("address");
-                    fulladdress = bundle.getString("add");
-                    break;
-                default:
-                    locationAddress = mycity;
-                    fulladdress = mycity;
+    private String getCompleteAddressString(double LATITUDE, double LONGITUDE) {
+        String strAdd = "";
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
+            if (addresses != null) {
+                Address returnedAddress = addresses.get(0);
+                place = returnedAddress.getLocality();
+                StringBuilder strReturnedAddress = new StringBuilder("");
+
+                for (int i = 0; i < returnedAddress.getMaxAddressLineIndex(); i++) {
+                    strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
+                }
+                strAdd = strReturnedAddress.toString();
+                Log.w("loction address", "" + strReturnedAddress.toString());
+            } else {
+                Log.w("loction address", "No Address returned!");
             }
-            place = locationAddress;
-            address = fulladdress;
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.w("loction address", "Canont get Address!");
         }
+        return strAdd;
     }
 
 
