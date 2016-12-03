@@ -252,7 +252,7 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
                                     session.setMobileNumber(number);
                                     session.setUsername(username);
                                     session.setLoginLocation(place);
-                                    confirmOtp();
+                                    confirmOtp(number);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -330,6 +330,7 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
     public void showSettingsAlert() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(
                 Signup.this);
+
         alertDialog.setTitle("SETTINGS");
         alertDialog.setMessage("Enable Location Provider! Go to settings menu?");
         alertDialog.setPositiveButton("Settings",
@@ -350,14 +351,14 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
     }
 
     //This method would confirm the otp
-    public void confirmOtp() throws JSONException {
+    public void confirmOtp(String number) throws JSONException {
 
 
         Intent i = new Intent(getApplicationContext(), HttpService.class);
         startService(i);
 
 
-        customDialogClass = new CustomDialogClass(Signup.this);
+        customDialogClass = new CustomDialogClass(Signup.this, number);
         customDialogClass.show();
 
     }

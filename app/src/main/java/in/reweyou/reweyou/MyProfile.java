@@ -7,8 +7,10 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.net.Uri;
@@ -18,7 +20,6 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -97,7 +98,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
     private Bitmap bitmap, Correctbmp;
     private ImageView profilepic;
     private EditText editTextHeadline, editLocation;
-    private AppCompatButton buttonEdit;
+    private Button buttonEdit;
     private int length;
     private Button button;
     private ProgressBar progressBar;
@@ -510,15 +511,17 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
         LayoutInflater li = LayoutInflater.from(MyProfile.this);
         //Creating a view to get the dialog box
         View confirmDialog = li.inflate(R.layout.dialog_profile, null);
+
         //  number=session.getMobileNumber();
         //Initizliaing confirm button fo dialog box and edittext of dialog box
-        buttonEdit = (AppCompatButton) confirmDialog.findViewById(R.id.buttonConfirm);
+        buttonEdit = (Button) confirmDialog.findViewById(R.id.buttonConfirm);
         editTextHeadline = (EditText) confirmDialog.findViewById(R.id.editTextOtp);
         editLocation = (EditText) confirmDialog.findViewById(R.id.editTextLocation);
 
         if (Info.getText().toString().equals(getResources().getString(R.string.emptyStatus)))
             editTextHeadline.setHint(R.string.emptyStatusHint);
         else editTextHeadline.setText(Info.getText());
+        editTextHeadline.setSelection(editTextHeadline.getText().length());
 
         editLocation.setText(Location.getText());
         //Creating an alertdialog builder
@@ -529,6 +532,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
 
         //Creating an alert dialog
         final AlertDialog alertDialog = alert.create();
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         //Displaying the alert dialog
         alertDialog.show();

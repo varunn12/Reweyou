@@ -9,8 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:elevation="0dp">
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
 
         <android.support.v7.widget.Toolbar
@@ -21,254 +20,275 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
+        android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginBottom="4dp"
-            android:layout_marginTop="4dp"
-            android:background="#ffffff">
+            android:layout_height="match_parent"
+            android:layout_marginLeft="4dp"
 
-            <ImageView
-                android:id="@+id/image1"
-                android:layout_width="35dp"
-                android:layout_height="40dp"
-                android:layout_alignParentLeft="true"
-                android:layout_marginBottom="1dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="2dp"
-                android:layout_marginTop="3dp"
-                android:src="@android:drawable/ic_menu_myplaces" />
+            android:layout_marginRight="4dp"
+            android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="3dp"
-                android:layout_toRightOf="@+id/image1"
-                android:text="You can start reading other reporters."
-                android:textColor="@color/colorPrimary"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginBottom="4dp"
-            android:layout_marginTop="4dp"
-            android:background="#ffffff">
-
-            <ImageView
-                android:id="@+id/image2"
-                android:layout_width="35dp"
-                android:layout_height="40dp"
-                android:layout_alignParentLeft="true"
-                android:layout_marginBottom="1dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="2dp"
-                android:layout_marginTop="3dp"
-                android:src="@android:drawable/ic_menu_edit" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="3dp"
-                android:layout_toRightOf="@+id/image2"
-                android:text="Edit your profile and location."
-                android:textColor="@color/colorPrimary"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_alignBottom="@+id/image2"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:background="#ffffff">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp"
+
+
+                android:background="#ffffff"
+                android:elevation="4dp"
+
+                android:orientation="horizontal"
+                android:paddingBottom="12dp"
+                android:paddingTop="12dp">
 
                 <ImageView
-                    android:id="@+id/image5"
-                    android:layout_width="35dp"
-                    android:layout_height="40dp"
-                    android:layout_alignParentLeft="true"
-                    android:layout_marginBottom="1dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="2dp"
-                    android:layout_marginTop="3dp"
-                    android:src="@android:drawable/ic_menu_sort_by_size" />
+                    android:layout_width="24dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="16dp"
+                    android:paddingLeft="2dp"
+                    android:tint="#FF7043"
+                    app:srcCompat="@drawable/ic_photo_camera_black_24px" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="3dp"
-                    android:layout_toRightOf="@+id/image5"
-                    android:text="Personalize your feed using feed settings."
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
-            </RelativeLayout>
-        </RelativeLayout>
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="12dp"
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginBottom="4dp"
-            android:layout_marginTop="4dp"
-            android:background="#ffffff">
+                    android:layout_marginRight="12dp"
 
-            <ImageView
-                android:id="@+id/image4"
-                android:layout_width="35dp"
-                android:layout_height="40dp"
-                android:layout_alignParentLeft="true"
-                android:layout_marginBottom="1dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="2dp"
-                android:layout_marginTop="3dp"
-                android:src="@android:drawable/ic_menu_myplaces" />
+                    android:text="Now you can attach images, videos, gif directly from gallery to your report."
+                    android:textColor="#757575"
+                    android:textSize="14sp" />
+            </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="3dp"
-                android:layout_toRightOf="@+id/image4"
-                android:text="Click on City to get news from any City"
-                android:textColor="@color/colorPrimary"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-        </RelativeLayout>
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp"
+                android:background="#ffffff"
+                android:orientation="horizontal"
+                android:paddingBottom="12dp"
+                android:paddingTop="12dp">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginBottom="4dp"
-            android:layout_marginTop="4dp"
-            android:background="#ffffff">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="16dp"
+                    android:tint="#9CCC65"
+                    app:srcCompat="@drawable/ic_videocam_black_24px" />
 
-            <ImageView
-                android:id="@+id/image6"
-                android:layout_width="35dp"
-                android:layout_height="40dp"
-                android:layout_alignParentLeft="true"
-                android:layout_marginBottom="1dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="2dp"
-                android:layout_marginTop="3dp"
-                android:src="@android:drawable/ic_menu_share" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
 
-            <TextView
-                android:layout_width="wrap_content"
+                    android:text="Shoot live with the new video recording feature.Attach and share reports with videos"
+                    android:textColor="#757575"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="3dp"
-                android:layout_toRightOf="@+id/image6"
-                android:text="Use overflow icon to share stories."
-                android:textColor="@color/colorPrimary"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-        </RelativeLayout>
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp"
+                android:background="#ffffff"
+                android:orientation="horizontal"
+                android:paddingBottom="12dp"
+                android:paddingTop="12dp">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginBottom="4dp"
-            android:layout_marginTop="4dp"
-            android:background="#ffffff">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="16dp"
+                    android:tint="#42A5F5"
+                    app:srcCompat="@drawable/ic_timeline_black_18px" />
 
-            <ImageView
-                android:id="@+id/image7"
-                android:layout_width="35dp"
-                android:layout_height="40dp"
-                android:layout_alignParentLeft="true"
-                android:layout_marginBottom="1dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="2dp"
-                android:layout_marginTop="3dp"
-                android:src="@android:drawable/ic_menu_gallery" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="12dp"
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="3dp"
-                android:layout_toRightOf="@+id/image7"
-                android:text="Use reactions to update stories/multiple images."
-                android:textColor="@color/colorPrimary"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-        </RelativeLayout>
+                    android:layout_marginRight="12dp"
 
-        <RelativeLayout
-            android:id="@+id/one"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginBottom="2dp"
-            android:layout_marginTop="2dp"
-            android:background="#ffffff">
+                    android:text="Tap on report's tag, headline or location to get the related news"
+                    android:textColor="#757575"
+                    android:textSize="14sp" />
+            </LinearLayout>
 
-            <ImageView
-                android:id="@+id/image"
-                android:layout_width="35dp"
-                android:layout_height="40dp"
-                android:layout_alignParentLeft="true"
-                android:layout_marginBottom="1dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="2dp"
-                android:layout_marginTop="3dp"
-                android:src="@android:drawable/ic_menu_search" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp"
+                android:background="#ffffff"
+                android:orientation="horizontal"
+                android:paddingBottom="12dp"
+                android:paddingTop="12dp">
 
-            <TextView
-                android:id="@+id/Who"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="3dp"
-                android:layout_toRightOf="@+id/image"
-                android:text="Now you can search posts on Reweyou"
-                android:textColor="@color/colorPrimary"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-        </RelativeLayout>
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="16dp"
+                    android:tint="#FFCA28"
+                    app:srcCompat="@drawable/ic_thumb_up_primary_16px1" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginBottom="4dp"
-            android:layout_marginTop="4dp"
-            android:background="#ffffff">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
 
-            <ImageView
-                android:id="@+id/image3"
-                android:layout_width="35dp"
-                android:layout_height="40dp"
-                android:layout_alignParentLeft="true"
-                android:layout_marginBottom="1dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="2dp"
-                android:layout_marginTop="3dp"
-                android:src="@drawable/cup" />
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="3dp"
-                android:layout_toRightOf="@+id/image3"
-                android:text="New Leaderboard - More Reviews better rank."
-                android:textColor="@color/colorPrimary"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-        </RelativeLayout>
-    </LinearLayout>
+                    android:text="Share your response by liking a report or adding a reaction"
+                    android:textColor="#757575"
+                    android:textSize="14sp" />
+            </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp"
+                android:background="#ffffff"
+                android:orientation="horizontal"
+                android:paddingBottom="12dp"
+                android:paddingTop="12dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="16dp"
+                    android:tint="#AB47BC"
+                    app:srcCompat="@drawable/ic_filter_list_black_24dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
+
+                    android:text="Personalize your feed using feed settings"
+                    android:textColor="#757575"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp"
+                android:background="#ffffff"
+                android:orientation="horizontal"
+                android:paddingBottom="12dp"
+                android:paddingTop="12dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="16dp"
+                    android:tint="#ef5350"
+                    app:srcCompat="@drawable/ic_notifications_black_24px" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="12dp"
+
+                    android:layout_marginRight="12dp"
+
+                    android:text="Get notified by the people whol liked or reacted on your post"
+                    android:textColor="#757575"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp"
+                android:background="#ffffff"
+                android:orientation="horizontal"
+                android:paddingBottom="12dp"
+                android:paddingTop="12dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="16dp"
+                    android:tint="#8D6E63"
+                    app:srcCompat="@drawable/ic_search_white_24px" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
+                    android:text="Search for reports thats suits your interest"
+                    android:textColor="#757575"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp"
+                android:background="#ffffff"
+                android:orientation="horizontal"
+                android:paddingBottom="12dp"
+                android:paddingTop="12dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="16dp"
+                    android:tint="#26C6DA"
+                    app:srcCompat="@drawable/cup" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
+                    android:text="Leaderboard- More Reviews better rank. Watch for the best reporter trending this time"
+                    android:textColor="#757575"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </ScrollView>
 </android.support.design.widget.CoordinatorLayout>
