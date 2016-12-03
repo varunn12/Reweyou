@@ -562,6 +562,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                     address = place;
                 }
                 pd.dismiss();
+                pd.setCancelable(false);
                 Log.d("place", place);
                 Log.d("address", address);
 
