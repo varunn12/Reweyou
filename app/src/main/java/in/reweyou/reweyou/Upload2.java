@@ -118,7 +118,7 @@ public class Upload2 {
 
             dos.writeBytes("Content-Disposition: form-data; name=\"number\"" + lineEnd);
             dos.writeBytes(lineEnd);
-            dos.writeBytes("7054392300");
+            dos.writeBytes(number);
             dos.writeBytes(lineEnd);
             dos.writeBytes(twoHyphens + boundary + lineEnd);
 
@@ -144,7 +144,6 @@ public class Upload2 {
             }
 
             //Adding location
-
             dos.writeBytes("Content-Disposition: form-data; name=\"location\"" + lineEnd);
             dos.writeBytes(lineEnd);
             dos.writeBytes(place);
