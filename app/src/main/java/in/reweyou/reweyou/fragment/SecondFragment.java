@@ -342,8 +342,10 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                             }
                             progressBar.setVisibility(View.GONE);
 
+                            if (position == 15) {
+                                adapter = new FeedAdapter(getActivity(), messagelist, placename, SecondFragment.this, position);
 
-                            if (position == 10)
+                            } else if (position == 10)
                                 adapter = new FeedAdapter(getActivity(), messagelist, placename, SecondFragment.this);
                             else
                                 adapter = new FeedAdapter(getActivity(), messagelist);
@@ -456,6 +458,8 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                         data.put("number", number);
 
                     } else data.put("query", query);
+                } else if (position == 15) {
+                    data.put("query", query);
                 }
                 return data;
             }
@@ -521,6 +525,8 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                 return Constants.MY_CITY_URL;
             case 12:
                 return Constants.SEARCH_QUERY;
+            case 15:
+                return Constants.MY_SINGLE_ACTIVITY;
             default:
                 return null;
 
