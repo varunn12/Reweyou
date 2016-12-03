@@ -540,7 +540,9 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
     private void permissionGranted() {
         Log.d("rea", "1233");
 
-
+        final ProgressDialog pd = new ProgressDialog(PostReport.this);
+        pd.setMessage("Fetching current location! Please Wait.");
+        pd.show();
         MyLocation.LocationResult locationResult = new MyLocation.LocationResult() {
             @Override
             public void gotLocation(Location location) {
@@ -558,12 +560,19 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                     place = session.getLoginLocation();
                     address = place;
                 }
-
-
+                pd.dismiss();
                 Log.d("place", place);
                 Log.d("address", address);
 
                 Toast.makeText(PostReport.this, place + "     " + address, Toast.LENGTH_SHORT).show();
+
+               /* if (validateFields()) {
+                    if (selectedImagePath != null) {
+                        compressImageOrGif();
+                    } else if (selectedVideoPath != null) {
+                        compressVideo();
+                    } else uploadImage(null);
+                }*/
             }
         };
         MyLocation myLocation = new MyLocation();
