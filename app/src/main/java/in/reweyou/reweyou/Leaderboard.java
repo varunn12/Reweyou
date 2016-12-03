@@ -11,7 +11,9 @@ public class Leaderboard extends AppCompatActivity {
     Fragment fragment;
     private Toolbar toolbar;
 
-    /** Called when the activity is first created. */
+    /**
+     * Called when the activity is first created.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,4 +33,9 @@ public class Leaderboard extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(0, 0);
+    }
 }
