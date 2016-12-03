@@ -141,6 +141,7 @@ public class Feed extends AppCompatActivity {
 
     }
 
+
     private void initViews() {
         initToolbar();
         initFAB();
@@ -224,16 +225,6 @@ public class Feed extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         checkforolduserstatus();
-                    }
-                }).show();
-    }
-
-    private void showSnackBar1(String msg) {
-        Snackbar.make(findViewById(R.id.coordinatorLayout), msg, Snackbar.LENGTH_LONG).setDuration(Snackbar.LENGTH_INDEFINITE)
-                .setAction("RETRY", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        makeNotificationsRequest();
                     }
                 }).show();
     }
@@ -344,6 +335,7 @@ public class Feed extends AppCompatActivity {
             public void onClick(View v) {
                 Intent notifications = new Intent(Feed.this, Notifications.class);
                 startActivity(notifications);
+                overridePendingTransition(0, 0);
             }
         });
 
@@ -550,33 +542,40 @@ public class Feed extends AppCompatActivity {
 
                 switch (id) {
                     case R.id.mycity:
+                        drawerLayout.closeDrawers();
                         Intent news = new Intent(Feed.this, MyCityActivity.class);
                         startActivity(news);
-                        drawerLayout.closeDrawers();
+                        overridePendingTransition(0, 0);
                         break;
                     case R.id.myreports:
+                        drawerLayout.closeDrawers();
                         Intent reports = new Intent(Feed.this, Topic.class);
                         startActivity(reports);
-                        drawerLayout.closeDrawers();
+                        overridePendingTransition(0, 0);
                         break;
                     case R.id.notifications:
+                        drawerLayout.closeDrawers();
                         Intent notif = new Intent(Feed.this, Notifications.class);
                         startActivity(notif);
-                        drawerLayout.closeDrawers();
+                        overridePendingTransition(0, 0);
                         break;
                     case R.id.New:
+                        drawerLayout.closeDrawers();
                         Intent New = new Intent(Feed.this, WhatsNew.class);
                         startActivity(New);
-                        drawerLayout.closeDrawers();
+                        overridePendingTransition(0, 0);
                         break;
                     case R.id.logout:
-                        alertMessage();
                         drawerLayout.closeDrawers();
+                        alertMessage();
+                        overridePendingTransition(0, 0);
                         break;
                     case R.id.leaderboard:
+                        drawerLayout.closeDrawers();
                         Intent leader = new Intent(Feed.this, Leaderboard.class);
                         startActivity(leader);
-                        drawerLayout.closeDrawers();
+                        overridePendingTransition(0, 0);
+                        break;
                 }
                 return true;
             }
