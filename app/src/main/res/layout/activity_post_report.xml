@@ -373,12 +373,14 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:padding="8dp"
+                android:visibility="gone"
                 app:srcCompat="@drawable/ic_attach_file_black_24px" />
 
             <Space
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:visibility="gone" />
 
         </LinearLayout>
         ]

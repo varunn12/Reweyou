@@ -115,15 +115,16 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
                     android:layout_gravity="center"
                     android:padding="12dp"
+                    android:visibility="gone"
                     card_view:srcCompat="@drawable/ic_attach_file_black_24px" />
 
                 <Space
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:visibility="gone" />
 
             </LinearLayout>
 
