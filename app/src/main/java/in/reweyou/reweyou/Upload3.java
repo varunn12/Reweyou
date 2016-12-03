@@ -21,7 +21,7 @@ import in.reweyou.reweyou.classes.UserSessionManager;
 /**
  * Created by Belal on 11/22/2015.
  */
-public class Upload2 {
+public class Upload3 {
 
 
     public static final String UPLOAD_URL = "https://www.reweyou.in/reweyou/reporting.php";
@@ -31,7 +31,7 @@ public class Upload2 {
 
     private int serverResponseCode;
 
-    public Upload2(PostReport postReport) {
+    public Upload3(PostReport postReport) {
         UserSessionManager userSessionManager = new UserSessionManager(postReport);
         this.token1 = userSessionManager.getKeyAuthToken();
         this.deviceid = userSessionManager.getDeviceid();
@@ -70,6 +70,7 @@ public class Upload2 {
             conn.setRequestProperty("ENCTYPE", "multipart/form-data");
             conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
             conn.setRequestProperty("myFile", fileName);
+            dos = new DataOutputStream(conn.getOutputStream());
 
             dos.writeBytes(twoHyphens + boundary + lineEnd);
 
@@ -84,11 +85,6 @@ public class Upload2 {
             }
 
             //Adding NAME
-            dos.writeBytes("Content-Disposition: form-data; name=\"location\"" + lineEnd);
-            dos.writeBytes(lineEnd);
-            dos.writeBytes(place);
-            dos.writeBytes(lineEnd);
-            dos.writeBytes(twoHyphens + boundary + lineEnd);
 
             dos.writeBytes("Content-Disposition: form-data; name=\"headline\"" + lineEnd);
             dos.writeBytes(lineEnd);
@@ -147,11 +143,12 @@ public class Upload2 {
 
             //Adding location
 
-            dos.writeBytes("Content-Disposition: form-data; name=\"temp\"" + lineEnd);
+            dos.writeBytes("Content-Disposition: form-data; name=\"location\"" + lineEnd);
             dos.writeBytes(lineEnd);
-            dos.writeBytes("tempfix");
+            dos.writeBytes(place);
             dos.writeBytes(lineEnd);
             dos.writeBytes(twoHyphens + boundary + lineEnd);
+
             //Adding tag
             dos.writeBytes("Content-Disposition: form-data; name=\"type\"" + lineEnd);
             dos.writeBytes(lineEnd);

@@ -389,11 +389,14 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (messagelist.get(position).getImage().isEmpty()) {
             if (messagelist.get(position).getGif().isEmpty()) {
                 viewHolder.image.setVisibility(View.GONE);
-            } else
+            } else {
+                viewHolder.image.setAdjustViewBounds(false);
                 Glide.with(mContext).load(messagelist.get(position).getGif()).asGif().placeholder(R.drawable.irongrip).diskCacheStrategy(DiskCacheStrategy.SOURCE).error(R.drawable.ic_error).dontAnimate().into(viewHolder.image);
-        } else
+            }
+        } else {
+            viewHolder.image.setAdjustViewBounds(true);
             Glide.with(mContext).load(messagelist.get(position).getImage()).diskCacheStrategy(DiskCacheStrategy.SOURCE).override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).error(R.drawable.ic_error).dontAnimate().into(viewHolder.image);
-
+        }
     }
 
     private void setFeedVideoThumbnail(VideoViewHolder viewHolder, int position) {
@@ -402,7 +405,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             viewHolder.image.setVisibility(View.GONE);
         } else {
             viewHolder.image.setVisibility(View.VISIBLE);
-            viewHolder.image.setColorFilter(Color.argb(120, 0, 0, 0)); // White Tint
+            viewHolder.image.setColorFilter(Color.argb(150, 255, 255, 255)); // White Tint
 
             Glide.with(mContext).load(messagelist.get(position).getImage()).placeholder(R.drawable.irongrip).diskCacheStrategy(DiskCacheStrategy.SOURCE).fallback(R.drawable.ic_reload).error(R.drawable.ic_error).dontAnimate().into(viewHolder.image);
         }
@@ -410,7 +413,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private void setReactionsNumber(BaseViewHolder viewHolder, int position) {
         if (messagelist.get(position).getComments() == null || messagelist.get(position).getComments().isEmpty())
-            viewHolder.app.setText("0 Reactions");
+            viewHolder.app.setText("0 Reaction");
         else {
             viewHolder.app.setText(messagelist.get(position).getComments() + " Reactions");
             if (!messagelist.get(position).getComments().equals("0") && messagelist.get(position).getReaction() != null) {
