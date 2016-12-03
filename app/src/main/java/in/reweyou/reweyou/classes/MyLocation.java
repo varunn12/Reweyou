@@ -19,12 +19,12 @@ public class MyLocation {
     LocationResult locationResult;
     boolean gps_enabled = false;
     boolean network_enabled = false;
-    LocationListener locationListenerNetwork = new LocationListener() {
+    LocationListener locationListenerGps = new LocationListener() {
         public void onLocationChanged(Location location) {
             timer1.cancel();
             locationResult.gotLocation(location);
             lm.removeUpdates(this);
-            lm.removeUpdates(locationListenerGps);
+            lm.removeUpdates(locationListenerNetwork);
         }
 
         public void onProviderDisabled(String provider) {
@@ -36,12 +36,12 @@ public class MyLocation {
         public void onStatusChanged(String provider, int status, Bundle extras) {
         }
     };
-    LocationListener locationListenerGps = new LocationListener() {
+    LocationListener locationListenerNetwork = new LocationListener() {
         public void onLocationChanged(Location location) {
             timer1.cancel();
             locationResult.gotLocation(location);
             lm.removeUpdates(this);
-            lm.removeUpdates(locationListenerNetwork);
+            lm.removeUpdates(locationListenerGps);
         }
 
         public void onProviderDisabled(String provider) {
@@ -81,6 +81,12 @@ public class MyLocation {
         timer1 = new Timer();
         timer1.schedule(new GetLastLocation(), 5000);
         return true;
+    }
+
+    public void cancelTimer() {
+        timer1.cancel();
+        lm.removeUpdates(locationListenerGps);
+        lm.removeUpdates(locationListenerNetwork);
     }
 
     public static abstract class LocationResult {
