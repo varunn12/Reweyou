@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="in.reweyou.reweyou.SearchResultsActivity">
@@ -17,7 +18,6 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|enterAlways"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
     </android.support.design.widget.AppBarLayout>
 
@@ -26,15 +26,23 @@
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/appBarLayout" />
+        android:layout_below="@+id/appBarLayout"
+        android:clipToPadding="false"
+        android:paddingTop="8dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <Button
         android:id="@+id/save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/recycler_view"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="2dp"
-        android:background="@drawable/border"
-        android:text="Save" />
-</RelativeLayout>
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:layout_marginBottom="6dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/button_background_rectangular_white"
+        android:text="DONE"
+        android:textColor="@color/colorPrimaryDark"
+
+        android:visibility="gone" />
+</android.support.design.widget.CoordinatorLayout>

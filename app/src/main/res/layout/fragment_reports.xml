@@ -8,7 +8,10 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="2dp"
         android:layout_marginTop="4dp"
-        android:textColor="#049799"
+        android:elevation="4dp"
+
+        android:paddingBottom="2dp"
+        android:textColor="@color/colorPrimaryDark"
         android:textSize="12dp" />
     <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/swipe_container"
@@ -16,13 +19,15 @@
         android:layout_height="match_parent"
         android:layout_below="@id/Total">
 
-        <view
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
-            class="android.support.v7.widget.RecyclerView"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:clipToPadding="false"
             android:fadeScrollbars="true"
+            android:paddingBottom="4dp"
             android:scrollbars="vertical" />
 
     </android.support.v4.widget.SwipeRefreshLayout>

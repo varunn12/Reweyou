@@ -94,6 +94,8 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
         query = getArguments().getString("query");
         Log.d("pos", String.valueOf(position));
+        if (query != null)
+            Log.d("pos", query);
 
         if (position == 0)
             ((Feed) mContext).fragmentCommunicator = this;
@@ -342,8 +344,10 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                             }
                             progressBar.setVisibility(View.GONE);
 
+                            if (position == 15) {
+                                adapter = new FeedAdapter(getActivity(), messagelist, placename, SecondFragment.this, position);
 
-                            if (position == 10)
+                            } else if (position == 10)
                                 adapter = new FeedAdapter(getActivity(), messagelist, placename, SecondFragment.this);
                             else
                                 adapter = new FeedAdapter(getActivity(), messagelist);
@@ -397,7 +401,6 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
                                 swipeLayout.setRefreshing(false);
                                 cacheLoad = true;
-                                //   MyJSON.saveData(getContext(), respo);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -450,7 +453,9 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                     if (position != 12) {
                         if (position == 10)
                             data.put("location", placename);
-                        else
+                        else if (position == 15) {
+                            data.put("query", query);
+                        } else
                             data.put("location", location);
                         data.put("date", formattedDate);
                         data.put("number", number);
@@ -521,6 +526,8 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                 return Constants.MY_CITY_URL;
             case 12:
                 return Constants.SEARCH_QUERY;
+            case 15:
+                return Constants.MY_SINGLE_ACTIVITY;
             default:
                 return null;
 

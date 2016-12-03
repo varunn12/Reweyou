@@ -19,7 +19,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import in.reweyou.reweyou.fragment.CommentsFragment;
-import in.reweyou.reweyou.fragment.SinglePostFragment;
+import in.reweyou.reweyou.fragment.SecondFragment;
 
 public class SinglePostActivity extends AppCompatActivity {
 
@@ -152,9 +152,10 @@ public class SinglePostActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    SinglePostFragment fragment2 = new SinglePostFragment();
+                    SecondFragment fragment2 = new SecondFragment();
                     Bundle bundle2 = new Bundle();
-                    bundle2.putString("myData", query);
+                    bundle2.putString("query", query);
+                    bundle2.putInt("position", 15);
                     fragment2.setArguments(bundle2);
                     Log.d("getItem", "" + position);
                     return fragment2;

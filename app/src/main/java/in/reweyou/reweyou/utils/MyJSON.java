@@ -17,7 +17,9 @@ public class MyJSON {
 
     public static void saveData(Context context, String mJsonResponse, int position) {
         try {
-            FileWriter file = new FileWriter(context.getFilesDir().getPath() + "/" + position + fileName);
+            Log.d("json", String.valueOf(position));
+            FileWriter file = new FileWriter(context.getFilesDir().getPath() + "/" + position + fileName, false);
+
             file.write(mJsonResponse);
             file.flush();
             file.close();
@@ -28,6 +30,8 @@ public class MyJSON {
 
     public static String getData(Context context, int position) {
         try {
+            Log.d("jsonread", String.valueOf(position));
+
             File f = new File(context.getFilesDir().getPath() + "/" + position + fileName);
             //check whether file exists
             FileInputStream is = new FileInputStream(f);

@@ -61,4 +61,5 @@ public class Constants {
 
     public static final String SEARCH_QUERY = "https://www.reweyou.in/reweyou/searchresults.php";
     public static final String FEED_LIKES = "https://www.reweyou.in/reweyou/liked.php";
+    public static final String MY_SINGLE_ACTIVITY = "https://www.reweyou.in/reweyou/postbyid.php";
 }
