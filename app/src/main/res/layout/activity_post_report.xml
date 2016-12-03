@@ -168,9 +168,10 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:background="@null"
-                            android:hint="Add description..."
+                            android:hint="Add description...\n(max 600 words)"
                             android:inputType="textMultiLine"
                             android:minLines="2"
+
                             android:paddingBottom="8dp"
                             android:paddingLeft="16dp"
                             android:paddingTop="8dp"

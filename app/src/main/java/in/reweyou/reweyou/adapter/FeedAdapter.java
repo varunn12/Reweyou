@@ -3,13 +3,13 @@ package in.reweyou.reweyou.adapter;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -1063,21 +1063,27 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             edit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    final Dialog dialog = new Dialog(mContext);
+                    LayoutInflater li = LayoutInflater.from(mContext);
+                    //Creating a view to get the dialog box
+                    View confirmDialog = li.inflate(R.layout.dialog_edit_location, null);
+                    final AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
                     // Include dialog.xml file
-                    dialog.setContentView(R.layout.dialog_edit_location);
+                    dialog.setView(confirmDialog);
+                    final AlertDialog alertDialog = dialog.create();
+
                     // Set dialog title
-                    dialog.setTitle("Custom Dialog");
+                    alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
 
                     // set values for custom dialog components - text, image and button
-                    final EditText editText = (EditText) dialog.findViewById(R.id.editTextLocation);
-                    Button button = (Button) dialog.findViewById(R.id.buttonConfirm);
+                    final EditText editText = (EditText) alertDialog.findViewById(R.id.editTextLocation);
+                    Button button = (Button) confirmDialog.findViewById(R.id.buttonConfirm);
                     dialog.show();
 
                     button.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            dialog.dismiss();
+                            alertDialog.dismiss();
 
                             if (editText.getText().toString().trim().length() == 0) {
 
