@@ -543,7 +543,8 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
         final ProgressDialog pd = new ProgressDialog(PostReport.this);
         pd.setMessage("Fetching current location! Please Wait.");
         pd.show();
-        MyLocation.LocationResult locationResult = new MyLocation.LocationResult() {
+
+        final MyLocation.LocationResult locationResult = new MyLocation.LocationResult() {
             @Override
             public void gotLocation(Location location) {
                 //Got the location!
@@ -564,7 +565,12 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                 Log.d("place", place);
                 Log.d("address", address);
 
-                Toast.makeText(PostReport.this, place + "     " + address, Toast.LENGTH_SHORT).show();
+                PostReport.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(PostReport.this, place + "     " + address, Toast.LENGTH_SHORT).show();
+                    }
+                });
 
                /* if (validateFields()) {
                     if (selectedImagePath != null) {
@@ -574,7 +580,10 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                     } else uploadImage(null);
                 }*/
             }
+
+
         };
+
         MyLocation myLocation = new MyLocation();
         myLocation.getLocation(this, locationResult);
 
