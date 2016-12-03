@@ -44,6 +44,10 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.koushikdutta.async.http.AsyncHttpClient;
+import com.koushikdutta.async.http.AsyncHttpPost;
+import com.koushikdutta.async.http.AsyncHttpResponse;
+import com.koushikdutta.async.http.body.MultipartFormDataBody;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -540,53 +544,68 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
     private void permissionGranted() {
         Log.d("rea", "1233");
 
-        final ProgressDialog pd = new ProgressDialog(PostReport.this);
-        pd.setMessage("Fetching current location! Please Wait.");
-        pd.show();
+        if (isLocationEnabled(PostReport.this)) {
+            final ProgressDialog pd = new ProgressDialog(PostReport.this);
+            pd.setMessage("Fetching current location! Please Wait.");
+            pd.show();
 
-        final MyLocation.LocationResult locationResult = new MyLocation.LocationResult() {
-            @Override
-            public void gotLocation(Location location) {
-                //Got the location!
-                if (location != null) {
-                    Log.d("location", String.valueOf(location.getLatitude()));
-                    String getaddress = getCompleteAddressString(location.getLatitude(), location.getLongitude());
-                    if (!getaddress.isEmpty()) {
-                        address = getaddress;
+            final MyLocation.LocationResult locationResult = new MyLocation.LocationResult() {
+                @Override
+                public void gotLocation(Location location) {
+                    //Got the location!
+                    if (location != null) {
+                        Log.d("location", String.valueOf(location.getLatitude()));
+                        String getaddress = getCompleteAddressString(location.getLatitude(), location.getLongitude());
+                        if (!getaddress.isEmpty()) {
+                            address = getaddress;
+                        } else {
+                            address = session.getLoginLocation();
+                            place = address;
+                        }
                     } else {
-                        address = session.getLoginLocation();
-                        place = address;
+                        place = session.getLoginLocation();
+                        address = place;
                     }
-                } else {
-                    place = session.getLoginLocation();
-                    address = place;
+                    pd.dismiss();
+                    pd.setCancelable(false);
+                    Log.d("place", place);
+                    Log.d("address", address);
+
+                    PostReport.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //  Toast.makeText(PostReport.this, place + "     " + address, Toast.LENGTH_SHORT).show();
+                            if (validateFields()) {
+                                if (selectedImagePath != null) {
+                                    compressImageOrGif();
+                                } else if (selectedVideoPath != null) {
+                                    compressVideo();
+                                } else uploadImage(null);
+                            }
+                        }
+                    });
+
+
                 }
-                pd.dismiss();
-                Log.d("place", place);
-                Log.d("address", address);
 
-                PostReport.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(PostReport.this, place + "     " + address, Toast.LENGTH_SHORT).show();
-                    }
-                });
 
-               /* if (validateFields()) {
-                    if (selectedImagePath != null) {
-                        compressImageOrGif();
-                    } else if (selectedVideoPath != null) {
-                        compressVideo();
-                    } else uploadImage(null);
-                }*/
+            };
+
+            MyLocation myLocation = new MyLocation();
+            myLocation.getLocation(this, locationResult);
+        } else {
+            address = session.getLoginLocation();
+            place = address;
+            Toast.makeText(PostReport.this, "location off: " + place + "     " + address, Toast.LENGTH_SHORT).show();
+
+            if (validateFields()) {
+                if (selectedImagePath != null) {
+                    compressImageOrGif();
+                } else if (selectedVideoPath != null) {
+                    compressVideo();
+                } else uploadImage(null);
             }
-
-
-        };
-
-        MyLocation myLocation = new MyLocation();
-        myLocation.getLocation(this, locationResult);
-
+        }
        /* if (SmartLocation.with(PostReport.this).location().state().locationServicesEnabled()) {
             Log.d("rea", "123321e12e");
             if (isGooglePlayServicesAvailable(this)) {
@@ -796,8 +815,51 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                     @Override
                     public void onResourceReady(byte[] resource, GlideAnimation<? super byte[]> ignore) {
                         final String encodedImage = Base64.encodeToString(resource, Base64.DEFAULT);
+                        final ProgressDialog uploading = ProgressDialog.show(PostReport.this, "Uploading File", "Please wait...", false, false);
+                        uploading.dismiss();
 
-                        class UploadVideo extends AsyncTask<Void, Void, String> {
+                        AsyncHttpPost post = new AsyncHttpPost("https://www.reweyou.in/reweyou/reporting.php");
+                        MultipartFormDataBody body = new MultipartFormDataBody();
+                        body.addFilePart("myFile", new File(selectedVideoPath));
+                        body.addStringPart(POST_REPORT_KEY_REPORT, "video");
+                        body.addStringPart(POST_REPORT_KEY_LOCATION, place);
+                        body.addStringPart(POST_REPORT_KEY_IMAGE, encodedImage);
+                        body.addStringPart(POST_REPORT_KEY_NAME, name);
+                        body.addStringPart(POST_REPORT_KEY_CATEGORY, currentSpinnerPositionString);
+                        body.addStringPart(POST_REPORT_KEY_ADDRESS, address);
+                        body.addStringPart(POST_REPORT_KEY_NUMBER, number);
+                        body.addStringPart(POST_REPORT_KEY_TAG, parameterEditTag);
+                        if (parameterHeadline != null)
+                            body.addStringPart(POST_REPORT_KEY_HEADLINE, parameterHeadline);
+                        body.addStringPart(POST_REPORT_KEY_DESCRIPTION, parameterDescription);
+                        body.addStringPart("token", session.getKeyAuthToken());
+                        body.addStringPart("deviceid", session.getDeviceid());
+                        post.setBody(body);
+                        AsyncHttpClient.getDefaultInstance().executeString(post, new AsyncHttpClient.StringCallback() {
+                            @Override
+                            public void onCompleted(Exception ex, AsyncHttpResponse source, String result) {
+                                if (ex != null) {
+                                    ex.printStackTrace();
+                                    return;
+                                }
+                                System.out.println("Server says: " + result);
+                                uploading.dismiss();
+                                if (result.equals("Successfully Uploaded")) {
+                                    Intent feed = new Intent(PostReport.this, Feed.class);
+                                    startActivity(feed);
+                                    Log.d("Intent not working", "Intent not working");
+                                    finish();
+                                } else if (result.trim().equals(Constants.AUTH_ERROR)) {
+                                    Log.d("autherror", "errorauth");
+                                    session.logoutUser();
+                                } else {
+                                    Toast.makeText(PostReport.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+
+
+                       /* class UploadVideo extends AsyncTask<Void, Void, String> {
 
                             ProgressDialog uploading;
 
@@ -824,6 +886,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                                 } else {
                                     Log.d("s", s);
                                     Toast.makeText(PostReport.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+
                                 }
 
                             }
@@ -831,15 +894,13 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                             @Override
                             protected String doInBackground(Void... params) {
                                 Upload2 u = new Upload2(PostReport.this);
-                                Log.d("locaaaaa", place + "   " + address);
-                                Log.d("idww", session.getKeyAuthToken() + "          " + session.getDeviceid());
                                 String s = u.uploadVideo(selectedVideoPath, selectedVideoPath, parameterHeadline, parameterEditTag, currentSpinnerPositionString, parameterDescription, place, address, sdf.format(new Date()), encodedImage, false, true, false, number, name, session.getKeyAuthToken());
                                 return s;
                             }
                         }
 
                         UploadVideo uv = new UploadVideo();
-                        uv.execute();
+                        uv.execute();*/
                     }
 
                     @Override
@@ -894,7 +955,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
             }
             break;
             default:
-                finish();
+                break;
         }
 
     }
@@ -1012,7 +1073,47 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
     }
 
     private void uploadSelectedGif() {
-        class UploadVideo extends AsyncTask<Void, Void, String> {
+        final ProgressDialog uploading = ProgressDialog.show(PostReport.this, "Uploading File", "Please wait...", false, false);
+        uploading.dismiss();
+        AsyncHttpPost post = new AsyncHttpPost("https://www.reweyou.in/reweyou/reporting.php");
+        MultipartFormDataBody body = new MultipartFormDataBody();
+        body.addFilePart("myFile", new File(selectedImagePath));
+        body.addStringPart(POST_REPORT_KEY_REPORT, "gif");
+        body.addStringPart(POST_REPORT_KEY_LOCATION, place);
+        body.addStringPart(POST_REPORT_KEY_NAME, name);
+        body.addStringPart(POST_REPORT_KEY_CATEGORY, currentSpinnerPositionString);
+        body.addStringPart(POST_REPORT_KEY_ADDRESS, address);
+        body.addStringPart(POST_REPORT_KEY_NUMBER, number);
+        body.addStringPart(POST_REPORT_KEY_TAG, parameterEditTag);
+        if (parameterHeadline != null)
+            body.addStringPart(POST_REPORT_KEY_HEADLINE, parameterHeadline);
+        body.addStringPart(POST_REPORT_KEY_DESCRIPTION, parameterDescription);
+        body.addStringPart("token", session.getKeyAuthToken());
+        body.addStringPart("deviceid", session.getDeviceid());
+        post.setBody(body);
+        AsyncHttpClient.getDefaultInstance().executeString(post, new AsyncHttpClient.StringCallback() {
+            @Override
+            public void onCompleted(Exception ex, AsyncHttpResponse source, String result) {
+                if (ex != null) {
+                    ex.printStackTrace();
+                    return;
+                }
+                System.out.println("Server says: " + result);
+                uploading.dismiss();
+                if (result.equals("Successfully Uploaded")) {
+                    Intent feed = new Intent(PostReport.this, Feed.class);
+                    startActivity(feed);
+                    Log.d("Intent not working", "Intent not working");
+                    finish();
+                } else if (result.trim().equals(Constants.AUTH_ERROR)) {
+                    Log.d("autherror", "errorauth");
+                    session.logoutUser();
+                } else {
+                    Toast.makeText(PostReport.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+       /* class UploadVideo extends AsyncTask<Void, Void, String> {
 
             ProgressDialog uploading;
 
@@ -1036,6 +1137,8 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
 
                     //session.logoutUser();
                 } else {
+                    Log.d("s", s);
+
                     Toast.makeText(PostReport.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
                 }
 
@@ -1043,14 +1146,14 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
 
             @Override
             protected String doInBackground(Void... params) {
-                Upload2 u = new Upload2(PostReport.this);
+                Upload3 u = new Upload3(PostReport.this);
                 String s = u.uploadVideo(selectedImagePath, selectedImagePath, parameterHeadline, parameterEditTag, currentSpinnerPositionString, parameterDescription, place, address, sdf.format(new Date()), null, false, false, true, number, name, session.getKeyAuthToken());
                 return s;
             }
         }
 
         UploadVideo uv = new UploadVideo();
-        uv.execute();
+        uv.execute();*/
     }
 
     private int getSelectedFileType(String selectedImagePath) {

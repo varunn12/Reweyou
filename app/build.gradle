@@ -61,6 +61,9 @@ dependencies {
             }
 
     compile 'it.sephiroth.android.library.imagezoom:imagezoom:+'
+
+    compile 'com.koushikdutta.async:androidasync:2.+'
+
 }
 
 apply plugin: 'com.google.gms.google-services'
