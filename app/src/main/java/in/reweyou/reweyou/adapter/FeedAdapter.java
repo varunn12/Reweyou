@@ -674,14 +674,16 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     @Override
                     public void onResponse(String response) {
                         if (response.equals("like")) {
-                            notifyItemChanged(adapterPosition, prelike);
+                            // notifyItemChanged(adapterPosition, prelike);
                             session.addlike(messagelist.get(adapterPosition).getPostId());
                             messagelist.get(adapterPosition).setLiked(true);
+                            messagelist.get(adapterPosition).setReviews(String.valueOf((Integer.parseInt(messagelist.get(adapterPosition).getReviews()) + 1)));
 
                         } else if (response.equals("unlike")) {
-                            notifyItemChanged(adapterPosition, preunlike);
+                            // notifyItemChanged(adapterPosition, preunlike);
                             session.removelike(messagelist.get(adapterPosition).getPostId());
                             messagelist.get(adapterPosition).setLiked(false);
+                            messagelist.get(adapterPosition).setReviews(String.valueOf((Integer.parseInt(messagelist.get(adapterPosition).getReviews()) - 1)));
 
 
                         } else if (response.equals("Error")) {
