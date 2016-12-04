@@ -203,7 +203,7 @@ public class Feed extends AppCompatActivity {
                                         pagerAdapter = new PagerAdapter(getSupportFragmentManager());
                                         viewPager.setAdapter(pagerAdapter);
                                         if (image != null)
-                                        Glide.with(Feed.this).load(session.getProfilePicture()).error(R.drawable.download).into(image);
+                                            Glide.with(Feed.this).load(session.getProfilePicture()).error(R.drawable.download).into(image);
                                         makeNotificationsRequest();
                                     } catch (JSONException e) {
                                         e.printStackTrace();

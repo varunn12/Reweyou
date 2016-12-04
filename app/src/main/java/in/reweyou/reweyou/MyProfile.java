@@ -3,7 +3,9 @@ package in.reweyou.reweyou;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,8 +18,10 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -78,12 +82,15 @@ import in.reweyou.reweyou.model.MpModel;
 import in.reweyou.reweyou.utils.Constants;
 
 import static in.reweyou.reweyou.classes.HandleActivityResult.HANDLE_IMAGE;
+import static in.reweyou.reweyou.classes.UploadOptions.PERMISSION_ALL_IMAGE;
+import static in.reweyou.reweyou.classes.UploadOptions.PERMISSION_ALL_PROFILE_PIC;
 import static in.reweyou.reweyou.utils.Constants.MY_PROFILE_EDIT_URL;
 import static in.reweyou.reweyou.utils.Constants.MY_PROFILE_URL_FOLLOW;
 
 public class MyProfile extends AppCompatActivity implements View.OnClickListener {
 
 
+    private static final String PACKAGE_URL_SCHEME = "package:";
     private final String MY_PROFILE_UPLOAD_URL = "https://www.reweyou.in/reweyou/report_pic.php";
     Boolean isInternetPresent = false;
     ConnectionDetector cd;
@@ -101,6 +108,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
     private ProgressBar progressBar;
     private RecyclerView recyclerView;
     private LinearLayout Empty;
+    private UploadOptions uploadOptions;
 
 
     @Override
@@ -171,7 +179,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
         profilepic.setOnClickListener(this);
         button.setOnClickListener(this);
         Readers.setOnClickListener(this);
-
+        uploadOptions = new UploadOptions(this);
         initCollapsingToolbar();
 
     }
@@ -181,12 +189,9 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.profilepic:
-                Intent intent = new Intent(Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                // 2. pick image only
-                intent.setType("image/*");
-                // 3. start activity
-                startActivityForResult(intent, SELECT_FILE);
+
+                if (uploadOptions.showprofilepicOptions())
+                    showpicgallery();
                 break;
             case R.id.button:
                 try {
@@ -203,6 +208,15 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                 startActivity(in);
                 break;
         }
+    }
+
+    private void showpicgallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        // 2. pick image only
+        intent.setType("image/*");
+        // 3. start activity
+        startActivityForResult(intent, SELECT_FILE);
     }
 
     private void button(final String i) {
@@ -476,7 +490,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                     .toBytes(Bitmap.CompressFormat.JPEG, 100)
                     .fitCenter()
                     .atMost()
-                    .override(200, 200)
+                    .override(300, 300)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .skipMemoryCache(true)
                     .into(new SimpleTarget<byte[]>() {
@@ -654,6 +668,74 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                 // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+
+            case PERMISSION_ALL_PROFILE_PIC:
+
+                String permission4 = permissions[0];
+                if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                    // user rejected the permission
+
+                    boolean showRationale = ActivityCompat.shouldShowRequestPermissionRationale(MyProfile.this, permission4);
+                    if (!showRationale) {
+                        showPermissionDeniedDialog();
+                    } else
+                        showPermissionRequiredDialog(permission4);
+
+
+                } else if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    showpicgallery();
+                }
+                break;
+
+        }
+    }
+
+    private void showPermissionRequiredDialog(final String permission) {
+        AlertDialogBox alertDialogBox = new AlertDialogBox(MyProfile.this, "Permission Required", getResources().getString(R.string.permission_required_image), "grant", "deny") {
+            @Override
+            public void onNegativeButtonClick(DialogInterface dialog) {
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onPositiveButtonClick(DialogInterface dialog) {
+                dialog.dismiss();
+                String[] p = {permission};
+                ActivityCompat.requestPermissions(MyProfile.this, p, PERMISSION_ALL_IMAGE);
+
+            }
+        };
+        alertDialogBox.setCancellable(true);
+        alertDialogBox.show();
+    }
+
+    private void showPermissionDeniedDialog() {
+        AlertDialogBox alertDialogBox = new AlertDialogBox(MyProfile.this, "Permission Denied", getResources().getString(R.string.permission_denied_image), "settings", "okay") {
+            @Override
+            public void onNegativeButtonClick(DialogInterface dialog) {
+                dialog.dismiss();
+
+            }
+
+            @Override
+            public void onPositiveButtonClick(DialogInterface dialog) {
+                dialog.dismiss();
+                startAppSettings();
+
+            }
+        };
+        alertDialogBox.setCancellable(true);
+        alertDialogBox.show();
+    }
+
+    private void startAppSettings() {
+        Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        intent.setData(Uri.parse(PACKAGE_URL_SCHEME + getPackageName()));
+        startActivity(intent);
     }
 
     public class JSONTask extends AsyncTask<String, String, List<String>> {
@@ -861,4 +943,5 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
             //need to set data to the list
         }
     }
+
 }
