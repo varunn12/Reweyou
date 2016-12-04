@@ -210,6 +210,7 @@ public class VideoCapturetest extends AppCompatActivity implements OnClickListen
                         i.putExtra("dataVideo", mOutputFile.getPath());
                         Log.d("pathhh", mOutputFile.getPath());
                         startActivity(i);
+                        finish();
                     }
                 }
 
