@@ -1,6 +1,7 @@
 package in.reweyou.reweyou;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -277,7 +278,20 @@ public class Notifications extends AppCompatActivity {
             case R.id.action_done:
                 if (dataLoaded) {
                     if (list != null) {
-                        makeRequestforallReadchange();
+
+                        AlertDialogBox alertDialogBox = new AlertDialogBox(Notifications.this, "Mark all as read", "Are you sure you want to mark all notifications as read?", "yes", "no") {
+                            @Override
+                            public void onNegativeButtonClick(DialogInterface dialog) {
+                                dialog.dismiss();
+                            }
+
+                            @Override
+                            public void onPositiveButtonClick(DialogInterface dialog) {
+                                dialog.dismiss();
+                                makeRequestforallReadchange();
+                            }
+                        };
+                        alertDialogBox.show();
                     }
                 }
                 return true;
