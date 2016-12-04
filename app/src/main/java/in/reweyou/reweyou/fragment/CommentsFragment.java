@@ -5,13 +5,15 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,8 +30,21 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -40,89 +55,93 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.TimeZone;
+import java.util.Map;
 
-import in.reweyou.reweyou.PermissionsActivity;
+import in.reweyou.reweyou.FragmentCommunicator;
+import in.reweyou.reweyou.FragmentCommunicator2;
 import in.reweyou.reweyou.PermissionsChecker;
 import in.reweyou.reweyou.R;
+import in.reweyou.reweyou.SinglePostActivity;
 import in.reweyou.reweyou.UILApplication;
 import in.reweyou.reweyou.adapter.CommentsAdapter;
-import in.reweyou.reweyou.classes.ConnectionDetector;
-import in.reweyou.reweyou.classes.RequestHandler;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.model.CommentsModel;
 import in.reweyou.reweyou.utils.Constants;
+
+import static in.reweyou.reweyou.classes.UploadOptions.PERMISSION_ALL_IMAGE;
 
 /**
  * Created by master on 20/11/16.
  */
 
-public class CommentsFragment extends Fragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
-    public static final String UPLOAD_URL = "https://www.reweyou.in/reweyou/reporting_comment.php";
+public class CommentsFragment extends Fragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, FragmentCommunicator, FragmentCommunicator2 {
     public static final String KEY_TEXT = "comments";
     public static final String KEY_NAME = "name";
-    public static final String KEY_TIME = "time";
     public static final String KEY_ID = "postid";
     public static final String KEY_NUMBER = "number";
     public static final String KEY_IMAGE = "image";
-
     static final String[] PERMISSIONS = new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-    private static final int DISABLE = 0;
-    private static final int ENABLE = 1;
     private static final int REQUEST_CODE = 0;
+    private final String[] PERMISSION_IMAGE = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
     int SELECT_FILE = 1;
-    private LinearLayout commentContainer;
-    private ConnectionDetector checknet;
     private PermissionsChecker checker;
     private UserSessionManager session;
     private String name;
     private String number;
     private String result;
     private String i;
-    private LinearLayout Empty;
+    private LinearLayout EmptyCommentsContaier;
     private EditText editText;
-    private ImageView button;
+    private ImageView sendButton;
     private ImageView imagebutton;
-    private ImageView image;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
     private SwipeRefreshLayout swipeLayout;
     private Context mContext;
     private ImageView previewImageView;
     private String selectedImagePath;
+    private TextView previewTextViewDelete;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (mContext instanceof SinglePostActivity) {
+            ((SinglePostActivity) mContext).fragmentCommunicator = this;
+            ((SinglePostActivity) mContext).fragmentCommunicator2 = this;
+        }
+
+
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_comments, container, false);
-        commentContainer = (LinearLayout) layout.findViewById(R.id.comment);
-        checknet = new ConnectionDetector(mContext);
+
         checker = new PermissionsChecker(mContext);
         session = new UserSessionManager(getActivity());
         HashMap<String, String> user = session.getUserDetails();
         name = user.get(UserSessionManager.KEY_NAME);
         number = user.get(UserSessionManager.KEY_NUMBER);
 
-        Empty = (LinearLayout) layout.findViewById(R.id.empty);
-
+        EmptyCommentsContaier = (LinearLayout) layout.findViewById(R.id.empty);
         previewImageView = (ImageView) layout.findViewById(R.id.previewImageView);
+        previewTextViewDelete = (TextView) layout.findViewById(R.id.previewImageViewDelete);
 
-
+        previewTextViewDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                previewImageView.setVisibility(View.GONE);
+                previewTextViewDelete.setVisibility(View.GONE);
+                selectedImagePath = null;
+            }
+        });
         editText = (EditText) layout.findViewById(R.id.Who);
-        editText.setText("");
+        editText.requestFocus();
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -132,12 +151,12 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.toString().trim().length() == 0) {
-                    button.setEnabled(false);
-                    button.setImageResource(R.drawable.button_send_disable);
+                    sendButton.setEnabled(false);
+                    sendButton.setImageResource(R.drawable.button_send_disable);
 
                 } else {
-                    button.setEnabled(true);
-                    button.setImageResource(R.drawable.button_send_comments);
+                    sendButton.setEnabled(true);
+                    sendButton.setImageResource(R.drawable.button_send_comments);
                 }
             }
 
@@ -146,171 +165,143 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
 
             }
         });
-        button = (ImageView) layout.findViewById(R.id.btn_send);
-
+        sendButton = (ImageView) layout.findViewById(R.id.btn_send);
         imagebutton = (ImageView) layout.findViewById(R.id.btn_image);
 
-
         imagebutton.setOnClickListener(this);
-        button.setOnClickListener(this);
-
-        setEnabledBottomBarViews(DISABLE);
-        image = (ImageView) layout.findViewById(R.id.image);
-
+        sendButton.setOnClickListener(this);
+        sendButton.setEnabled(false);
         recyclerView = (RecyclerView) layout.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         progressBar = (ProgressBar) layout.findViewById(R.id.progress_bar);
-
         swipeLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipe_container);
         swipeLayout.setOnRefreshListener(this);
         if (getArguments() != null) {
             i = getArguments().getString("myData");
-            new JSONTask(false).execute(i);
+            getCommentsRequest(i);
         }
 
         return layout;
     }
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-
-    }
-
-    private void setEnabledBottomBarViews(int j) {
-        if (j == DISABLE) {
-            commentContainer.setVisibility(View.INVISIBLE);
-
-        } else {
-            commentContainer.setVisibility(View.VISIBLE);
-        }
-    }
 
     @Override
     public void onRefresh() {
-        new JSONTask(true).execute(i);
+        getCommentsRequest(i);
     }
 
     @Override
     public void onClick(View v) {
-        if (v == button) {
+        if (v == sendButton) {
             if (selectedImagePath == null)
-                uploadText();
+                makeRequest(null);
             else uploadSelectedImage();
         } else {
-            editText.clearFocus();
-            new Handler().post(new Runnable() {
-                @Override
-                public void run() {
-                    if (checker.lacksPermissions(PERMISSIONS)) {
-                        startPermissionsActivity();
-                    } else {
-                        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                        intent.setType("image/*");
-                        getActivity().startActivityForResult(intent, SELECT_FILE);
-                        UILApplication.getInstance().trackEvent("Gallery", "Gallery", "For Pics");
-                    }
-                }
-            });
+
+            onImageButtonClick();
+
 
         }
     }
 
-    public void uploadText() {
-
-        final String text = editText.getText().toString().trim();
-        String format = "dd-MMM-yyyy hh:mm a";
-        SimpleDateFormat sdf = new SimpleDateFormat(format);
-        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Calcutta"));
-        final String timeStamp = sdf.format(new Date());
-        if (editText.getText().toString().trim().equals("")) {
-            editText.setError("Required!");
-
-            // editTextUsername.setHint("Enter Email");
-        } else {
-            class UploadText extends AsyncTask<Void, Void, String> {
-                ProgressDialog loading;
-
-                @Override
-                protected void onPreExecute() {
-
-                    super.onPreExecute();
-                    loading = ProgressDialog.show(mContext, "Please wait...", "uploading", false, false);
-                    loading.setCancelable(false);
-                }
-
-                @Override
-                protected void onPostExecute(String s) {
-                    super.onPostExecute(s);
-                    loading.dismiss();
-                    if (s.trim().equals("Successfully Uploaded")) {
-                        onRefresh();
-                        editText.setText("");
-                        InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
-                    } else if (s.trim().equals(Constants.AUTH_ERROR)) {
-                        session.logoutUser();
-                    } else {
-                        InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
-                        Snackbar.make(getActivity().findViewById(R.id.main_content), "Some error occurred while uploading", Snackbar.LENGTH_LONG).setDuration(Snackbar.LENGTH_INDEFINITE)
-                                .setAction("RETRY", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        if (checknet.isConnectingToInternet()) {
-                                            uploadText();
-                                        } else {
-                                            Snackbar.make(getActivity().findViewById(R.id.main_content), "No Internet Connectivity", Snackbar.LENGTH_LONG).setDuration(Snackbar.LENGTH_INDEFINITE)
-                                                    .setAction("RETRY", new View.OnClickListener() {
-                                                        @Override
-                                                        public void onClick(View v) {
-                                                            if (checknet.isConnectingToInternet()) {
-                                                                uploadText();
-                                                            }
-                                                        }
-                                                    }).show();
-                                        }
-                                    }
-                                }).show();
-                    }
-                }
-
-                @Override
-                protected String doInBackground(Void... params) {
-                    RequestHandler rh = new RequestHandler();
-                    HashMap<String, String> param = new HashMap<String, String>();
-                    param.put(KEY_TEXT, text);
-                    param.put(KEY_NUMBER, number);
-                    param.put(KEY_NAME, name);
-                    param.put(KEY_TIME, timeStamp);
-                    param.put(KEY_ID, i);
-                    param.put("token", session.getKeyAuthToken());
-                    param.put("deviceid", session.getDeviceid());
-                    result = rh.sendPostRequest(UPLOAD_URL, param);
-                    return result;
+    public void onImageButtonClick() {
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                if (!hasPermissions(mContext, PERMISSION_IMAGE)) {
+                    ActivityCompat.requestPermissions((Activity) mContext, PERMISSION_IMAGE, PERMISSION_ALL_IMAGE);
+                } else {
+                    Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    intent.setType("image/*");
+                    getActivity().startActivityForResult(intent, SELECT_FILE);
+                    UILApplication.getInstance().trackEvent("Gallery", "Gallery", "For Pics");
                 }
             }
-            UploadText u = new UploadText();
-            u.execute();
+        });
+    }
+
+    private boolean hasPermissions(Context context, String... permissions) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
         }
+        return true;
     }
 
 
-    private void startPermissionsActivity() {
-        PermissionsActivity.startActivityForResult(getActivity(), REQUEST_CODE, PERMISSIONS);
+    private void makeRequest(final String encodedImage) {
+        final String text = editText.getText().toString().trim();
+        final ProgressDialog loading = ProgressDialog.show(mContext, "Uploading", "Please wait...");
+        loading.setCancelable(false);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.URL_COMMENTS_UPLOAD,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("response", response);
+                        loading.dismiss();
+                        if (response != null) {
+                            if (response.trim().equals("Successfully Uploaded")) {
+                                onRefresh();
+                                editText.setText("");
+                                selectedImagePath = null;
+
+                                previewImageView.setVisibility(View.GONE);
+                                previewTextViewDelete.setVisibility(View.GONE);
+                                InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+                            } else if (response.trim().equals(Constants.AUTH_ERROR)) {
+                                session.logoutUser();
+                            } else {
+                                InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+                                Toast.makeText(mContext, "Something went wrong! Please try again", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (error instanceof NoConnectionError) {
+                            showToast("no internet connectivity");
+                        } else if (error instanceof TimeoutError) {
+                            showToast("poor internet connectivity");
+                        } else if (error instanceof NetworkError || error instanceof ParseError || error instanceof ServerError) {
+                            showToast("something went wrong");
+                        }
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> param = new HashMap<String, String>();
+                param.put(KEY_TEXT, text);
+                param.put(KEY_NUMBER, number);
+                param.put(KEY_NAME, name);
+                param.put(KEY_ID, i);
+                param.put("token", session.getKeyAuthToken());
+                param.put("deviceid", session.getDeviceid());
+                if (encodedImage != null)
+                    param.put(KEY_IMAGE, encodedImage);
+
+                return param;
+            }
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(mContext);
+        requestQueue.add(stringRequest);
+
+
     }
+
 
     public void setData(String i) {
         this.i = i;
 
-        new JSONTask(false).execute(i);
+        getCommentsRequest(i);
 
     }
-
-    /* Initializing collapsing toolbar
-    * Will show and hide the toolbar title on scroll
-    */
 
     @Override
     public void onAttach(Activity activity) {
@@ -318,69 +309,13 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
         mContext = activity;
     }
 
-    public void setpreviewImage(String path, String i) {
+    public void setpreviewImage(String path) {
         if (path != null) {
             selectedImagePath = path;
         }
         previewImageView.setVisibility(View.VISIBLE);
+        previewTextViewDelete.setVisibility(View.VISIBLE);
         Glide.with(getActivity()).load(path).into(previewImageView);
-    }
-
-    public void uploadImage(String encodedImage) {
-
-        final String text = editText.getText().toString().trim();
-        final String image = encodedImage;
-        String format = "dd-MMM-yyyy hh:mm:ss a";
-        SimpleDateFormat sdf = new SimpleDateFormat(format);
-        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Calcutta"));
-        final String timeStamp = sdf.format(new Date());
-
-
-        class UploadImage extends AsyncTask<Void, Void, String> {
-            ProgressDialog loading;
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                loading = ProgressDialog.show(mContext, "Please wait...", "uploading", false, false);
-            }
-
-            @Override
-            protected void onPostExecute(String s) {
-                super.onPostExecute(s);
-                loading.dismiss();
-                if (s.trim().equals("Successfully Uploaded")) {
-                    onRefresh();
-                    editText.setText("");
-                    InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
-                } else {
-                    Log.d("s", s);
-                    Toast.makeText(mContext, "Try Again", Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            protected String doInBackground(Void... params) {
-                RequestHandler rh = new RequestHandler();
-                HashMap<String, String> param = new HashMap<String, String>();
-
-                param.put(KEY_TEXT, text);
-                param.put(KEY_NUMBER, number);
-                param.put(KEY_NAME, name);
-                param.put(KEY_TIME, timeStamp);
-                param.put(KEY_ID, i);
-                param.put("token", session.getKeyAuthToken());
-                param.put("deviceid", session.getDeviceid());
-                param.put(KEY_IMAGE, image);
-
-
-                String result = rh.sendPostRequest(UPLOAD_URL, param);
-                return result;
-            }
-        }
-        UploadImage u = new UploadImage();
-        u.execute();
     }
 
     private void uploadSelectedImage() {
@@ -392,7 +327,7 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
                     .toBytes(Bitmap.CompressFormat.JPEG, 90)
                     .fitCenter()
                     .atMost()
-                    .override(1000, 1000)
+                    .override(800, 800)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .skipMemoryCache(true)
                     .into(new SimpleTarget<byte[]>() {
@@ -404,7 +339,7 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
                         @Override
                         public void onResourceReady(byte[] resource, GlideAnimation<? super byte[]> ignore) {
                             String encodedImage = Base64.encodeToString(resource, Base64.DEFAULT);
-                            uploadImage(encodedImage);
+                            makeRequest(encodedImage);
                         }
 
                         @Override
@@ -415,126 +350,114 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
         } else Log.w("uploadSelectedImage", "selected path is null");
     }
 
-    public class JSONTask extends AsyncTask<String, String, List<CommentsModel>> {
+    private void getCommentsRequest(final String id) {
 
-        private boolean b = false;
+        progressBar.setVisibility(View.VISIBLE);
+        EmptyCommentsContaier.setVisibility(View.GONE);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.URL_COMMENTS_FETCH,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("response", response);
+                        progressBar.setVisibility(View.GONE);
+                        sendButton.setEnabled(true);
+                        if (response != null) {
+                            JSONArray parentArray = null;
+                            try {
+                                parentArray = new JSONArray(response);
+                                final List<CommentsModel> mpModelList = new ArrayList<>();
 
-        public JSONTask(boolean b) {
-            this.b = b;
-        }
+                                Gson gson = new Gson();
+                                for (int i = 0; i < parentArray.length(); i++) {
+                                    JSONObject finalObject = parentArray.getJSONObject(i);
+                                    CommentsModel mpModel = gson.fromJson(finalObject.toString(), CommentsModel.class);
+                                    mpModelList.add(mpModel);
+                                }
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            if (!b)
-                progressBar.setVisibility(View.VISIBLE);
-            Empty.setVisibility(View.GONE);
-        }
+                                if (parentArray.length() == 0) {
+                                    EmptyCommentsContaier.setVisibility(View.VISIBLE);
 
-        @Override
-        protected List<CommentsModel> doInBackground(String... params) {
-            HttpURLConnection connection = null;
-            BufferedReader reader = null;
-            RequestHandler rh = new RequestHandler();
-            HashMap<String, String> data = new HashMap<String, String>();
-            data.put("postid", params[0]);
-            try {
-                URL url = new URL("https://www.reweyou.in/reweyou/comments_list.php");
-                connection = (HttpURLConnection) url.openConnection();
+                                } else {
+                                    CommentsAdapter adapter = new CommentsAdapter(mContext, mpModelList);
+                                    recyclerView.setAdapter(adapter);
+                                    swipeLayout.setRefreshing(false);
+                                    new Handler().post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            recyclerView.smoothScrollToPosition(mpModelList.size());
 
-                connection.setDoOutput(true);
-                connection.setRequestMethod("POST");
-
-                OutputStreamWriter wr = new OutputStreamWriter(connection.getOutputStream());
-                wr.write(rh.getPostDataString(data));
-                wr.flush();
+                                        }
+                                    });
+                                }
 
 
-                InputStream stream = connection.getInputStream();
-                reader = new BufferedReader(new InputStreamReader(stream));
-                StringBuffer buffer = new StringBuffer();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
 
-                String line = "";
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line);
-                }
-                String finalJson = buffer.toString();
-
-                JSONArray parentArray = new JSONArray(finalJson);
-                StringBuffer finalBufferedData = new StringBuffer();
-
-                List<CommentsModel> mpModelList = new ArrayList<>();
-
-                Gson gson = new Gson();
-                for (int i = 0; i < parentArray.length(); i++) {
-                    JSONObject finalObject = parentArray.getJSONObject(i);
-                    CommentsModel mpModel = gson.fromJson(finalObject.toString(), CommentsModel.class);
-                    mpModelList.add(mpModel);
-                }
-
-                return mpModelList;
-
-                //return buffer.toString();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } finally {
-                if (connection != null) {
-                    connection.disconnect();
-                }
-                try {
-                    if (reader != null) {
-                        reader.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(final List<CommentsModel> result) {
-            super.onPostExecute(result);
-            if (!b)
-                progressBar.setVisibility(View.GONE);
-
-            if (result != null) {
-                setEnabledBottomBarViews(ENABLE);
-                button.setEnabled(false);
-                if (result.isEmpty()) {
-                    Empty.setVisibility(View.VISIBLE);
-
-                } else {
-                    CommentsAdapter adapter = new CommentsAdapter(mContext, result);
-                    recyclerView.setAdapter(adapter);
-                    swipeLayout.setRefreshing(false);
-                    new Handler().post(new Runnable() {
-                        @Override
-                        public void run() {
-                            recyclerView.smoothScrollToPosition(result.size());
 
                         }
-                    });
-                }
-            } else {
-                setEnabledBottomBarViews(DISABLE);
-                Snackbar.make(getActivity().findViewById(R.id.main_content), "No Internet Connectivity", Snackbar.LENGTH_LONG).setDuration(Snackbar.LENGTH_INDEFINITE)
-                        .setAction("RETRY", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-
-                                new JSONTask(false).execute(i);
-
-                            }
-                        }).show();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        progressBar.setVisibility(View.GONE);
+                        if (error instanceof NoConnectionError) {
+                            showSnackbar("no internet connectivity");
+                        } else if (error instanceof TimeoutError) {
+                            showSnackbar("poor internet connectivity");
+                        } else if (error instanceof NetworkError || error instanceof ParseError || error instanceof ServerError) {
+                            showSnackbar("something went wrong");
+                        }
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> param = new HashMap<String, String>();
+                param.put("postid", id);
+                return param;
             }
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(mContext);
+        requestQueue.add(stringRequest);
 
 
-        }
     }
 
+    private void showSnackbar(final String s) {
+        ((Activity) mContext).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Snackbar.make(((Activity) mContext).findViewById(R.id.main_content), s, Snackbar.LENGTH_INDEFINITE).setAction("RETRY", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getCommentsRequest(i);
+                    }
+                }).show();
+            }
+        });
+    }
+
+    private void showToast(final String s) {
+        ((Activity) mContext).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(mContext, s, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    public void passDataToFragment() {
+
+        onImageButtonClick();
+
+    }
+
+    @Override
+    public void passDataToFragment2(String path) {
+        setpreviewImage(path);
+
+    }
 }

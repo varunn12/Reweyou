@@ -1,10 +1,14 @@
 package in.reweyou.reweyou;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -16,14 +20,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Toast;
 
 import in.reweyou.reweyou.fragment.CommentsFragment;
 import in.reweyou.reweyou.fragment.SecondFragment;
 
+import static in.reweyou.reweyou.classes.UploadOptions.PERMISSION_ALL_IMAGE;
+
 public class SinglePostActivity extends AppCompatActivity {
 
+    private static final String PACKAGE_URL_SCHEME = "package:";
     public ViewPager viewPager;
+    public FragmentCommunicator fragmentCommunicator;
+    public FragmentCommunicator2 fragmentCommunicator2;
     int SELECT_FILE = 1;
     private Toolbar mToolbar;
     private TabLayout tabLayout;
@@ -130,14 +138,86 @@ public class SinglePostActivity extends AppCompatActivity {
     protected void onActivityResult(int reqCode, int resCode, Intent data) {
         if (resCode == Activity.RESULT_OK && reqCode == SELECT_FILE && data != null) {
             Uri uriFromPath = data.getData();
-            String show = uriFromPath.toString();
-            Intent intent = new Intent(SinglePostActivity.this, UpdateImage.class);
+            String path = uriFromPath.toString();
+            /*Intent intent = new Intent(Comments1.this, UpdateImage.class);
             intent.putExtra("path", show);
-            intent.putExtra("postid", query);
-            startActivity(intent);
-        } else {
-            Toast.makeText(SinglePostActivity.this, "There is some error!", Toast.LENGTH_LONG).show();
+            intent.putExtra("postid", i);
+            startActivity(intent);*/
+            if (fragmentCommunicator2 != null)
+                fragmentCommunicator2.passDataToFragment2(path);
         }
+    }
+
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_ALL_IMAGE:
+
+                String permission = permissions[0];
+                if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                    // user rejected the permission
+
+                    boolean showRationale = ActivityCompat.shouldShowRequestPermissionRationale(SinglePostActivity.this, permission);
+                    if (!showRationale) {
+                        showPermissionDeniedDialog();
+                    } else
+                        showPermissionRequiredDialog(permission);
+
+
+                } else if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+
+                    if (fragmentCommunicator != null)
+                        fragmentCommunicator.passDataToFragment();
+                }
+
+                break;
+
+
+        }
+    }
+
+    private void showPermissionRequiredDialog(final String permission) {
+        AlertDialogBox alertDialogBox = new AlertDialogBox(SinglePostActivity.this, "Permission Required", getResources().getString(R.string.permission_required_image), "grant", "deny") {
+            @Override
+            public void onNegativeButtonClick(DialogInterface dialog) {
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onPositiveButtonClick(DialogInterface dialog) {
+                dialog.dismiss();
+                String[] p = {permission};
+                ActivityCompat.requestPermissions(SinglePostActivity.this, p, PERMISSION_ALL_IMAGE);
+
+            }
+        };
+        alertDialogBox.setCancellable(true);
+        alertDialogBox.show();
+    }
+
+    private void showPermissionDeniedDialog() {
+        AlertDialogBox alertDialogBox = new AlertDialogBox(SinglePostActivity.this, "Permission Denied", getResources().getString(R.string.permission_denied_image), "settings", "okay") {
+            @Override
+            public void onNegativeButtonClick(DialogInterface dialog) {
+                dialog.dismiss();
+
+            }
+
+            @Override
+            public void onPositiveButtonClick(DialogInterface dialog) {
+                dialog.dismiss();
+                startAppSettings();
+
+            }
+        };
+        alertDialogBox.setCancellable(true);
+        alertDialogBox.show();
+    }
+
+    private void startAppSettings() {
+        Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        intent.setData(Uri.parse(PACKAGE_URL_SCHEME + getPackageName()));
+        startActivity(intent);
     }
 
     private class PagerAdapter extends FragmentStatePagerAdapter {

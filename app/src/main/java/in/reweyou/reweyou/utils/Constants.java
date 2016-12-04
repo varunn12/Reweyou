@@ -32,6 +32,9 @@ public class Constants {
     public static final String MY_NOTIFICATIONS_URL = "https://www.reweyou.in/reweyou/notification.php";
     public static final String MY_TOTAL_NOTIFICATIONS_URL = "https://www.reweyou.in/reweyou/total_notifications.php";
 
+    public static final String URL_COMMENTS_UPLOAD = "https://www.reweyou.in/reweyou/reporting_comment.php";
+    public static final String URL_COMMENTS_FETCH = "https://www.reweyou.in/reweyou/comments_list.php";
+
     public static final int VIEW_TYPE_IMAGE = 5;
     public static final int VIEW_TYPE_VIDEO = 6;
     public static final int VIEW_TYPE_GIF = 7;

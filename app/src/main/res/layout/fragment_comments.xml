@@ -105,6 +105,18 @@
             android:layout_marginTop="12dp"
             android:visibility="gone" />
 
+        <TextView
+            android:id="@+id/previewImageViewDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_gravity="center_horizontal"
+            android:drawableLeft="@drawable/ic_delete_black_24pxlayer"
+            android:drawablePadding="8dp"
+            android:gravity="center"
+            android:text="REMOVE"
+            android:textColor="@color/colorPrimaryDark"
+            android:visibility="gone" />
+
         <View
 
             android:layout_width="match_parent"

@@ -125,7 +125,9 @@
         <activity android:name=".PermissionsActivity" />
         <activity android:name=".MyReports" />
         <activity android:name=".Action" />
-        <activity android:name=".Comments1" />
+        <activity
+            android:name=".Comments1"
+            android:windowSoftInputMode="stateHidden" />
         <activity android:name=".LocationActivity" />
 
         <!-- Firebase Notifications -->
