@@ -2,14 +2,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_content"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#fff">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:elevation="0dp">
 
 
         <android.support.v7.widget.Toolbar
@@ -38,11 +40,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
                 android:layout_marginTop="4dp"
-
-
-                android:background="#ffffff"
-                android:elevation="4dp"
-
                 android:orientation="horizontal"
                 android:paddingBottom="12dp"
                 android:paddingTop="12dp">
@@ -65,17 +62,23 @@
 
                     android:layout_marginRight="12dp"
 
-                    android:text="Now you can attach images, videos, gif directly from gallery to your report."
+                    android:text="Now upload report with images, videos, gif by directly them from your gallery"
                     android:textColor="#757575"
                     android:textSize="14sp" />
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.7dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:background="@color/grey" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
                 android:layout_marginTop="4dp"
-                android:background="#ffffff"
                 android:orientation="horizontal"
                 android:paddingBottom="12dp"
                 android:paddingTop="12dp">
@@ -96,17 +99,22 @@
                     android:layout_marginLeft="12dp"
                     android:layout_marginRight="12dp"
 
-                    android:text="Shoot live with the new video recording feature.Attach and share reports with videos"
+                    android:text="Shoot live with the new video recording feature. Attach and share reports with videos"
                     android:textColor="#757575"
                     android:textSize="14sp" />
             </LinearLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.7dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:background="@color/grey" />
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
                 android:layout_marginTop="4dp"
-                android:background="#ffffff"
                 android:orientation="horizontal"
                 android:paddingBottom="12dp"
                 android:paddingTop="12dp">
@@ -133,12 +141,17 @@
                     android:textSize="14sp" />
             </LinearLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.7dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:background="@color/grey" />
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
                 android:layout_marginTop="4dp"
-                android:background="#ffffff"
                 android:orientation="horizontal"
                 android:paddingBottom="12dp"
                 android:paddingTop="12dp">
@@ -165,12 +178,17 @@
                     android:textSize="14sp" />
             </LinearLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.7dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:background="@color/grey" />
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
                 android:layout_marginTop="4dp"
-                android:background="#ffffff"
                 android:orientation="horizontal"
                 android:paddingBottom="12dp"
                 android:paddingTop="12dp">
@@ -196,12 +214,17 @@
                     android:textSize="14sp" />
             </LinearLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.7dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:background="@color/grey" />
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
                 android:layout_marginTop="4dp"
-                android:background="#ffffff"
                 android:orientation="horizontal"
                 android:paddingBottom="12dp"
                 android:paddingTop="12dp">
@@ -223,17 +246,22 @@
 
                     android:layout_marginRight="12dp"
 
-                    android:text="Get notified by the people whol liked or reacted on your post"
+                    android:text="Get notified by the people who liked or reacted on your post"
                     android:textColor="#757575"
                     android:textSize="14sp" />
             </LinearLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.7dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:background="@color/grey" />
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
                 android:layout_marginTop="4dp"
-                android:background="#ffffff"
                 android:orientation="horizontal"
                 android:paddingBottom="12dp"
                 android:paddingTop="12dp">
@@ -258,12 +286,17 @@
                     android:textSize="14sp" />
             </LinearLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.7dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:background="@color/grey" />
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
                 android:layout_marginTop="4dp"
-                android:background="#ffffff"
                 android:orientation="horizontal"
                 android:paddingBottom="12dp"
                 android:paddingTop="12dp">
@@ -287,6 +320,13 @@
                     android:textColor="#757575"
                     android:textSize="14sp" />
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.7dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:background="@color/grey" />
 
 
         </LinearLayout>

@@ -1,6 +1,5 @@
 package in.reweyou.reweyou;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 
 import com.android.volley.NetworkError;
 import com.android.volley.NoConnectionError;
@@ -39,13 +39,14 @@ public class Topic extends AppCompatActivity {
     UserSessionManager session;
     List<String> categoriesList = new ArrayList<>();
     private Toolbar toolbar;
+    private ProgressBar pd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_topic);
         session = new UserSessionManager(getApplicationContext());
-
+        pd = (ProgressBar) findViewById(R.id.pd);
 
         jsonRequest();
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -65,8 +66,7 @@ public class Topic extends AppCompatActivity {
     }
 
     private void jsonRequest() {
-        final ProgressDialog progressDialog = ProgressDialog.show(Topic.this, null, "Fetching topics! Please wait...");
-        progressDialog.setCancelable(false);
+        pd.setVisibility(View.VISIBLE);
         final String url = "https://www.reweyou.in/reweyou/topiclist.php";
         RequestQueue queue = Volley.newRequestQueue(this);
 
@@ -74,7 +74,7 @@ public class Topic extends AppCompatActivity {
             @Override
             public void onResponse(JSONArray response) {
                 Log.d("Response", response.toString());
-                progressDialog.dismiss();
+                pd.setVisibility(View.GONE);
                 for (int i = 0; i < response.length(); i++) {
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
@@ -92,7 +92,7 @@ public class Topic extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                progressDialog.dismiss();
+                pd.setVisibility(View.GONE);
                 Log.d("Error.Response", error.getMessage());
                 if (error instanceof NoConnectionError) {
                     showSnackBar("no internet connectivity");
