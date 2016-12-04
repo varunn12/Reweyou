@@ -62,7 +62,7 @@
 
                     android:layout_marginRight="12dp"
 
-                    android:text="Now upload report with images, videos, gif by directly them from your gallery"
+                    android:text="Now upload report with images, videos, gif by directly selecting them from your gallery"
                     android:textColor="#757575"
                     android:textSize="14sp" />
             </LinearLayout>

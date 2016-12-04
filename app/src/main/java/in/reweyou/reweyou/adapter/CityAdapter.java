@@ -16,7 +16,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -29,6 +28,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -97,7 +97,7 @@ public class CityAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Bitmap bm;
     private String id, postid;
     private EditText editTextHeadline;
-    private AppCompatButton buttonEdit;
+    private Button buttonEdit;
     private String number;
     private String username;
     private boolean loadingView = false;
@@ -601,9 +601,11 @@ public class CityAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         postid = messagelist.get(position).getPostId();
         //  number=session.getMobileNumber();
         //Initizliaing confirm button fo dialog box and edittext of dialog box
-        buttonEdit = (AppCompatButton) confirmDialog.findViewById(R.id.buttonConfirm);
+        buttonEdit = (Button) confirmDialog.findViewById(R.id.buttonConfirm);
         editTextHeadline = (EditText) confirmDialog.findViewById(R.id.editTextOtp);
         editTextHeadline.setText(messagelist.get(position).getHeadline());
+        editTextHeadline.setSelection(editTextHeadline.getText().length());
+
         //Creating an alertdialog builder
         AlertDialog.Builder alert = new AlertDialog.Builder(mContext);
 

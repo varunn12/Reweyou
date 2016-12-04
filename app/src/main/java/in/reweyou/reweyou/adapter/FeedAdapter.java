@@ -16,7 +16,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -108,7 +107,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context mContext;
     private String id, postid;
     private EditText editTextHeadline;
-    private AppCompatButton buttonEdit;
+    private Button buttonEdit;
     private String number;
     private String username;
 
@@ -614,9 +613,11 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         postid = messagelist.get(position).getPostId();
         //  number=session.getMobileNumber();
         //Initizliaing confirm button fo dialog box and edittext of dialog box
-        buttonEdit = (AppCompatButton) confirmDialog.findViewById(R.id.buttonConfirm);
+        buttonEdit = (Button) confirmDialog.findViewById(R.id.buttonConfirm);
         editTextHeadline = (EditText) confirmDialog.findViewById(R.id.editTextOtp);
         editTextHeadline.setText(messagelist.get(position).getHeadline());
+        editTextHeadline.setSelection(editTextHeadline.getText().length());
+
         //Creating an alertdialog builder
         AlertDialog.Builder alert = new AlertDialog.Builder(mContext);
 
@@ -625,6 +626,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         //Creating an alert dialog
         final AlertDialog alertDialog = alert.create();
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         //Displaying the alert dialog
         alertDialog.show();
@@ -672,7 +674,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         //Adding the parameters otp and username
                         params.put("postid", postid);
                         params.put("headline", headline);
-                        // params.put("number",number);
+                        params.put("number", session.getMobileNumber());
+                        params.put("token", session.getKeyAuthToken());
+                        params.put("deviceid", session.getDeviceid());
                         return params;
                     }
                 };
@@ -996,6 +1000,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         if (session.getMobileNumber().equals(messagelist.get(getAdapterPosition()).getNumber())) {
                             editHeadline(getAdapterPosition());
                         } else {
+
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

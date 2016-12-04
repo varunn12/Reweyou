@@ -11,15 +11,18 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="Waiting for generated otp"
-        android:textColor="#757575" />
+        android:textColor="#757575"
+        android:textSize="16dp" />
 
     <TextView
         android:id="@+id/editNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="4dp"
         android:text="Number"
         android:textColor="#212121"
+        android:textSize="18dp"
         android:textStyle="bold" />
 
     <EditText
@@ -34,7 +37,7 @@
         android:paddingLeft="4dp" />
 
     <View
-        android:layout_width="170dp"
+        android:layout_width="match_parent"
         android:layout_height="0.7dp"
         android:layout_gravity="center_horizontal"
 

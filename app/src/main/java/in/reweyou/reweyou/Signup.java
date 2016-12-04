@@ -10,7 +10,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -23,6 +25,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -358,8 +361,40 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
         startService(i);
 
 
-        customDialogClass = new CustomDialogClass(Signup.this, number);
-        customDialogClass.show();
+        LayoutInflater li = LayoutInflater.from(Signup.this);
+        View confirmDialog = li.inflate(R.layout.dialog_confirm, null);
+
+        TextView editNum = (TextView) confirmDialog.findViewById(R.id.editNumber);
+        editNum.setText("+91-" + number);
+        final EditText otpField = (EditText) confirmDialog.findViewById(R.id.editTextOtp);
+        Button confirm = (Button) confirmDialog.findViewById(R.id.buttonConfirm);
+
+
+        //Creating an alertdialog builder
+        AlertDialog.Builder alert = new AlertDialog.Builder(Signup.this);
+        alert.setView(confirmDialog);
+
+        //Creating an alert dialog
+        final AlertDialog alertDialog = alert.create();
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        //Displaying the alert dialog
+        alertDialog.show();
+
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (otpField.getText().toString().trim().length() > 0) {
+                    alertDialog.dismiss();
+                    verifyOtp(otpField.getText().toString());
+                } else Toast.makeText(Signup.this, "otp cant be empty", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+       /* customDialogClass = new CustomDialogClass(Signup.this, number);
+        customDialogClass.show();*/
 
     }
 

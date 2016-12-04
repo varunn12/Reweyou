@@ -597,7 +597,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
         } else {
             address = session.getLoginLocation();
             place = address;
-            Toast.makeText(PostReport.this, "location off: " + place + "     " + address, Toast.LENGTH_SHORT).show();
+            // Toast.makeText(PostReport.this, "location off: " + place + "     " + address, Toast.LENGTH_SHORT).show();
 
             if (validateFields()) {
                 if (selectedImagePath != null) {
