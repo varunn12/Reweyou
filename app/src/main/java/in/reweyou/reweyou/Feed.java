@@ -53,6 +53,9 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -114,6 +117,7 @@ public class Feed extends AppCompatActivity {
         /*method to check for users who were using old versions of the app*/
 
         //device id must be null for the users using old version of app
+
         if (session.getDeviceid() == null) {
             checkforolduserstatus();
         } else {                              //for new users we didnt need this check
@@ -181,12 +185,30 @@ public class Feed extends AppCompatActivity {
                                 if (response.equals("error")) {
                                     Log.d("olduser", "error");
                                 } else {
-                                    session.setAuthToken(response);
-                                    session.setDeviceid(Settings.Secure.getString(Feed.this.getContentResolver(), Settings.Secure.ANDROID_ID));
-                                    tabLayout.setVisibility(View.VISIBLE);
-                                    pagerAdapter = new PagerAdapter(getSupportFragmentManager());
-                                    viewPager.setAdapter(pagerAdapter);
-                                    makeNotificationsRequest();
+
+                                    try {
+                                        JSONArray jsonArray = new JSONArray(response);
+                                        String token = (String) jsonArray.get(0);
+                                        String profilepic = (String) jsonArray.get(1);
+
+                                        Log.d("token", token);
+                                        Log.d("profielpic", profilepic);
+
+                                        session.setAuthToken(token);
+                                        session.setDeviceid(Settings.Secure.getString(Feed.this.getContentResolver(), Settings.Secure.ANDROID_ID));
+                                        session.setProfilePicture(profilepic);
+
+
+                                        tabLayout.setVisibility(View.VISIBLE);
+                                        pagerAdapter = new PagerAdapter(getSupportFragmentManager());
+                                        viewPager.setAdapter(pagerAdapter);
+                                        Glide.with(Feed.this).load(session.getProfilePicture()).error(R.drawable.download).into(image);
+                                        makeNotificationsRequest();
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
+
                                 }
                             }
                         }
