@@ -11,8 +11,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-
 import java.util.List;
 
 import in.reweyou.reweyou.R;
@@ -23,7 +21,6 @@ import in.reweyou.reweyou.model.ReadersModel;
 public class ReadersAdapter extends RecyclerView.Adapter<ReadersAdapter.ViewHolder> {
     private List<ReadersModel> mpModelList;
     private Context mContext;
-    private DisplayImageOptions options;
 
     public ReadersAdapter(Context context, List<ReadersModel> mpsList) {
         this.mpModelList = mpsList;

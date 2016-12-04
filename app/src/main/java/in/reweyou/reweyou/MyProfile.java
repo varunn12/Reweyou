@@ -49,8 +49,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.google.gson.Gson;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -90,7 +88,6 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
     Boolean isInternetPresent = false;
     ConnectionDetector cd;
     UserSessionManager session;
-    ImageLoader imageLoader = ImageLoader.getInstance();
     ArrayList<String> profilelist = new ArrayList<>();
     int SELECT_FILE = 1;
     private String i, tag, number, user, result, image, selectedImagePath;
@@ -103,7 +100,6 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
     private Button button;
     private ProgressBar progressBar;
     private RecyclerView recyclerView;
-    private DisplayImageOptions option;
     private LinearLayout Empty;
 
 

@@ -52,7 +52,6 @@
                 android:name="android.app.default_searchable"
                 android:value=".SearchResultsActivity" />
         </activity>
-        <activity android:name=".Details" />
         <activity
             android:name=".PostReport"
             android:screenOrientation="portrait"
@@ -113,7 +112,6 @@
         <activity
             android:name=".ImageActivity"
             android:theme="@style/AppTheme" />
-        <activity android:name=".Welcome" />
         <activity android:name=".Leaderboard" />
         <activity
             android:name=".Notifications"
@@ -121,7 +119,6 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".PermissionsActivity" />
         <activity android:name=".MyReports" />
-        <activity android:name=".Action" />
         <activity
             android:name=".Comments1"
             android:windowSoftInputMode="stateHidden" />
@@ -161,13 +158,11 @@
 
         <!-- ... -->
 
-        <activity android:name=".UpdateImage" />
         <activity android:name=".MyCityActivity" />
         <activity android:name=".Friends" />
         <activity android:name=".CategoryActivity" />
         <activity android:name=".WhatsNew" />
         <activity android:name=".UserProfile" />
-        <activity android:name=".AddressBook" />
         <activity android:name=".Topic" />
         <activity
             android:name=".SinglePost"

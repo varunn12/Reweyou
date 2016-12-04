@@ -2,7 +2,6 @@ package in.reweyou.reweyou;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -31,9 +30,6 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -66,7 +62,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     Boolean isInternetPresent = false;
     ConnectionDetector cd;
     UserSessionManager session;
-    ImageLoader imageLoader = ImageLoader.getInstance();
     ArrayList<String> profilelist = new ArrayList<>();
     private String i, tag, number, user, result;
     private TextView Name, Reports, Info, Readers;
@@ -76,8 +71,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     private Button button;
     private ProgressBar progressBar;
     private RecyclerView recyclerView;
-    private DisplayImageOptions option;
-    private LinearLayout noInternet;
 
 
     @Override
@@ -105,7 +98,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         session = new UserSessionManager(getApplicationContext());
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.VISIBLE);
-        noInternet = (LinearLayout) findViewById(R.id.empty1);
         isInternetPresent = cd.isConnectingToInternet();
 
        /* noInternet.setOnClickListener(new View.OnClickListener() {
@@ -154,16 +146,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         recyclerView.addItemDecoration(dividerItemDecoration);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        option = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.irongrip)
-                .displayer(new RoundedBitmapDisplayer(1000))
-                .showImageForEmptyUri(R.drawable.download)
-                .showImageOnFail(R.drawable.download)
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .considerExifParams(true)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .build();
 
         //Progress bar
         tag = "Random";

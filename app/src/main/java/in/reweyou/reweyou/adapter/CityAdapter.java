@@ -45,7 +45,6 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONException;
 
@@ -93,7 +92,6 @@ public class CityAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     CustomTabActivityHelper mCustomTabActivityHelper;
     UserSessionManager session;
     Uri uri;
-    ImageLoader imageLoader = ImageLoader.getInstance();
     private List<MpModel> messagelist;
     private Context mContext;
     private Bitmap bm;
@@ -554,7 +552,6 @@ public class CityAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         });
         //   builder.setTitle(messagelist.get(position).getHeadline());
         TouchImageView imageView = new TouchImageView(mContext);
-        imageLoader.displayImage(messagelist.get(position).getImage(), imageView);
         //imageView.setImageURI(imageUri);
         builder.addContentView(imageView, new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,

@@ -19,8 +19,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.Target;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
@@ -39,10 +37,8 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
     Activity activity;
     CustomTabActivityHelper mCustomTabActivityHelper;
     ConnectionDetector cd;
-    ImageLoader imageLoader = ImageLoader.getInstance();
     private List<CommentsModel> mpModelList;
     private Context mContext;
-    private DisplayImageOptions options;
 
     public CommentsAdapter(Context context, List<CommentsModel> mpsList) {
         activity = (Activity) context;

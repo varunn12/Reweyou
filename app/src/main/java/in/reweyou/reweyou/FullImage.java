@@ -9,7 +9,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 
 import in.reweyou.reweyou.classes.ConnectionDetector;
 import it.sephiroth.android.library.imagezoom.ImageViewTouch;
@@ -19,7 +18,6 @@ public class FullImage extends AppCompatActivity {
     ConnectionDetector cd;
     private String i;
     private ProgressBar progressBar;
-    private DisplayImageOptions options;
     private ImageViewTouch imageView;
     private String text;
     private Toolbar toolbar;

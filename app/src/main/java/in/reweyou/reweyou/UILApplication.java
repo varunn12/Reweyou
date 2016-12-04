@@ -7,19 +7,13 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.StandardExceptionParser;
 import com.google.android.gms.analytics.Tracker;
-import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 import in.reweyou.reweyou.classes.AnalyticsTracker;
 
 /**
  * Created by Reweyou on 2/25/2016.
  */
-public class UILApplication extends Application{
+public class UILApplication extends Application {
     public static final String TAG = UILApplication.class
             .getSimpleName();
     private static UILApplication mInstance;
@@ -39,23 +33,7 @@ public class UILApplication extends Application{
 
         AnalyticsTracker.initialize(this);
         AnalyticsTracker.getInstance().get(AnalyticsTracker.Target.APP);
-        // UNIVERSAL IMAGE LOADER SETUP
-        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
-                .resetViewBeforeLoading(true)
-                .cacheOnDisk(true)
-                .cacheInMemory(true)
-                .imageScaleType(ImageScaleType.EXACTLY)
-                .displayer(new FadeInBitmapDisplayer(300))
-                .build();
 
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
-                .defaultDisplayImageOptions(defaultOptions)
-                .memoryCache(new WeakMemoryCache())
-                .diskCacheSize(100 * 1024 * 1024)
-                .build();
-
-        ImageLoader.getInstance().init(config);
-        // END - UNIVERSAL IMAGE LOADER SETUP
     }
 
     public synchronized Tracker getGoogleAnalyticsTracker() {
@@ -90,11 +68,11 @@ public class UILApplication extends Application{
             Tracker t = getGoogleAnalyticsTracker();
 
             t.send(new HitBuilders.ExceptionBuilder()
-                            .setDescription(
-                                    new StandardExceptionParser(this, null)
-                                            .getDescription(Thread.currentThread().getName(), e))
-                            .setFatal(false)
-                            .build()
+                    .setDescription(
+                            new StandardExceptionParser(this, null)
+                                    .getDescription(Thread.currentThread().getName(), e))
+                    .setFatal(false)
+                    .build()
             );
         }
     }

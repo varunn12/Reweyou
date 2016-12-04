@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -58,12 +59,14 @@ public class Notifications extends AppCompatActivity {
     private RecyclerView recyclerView;
     private NotificationAdapter notificationAdapter;
     private boolean dataLoaded;
+    private ProgressBar pd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notifications);
 
+        pd = (ProgressBar) findViewById(R.id.pd);
         list = new ArrayList<>();
         session = new UserSessionManager(Notifications.this);
         initToolbar();
@@ -74,13 +77,12 @@ public class Notifications extends AppCompatActivity {
     }
 
     private void makeRequest() {
-        final ProgressDialog progressDialog = ProgressDialog.show(this, null, "Loading! Please wait...");
-        progressDialog.setCancelable(false);
+        pd.setVisibility(View.VISIBLE);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.MY_NOTIFICATIONS_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        progressDialog.dismiss();
+                        pd.setVisibility(View.GONE);
                         Log.d("response", response);
                         if (response.trim().equals(Constants.AUTH_ERROR)) {
                             session.logoutUser();
@@ -152,8 +154,7 @@ public class Notifications extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        progressDialog.dismiss();
-
+                        pd.setVisibility(View.GONE);
                         Log.d("Error.Response", error.getMessage());
                         if (error instanceof NoConnectionError) {
                             showSnackBar("no internet connectivity");

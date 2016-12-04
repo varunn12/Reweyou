@@ -66,9 +66,6 @@ import in.reweyou.reweyou.classes.RequestHandler;
 import in.reweyou.reweyou.classes.UploadOptions;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.utils.Constants;
-import io.nlopez.smartlocation.OnLocationUpdatedListener;
-import io.nlopez.smartlocation.OnReverseGeocodingListener;
-import io.nlopez.smartlocation.SmartLocation;
 
 import static in.reweyou.reweyou.classes.HandleActivityResult.HANDLE_IMAGE;
 import static in.reweyou.reweyou.classes.HandleActivityResult.HANDLE_VIDEO;
@@ -680,40 +677,6 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
         alertDialogBox.show();
     }
 
-    private void getLocation(final ProgressDialog pd) {
-        SmartLocation.with(PostReport.this).location()
-                .oneFix()
-                .start(new OnLocationUpdatedListener() {
-                    @Override
-                    public void onLocationUpdated(Location location) {
-
-                        gotLocation = true;
-                        if (!reachedHere) {
-
-                            SmartLocation.with(PostReport.this).geocoding()
-                                    .reverse(location, new OnReverseGeocodingListener() {
-                                        @Override
-                                        public void onAddressResolved(Location location, List<Address> list) {
-                                            pd.dismiss();
-                                            Log.d("result", list.get(0).getLocality() + "     " + list.get(0).toString());
-
-                                            place = list.get(0).getLocality();
-                                            address = place;
-                                            Log.d("sizedd", String.valueOf(list.size()));
-                                            if (validateFields()) {
-                                                if (selectedImagePath != null) {
-                                                    compressImageOrGif();
-                                                } else if (selectedVideoPath != null) {
-                                                    compressVideo();
-                                                } else uploadImage(null);
-                                            }
-
-                                        }
-                                    });
-                        }
-                    }
-                });
-    }
 
 
     @Override
@@ -727,7 +690,6 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
     protected void onStop() {
         super.onStop();
         activityOpen = false;
-        SmartLocation.with(PostReport.this).location().stop();
 
     }
 

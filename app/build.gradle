@@ -41,17 +41,11 @@ dependencies {
     compile 'com.android.support:design:24.2.1'
     compile 'com.android.support:support-v4:24.2.1'
     compile 'com.google.code.gson:gson:2.4'
-    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
     compile 'com.google.android.gms:play-services-analytics:9.8.0'
     compile 'com.google.android.gms:play-services-gcm:9.8.0'
     compile "com.google.firebase:firebase-messaging:9.8.0"
 
-
-    compile 'com.github.quentin7b:android-location-tracker:3.2'
-
     compile 'com.android.volley:volley:1.0.0'
-    compile 'io.nlopez.smartlocation:library:3.2.9'
-
 
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile('com.github.ozodrukh:CircularReveal:2.0.1@aar')

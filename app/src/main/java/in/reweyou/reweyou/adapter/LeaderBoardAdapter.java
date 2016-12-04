@@ -13,8 +13,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
@@ -24,10 +22,8 @@ import in.reweyou.reweyou.model.LeaderboardModel;
 
 
 public class LeaderBoardAdapter extends RecyclerView.Adapter<LeaderBoardAdapter.ViewHolder> {
-    ImageLoader imageLoader = ImageLoader.getInstance();
     private List<LeaderboardModel> mpModelList;
     private Context mContext;
-    private DisplayImageOptions options;
 
     public LeaderBoardAdapter(Context context, List<LeaderboardModel> mpsList) {
         this.mpModelList = mpsList;

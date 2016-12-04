@@ -13,8 +13,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
@@ -24,10 +22,8 @@ import in.reweyou.reweyou.model.LikesModel;
 
 
 public class LikesAdapter extends RecyclerView.Adapter<LikesAdapter.ViewHolder> {
-    ImageLoader imageLoader = ImageLoader.getInstance();
     private List<LikesModel> likeslList;
     private Context mContext;
-    private DisplayImageOptions options;
 
     public LikesAdapter(Context context, List<LikesModel> mpsList) {
         this.likeslList = mpsList;
