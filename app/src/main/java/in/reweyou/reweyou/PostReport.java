@@ -1004,13 +1004,14 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
 
         if (data == null) {
             Toast.makeText(PostReport.this, "File path not supported", Toast.LENGTH_SHORT).show();
-        } else {
+        } else if (selectedImagePath != null) {
             previewPlayVideoButton.setVisibility(View.GONE);
             logoContainer.setVisibility(View.GONE);
             previewImageView.setColorFilter(null);
             previewContainer.setVisibility(View.VISIBLE);
 
             selectedImagePath = uploadOptions.getAbsolutePath(Uri.parse(data));
+
 
             String type = selectedImagePath.substring(selectedImagePath.lastIndexOf(".") + 1);
             if (type.equals("gif")) {
