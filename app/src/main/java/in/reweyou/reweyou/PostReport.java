@@ -194,9 +194,13 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
         if (i != null) {
 
             if (i.hasExtra("dataImage")) {
-                handleImage(i.getStringExtra("dataImage"));
+                if (i.getStringExtra("dataImage") != null)
+                    if (!i.getStringExtra("dataImage").isEmpty())
+                        handleImage(i.getStringExtra("dataImage"));
             } else if (i.hasExtra("dataVideo")) {
-                handleVideo(i.getStringExtra("dataVideo"));
+                if (i.getStringExtra("dataVideo") != null)
+                    if (!i.getStringExtra("dataVideo").isEmpty())
+                        handleVideo(i.getStringExtra("dataVideo"));
             }
 
             //Image directly choosen from gallery
