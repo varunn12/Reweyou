@@ -163,7 +163,8 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                                 long totalRequestTime = System.currentTimeMillis() - mRequestStartTime;
                                 Log.d("tme", String.valueOf(totalRequestTime));
                                 Log.d("Response", response);
-
+                                List<String> likeslist = session.getLikesList();
+                                Log.d("likeslist", String.valueOf(likeslist));
                                 List<MpModel> list = new ArrayList<MpModel>();
                                 JSONArray parentArray = null;
                                 try {
@@ -175,6 +176,15 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                                     for (int i = 0; i < parentArray.length(); i++) {
                                         JSONObject finalObject = parentArray.getJSONObject(i);
                                         MpModel mpModel = gson.fromJson(finalObject.toString(), MpModel.class);
+
+                                        if (likeslist.contains(mpModel.getPostId())) {
+                                            Log.d("true", mpModel.getPostId() + "    ");
+
+                                            mpModel.setLiked(true);
+
+                                        }
+
+
                                         list.add(mpModel);
                                         if (i == parentArray.length() - 1) {
                                             // formattedDate = mpModel.getDate1();
@@ -311,7 +321,6 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                                 locationFilter.locationPost = true;
                                 messagelist.add(locationFilter);
                             }
-
 
                             Gson gson = new Gson();
                             Log.d("size", String.valueOf(parentArray.length()));
