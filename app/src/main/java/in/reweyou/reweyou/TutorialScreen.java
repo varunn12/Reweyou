@@ -129,10 +129,13 @@ public class TutorialScreen extends AppCompatActivity {
             ImageView circle = (ImageView) pageIndicator.getChildAt(i);
             if (i == index) {
                 //  circle.setColorFilter(getResources().getColor(R.color.whiteDot));
-                circle.setImageResource(R.drawable.dot_white);
+                circle.setImageResource(R.drawable.ic_white_dot);
+                circle.setAlpha(1.0f);
+
             } else {
                 //  circle.setColorFilter(getResources().getColor(R.color.greyDot));
-                circle.setImageResource(R.drawable.dot_grey);
+                circle.setImageResource(R.drawable.ic_dot_grey);
+                circle.setAlpha(0.6f);
 
             }
 

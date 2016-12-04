@@ -1,5 +1,4 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
@@ -91,24 +90,25 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="10dp"
-                android:layout_height="10dp"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
                 android:scaleType="centerInside"
-                app:srcCompat="@drawable/dot_white" />
+
+                android:src="@drawable/ic_white_dot" />
 
             <ImageView
-                android:layout_width="10dp"
-                android:layout_height="10dp"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
                 android:layout_marginLeft="1dp"
                 android:layout_marginRight="1dp"
                 android:scaleType="centerInside"
-                app:srcCompat="@drawable/dot_white" />
+                android:src="@drawable/ic_white_dot" />
 
             <ImageView
-                android:layout_width="10dp"
-                android:layout_height="10dp"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
                 android:scaleType="centerInside"
-                app:srcCompat="@drawable/dot_white" />
+                android:src="@drawable/ic_white_dot" />
 
         </LinearLayout>
 
