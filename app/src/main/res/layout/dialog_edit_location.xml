@@ -43,8 +43,7 @@
         android:drawableLeft="@drawable/ic_location_on_black_24px_layer2"
         android:drawablePadding="6dp"
         android:hint="Location"
-        android:inputType="textNoSuggestions"
-
+        android:inputType="textNoSuggestions|textCapWords"
         android:lines="1"
         android:maxLines="1"
         android:textColor="#212121"

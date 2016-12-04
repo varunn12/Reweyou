@@ -15,7 +15,7 @@
         android:drawableLeft="@drawable/ic_public_black_24px_layer"
         android:drawablePadding="4dp"
         android:hint="Your status here"
-        android:inputType="textNoSuggestions"
+        android:inputType="textNoSuggestions|textCapWords"
         android:lines="1"
         android:maxLines="1"
         android:paddingLeft="2dp"
@@ -36,7 +36,7 @@
         android:drawableLeft="@drawable/ic_location_on_black_24px_layer1"
         android:drawablePadding="4dp"
         android:hint="Location"
-        android:inputType="textNoSuggestions"
+        android:inputType="textNoSuggestions|textCapWords"
         android:lines="1"
 
         android:maxLines="1"
