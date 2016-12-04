@@ -202,6 +202,7 @@ public class Feed extends AppCompatActivity {
                                         tabLayout.setVisibility(View.VISIBLE);
                                         pagerAdapter = new PagerAdapter(getSupportFragmentManager());
                                         viewPager.setAdapter(pagerAdapter);
+                                        if (image != null)
                                         Glide.with(Feed.this).load(session.getProfilePicture()).error(R.drawable.download).into(image);
                                         makeNotificationsRequest();
                                     } catch (JSONException e) {
