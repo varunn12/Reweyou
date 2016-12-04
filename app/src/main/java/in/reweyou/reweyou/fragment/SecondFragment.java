@@ -221,7 +221,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                     @Override
                     protected Map<String, String> getParams() {
                         Map<String, String> data = new HashMap<>();
-                        if (position != 1) {
+                        if (position != 2) {
 
 
                             //data.put("tag", tag);
@@ -230,8 +230,15 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                             // data.put("date", formattedDate);
                             //  Log.d("ddd", formattedDate);
                             data.put("number", number);
-                        } else
+                        } else {
                             data.put("postid", String.valueOf(minPostid));
+
+                            data.put("location", location);
+                            data.put("postid", postid);
+                            // data.put("date", formattedDate);
+                            //  Log.d("ddd", formattedDate);
+                            data.put("number", number);
+                        }
                         Log.d("minid", String.valueOf(data));
                         return data;
                     }
