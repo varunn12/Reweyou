@@ -1,7 +1,8 @@
 package in.reweyou.reweyou;
 
-import android.app.Activity;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -31,7 +32,7 @@ import in.reweyou.reweyou.adapter.LikesAdapter;
 import in.reweyou.reweyou.model.LikesModel;
 import in.reweyou.reweyou.utils.Constants;
 
-public class LikesActivity extends Activity {
+public class LikesActivity extends AppCompatActivity {
 
     private RecyclerView recyclerview;
     private String postid;
@@ -43,8 +44,9 @@ public class LikesActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_post_report_raw);
+        getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
+        setContentView(R.layout.activity_post_report_raw);
         pd = (ProgressBar) findViewById(R.id.pd);
         tv = (TextView) findViewById(R.id.tv);
         toolbartext = (TextView) findViewById(R.id.tool);

@@ -14,6 +14,10 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="DialogActivity" parent="Theme.AppCompat.Dialog">
+        <item name="windowNoTitle">true</item>
+
+    </style>
     <style name="AppTheme.NoActionBar.Feed"></style>
 
     <style name="SplashTheme" parent="AppTheme.NoActionBar">

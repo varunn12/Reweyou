@@ -177,7 +177,7 @@
         <activity
             android:name=".LikesActivity"
             android:label="@string/title_activity_raw"
-            android:theme="@style/Theme.AppCompat.Dialog" />
+            android:theme="@style/DialogActivity" />
         <activity
             android:name=".NavA"
             android:label="@string/title_activity_nav"

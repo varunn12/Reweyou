@@ -880,6 +880,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     Intent i = new Intent(mContext, LikesActivity.class);
                     i.putExtra("postid", messagelist.get(getAdapterPosition()).getPostId());
                     mContext.startActivity(i);
+                    ((Activity) mContext).overridePendingTransition(0, 0);
+
                 }
             });
             linearLayout.setOnClickListener(new View.OnClickListener() {
@@ -916,6 +918,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         Intent in = new Intent(mContext, UserProfile.class);
                         in.putExtras(bundle);
                         mContext.startActivity(in);
+                        ((Activity) mContext).overridePendingTransition(0, 0);
+
                     } else {
                         Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_SHORT).show();
                     }
@@ -930,6 +934,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     Intent in = new Intent(mContext, UserProfile.class);
                     in.putExtras(bundle);
                     mContext.startActivity(in);
+                    ((Activity) mContext).overridePendingTransition(0, 0);
+
 
                 }
             });
@@ -1004,6 +1010,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     session.setCategory(messagelist.get(getAdapterPosition()).getCategory());
                     Intent in = new Intent(mContext, CategoryActivity.class);
                     mContext.startActivity(in);
+                    ((Activity) mContext).overridePendingTransition(0, 0);
+
                 }
             });
             rv.setOnClickListener(new View.OnClickListener() {
@@ -1019,6 +1027,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
                         in.putExtras(bundle);
                         mContext.startActivity(in);
+                        ((Activity) mContext).overridePendingTransition(0, 0);
+
                     } else {
                         ((SinglePostActivity) mContext).changetab();
 
@@ -1142,15 +1152,15 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 
                     // set values for custom dialog components - text, image and button
-                    final EditText editText = (EditText) alertDialog.findViewById(R.id.editTextLocation);
+                    final EditText editText = (EditText) confirmDialog.findViewById(R.id.editTextLocation);
                     Button button = (Button) confirmDialog.findViewById(R.id.buttonConfirm);
-                    dialog.show();
+                    alertDialog.show();
 
                     button.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            alertDialog.dismiss();
 
+                            alertDialog.dismiss();
                             if (editText.getText().toString().trim().length() == 0) {
 
                             } else {
