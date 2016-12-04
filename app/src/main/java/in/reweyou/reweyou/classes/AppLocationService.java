@@ -12,7 +12,8 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.ActivityCompat;
 
-public class AppLocationService extends Service implements LocationListener {
+public class
+AppLocationService extends Service implements LocationListener {
 
     protected LocationManager locationManager;
     Location location;

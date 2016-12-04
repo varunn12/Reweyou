@@ -17,7 +17,7 @@
             android:id="@+id/leaderboard"
             android:icon="@drawable/cup"
 
-            android:title="Leaderboard" />
+            android:title="Top Reporters" />
         <item
             android:id="@+id/New"
             android:icon="@drawable/ic_new_releases_black_24px"

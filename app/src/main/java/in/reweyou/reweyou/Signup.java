@@ -201,12 +201,12 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
             //If play service is supported but not installed
             if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
                 //Displaying message that play service is not installed
-                Toast.makeText(getApplicationContext(), "Google Play Service is not install/enabled on this device!", Toast.LENGTH_LONG).show();
+           //     Toast.makeText(getApplicationContext(), "Google Play Service is not install/enabled on this device!", Toast.LENGTH_LONG).show();
                 GooglePlayServicesUtil.showErrorNotification(resultCode, getApplicationContext());
                 //If play service is not supported
                 //Displaying an error message
             } else {
-                Toast.makeText(getApplicationContext(), "This device does not support for Google Play Service!", Toast.LENGTH_LONG).show();
+             //   Toast.makeText(getApplicationContext(), "This device does not support for Google Play Service!", Toast.LENGTH_LONG).show();
             }
 
             //If play service is available
@@ -388,7 +388,7 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
                 if (otpField.getText().toString().trim().length() > 0) {
                     alertDialog.dismiss();
                     verifyOtp(otpField.getText().toString());
-                } else Toast.makeText(Signup.this, "otp cant be empty", Toast.LENGTH_SHORT).show();
+                } else Toast.makeText(Signup.this, "OTP can't be empty", Toast.LENGTH_SHORT).show();
             }
         });
 
