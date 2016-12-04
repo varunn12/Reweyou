@@ -148,6 +148,7 @@ public class SinglePostActivity extends AppCompatActivity {
         }
     }
 
+
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case PERMISSION_ALL_IMAGE:

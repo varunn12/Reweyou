@@ -208,7 +208,6 @@ public class CityAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         Util.linkifyUrl(spannable, new CustomTabsOnClickListener(activity, mCustomTabActivityHelper));
 
 
-
         if (messagelist.get(position).getHead() == null || messagelist.get(position).getHead().isEmpty())
             viewHolder.head.setVisibility(View.GONE);
         else {
@@ -737,7 +736,6 @@ public class CityAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             notifyItemChanged(adapterPosition, "like");
                             session.addlike(messagelist.get(adapterPosition).getPostId());
                             Log.d("likeid", messagelist.get(adapterPosition).getPostId());
-
 
 
                         } else if (response.equals("unlike")) {

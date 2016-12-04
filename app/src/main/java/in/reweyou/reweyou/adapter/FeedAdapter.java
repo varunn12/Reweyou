@@ -100,6 +100,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     CustomTabActivityHelper mCustomTabActivityHelper;
     UserSessionManager session;
     Uri uri;
+    private UploadOptions uploadOption;
     private int qu_position = -3;
     private SecondFragment fragment;
     private String placename;
@@ -119,6 +120,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         cd = new ConnectionDetector(mContext);
         mCustomTabActivityHelper = new CustomTabActivityHelper();
         session = new UserSessionManager(mContext);
+        uploadOption = new UploadOptions((Activity) mContext);
 
     }
 
@@ -907,8 +909,10 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 @Override
                 public void onClick(View view) {
 
-                    takeScreenshot(getAdapterPosition(), cv);
-                    ShareIntent();
+                    if (uploadOption.showShareOptions()) {
+                        takeScreenshot(getAdapterPosition(), cv);
+                        ShareIntent();
+                    }
                 }
             });
 

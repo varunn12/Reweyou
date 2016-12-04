@@ -66,6 +66,7 @@ import in.reweyou.reweyou.utils.Constants;
 import static in.reweyou.reweyou.classes.HandleActivityResult.HANDLE_IMAGE;
 import static in.reweyou.reweyou.classes.HandleActivityResult.HANDLE_VIDEO;
 import static in.reweyou.reweyou.classes.UploadOptions.PERMISSION_ALL_IMAGE;
+import static in.reweyou.reweyou.classes.UploadOptions.PERMISSION_ALL_SHARE;
 import static in.reweyou.reweyou.classes.UploadOptions.PERMISSION_ALL_VIDEO;
 import static in.reweyou.reweyou.classes.UploadOptions.PERMISSION_ALL_VIDEO_CAPTURE;
 import static in.reweyou.reweyou.utils.Constants.AUTH_ERROR;
@@ -483,7 +484,24 @@ public class Feed extends AppCompatActivity {
                     UploadOptions uploadOptions = new UploadOptions(Feed.this);
                     uploadOptions.showVideogallery();
                 }
+                break;
+            case PERMISSION_ALL_SHARE:
 
+                String permission4 = permissions[0];
+                if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                    // user rejected the permission
+
+                    boolean showRationale = ActivityCompat.shouldShowRequestPermissionRationale(Feed.this, permission4);
+                    if (!showRationale) {
+                        showPermissionDeniedDialog();
+                    } else
+                        showPermissionRequiredDialog(permission4);
+
+
+                } else if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                }
+                break;
 
         }
     }

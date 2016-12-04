@@ -25,5 +25,6 @@
 -keepclassmembers class in.reweyou.reweyou.model.** {
   *;
 }
+-keep class android.support.v7.widget.SearchView { *; }
 
 -dontwarn io.nlopez.**

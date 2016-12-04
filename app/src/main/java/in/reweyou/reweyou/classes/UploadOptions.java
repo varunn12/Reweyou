@@ -30,6 +30,7 @@ public class UploadOptions {
     public static final int PERMISSION_ALL_IMAGE = 24;
     public static final int PERMISSION_ALL_VIDEO_CAPTURE = 25;
     public static final int PERMISSION_ALL_VIDEO = 26;
+    public static final int PERMISSION_ALL_SHARE = 39;
     private static final int PERMISSION_ALL = 23;
     private final String[] PERMISSION_IMAGE = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
     private final String[] PERMISSION_VIDEO = new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -128,6 +129,15 @@ public class UploadOptions {
             UILApplication.getInstance().trackEvent("Gallery", "Gallery", "For Pics");
         }
     }
+
+    public Boolean showShareOptions() {
+        if (!hasPermissions(context, PERMISSION_IMAGE)) {
+            ActivityCompat.requestPermissions((Activity) context, PERMISSION_IMAGE, PERMISSION_ALL_SHARE);
+            return false;
+        } else return true;
+    }
+
+
 
     public void initOptions() {
         if (!b) {
