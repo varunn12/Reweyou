@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="50dp"
         android:orientation="vertical">
 
         <ImageView
@@ -21,8 +21,8 @@
             android:layout_height="240dp"
             android:layout_gravity="center_horizontal"
             android:elevation="4dp"
-            android:padding="48dp"
-            android:src="@drawable/newspaper" />
+            android:padding="56dp"
+            android:src="@drawable/ic_newspaper" />
 
         <RelativeLayout
             android:layout_width="match_parent"

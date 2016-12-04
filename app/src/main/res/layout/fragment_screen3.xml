@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="50dp"
         android:orientation="vertical">
 
         <ImageView
@@ -20,9 +20,9 @@
             android:layout_height="240dp"
             android:layout_gravity="center_horizontal"
             android:elevation="4dp"
-            android:padding="52dp"
+            android:padding="56dp"
             android:rotation="-20"
-            android:src="@drawable/s2" />
+            android:src="@drawable/ic_megaphone_icon_324" />
 
         <RelativeLayout
             android:layout_width="match_parent"

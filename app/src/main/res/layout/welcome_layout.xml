@@ -26,12 +26,12 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="240dp">
+                android:layout_height="220dp">
 
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="240dp"
+                    android:layout_height="220dp"
                     android:background="@color/colorPrimaryDark" />
 
 
@@ -63,7 +63,7 @@
         <in.reweyou.reweyou.customView.CircleOverlayView
             android:layout_width="match_parent"
 
-            android:layout_height="240dp" />
+            android:layout_height="220dp" />
     </LinearLayout>
 
     <RelativeLayout
@@ -87,7 +87,6 @@
             android:id="@+id/circles"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
             android:layout_centerHorizontal="true"
             android:orientation="horizontal">
 
@@ -100,6 +99,8 @@
             <ImageView
                 android:layout_width="10dp"
                 android:layout_height="10dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp"
                 android:scaleType="centerInside"
                 app:srcCompat="@drawable/dot_white" />
 
