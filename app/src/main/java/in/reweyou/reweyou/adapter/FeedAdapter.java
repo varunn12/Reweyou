@@ -7,6 +7,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -105,7 +106,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private String placename;
     private List<MpModel> messagelist;
     private Context mContext;
-    private Bitmap bm;
     private String id, postid;
     private EditText editTextHeadline;
     private AppCompatButton buttonEdit;
@@ -154,6 +154,12 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         this.fragment = secondFragment;
     }
 
+    public static Bitmap loadBitmapFromView(View v, int width, int height) {
+        Bitmap b = Bitmap.createBitmap(v.getWidth(), v.getHeight(), Bitmap.Config.ARGB_4444);
+        Canvas c = new Canvas(b);
+        v.draw(c);
+        return b;
+    }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
@@ -217,24 +223,50 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
                 holder.upicon.setImageResource(R.drawable.ic_thumb_up_primary_16px);
                 holder.upvote.setTextColor(mContext.getResources().getColor(R.color.rank));
-                holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews()) + 1) + " likes");
+                if (Integer.parseInt(messagelist.get(position).getReviews()) == 0)
+                    holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews()) + 1) + " like");
+                else
+                    holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews()) + 1) + " likes");
+
+                holder.reviews.setTypeface(Typeface.DEFAULT_BOLD);
+                holder.reviews.setTextColor(mContext.getResources().getColor(R.color.rank));
                 Log.d("likes", String.valueOf(Integer.parseInt(messagelist.get(position).getReviews()) + 1));
             } else if (payloads.contains(errorliking)) {
                 Log.d("reach", errorliking);
 
                 holder.upicon.setImageResource(R.drawable.ic_thumb_up_black_16px);
                 holder.upvote.setTextColor(mContext.getResources().getColor(R.color.likeText));
-                holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews())) + " likes");
+                if (Integer.parseInt(messagelist.get(position).getReviews()) == 0) {
+                    holder.reviews.setTypeface(Typeface.DEFAULT);
+                    holder.reviews.setTextColor(mContext.getResources().getColor(R.color.main));
+                    holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews())) + " like");
+
+                } else if (Integer.parseInt(messagelist.get(position).getReviews()) == 1)
+                    holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews())) + " like");
+                else
+                    holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews())) + " likes");
+
             } else if (payloads.contains(preunlike)) {
                 Log.d("reach", preunlike);
                 holder.upicon.setImageResource(R.drawable.ic_thumb_up_black_16px);
                 holder.upvote.setTextColor(mContext.getResources().getColor(R.color.likeText));
-                holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews()) - 1) + " likes");
+                if (Integer.parseInt(messagelist.get(position).getReviews()) == 2) {
+                    holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews()) - 1) + " like");
+
+                } else if (Integer.parseInt(messagelist.get(position).getReviews()) == 1) {
+                    holder.reviews.setTypeface(Typeface.DEFAULT);
+                    holder.reviews.setTextColor(mContext.getResources().getColor(R.color.main));
+                    holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews()) - 1) + " like");
+
+                } else
+                    holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews()) - 1) + " likes");
             } else if (payloads.contains(errorunliking)) {
                 Log.d("reach", errorunliking);
 
                 holder.upicon.setImageResource(R.drawable.ic_thumb_up_primary_16px);
                 holder.upvote.setTextColor(mContext.getResources().getColor(R.color.rank));
+                holder.reviews.setTypeface(Typeface.DEFAULT_BOLD);
+                holder.reviews.setTextColor(mContext.getResources().getColor(R.color.rank));
                 holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews())) + " likes");
             }
         } else super.onBindViewHolder(mHolder, position, payloads);
@@ -501,13 +533,13 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         notifyItemRangeInserted(this.messagelist.size() - messagelist2.size(), messagelist2.size());
     }
 
-    private void takeScreenshot() {
+    private void takeScreenshot(int adapterPostition, CardView cv) {
         Date now = new Date();
         android.text.format.DateFormat.format("yyyy-MM-dd_hh:mm:ss", now);
 
         try {
 
-            File mediaStorageDir = new File(Environment.getExternalStorageDirectory(), "Reweyou/Screenshot");
+            File mediaStorageDir = new File(Environment.getExternalStorageDirectory(), "Pictures/Reweyou/Screenshot");
 
             if (!mediaStorageDir.exists()) {
                 if (!mediaStorageDir.mkdirs()) {
@@ -519,14 +551,49 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             File imageFile = new File(mPath);
             uri = Uri.fromFile(imageFile);
             FileOutputStream outputStream = new FileOutputStream(imageFile);
-            int quality = 100;
-            bm.compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
+            int quality = 90;
+            cv.setDrawingCacheEnabled(true);
+            cv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
+            loadBitmapFromView(cv, cv.getWidth(), cv.getHeight()).compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
             outputStream.flush();
             outputStream.close();
 
         } catch (Throwable e) {
             e.printStackTrace();
         }
+
+    }
+
+    private Bitmap getViewBitmap(View v) {
+        v.clearFocus();
+        v.setPressed(false);
+
+        boolean willNotCache = v.willNotCacheDrawing();
+        v.setWillNotCacheDrawing(false);
+
+        // Reset the drawing cache background color to fully transparent
+        // for the duration of this operation
+        int color = v.getDrawingCacheBackgroundColor();
+        v.setDrawingCacheBackgroundColor(0);
+
+        if (color != 0) {
+            v.destroyDrawingCache();
+        }
+        v.buildDrawingCache();
+        Bitmap cacheBitmap = v.getDrawingCache();
+        if (cacheBitmap == null) {
+            Log.e(TAG, "failed getViewBitmap(" + v + ")", new RuntimeException());
+            return null;
+        }
+
+        Bitmap bitmap = Bitmap.createBitmap(cacheBitmap);
+
+        // Restore the view
+        v.destroyDrawingCache();
+        v.setWillNotCacheDrawing(willNotCache);
+        v.setDrawingCacheBackgroundColor(color);
+
+        return bitmap;
     }
 
     private void ShareIntent() {
@@ -616,13 +683,13 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         });
     }
 
-    private void showPopupMenu(View view) {
+    private void showPopupMenu(View view, int adapterPosition, CardView cv) {
         // inflate menu
 
         PopupMenu popup = new PopupMenu(mContext, view);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.menu_story, popup.getMenu());
-        popup.setOnMenuItemClickListener(new MyMenuItemClickListener());
+        popup.setOnMenuItemClickListener(new MyMenuItemClickListener(adapterPosition, cv));
         popup.show();
     }
 
@@ -778,6 +845,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         protected CardView cv;
         protected TextView reviews, source;
         protected TextView app;
+        private RelativeLayout actions;
         private LinearLayout linearLayout;
         private ImageView upicon;
         private TextView name, userName;
@@ -804,7 +872,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             source = (TextView) view.findViewById(R.id.source);
             linearLayout = (LinearLayout) view.findViewById(R.id.like);
             upicon = (ImageView) view.findViewById(R.id.upicon);
-
+            actions = (RelativeLayout) view.findViewById(R.id.actions);
 
             reviews.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -832,10 +900,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             overflow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    cv.setDrawingCacheEnabled(true);
-                    cv.buildDrawingCache();
-                    bm = cv.getDrawingCache();
-                    showPopupMenu(overflow);
+
+                    takeScreenshot(getAdapterPosition(), cv);
+                    ShareIntent();
                 }
             });
 
@@ -907,7 +974,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
                 }
             });
-            place.setOnClickListener(new View.OnClickListener() {
+            actions.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent in = new Intent(mContext, MyCityActivity.class);
@@ -1099,15 +1166,20 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
 
-        public MyMenuItemClickListener() {
+        private CardView cv;
+        private int adapterPostition;
+
+        public MyMenuItemClickListener(int adapterPosition, CardView cv) {
+            this.adapterPostition = adapterPosition;
+            this.cv = cv;
         }
 
         @Override
         public boolean onMenuItemClick(MenuItem menuItem) {
             switch (menuItem.getItemId()) {
                 case R.id.share:
-                    takeScreenshot();
-                    ShareIntent();
+                    //takeScreenshot(adapterPostition,cv);
+                    //ShareIntent();
                     return true;
                 case R.id.send:
                     Toast.makeText(mContext, "This feature will be added in next update", Toast.LENGTH_SHORT).show();
