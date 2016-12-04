@@ -1008,7 +1008,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
 
         if (data == null) {
             Toast.makeText(PostReport.this, "File path not supported", Toast.LENGTH_SHORT).show();
-        } else if (selectedImagePath != null) {
+        } else {
             previewPlayVideoButton.setVisibility(View.GONE);
             logoContainer.setVisibility(View.GONE);
             previewImageView.setColorFilter(null);
