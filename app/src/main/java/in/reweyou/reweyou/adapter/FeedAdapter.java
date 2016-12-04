@@ -1121,7 +1121,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             super(view);
             con = (LinearLayout) view.findViewById(R.id.newCon);
             ImageView img = (ImageView) view.findViewById(R.id.pic);
-            Glide.with(mContext).load(session.getProfilePicture()).into(img);
+            Glide.with(mContext).load(session.getProfilePicture()).error(R.drawable.download).into(img);
             con.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
