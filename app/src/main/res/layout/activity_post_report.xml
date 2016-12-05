@@ -3,7 +3,8 @@
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary">
+    android:background="@color/colorPrimary"
+    android:fitsSystemWindows="true">
 
 
     <android.support.design.widget.AppBarLayout
@@ -12,7 +13,6 @@
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
 
-        android:fitsSystemWindows="true"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:elevation="0dp">
 
