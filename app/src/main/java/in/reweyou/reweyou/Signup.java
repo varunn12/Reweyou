@@ -13,7 +13,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
-import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -114,9 +113,7 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
     private EditText editTextUsername, editTextNumber, editTextConfirmOtp, editLocation;
     private AppCompatButton buttonConfirm;
     private Button buttonRegister;
-    private Location location;
     private TextView Read;
-    private RequestQueue requestQueue;
     private String username, number, place, token, advertId;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
 
@@ -154,7 +151,6 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
 
 
         session = new UserSessionManager(getApplicationContext());
-        requestQueue = Volley.newRequestQueue(this);
         cd = new ConnectionDetector(Signup.this);
         editTextUsername = (EditText) findViewById(R.id.editTextUsername);
         editTextNumber = (EditText) findViewById(R.id.editTextNumber);
@@ -201,12 +197,12 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
             //If play service is supported but not installed
             if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
                 //Displaying message that play service is not installed
-           //     Toast.makeText(getApplicationContext(), "Google Play Service is not install/enabled on this device!", Toast.LENGTH_LONG).show();
+                //     Toast.makeText(getApplicationContext(), "Google Play Service is not install/enabled on this device!", Toast.LENGTH_LONG).show();
                 GooglePlayServicesUtil.showErrorNotification(resultCode, getApplicationContext());
                 //If play service is not supported
                 //Displaying an error message
             } else {
-             //   Toast.makeText(getApplicationContext(), "This device does not support for Google Play Service!", Toast.LENGTH_LONG).show();
+                //   Toast.makeText(getApplicationContext(), "This device does not support for Google Play Service!", Toast.LENGTH_LONG).show();
             }
 
             //If play service is available
@@ -418,12 +414,10 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
                     session.setLoginLocation(jsonObject.getString("location"));
                     session.setProfilePicture(jsonObject.getString("profilepic"));
                     session.setDeviceid(jsonObject.getString("deviceid"));
-                    // session.setAuthToken(jsonObject.getString("token"));
 
                     if (responseObject.has("likes")) {
                         JSONArray jsonArray1 = responseObject.getJSONArray("likes");
                         List<String> likesList = new ArrayList<>();
-                        String[] array = new String[jsonArray1.length()];
                         for (int i = 0; i < jsonArray1.length(); i++) {
                             JSONObject jsonObject1 = jsonArray1.getJSONObject(i);
                             Log.d("jsonO", String.valueOf(jsonObject1));
