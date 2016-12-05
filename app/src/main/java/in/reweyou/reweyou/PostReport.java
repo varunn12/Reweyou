@@ -798,7 +798,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                         final ProgressDialog uploading = ProgressDialog.show(PostReport.this, "Uploading File", "Please wait...", false, false);
 
                         AsyncHttpPost post = new AsyncHttpPost("https://www.reweyou.in/reweyou/reporting.php");
-                        post.setTimeout(30000);
+                        post.setTimeout(120000);
                         MultipartFormDataBody body = new MultipartFormDataBody();
                         body.addFilePart("myFile", new File(selectedVideoPath));
                         body.addStringPart(POST_REPORT_KEY_REPORT, "video");

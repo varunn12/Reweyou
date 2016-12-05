@@ -58,6 +58,8 @@ dependencies {
     compile 'it.sephiroth.android.library.imagezoom:imagezoom:+'
 
     compile 'com.koushikdutta.async:androidasync:2.+'
+    compile 'com.koushikdutta.ion:ion:2.+'
+
     compile 'com.loopj.android:android-async-http:1.4.9'
 
 
