@@ -575,13 +575,21 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
 
 
                     //  Toast.makeText(PostReport.this, place + "     " + address, Toast.LENGTH_SHORT).show();
-                    if (validateFields()) {
-                        if (selectedImagePath != null) {
-                            compressImageOrGif();
-                        } else if (selectedVideoPath != null) {
-                            compressVideo();
-                        } else uploadImage(null);
-                    }
+
+                    PostReport.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (validateFields()) {
+                                if (selectedImagePath != null) {
+                                    compressImageOrGif();
+                                } else if (selectedVideoPath != null) {
+                                    compressVideo();
+                                } else uploadImage(null);
+                            }
+                        }
+                    });
+
+
 
 
                 }
