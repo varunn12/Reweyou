@@ -86,6 +86,8 @@ public class HttpService extends Service {
     public void verifyOtp(final String otp) {
 
         unregisterReceiver(mybroadcast);
+        sendOTPDismissVerifyDialog();
+
 
         Log.d("verifff", "called");
 
@@ -133,6 +135,8 @@ public class HttpService extends Service {
                 } catch (JSONException e) {
                     e.printStackTrace();
                     sendMessageDismissVerifyDialog();
+
+
                     Toast.makeText(getApplicationContext(), "Wrong OTP Please Try Again", Toast.LENGTH_LONG).show();
 
                 }
@@ -140,7 +144,10 @@ public class HttpService extends Service {
             }
         }, new Response.ErrorListener() {
             @Override
+
             public void onErrorResponse(VolleyError error) {
+                sendMessageDismissVerifyDialog();
+
                 //   Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
                 Toast.makeText(getApplicationContext(), "Something went wrong, Try again", Toast.LENGTH_LONG).show();
             }
@@ -190,6 +197,11 @@ public class HttpService extends Service {
 
     private void sendMessageDismissVerifyDialog() {
         Intent intent = new Intent("verifydismiss");
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
+
+    private void sendOTPDismissVerifyDialog() {
+        Intent intent = new Intent("verifyotp");
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 }

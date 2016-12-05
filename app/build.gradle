@@ -44,6 +44,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-analytics:9.8.0'
     compile 'com.google.android.gms:play-services-gcm:9.8.0'
     compile "com.google.firebase:firebase-messaging:9.8.0"
+    compile 'com.miguelcatalan:materialsearchview:1.4.0'
 
     compile 'com.android.volley:volley:1.0.0'
 
@@ -57,6 +58,8 @@ dependencies {
     compile 'it.sephiroth.android.library.imagezoom:imagezoom:+'
 
     compile 'com.koushikdutta.async:androidasync:2.+'
+    compile 'com.loopj.android:android-async-http:1.4.9'
+
 
 }
 

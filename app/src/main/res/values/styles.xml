@@ -14,11 +14,27 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="SearchViewStyleMyApp" parent="Widget.AppCompat.SearchView">
+        <!-- Background for the search query section (e.g. EditText) -->
+        ...
+        <item name="queryBackground">@drawable/button_background2</item>
+        <!-- note that this is how you stye your hint icon -->
+        <item name="closeIcon">@drawable/ic_clear_black_24dp</item>
+    </style>
+
+    <style name="MyThemeOverlay.ActionBar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="searchViewStyle">@style/SearchViewStyleMyApp</item>
+        <item name="colorAccent">#757575</item>
+    </style>
+
     <style name="DialogActivity" parent="Theme.AppCompat.Dialog">
         <item name="windowNoTitle">true</item>
 
     </style>
-    <style name="AppTheme.NoActionBar.Feed"></style>
+
+    <style name="AppTheme.NoActionBar.Feed">
+
+    </style>
 
     <style name="SplashTheme" parent="AppTheme.NoActionBar">
         <item name="android:windowBackground">@drawable/drawable_splash</item>

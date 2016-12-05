@@ -547,6 +547,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
 
         if (isLocationEnabled(PostReport.this)) {
             final ProgressDialog pd = new ProgressDialog(PostReport.this);
+            pd.setCancelable(false);
             pd.setMessage("Fetching current location! Please Wait.");
             pd.show();
 
@@ -572,19 +573,15 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                     Log.d("place", place);
                     Log.d("address", address);
 
-                    PostReport.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            //  Toast.makeText(PostReport.this, place + "     " + address, Toast.LENGTH_SHORT).show();
-                            if (validateFields()) {
-                                if (selectedImagePath != null) {
-                                    compressImageOrGif();
-                                } else if (selectedVideoPath != null) {
-                                    compressVideo();
-                                } else uploadImage(null);
-                            }
-                        }
-                    });
+
+                    //  Toast.makeText(PostReport.this, place + "     " + address, Toast.LENGTH_SHORT).show();
+                    if (validateFields()) {
+                        if (selectedImagePath != null) {
+                            compressImageOrGif();
+                        } else if (selectedVideoPath != null) {
+                            compressVideo();
+                        } else uploadImage(null);
+                    }
 
 
                 }
@@ -593,8 +590,25 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
             };
 
             MyLocation myLocation = new MyLocation();
-            myLocation.getLocation(this, locationResult);
-        } else {
+            if (!myLocation.getLocation(this, locationResult)) {
+                address = session.getLoginLocation();
+                place = address;
+                // Toast.makeText(PostReport.this, "location off: " + place + "     " + address, Toast.LENGTH_SHORT).show();
+                if (pd != null) {
+                    pd.dismiss();
+                }
+                if (validateFields()) {
+                    if (selectedImagePath != null) {
+                        compressImageOrGif();
+                    } else if (selectedVideoPath != null) {
+                        compressVideo();
+                    } else uploadImage(null);
+                }
+            }
+
+        } else
+
+        {
             address = session.getLoginLocation();
             place = address;
             // Toast.makeText(PostReport.this, "location off: " + place + "     " + address, Toast.LENGTH_SHORT).show();
@@ -676,7 +690,6 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
         };
         alertDialogBox.show();
     }
-
 
 
     @Override
@@ -765,6 +778,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
     }
 
     private void compressVideo() {
+        Log.d("here", "here");
         Glide.with(PostReport.this).load(new File(selectedVideoPath)).asBitmap()
                 .toBytes(Bitmap.CompressFormat.JPEG, 70)
                 .fitCenter()
@@ -779,12 +793,12 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                     }
 
                     @Override
-                    public void onResourceReady(byte[] resource, GlideAnimation<? super byte[]> ignore) {
+                    public void onResourceReady(final byte[] resource, GlideAnimation<? super byte[]> ignore) {
                         final String encodedImage = Base64.encodeToString(resource, Base64.DEFAULT);
                         final ProgressDialog uploading = ProgressDialog.show(PostReport.this, "Uploading File", "Please wait...", false, false);
-                        uploading.dismiss();
 
                         AsyncHttpPost post = new AsyncHttpPost("https://www.reweyou.in/reweyou/reporting.php");
+                        post.setTimeout(30000);
                         MultipartFormDataBody body = new MultipartFormDataBody();
                         body.addFilePart("myFile", new File(selectedVideoPath));
                         body.addStringPart(POST_REPORT_KEY_REPORT, "video");
@@ -819,10 +833,67 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                                     Log.d("autherror", "errorauth");
                                     session.logoutUser();
                                 } else {
-                                    Toast.makeText(PostReport.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+                                    PostReport.this.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(PostReport.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+
+                                        }
+                                    });
                                 }
                             }
                         });
+
+                       /* com.loopj.android.http.AsyncHttpClient client = new com.loopj.android.http.AsyncHttpClient();
+
+                        File myFile = new File(selectedVideoPath);
+                        RequestParams params = new RequestParams();
+                        try {
+                            params.put("myFile", myFile);
+                            params.put(POST_REPORT_KEY_REPORT, "video");
+                            params.put(POST_REPORT_KEY_LOCATION, place);
+                            params.put(POST_REPORT_KEY_IMAGE, encodedImage);
+                            params.put(POST_REPORT_KEY_NAME, name);
+                            params.put(POST_REPORT_KEY_CATEGORY, currentSpinnerPositionString);
+                            params.put(POST_REPORT_KEY_ADDRESS, address);
+                            params.put(POST_REPORT_KEY_NUMBER, number);
+                            params.put(POST_REPORT_KEY_TAG, parameterEditTag);
+                            if (parameterHeadline != null)
+                                params.put(POST_REPORT_KEY_HEADLINE, parameterHeadline);
+                            params.put(POST_REPORT_KEY_DESCRIPTION, parameterDescription);
+                            params.put("token", session.getKeyAuthToken());
+                            params.put("deviceid", session.getDeviceid());
+                            client.get("https://www.reweyou.in/reweyou/reporting.php", new AsyncHttpResponseHandler() {
+
+                                @Override
+                                public void onStart() {
+                                    // called before request is started
+                                }
+
+                                @Override
+                                public void onSuccess(int statusCode, Header[] headers, byte[] response) {
+                                    // called when response HTTP status is "200 OK"
+
+                                    Log.d("status", String.valueOf(statusCode) + "     " + response);
+                                }
+
+                                @Override
+                                public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
+                                    // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+                                    Log.d("statuserror", String.valueOf(statusCode) + "     " + errorResponse);
+
+                                }
+
+                                @Override
+                                public void onRetry(int retryNo) {
+                                    // called when request is retried
+                                }
+                            });
+                        } catch (FileNotFoundException e) {
+                        }
+
+*/
+
 
 
                        /* class UploadVideo extends AsyncTask<Void, Void, String> {
@@ -978,21 +1049,22 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
 
             selectedImagePath = uploadOptions.getAbsolutePath(Uri.parse(data));
 
+            if (selectedImagePath != null) {
+                String type = selectedImagePath.substring(selectedImagePath.lastIndexOf(".") + 1);
+                if (type.equals("gif")) {
+                    selectedImagePath = uploadOptions.getAbsolutePath(Uri.parse(data));
+                    previewImageView.setVisibility(View.GONE);
+                    previewImageViewGif.setVisibility(View.VISIBLE);
+                    Glide.with(PostReport.this).load(selectedImagePath).asGif().into(previewImageViewGif);
+                    viewType = IMAGE;
+                } else {
 
-            String type = selectedImagePath.substring(selectedImagePath.lastIndexOf(".") + 1);
-            if (type.equals("gif")) {
-                selectedImagePath = uploadOptions.getAbsolutePath(Uri.parse(data));
-                previewImageView.setVisibility(View.GONE);
-                previewImageViewGif.setVisibility(View.VISIBLE);
-                Glide.with(PostReport.this).load(selectedImagePath).asGif().into(previewImageViewGif);
-                viewType = IMAGE;
-            } else {
-
-                previewImageView.setVisibility(View.VISIBLE);
-                previewImageViewGif.setVisibility(View.GONE);
-                selectedImagePath = uploadOptions.getAbsolutePath(Uri.parse(data));
-                Glide.with(PostReport.this).load(selectedImagePath).into(previewImageView);
-                viewType = IMAGE;
+                    previewImageView.setVisibility(View.VISIBLE);
+                    previewImageViewGif.setVisibility(View.GONE);
+                    selectedImagePath = uploadOptions.getAbsolutePath(Uri.parse(data));
+                    Glide.with(PostReport.this).load(selectedImagePath).into(previewImageView);
+                    viewType = IMAGE;
+                }
             }
         }
     }

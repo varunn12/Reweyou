@@ -45,6 +45,8 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
 import org.json.JSONException;
@@ -442,23 +444,37 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 viewHolder.image.setVisibility(View.GONE);
             } else {
                 viewHolder.image.setAdjustViewBounds(false);
-                Glide.with(mContext).load(messagelist.get(position).getGif()).asGif().placeholder(R.drawable.irongrip).diskCacheStrategy(DiskCacheStrategy.SOURCE).error(R.drawable.ic_error).dontAnimate().into(viewHolder.image);
+                Glide.with(mContext).load(messagelist.get(position).getGif()).asGif().placeholder(R.drawable.irongrip).diskCacheStrategy(DiskCacheStrategy.SOURCE).error(R.drawable.ic_broken_image_black_48dp).dontAnimate().into(viewHolder.image);
             }
         } else {
             viewHolder.image.setAdjustViewBounds(true);
-            Glide.with(mContext).load(messagelist.get(position).getImage()).diskCacheStrategy(DiskCacheStrategy.SOURCE).override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).error(R.drawable.ic_error).dontAnimate().into(viewHolder.image);
+            Glide.with(mContext).load(messagelist.get(position).getImage()).diskCacheStrategy(DiskCacheStrategy.SOURCE).override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).error(R.drawable.ic_broken_image_black_48dp).dontAnimate().into(viewHolder.image);
         }
     }
 
-    private void setFeedVideoThumbnail(VideoViewHolder viewHolder, int position) {
+    private void setFeedVideoThumbnail(final VideoViewHolder viewHolder, int position) {
 
         if (messagelist.get(position).getImage() == null || messagelist.get(position).getImage().isEmpty()) {
             viewHolder.image.setVisibility(View.GONE);
         } else {
+            viewHolder.play.setVisibility(View.VISIBLE);
             viewHolder.image.setVisibility(View.VISIBLE);
-            viewHolder.image.setColorFilter(Color.argb(150, 255, 255, 255)); // White Tint
+            viewHolder.image.setColorFilter(Color.argb(150, 255, 255, 255)); // black Tint
 
-            Glide.with(mContext).load(messagelist.get(position).getImage()).placeholder(R.drawable.irongrip).diskCacheStrategy(DiskCacheStrategy.SOURCE).fallback(R.drawable.ic_reload).error(R.drawable.ic_error).dontAnimate().into(viewHolder.image);
+
+            Glide.with(mContext).load(messagelist.get(position).getImage()).placeholder(R.drawable.irongrip).diskCacheStrategy(DiskCacheStrategy.SOURCE).fallback(R.drawable.ic_reload).error(R.drawable.ic_broken_image_black_48dp).listener(new RequestListener<String, GlideDrawable>() {
+                @Override
+                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                    viewHolder.play.setVisibility(View.INVISIBLE);
+
+                    return false;
+                }
+
+                @Override
+                public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                    return false;
+                }
+            }).dontAnimate().into(viewHolder.image);
         }
     }
 
@@ -994,6 +1010,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     Intent in = new Intent(mContext, MyCityActivity.class);
                     in.putExtra("place", messagelist.get(getAdapterPosition()).getLocation());
                     mContext.startActivity(in);
+                    ((Activity) mContext).overridePendingTransition(0, 0);
                 }
             });
 
@@ -1077,6 +1094,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private class VideoViewHolder extends BaseViewHolder {
         protected ImageView image;
+        private ImageView play;
 
 
         public VideoViewHolder(View view) {
@@ -1084,6 +1102,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 
             image = (ImageView) view.findViewById(R.id.image);
+            play = (ImageView) view.findViewById(R.id.play);
 
 
             image.setOnClickListener(new View.OnClickListener() {

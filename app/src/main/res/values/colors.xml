@@ -6,6 +6,7 @@
     <color name="transparent_bg">#fff</color>
     <color name="transparent">#00000000</color>
     <color name="black">#000000</color>
+    <color name="black2">#bdbdbd</color>
 
     <color name="whiteDot">#fff</color>
     <color name="greyDot">#54000000</color>

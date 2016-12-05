@@ -818,40 +818,44 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
 
         @Override
         protected void onPostExecute(List<String> result) {
+
             super.onPostExecute(result);
-            Name.setText(result.get(0));
-            Reports.setText(result.get(1));
-            if (!result.get(3).isEmpty()) {
-                Info.setText(result.get(3));
-                Info.setPaintFlags(Info.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+            if (result != null) {
 
-            } else {
-                Info.setText(getResources().getString(R.string.emptyStatus));
-                Info.setTextColor(ColorStateList.valueOf(getResources().getColor(R.color.red)));
-                Info.setPaintFlags(Info.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                Name.setText(result.get(0));
+                Reports.setText(result.get(1));
+                if (!result.get(3).isEmpty()) {
+                    Info.setText(result.get(3));
+                    Info.setPaintFlags(Info.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
-            }
+                } else {
+                    Info.setText(getResources().getString(R.string.emptyStatus));
+                    Info.setTextColor(ColorStateList.valueOf(getResources().getColor(R.color.red)));
+                    Info.setPaintFlags(Info.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
-            Info.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    try {
-                        editHeadline();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
                 }
-            });
 
-            // imageLoader.displayImage(result.get(2), profilepic, option);
-            Glide.with(MyProfile.this).load(result.get(2)).error(R.drawable.download).into(profilepic);
-            user = result.get(4);
-            Mobile.setText(result.get(4));
-            Location.setText(result.get(5));
-            Readers.setText(result.get(6));
+                Info.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        try {
+                            editHeadline();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
 
-            //    progressBar.setVisibility(View.GONE);
-            //need to set data to the list
+                // imageLoader.displayImage(result.get(2), profilepic, option);
+                Glide.with(MyProfile.this).load(result.get(2)).error(R.drawable.download).into(profilepic);
+                user = result.get(4);
+                Mobile.setText(result.get(4));
+                Location.setText(result.get(5));
+                Readers.setText(result.get(6));
+
+                //    progressBar.setVisibility(View.GONE);
+                //need to set data to the list
+            }
         }
     }
 
@@ -933,14 +937,15 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
         protected void onPostExecute(List<MpModel> result) {
             super.onPostExecute(result);
             progressBar.setVisibility(View.GONE);
-
-            if (result.isEmpty()) {
-                Empty.setVisibility(View.VISIBLE);
+            if (result != null) {
+                if (result.isEmpty()) {
+                    Empty.setVisibility(View.VISIBLE);
+                }
+                FeedAdapter adapter = new FeedAdapter(MyProfile.this, result);
+                // total.setText("You have reported "+ String.valueOf(length)+ " stories.");
+                recyclerView.setAdapter(adapter);
+                //need to set data to the list
             }
-            FeedAdapter adapter = new FeedAdapter(MyProfile.this, result);
-            // total.setText("You have reported "+ String.valueOf(length)+ " stories.");
-            recyclerView.setAdapter(adapter);
-            //need to set data to the list
         }
     }
 

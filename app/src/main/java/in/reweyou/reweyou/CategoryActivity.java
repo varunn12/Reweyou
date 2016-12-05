@@ -1,35 +1,63 @@
 package in.reweyou.reweyou;
 
-import android.Manifest;
-import android.graphics.Typeface;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.TextView;
 
 import in.reweyou.reweyou.classes.UserSessionManager;
+import in.reweyou.reweyou.fragment.SecondFragment;
 
-public class CategoryActivity extends FragmentActivity {
-    private static final int REQUEST_CODE = 0;
-    Fragment fragment;
-    PermissionsChecker checker;
+public class CategoryActivity extends AppCompatActivity {
     protected TextView headline;
+    Fragment fragment;
     UserSessionManager session;
-    static final String[] PERMISSIONS = new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_EXTERNAL_STORAGE};
 
 
-    /** Called when the activity is first created. */
+    /**
+     * Called when the activity is first created.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category);
-        session= new UserSessionManager(getApplicationContext());
-        String city= session.getCategory();
-        String fontPath = "fonts/Roboto-Medium.ttf";
-        Typeface tf = Typeface.createFromAsset(getAssets(), fontPath);
+        session = new UserSessionManager(getApplicationContext());
+        String category = session.getCategory();
         headline = (TextView) findViewById(R.id.headline);
-        headline.setText("#"+city);
-        headline.setTypeface(tf);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("#" + category);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        SecondFragment frag = new SecondFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("position", 19);
+        bundle.putString("category", category);
+
+
+        frag.setArguments(bundle);
+        fragmentTransaction.add(R.id.myfragment, frag, "MyCITY");
+        fragmentTransaction.commit();
+
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(0, 0);
+    }
 }
