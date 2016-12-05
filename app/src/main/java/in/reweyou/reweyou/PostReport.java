@@ -547,6 +547,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
 
         if (isLocationEnabled(PostReport.this)) {
             final ProgressDialog pd = new ProgressDialog(PostReport.this);
+            pd.setCancelable(false);
             pd.setMessage("Fetching current location! Please Wait.");
             pd.show();
 
@@ -593,7 +594,22 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
             };
 
             MyLocation myLocation = new MyLocation();
-            myLocation.getLocation(this, locationResult);
+            if (!myLocation.getLocation(this, locationResult)) {
+                address = session.getLoginLocation();
+                place = address;
+                // Toast.makeText(PostReport.this, "location off: " + place + "     " + address, Toast.LENGTH_SHORT).show();
+                if (pd != null) {
+                    pd.dismiss();
+                }
+                if (validateFields()) {
+                    if (selectedImagePath != null) {
+                        compressImageOrGif();
+                    } else if (selectedVideoPath != null) {
+                        compressVideo();
+                    } else uploadImage(null);
+                }
+            }
+
         } else {
             address = session.getLoginLocation();
             place = address;
@@ -676,7 +692,6 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
         };
         alertDialogBox.show();
     }
-
 
 
     @Override
