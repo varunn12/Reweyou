@@ -272,7 +272,7 @@
                     <Space
                         android:layout_width="1dp"
                         android:layout_height="0dp"
-                        android:layout_weight="0.7" />
+                        android:layout_weight="0.4" />
 
                     <ImageView
                         android:id="@+id/a"
