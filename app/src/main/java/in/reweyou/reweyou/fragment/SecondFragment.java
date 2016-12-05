@@ -385,6 +385,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        progressBar.setVisibility(View.GONE);
 
                         if (error instanceof NoConnectionError) {
                             showNoti("No internet connectivity");
@@ -401,8 +402,6 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                             try {
                                 parentArray = new JSONArray(respo);
                                 Log.d("aaa", String.valueOf(parentArray));
-                                StringBuffer finalBufferedData = new StringBuffer();
-
 
                                 Gson gson = new Gson();
                                 for (int i = 0; i < parentArray.length(); i++) {
@@ -410,7 +409,6 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                                     MpModel mpModel = gson.fromJson(finalObject.toString(), MpModel.class);
                                     messagelist.add(mpModel);
                                 }
-                                progressBar.setVisibility(View.GONE);
                                 adapter = new FeedAdapter(getActivity(), messagelist);
 
                                 recyclerView.setAdapter(adapter);
