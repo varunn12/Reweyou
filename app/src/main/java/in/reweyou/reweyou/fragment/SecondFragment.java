@@ -80,6 +80,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private View layout;
     private String query;
     private int minPostid;
+    private String category;
 
     public SecondFragment() {
     }
@@ -91,7 +92,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
         position = getArguments().getInt("position");
         placename = getArguments().getString("place");
-
+        category = getArguments().getString("category");
         query = getArguments().getString("query");
         Log.d("pos", String.valueOf(position));
         if (query != null)
@@ -125,133 +126,135 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
         recyclerView.setItemAnimator(defaultItemAnimator);
         recyclerView.setItemViewCacheSize(4);
 
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0) //check for scroll down
-                {
-                    visibleItemCount = layoutManager.getChildCount();
-                    totalItemCount = layoutManager.getItemCount();
-                    pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
+        if (position != 19)
+            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    if (dy > 0) //check for scroll down
+                    {
+                        visibleItemCount = layoutManager.getChildCount();
+                        totalItemCount = layoutManager.getItemCount();
+                        pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
 
-                    if (!cacheLoad)
-                        if (loading) {
-                            if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
-                                loading = false;
+                        if (!cacheLoad)
+                            if (loading) {
+                                if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                                    loading = false;
 
-                                Log.v("...", "Last Item Wow !");
-                                adapter.add();
+                                    Log.v("...", "Last Item Wow !");
+                                    adapter.add();
 
-                                new Handler().postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        makeLoadMoreRequest();
-                                    }
-                                }, 1000);
+                                    new Handler().postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
 
+                                            makeLoadMoreRequest();
+                                        }
+                                    }, 1000);
+
+                                }
                             }
-                        }
+                    }
                 }
-            }
 
-            private void makeLoadMoreRequest() {
-                final long mRequestStartTime = System.currentTimeMillis();
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, getUrl(),
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                long totalRequestTime = System.currentTimeMillis() - mRequestStartTime;
-                                Log.d("tme", String.valueOf(totalRequestTime));
-                                Log.d("Response", response);
-                                List<String> likeslist = session.getLikesList();
-                                Log.d("likeslist", String.valueOf(likeslist));
-                                List<MpModel> list = new ArrayList<MpModel>();
-                                JSONArray parentArray = null;
-                                try {
-                                    parentArray = new JSONArray(response);
-                                    adapter.remove();
+                private void makeLoadMoreRequest() {
+                    final long mRequestStartTime = System.currentTimeMillis();
+                    StringRequest stringRequest = new StringRequest(Request.Method.POST, getUrl(),
+                            new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    long totalRequestTime = System.currentTimeMillis() - mRequestStartTime;
+                                    Log.d("tme", String.valueOf(totalRequestTime));
+                                    Log.d("Response", response);
+                                    List<String> likeslist = session.getLikesList();
+                                    Log.d("likeslist", String.valueOf(likeslist));
+                                    List<MpModel> list = new ArrayList<MpModel>();
+                                    JSONArray parentArray = null;
+                                    try {
+                                        parentArray = new JSONArray(response);
+                                        adapter.remove();
 
-                                    Gson gson = new Gson();
-                                    Log.d("lenght", String.valueOf(parentArray.length()));
-                                    for (int i = 0; i < parentArray.length(); i++) {
-                                        JSONObject finalObject = parentArray.getJSONObject(i);
-                                        MpModel mpModel = gson.fromJson(finalObject.toString(), MpModel.class);
+                                        Gson gson = new Gson();
+                                        Log.d("lenght", String.valueOf(parentArray.length()));
+                                        for (int i = 0; i < parentArray.length(); i++) {
+                                            JSONObject finalObject = parentArray.getJSONObject(i);
+                                            MpModel mpModel = gson.fromJson(finalObject.toString(), MpModel.class);
 
-                                        if (likeslist.contains(mpModel.getPostId())) {
-                                            Log.d("true", mpModel.getPostId() + "    ");
+                                            if (likeslist.contains(mpModel.getPostId())) {
+                                                Log.d("true", mpModel.getPostId() + "    ");
 
-                                            mpModel.setLiked(true);
+                                                mpModel.setLiked(true);
 
+                                            }
+
+
+                                            list.add(mpModel);
+                                            if (i == parentArray.length() - 1) {
+                                                // formattedDate = mpModel.getDate1();
+                                                //Log.d("last", mpModel.getCategory());
+                                                postid = mpModel.getPostId();
+                                            }
                                         }
 
+                                        adapter.loadMore(list);
+                                        loading = true;
 
-                                        list.add(mpModel);
-                                        if (i == parentArray.length() - 1) {
-                                            // formattedDate = mpModel.getDate1();
-                                            //Log.d("last", mpModel.getCategory());
-                                            postid = mpModel.getPostId();
-                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                        Log.d("ex", e.getMessage());
+
                                     }
-
-                                    adapter.loadMore(list);
-                                    loading = true;
-
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                    Log.d("ex", e.getMessage());
 
                                 }
 
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    long totalRequestTime = System.currentTimeMillis() - mRequestStartTime;
+                                    Log.d("tme", String.valueOf(totalRequestTime));
+
+                                    if (error instanceof NetworkError)
+                                        Log.e("error", error.getMessage());
+                                    // Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show();
+                                    adapter.remove();
+                                    loading = true;
+                                }
+                            }) {
+                        @Override
+                        protected Map<String, String> getParams() {
+                            Map<String, String> data = new HashMap<>();
+                            if (position != 2) {
+
+
+                                //data.put("tag", tag);
+                                data.put("location", location);
+                                data.put("postid", postid);
+                                // data.put("date", formattedDate);
+                                //  Log.d("ddd", formattedDate);
+                                data.put("number", number);
+                            } else {
+                                data.put("postid", String.valueOf(minPostid));
+
+                                data.put("location", location);
+                                data.put("postid", postid);
+                                // data.put("date", formattedDate);
+                                //  Log.d("ddd", formattedDate);
+                                data.put("number", number);
                             }
-
-                        },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                long totalRequestTime = System.currentTimeMillis() - mRequestStartTime;
-                                Log.d("tme", String.valueOf(totalRequestTime));
-
-                                if (error instanceof NetworkError)
-                                    Log.e("error", error.getMessage());
-                                // Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show();
-                                adapter.remove();
-                                loading = true;
-                            }
-                        }) {
-                    @Override
-                    protected Map<String, String> getParams() {
-                        Map<String, String> data = new HashMap<>();
-                        if (position != 2) {
-
-
-                            //data.put("tag", tag);
-                            data.put("location", location);
-                            data.put("postid", postid);
-                            // data.put("date", formattedDate);
-                            //  Log.d("ddd", formattedDate);
-                            data.put("number", number);
-                        } else {
-                            data.put("postid", String.valueOf(minPostid));
-
-                            data.put("location", location);
-                            data.put("postid", postid);
-                            // data.put("date", formattedDate);
-                            //  Log.d("ddd", formattedDate);
-                            data.put("number", number);
+                            Log.d("minid", String.valueOf(data));
+                            return data;
                         }
-                        Log.d("minid", String.valueOf(data));
-                        return data;
-                    }
-                };
+                    };
 
 
-                stringRequest.setRetryPolicy(new DefaultRetryPolicy(10 * 1000, 0,
-                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-                RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-                requestQueue.add(stringRequest);
+                    stringRequest.setRetryPolicy(new DefaultRetryPolicy(10 * 1000, 0,
+                            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                    RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+                    requestQueue.add(stringRequest);
 
-            }
-        });
+                }
+            });
 
 
         session = new UserSessionManager(getActivity());
@@ -373,7 +376,11 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                             swipeLayout.setRefreshing(false);
 
                             cacheLoad = false;
-                            MyJSON.saveData(getContext(), response, position);
+                            if (position != 19)
+                                MyJSON.saveData(getContext(), response, position);
+                            else
+                                MyJSON.saveDataCategory(getContext(), response, position, category);
+
                         } catch (JSONException e) {
                             Log.e("ecec", e.getMessage());
                             e.printStackTrace();
@@ -395,8 +402,11 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                             showNoti("something went wrong");
                         }
 
-
-                        String respo = MyJSON.getData(getContext(), position);
+                        String respo = null;
+                        if (position != 19)
+                            respo = MyJSON.getData(getContext(), position);
+                        else
+                            respo = MyJSON.getDataCategory(getContext(), position, category);
                         if (respo != null) {
                             JSONArray parentArray = null;
                             try {
@@ -469,6 +479,9 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                             data.put("location", placename);
                         else if (position == 15) {
                             data.put("query", query);
+                        } else if (position == 19) {
+                            if (category != null)
+                                data.put("category", category);
                         } else
                             data.put("location", location);
                         data.put("date", formattedDate);
@@ -542,6 +555,8 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                 return Constants.SEARCH_QUERY;
             case 15:
                 return Constants.MY_SINGLE_ACTIVITY;
+            case 19:
+                return Constants.CATEGORY_FEED_URL;
             default:
                 return null;
 
