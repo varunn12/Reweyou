@@ -993,21 +993,22 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
 
             selectedImagePath = uploadOptions.getAbsolutePath(Uri.parse(data));
 
+            if (selectedImagePath != null) {
+                String type = selectedImagePath.substring(selectedImagePath.lastIndexOf(".") + 1);
+                if (type.equals("gif")) {
+                    selectedImagePath = uploadOptions.getAbsolutePath(Uri.parse(data));
+                    previewImageView.setVisibility(View.GONE);
+                    previewImageViewGif.setVisibility(View.VISIBLE);
+                    Glide.with(PostReport.this).load(selectedImagePath).asGif().into(previewImageViewGif);
+                    viewType = IMAGE;
+                } else {
 
-            String type = selectedImagePath.substring(selectedImagePath.lastIndexOf(".") + 1);
-            if (type.equals("gif")) {
-                selectedImagePath = uploadOptions.getAbsolutePath(Uri.parse(data));
-                previewImageView.setVisibility(View.GONE);
-                previewImageViewGif.setVisibility(View.VISIBLE);
-                Glide.with(PostReport.this).load(selectedImagePath).asGif().into(previewImageViewGif);
-                viewType = IMAGE;
-            } else {
-
-                previewImageView.setVisibility(View.VISIBLE);
-                previewImageViewGif.setVisibility(View.GONE);
-                selectedImagePath = uploadOptions.getAbsolutePath(Uri.parse(data));
-                Glide.with(PostReport.this).load(selectedImagePath).into(previewImageView);
-                viewType = IMAGE;
+                    previewImageView.setVisibility(View.VISIBLE);
+                    previewImageViewGif.setVisibility(View.GONE);
+                    selectedImagePath = uploadOptions.getAbsolutePath(Uri.parse(data));
+                    Glide.with(PostReport.this).load(selectedImagePath).into(previewImageView);
+                    viewType = IMAGE;
+                }
             }
         }
     }
