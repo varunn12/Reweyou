@@ -350,7 +350,7 @@ public class Feed extends AppCompatActivity {
         ((EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text)).setTextColor(Color.BLACK);
         ((EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text)).setHintTextColor(getResources().getColor(R.color.black2));
         ((EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text)).setHint("Search Reports");
-        ((EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text)).setTextSize(16.0f);
+        ((EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text)).setTextSize(15.0f);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
