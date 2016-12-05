@@ -132,6 +132,13 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
             dismissVerifiyingDialog();
         }
     };
+    private AlertDialog alertDialog;
+    private BroadcastReceiver dismissOtpDialogReciever = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            dismissotpDialog();
+        }
+    };
 
     private boolean hasPermissions(Context context, String... permissions) {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
@@ -371,7 +378,7 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
         alert.setView(confirmDialog);
 
         //Creating an alert dialog
-        final AlertDialog alertDialog = alert.create();
+        alertDialog = alert.create();
         alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         //Displaying the alert dialog
@@ -432,8 +439,8 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(getApplicationContext(), "Wrong OTP Please Try Again", Toast.LENGTH_LONG).show();
 
+                    Toast.makeText(getApplicationContext(), "Wrong OTP Please Try Again", Toast.LENGTH_LONG).show();
                 }
             }
         }, new Response.ErrorListener() {
@@ -589,6 +596,7 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
         active = true;
         LocalBroadcastManager.getInstance(this).registerReceiver(showVerifyDialogReciever, new IntentFilter("verifyshow"));
         LocalBroadcastManager.getInstance(this).registerReceiver(dismissVerifyDialogReciever, new IntentFilter("verifydismiss"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(dismissOtpDialogReciever, new IntentFilter("verifyotp"));
     }
 
     @Override
@@ -596,6 +604,7 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
         active = false;
         LocalBroadcastManager.getInstance(this).unregisterReceiver(showVerifyDialogReciever);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(dismissVerifyDialogReciever);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(dismissOtpDialogReciever);
 
         super.onStop();
     }
@@ -615,6 +624,12 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
         if (pd != null) {
 
             pd.dismiss();
+        }
+    }
+
+    public void dismissotpDialog() {
+        if (alertDialog != null) {
+            alertDialog.dismiss();
         }
     }
 
