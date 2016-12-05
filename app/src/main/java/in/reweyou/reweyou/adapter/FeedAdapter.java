@@ -442,11 +442,11 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 viewHolder.image.setVisibility(View.GONE);
             } else {
                 viewHolder.image.setAdjustViewBounds(false);
-                Glide.with(mContext).load(messagelist.get(position).getGif()).asGif().placeholder(R.drawable.irongrip).diskCacheStrategy(DiskCacheStrategy.SOURCE).error(R.drawable.ic_error).dontAnimate().into(viewHolder.image);
+                Glide.with(mContext).load(messagelist.get(position).getGif()).asGif().placeholder(R.drawable.irongrip).diskCacheStrategy(DiskCacheStrategy.SOURCE).error(R.drawable.ic_broken_image_black_48dp).dontAnimate().into(viewHolder.image);
             }
         } else {
             viewHolder.image.setAdjustViewBounds(true);
-            Glide.with(mContext).load(messagelist.get(position).getImage()).diskCacheStrategy(DiskCacheStrategy.SOURCE).override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).error(R.drawable.ic_error).dontAnimate().into(viewHolder.image);
+            Glide.with(mContext).load(messagelist.get(position).getImage()).diskCacheStrategy(DiskCacheStrategy.SOURCE).override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).error(R.drawable.ic_broken_image_black_48dp).dontAnimate().into(viewHolder.image);
         }
     }
 
@@ -458,7 +458,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             viewHolder.image.setVisibility(View.VISIBLE);
             viewHolder.image.setColorFilter(Color.argb(150, 255, 255, 255)); // White Tint
 
-            Glide.with(mContext).load(messagelist.get(position).getImage()).placeholder(R.drawable.irongrip).diskCacheStrategy(DiskCacheStrategy.SOURCE).fallback(R.drawable.ic_reload).error(R.drawable.ic_error).dontAnimate().into(viewHolder.image);
+            Glide.with(mContext).load(messagelist.get(position).getImage()).placeholder(R.drawable.irongrip).diskCacheStrategy(DiskCacheStrategy.SOURCE).fallback(R.drawable.ic_reload).error(R.drawable.ic_broken_image_black_48dp).dontAnimate().into(viewHolder.image);
         }
     }
 
