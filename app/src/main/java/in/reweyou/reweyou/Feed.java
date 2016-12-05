@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -33,6 +34,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -336,23 +338,54 @@ public class Feed extends AppCompatActivity {
 
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.menu_feed, menu);
 
         SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView =
+        final SearchView searchView =
                 (SearchView) menu.findItem(R.id.action_search).getActionView();
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
+        ((EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text)).setTextColor(Color.BLACK);
+        ((EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text)).setHintTextColor(getResources().getColor(R.color.black2));
+        ((EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text)).setHint("Search Reports");
+        ((EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text)).setTextSize(16.0f);
 
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // Toast like print
 
+                if (!searchView.isIconified()) {
+                    searchView.setIconified(true);
+                }
+                menu.findItem(R.id.action_search).collapseActionView();
+
+                if (!query.isEmpty()) {
+                    Intent i = new Intent(Feed.this, SearchResultsActivity.class);
+                    i.putExtra("query", query);
+                    startActivity(i);
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                // UserFeedback.show( "SearchOnQueryTextChanged: " + s);
+                return false;
+            }
+        });
+        setNotificationIcon(menu);
+
+        return true;
+    }
+
+    private void setNotificationIcon(Menu menu) {
         MenuItem item = menu.findItem(R.id.action_notification);
         MenuItemCompat.setActionView(item, R.layout.notification_icon_layout);
         RelativeLayout notifCount = (RelativeLayout) MenuItemCompat.getActionView(item);
-
         tv = (TextView) notifCount.findViewById(R.id.actionbar_notifcation_textview);
-
         ImageView im = (ImageView) notifCount.findViewById(R.id.im);
         im.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -363,7 +396,6 @@ public class Feed extends AppCompatActivity {
             }
         });
 
-        return true;
     }
 
     @Override
@@ -417,6 +449,8 @@ public class Feed extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+
+
         if (doubleBackToExitPressedOnce) {
             moveTaskToBack(true);
         }

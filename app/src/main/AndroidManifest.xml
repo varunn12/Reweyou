@@ -48,9 +48,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar.Feed">
-            <meta-data
-                android:name="android.app.default_searchable"
-                android:value=".SearchResultsActivity" />
+
         </activity>
         <activity
             android:name=".PostReport"
@@ -73,19 +71,8 @@
         </activity>
         <activity android:name=".CameraActivity" />
         <activity android:name=".VideoUpload" />
-        <activity
-            android:name=".SearchResultsActivity"
-            android:parentActivityName=".Feed">
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
+        <activity android:name=".SearchResultsActivity" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable" />
-        </activity>
 
         <receiver android:name=".Notification" />
 

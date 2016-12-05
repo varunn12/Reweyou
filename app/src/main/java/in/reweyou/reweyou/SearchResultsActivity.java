@@ -1,40 +1,21 @@
 package in.reweyou.reweyou;
 
-import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkError;
-import com.android.volley.NoConnectionError;
-import com.android.volley.ParseError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.ServerError;
-import com.android.volley.TimeoutError;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import in.reweyou.reweyou.adapter.CityAdapter;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.fragment.SecondFragment;
 import in.reweyou.reweyou.model.MpModel;
-import in.reweyou.reweyou.utils.Constants;
 
 public class SearchResultsActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
@@ -80,6 +61,7 @@ public class SearchResultsActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);*/
 
         //makeRequest();
+        if (query != null)
         setdata();
     }
 
@@ -112,59 +94,16 @@ public class SearchResultsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }*/
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-        handleIntent(intent);
-    }
 
     private void handleIntent(Intent intent) {
 
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            query = intent.getStringExtra(SearchManager.QUERY);
-            // new JSONTask().execute(query);
-        }
+        if (intent.hasExtra("query"))
+            query = intent.getStringExtra("query");
+        // new JSONTask().execute(query);
+
+
     }
 
-    private void makeRequest() {
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.SEARCH_QUERY,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.d("responsesearch", response);
-                        if (response != null) {
-                            if (!response.isEmpty()) {
-                                setdata();
-                            }
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        if (error instanceof NoConnectionError) {
-                            showSnackBar("no internet connectivity");
-                        } else if (error instanceof TimeoutError) {
-                            showSnackBar("poor internet connectivity");
-                        } else if (error instanceof NetworkError || error instanceof ParseError || error instanceof ServerError) {
-                            showSnackBar("something went wrong");
-                        }
-                    }
-                }) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> map = new HashMap<String, String>();
-                //   map.put("number", sessionManager.getMobileNumber());
-                map.put("query", query);
-
-               /* map.put("token", session.getKeyAuthToken());
-                map.put("deviceid", session.getDeviceid());*/
-
-                return map;
-            }
-        };
-        RequestQueue requestQueue = Volley.newRequestQueue(SearchResultsActivity.this);
-        requestQueue.add(stringRequest);
-    }
 
     private void setdata() {
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -266,16 +205,6 @@ public class SearchResultsActivity extends AppCompatActivity {
         }
     }
 */
-
-    private void showSnackBar(String msg) {
-        Snackbar.make(findViewById(R.id.coordinatorLayout), msg, Snackbar.LENGTH_LONG).setDuration(Snackbar.LENGTH_INDEFINITE)
-                .setAction("RETRY", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        makeRequest();
-                    }
-                }).show();
-    }
 
 /*
     static class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
