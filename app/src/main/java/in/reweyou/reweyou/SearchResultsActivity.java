@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.ProgressBar;
 
 import java.util.List;
 
@@ -22,7 +21,6 @@ public class SearchResultsActivity extends AppCompatActivity {
     private List<MpModel> messagelist;
     private CityAdapter adapter;
     private String query;
-    private ProgressBar progressBar;
     private Toolbar toolbar;
     private UserSessionManager sessionManager;
 
@@ -54,8 +52,7 @@ public class SearchResultsActivity extends AppCompatActivity {
 */
 
         //Progress bar
-        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
-        progressBar.setVisibility(View.VISIBLE);
+
        /* getSupportActionBar().setTitle(query);
         adapter=new CityAdapter(SearchResultsActivity.this,messagelist);
         recyclerView.setAdapter(adapter);*/
