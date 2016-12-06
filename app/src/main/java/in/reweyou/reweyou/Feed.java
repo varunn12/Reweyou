@@ -34,6 +34,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -356,6 +357,11 @@ public class Feed extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 // Toast like print
+                View view = Feed.this.getCurrentFocus();
+                if (view != null) {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
 
                 if (!searchView.isIconified()) {
                     searchView.setIconified(true);
@@ -367,6 +373,8 @@ public class Feed extends AppCompatActivity {
                     i.putExtra("query", query);
                     startActivity(i);
                 }
+
+
                 return false;
             }
 
