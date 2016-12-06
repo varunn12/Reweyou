@@ -786,7 +786,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
     private void compressVideo() {
         Log.d("here", "here");
         Glide.with(PostReport.this).load(new File(selectedVideoPath)).asBitmap()
-                .toBytes(Bitmap.CompressFormat.JPEG, 70)
+                .toBytes(Bitmap.CompressFormat.JPEG, 60)
                 .fitCenter()
                 .atMost()
                 .override(700, 700)
@@ -1166,8 +1166,22 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                 } else if (result.trim().equals(Constants.AUTH_ERROR)) {
                     Log.d("autherror", "errorauth");
                     session.logoutUser();
+                } else if (result.isEmpty()) {
+                    PostReport.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(PostReport.this, "file upload time out!", Toast.LENGTH_SHORT).show();
+
+                        }
+                    });
                 } else {
-                    Toast.makeText(PostReport.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+                    PostReport.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(PostReport.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+
+                        }
+                    });
                 }
             }
         });
