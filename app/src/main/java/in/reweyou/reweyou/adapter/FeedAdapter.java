@@ -459,7 +459,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         } else {
             viewHolder.play.setVisibility(View.VISIBLE);
             viewHolder.image.setVisibility(View.VISIBLE);
-            viewHolder.image.setColorFilter(Color.argb(150, 255, 255, 255)); // black Tint
+            viewHolder.image.setColorFilter(Color.argb(150, 0, 0, 0)); // black Tint
 
 
             Glide.with(mContext).load(messagelist.get(position).getImage()).placeholder(R.drawable.irongrip).diskCacheStrategy(DiskCacheStrategy.SOURCE).fallback(R.drawable.ic_reload).error(R.drawable.ic_broken_image_black_48dp).listener(new RequestListener<String, GlideDrawable>() {

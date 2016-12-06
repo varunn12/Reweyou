@@ -1030,7 +1030,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                 previewContainer.setVisibility(View.VISIBLE);
                 previewPlayVideoButton.setVisibility(View.VISIBLE);
                 logoContainer.setVisibility(View.GONE);
-                previewImageView.setColorFilter(Color.argb(150, 255, 255, 255)); // White Tint
+                previewImageView.setColorFilter(Color.argb(150, 0, 0, 0)); // White Tint
 
                 previewImageView.setVisibility(View.VISIBLE);
                 previewImageViewGif.setVisibility(View.GONE);
