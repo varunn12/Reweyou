@@ -590,8 +590,6 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                     });
 
 
-
-
                 }
 
 
@@ -840,6 +838,14 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                                 } else if (result.trim().equals(Constants.AUTH_ERROR)) {
                                     Log.d("autherror", "errorauth");
                                     session.logoutUser();
+                                } else if (result.isEmpty()) {
+                                    PostReport.this.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(PostReport.this, "file upload time out!", Toast.LENGTH_SHORT).show();
+
+                                        }
+                                    });
                                 } else {
                                     PostReport.this.runOnUiThread(new Runnable() {
                                         @Override
@@ -849,8 +855,11 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                                         }
                                     });
                                 }
+
                             }
-                        });
+                                }
+
+                        );
 
                        /* com.loopj.android.http.AsyncHttpClient client = new com.loopj.android.http.AsyncHttpClient();
 
@@ -948,12 +957,14 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                         uv.execute();*/
                     }
 
-                    @Override
-                    public void onLoadFailed(Exception ex, Drawable ignore) {
-                        Log.d("ex", ex.getMessage());
+                          @Override
+                          public void onLoadFailed(Exception ex, Drawable ignore) {
+                              Log.d("ex", ex.getMessage());
 
-                    }
-                });
+                          }
+    }
+
+                );
 
     }
 
