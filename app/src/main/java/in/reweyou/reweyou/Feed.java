@@ -324,15 +324,23 @@ public class Feed extends AppCompatActivity {
             int dataType = new HandleActivityResult().handleResult(reqCode, resCode, data);
             switch (dataType) {
                 case HANDLE_IMAGE:
-                    Intent i = new Intent(this, PostReport.class);
-                    i.putExtra("dataImage", data.getData().toString());
-                    startActivity(i);
+                    Uri uri = data.getData();
+                    if (uri != null) {
+                        Intent i = new Intent(this, PostReport.class);
+                        i.putExtra("dataImage", uri.toString());
+                        startActivity(i);
+                    } else Log.w("uri", "null");
+
+
                     break;
                 case HANDLE_VIDEO:
-                    Intent i2 = new Intent(this, PostReport.class);
-                    UploadOptions uploadOptions = new UploadOptions(Feed.this);
-                    i2.putExtra("dataVideo", uploadOptions.getAbsolutePath(data.getData()));
-                    startActivity(i2);
+                    Uri uri2 = data.getData();
+                    if (uri2 != null) {
+                        Intent i2 = new Intent(this, PostReport.class);
+                        i2.putExtra("dataVideo", uri2.toString());
+                        startActivity(i2);
+                    } else Log.w("uri", "null");
+
             }
         }
     }
@@ -460,7 +468,7 @@ public class Feed extends AppCompatActivity {
 
 
         if (doubleBackToExitPressedOnce) {
-            moveTaskToBack(true);
+            finish();
         }
 
         this.doubleBackToExitPressedOnce = true;

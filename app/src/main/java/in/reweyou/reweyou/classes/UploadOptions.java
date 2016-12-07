@@ -43,7 +43,7 @@ public class UploadOptions {
     private PermissionsChecker checker;
 
 
-    private int REQUEST_CAMERA = 0, SELECT_FILE = 1, REQUEST_VIDEO = 3;
+    private int REQUEST_CAMERA = 0, SELECT_IMAGE_FILE = 1, REQUEST_VIDEO = 3;
     private ImageView btn_camera;
     private ImageView btn_video;
     private ImageView btn_gif;
@@ -126,7 +126,7 @@ public class UploadOptions {
         } else {
             Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             intent.setType("image/*");
-            ((Activity) context).startActivityForResult(intent, SELECT_FILE);
+            ((Activity) context).startActivityForResult(intent, SELECT_IMAGE_FILE);
             UILApplication.getInstance().trackEvent("Gallery", "Gallery", "For Pics");
         }
     }

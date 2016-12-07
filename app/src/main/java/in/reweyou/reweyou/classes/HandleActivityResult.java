@@ -25,7 +25,7 @@ public class HandleActivityResult {
             return 0;
         } else if (resultCode == RESULT_OK && requestCode == SELECT_FILE && data != null) {
             return HANDLE_IMAGE;
-        } else if (requestCode == REQUEST_TAKE_GALLERY_VIDEO && resultCode == RESULT_OK) {
+        } else if (resultCode == RESULT_OK && requestCode == REQUEST_TAKE_GALLERY_VIDEO) {
             return HANDLE_VIDEO;
         }
 

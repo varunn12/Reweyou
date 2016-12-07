@@ -53,7 +53,7 @@ public class Videorow extends AppCompatActivity {
         Intent in = getIntent();
         Bundle bundle = getIntent().getExtras();
         url = bundle.getString("myData");
-
+        Log.d("ewdwefdwef", url);
         initToolbar();
 
       /*  Headline = (TextView) findViewById(R.id.Who);

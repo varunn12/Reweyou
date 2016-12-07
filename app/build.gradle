@@ -58,6 +58,7 @@ dependencies {
     compile 'it.sephiroth.android.library.imagezoom:imagezoom:+'
 
     compile 'com.koushikdutta.async:androidasync:2.+'
+    compile 'com.theartofdev.edmodo:android-image-cropper:2.3.+'
 
 
 }
