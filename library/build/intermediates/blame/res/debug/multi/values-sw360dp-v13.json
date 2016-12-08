@@ -1,0 +1,26 @@
+[
+    {
+        "outputFile": "/home/master/AndroidStudioProjects/Reweyou/library/build/intermediates/incremental/mergeDebugResources/merged.dir/values-sw360dp-v13/values-sw360dp-v13.xml",
+        "map": [
+            {
+                "to": {
+                    "startLine": 2,
+                    "startColumn": 4,
+                    "startOffset": 55,
+                    "endColumn": 71,
+                    "endOffset": 122
+                },
+                "from": {
+                    "file": "/home/master/AndroidStudioProjects/Reweyou/library/src/main/res/values-sw360dp/dimen.xml",
+                    "position": {
+                        "startLine": 2,
+                        "startColumn": 4,
+                        "startOffset": 55,
+                        "endColumn": 71,
+                        "endOffset": 122
+                    }
+                }
+            }
+        ]
+    }
+]

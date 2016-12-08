@@ -67,7 +67,7 @@ import in.reweyou.reweyou.PostReport;
 import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.SinglePostActivity;
 import in.reweyou.reweyou.UserProfile;
-import in.reweyou.reweyou.Videorow;
+import in.reweyou.reweyou.VideoDisplay;
 import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.CustomTabActivityHelper;
 import in.reweyou.reweyou.classes.CustomTabsOnClickListener;
@@ -1109,17 +1109,15 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 @Override
                 public void onClick(View view) {
 
-                    isInternetPresent = cd.isConnectingToInternet();
-                    if (isInternetPresent) {
-                        Bundle bundle = new Bundle();
-                        bundle.putString("myData", messagelist.get(getAdapterPosition()).getVideo());
 
-                        Intent in = new Intent(mContext, Videorow.class);
-                        in.putExtras(bundle);
+                    Intent in = new Intent(mContext, VideoDisplay.class);
+                    in.putExtra("myData", messagelist.get(getAdapterPosition()).getVideo());
+                    in.putExtra("tag", messagelist.get(getAdapterPosition()).getCategory());
+                    in.putExtra("headline", messagelist.get(getAdapterPosition()).getHead());
+                    if (messagelist.get(getAdapterPosition()).getHeadline() != null)
+                        in.putExtra("description", messagelist.get(getAdapterPosition()).getHeadline());
                         mContext.startActivity(in);
-                    } else {
-                        Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_SHORT).show();
-                    }
+
                 }
             });
 

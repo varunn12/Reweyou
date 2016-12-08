@@ -28,6 +28,8 @@ repositories
                     {
                         url "https://jitpack.io"
                     }
+            maven { url 'https://dl.bintray.com/drummer-aidan/maven' }
+
         }
 
 dependencies {
@@ -61,6 +63,9 @@ dependencies {
     compile 'com.theartofdev.edmodo:android-image-cropper:2.3.+'
 
 
+
+
+    compile project(path: ':library')
 }
 
 apply plugin: 'com.google.gms.google-services'
