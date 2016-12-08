@@ -12,12 +12,12 @@
         "source": "/home/master/AndroidStudioProjects/Reweyou/library/build/intermediates/exploded-aar/com.android.support/appcompat-v7/25.0.1/res/layout/abc_screen_simple_overlay_action_mode.xml"
     },
     {
-        "merged": "/home/master/AndroidStudioProjects/Reweyou/library/build/intermediates/res/merged/debug/layout/exomedia_default_native_texture_video_view.xml",
-        "source": "/home/master/AndroidStudioProjects/Reweyou/library/src/main/res/layout/exomedia_default_native_texture_video_view.xml"
-    },
-    {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/library/build/intermediates/res/merged/debug/layout/notification_template_big_media_custom.xml",
         "source": "/home/master/AndroidStudioProjects/Reweyou/library/build/intermediates/exploded-aar/com.android.support/appcompat-v7/25.0.1/res/layout/notification_template_big_media_custom.xml"
+    },
+    {
+        "merged": "/home/master/AndroidStudioProjects/Reweyou/library/build/intermediates/res/merged/debug/layout/exomedia_default_native_texture_video_view.xml",
+        "source": "/home/master/AndroidStudioProjects/Reweyou/library/src/main/res/layout/exomedia_default_native_texture_video_view.xml"
     },
     {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/library/build/intermediates/res/merged/debug/layout/notification_template_media.xml",
@@ -36,12 +36,12 @@
         "source": "/home/master/AndroidStudioProjects/Reweyou/library/build/intermediates/exploded-aar/com.android.support/appcompat-v7/25.0.1/res/layout/notification_template_media_custom.xml"
     },
     {
-        "merged": "/home/master/AndroidStudioProjects/Reweyou/library/build/intermediates/res/merged/debug/layout/exomedia_default_exo_surface_video_view.xml",
-        "source": "/home/master/AndroidStudioProjects/Reweyou/library/src/main/res/layout/exomedia_default_exo_surface_video_view.xml"
-    },
-    {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/library/build/intermediates/res/merged/debug/layout/notification_template_custom_big.xml",
         "source": "/home/master/AndroidStudioProjects/Reweyou/library/build/intermediates/exploded-aar/com.android.support/appcompat-v7/25.0.1/res/layout/notification_template_custom_big.xml"
+    },
+    {
+        "merged": "/home/master/AndroidStudioProjects/Reweyou/library/build/intermediates/res/merged/debug/layout/exomedia_default_exo_surface_video_view.xml",
+        "source": "/home/master/AndroidStudioProjects/Reweyou/library/src/main/res/layout/exomedia_default_exo_surface_video_view.xml"
     },
     {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/library/build/intermediates/res/merged/debug/layout/abc_action_mode_close_item_material.xml",
