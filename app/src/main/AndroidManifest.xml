@@ -220,6 +220,7 @@
         <activity
             android:name=".VideoDisplay"
             android:label="@string/title_activity_video_display"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar.Preview"></activity>
     </application>
 
