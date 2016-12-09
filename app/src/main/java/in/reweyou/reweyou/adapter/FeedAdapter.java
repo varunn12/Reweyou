@@ -1080,7 +1080,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     if (messagelist.get(getAdapterPosition()).getGif().isEmpty()) {
                         Bundle bundle = new Bundle();
                         bundle.putString("myData", messagelist.get(getAdapterPosition()).getImage());
-                        bundle.putString("headline", messagelist.get(getAdapterPosition()).getHeadline());
+                        bundle.putString("tag", messagelist.get(getAdapterPosition()).getCategory());
+                        bundle.putString("headline", messagelist.get(getAdapterPosition()).getHead());
                         Intent in = new Intent(mContext, FullImage.class);
                         in.putExtras(bundle);
                         mContext.startActivity(in);

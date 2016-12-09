@@ -4,48 +4,44 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.ProgressBar;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
-import in.reweyou.reweyou.classes.ConnectionDetector;
 import it.sephiroth.android.library.imagezoom.ImageViewTouch;
 
 public class FullImage extends AppCompatActivity {
-    Boolean isInternetPresent = false;
-    ConnectionDetector cd;
-    private String i;
-    private ProgressBar progressBar;
+
+    private String imagepath;
     private ImageViewTouch imageView;
-    private String text;
     private Toolbar toolbar;
+    private String tag;
+    private TextView headline;
+    private String headlinetext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_full_image);
         initToolbar();
+        headline = (TextView) findViewById(R.id.headline);
+
 
         Bundle bundle = getIntent().getExtras();
-        i = bundle.getString("myData");
+        imagepath = bundle.getString("myData");
+        tag = bundle.getString("tag");
+        headlinetext = bundle.getString("headline");
         imageView = (ImageViewTouch) findViewById(R.id.image);
-        // Do it on Application start
-        cd = new ConnectionDetector(FullImage.this);
+        getSupportActionBar().setTitle("#" + tag);
+        showimage(imagepath);
 
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        progressBar.setVisibility(View.VISIBLE);
-
-        // Then later, when you want to display image
-
-        isInternetPresent = cd.isConnectingToInternet();
-        if (isInternetPresent) {
-            showimage(i);
-        } else {
-            Toast.makeText(this, "You are not connected to Internet", Toast.LENGTH_LONG).show();
+        if (headlinetext != null) {
+            if (!headlinetext.isEmpty()) {
+                this.headline.setVisibility(View.VISIBLE);
+                this.headline.setText(headlinetext);
+            }
         }
-
 
     }
 
@@ -65,7 +61,6 @@ public class FullImage extends AppCompatActivity {
     }
 
     private void showimage(String i) {
-        progressBar.setVisibility(View.GONE);
         Glide.with(FullImage.this).load(i).diskCacheStrategy(DiskCacheStrategy.SOURCE).fitCenter().error(R.drawable.ic_error).into(imageView);
     }
 
