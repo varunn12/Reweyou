@@ -28,9 +28,6 @@ public class VideoDisplay extends AppCompatActivity implements OnPreparedListene
         setContentView(R.layout.activity_video_display);
 
         headline = (TextView) findViewById(R.id.headline);
-        description = (TextView) findViewById(R.id.description);
-
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
@@ -51,7 +48,6 @@ public class VideoDisplay extends AppCompatActivity implements OnPreparedListene
         String url = i.getStringExtra("myData");
         String tag = i.getStringExtra("tag");
         String headline = i.getStringExtra("headline");
-        String description = i.getStringExtra("description");
 
         if (headline != null) {
             if (!headline.isEmpty()) {
@@ -59,8 +55,6 @@ public class VideoDisplay extends AppCompatActivity implements OnPreparedListene
                 this.headline.setText(headline);
             }
         }
-        this.description.setVisibility(View.VISIBLE);
-        this.description.setText(description);
 
 
         getSupportActionBar().setTitle("#" + tag);

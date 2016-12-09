@@ -25,17 +25,6 @@
         android:textStyle="bold"
         android:visibility="gone" />
 
-    <TextView
-        android:id="@+id/description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginTop="4dp"
-
-        android:text="abc"
-        android:textColor="#fff"
-        android:textSize="14dp"
-        android:visibility="gone" />
 
     <com.devbrackets.android.exomedia.ui.widget.EMVideoView
         android:id="@+id/video_view"
