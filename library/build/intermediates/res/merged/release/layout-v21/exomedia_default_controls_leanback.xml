@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.devbrackets.android.exomedia.ui.widget.FitsSystemWindowRelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.devbrackets.android.exomedia.ui.widget.FitsSystemWindowRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -35,7 +34,7 @@
                 android:textColor="@android:color/white"
                 android:textSize="28sp"
                 android:textStyle="bold"
-                tools:text="The Video Title"/>
+                tools:text="The Video Title" />
 
             <TextView
                 android:id="@+id/exomedia_controls_sub_title"
@@ -43,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/white"
                 android:textSize="18sp"
-                tools:text="The Video Album"/>
+                tools:text="The Video Album" />
 
             <TextView
                 android:id="@+id/exomedia_controls_description"
@@ -51,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/white"
                 android:textSize="14sp"
-                tools:text="The Video Artist"/>
+                tools:text="The Video Artist" />
         </LinearLayout>
 
         <ProgressBar
@@ -66,7 +65,7 @@
             android:progressDrawable="@drawable/leanback_progress_horizontal"
             tools:max="100"
             tools:progress="70"
-            tools:secondaryProgress="93"/>
+            tools:secondaryProgress="93" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -83,7 +82,7 @@
                 android:paddingEnd="16dp"
                 android:paddingStart="16dp"
                 android:textColor="@android:color/white"
-                tools:text="1:06:29"/>
+                tools:text="1:06:29" />
 
             <TextView
                 android:id="@+id/exomedia_controls_end_time"
@@ -95,7 +94,7 @@
                 android:paddingStart="16dp"
                 android:textColor="@android:color/white"
                 tools:ignore="RelativeOverlap"
-                tools:text="1:23:49"/>
+                tools:text="1:23:49" />
 
             <ImageView
                 android:id="@+id/exomedia_controls_leanback_ripple"
@@ -104,7 +103,7 @@
                 android:layout_centerHorizontal="true"
                 android:scaleType="centerCrop"
                 android:src="@drawable/exomedia_leanback_ripple_selector"
-                tools:ignore="ContentDescription"/>
+                tools:ignore="ContentDescription" />
 
 
             <LinearLayout
@@ -126,7 +125,7 @@
                     android:src="@drawable/exomedia_ic_skip_previous_white"
                     android:visibility="gone"
                     tools:ignore="ContentDescription"
-                    tools:visibility="visible"/>
+                    tools:visibility="visible" />
 
                 <ImageButton
                     android:id="@+id/exomedia_controls_rewind_btn"
@@ -141,7 +140,7 @@
                     android:src="@drawable/exomedia_ic_rewind_white"
                     android:visibility="gone"
                     tools:ignore="ContentDescription"
-                    tools:visibility="visible"/>
+                    tools:visibility="visible" />
 
 
                 <ImageButton
@@ -154,7 +153,7 @@
                     android:nextFocusLeft="@id/exomedia_controls_rewind_btn"
                     android:nextFocusRight="@+id/exomedia_controls_fast_forward_btn"
                     android:src="@drawable/exomedia_ic_play_arrow_white"
-                    tools:ignore="ContentDescription"/>
+                    tools:ignore="ContentDescription" />
 
                 <ImageButton
                     android:id="@+id/exomedia_controls_fast_forward_btn"
@@ -169,7 +168,7 @@
                     android:src="@drawable/exomedia_ic_fast_forward_white"
                     android:visibility="gone"
                     tools:ignore="ContentDescription"
-                    tools:visibility="visible"/>
+                    tools:visibility="visible" />
 
                 <ImageButton
                     android:id="@+id/exomedia_controls_next_btn"
@@ -183,7 +182,7 @@
                     android:src="@drawable/exomedia_ic_skip_next_white"
                     android:visibility="gone"
                     tools:ignore="ContentDescription"
-                    tools:visibility="visible"/>
+                    tools:visibility="visible" />
             </LinearLayout>
 
             <ProgressBar
@@ -192,7 +191,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
         </RelativeLayout>
     </LinearLayout>

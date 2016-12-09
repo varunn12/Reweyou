@@ -4,16 +4,16 @@
         "source": "/home/master/AndroidStudioProjects/Reweyou/library/build/intermediates/exploded-aar/com.android.support/appcompat-v7/25.0.1/res/drawable/abc_ratingbar_material.xml"
     },
     {
-        "merged": "/home/master/AndroidStudioProjects/Reweyou/library/build/intermediates/res/merged/release/drawable/abc_edit_text_material.xml",
-        "source": "/home/master/AndroidStudioProjects/Reweyou/library/build/intermediates/exploded-aar/com.android.support/appcompat-v7/25.0.1/res/drawable/abc_edit_text_material.xml"
+        "merged": "/home/master/AndroidStudioProjects/Reweyou/library/build/intermediates/res/merged/release/drawable/abc_item_background_holo_dark.xml",
+        "source": "/home/master/AndroidStudioProjects/Reweyou/library/build/intermediates/exploded-aar/com.android.support/appcompat-v7/25.0.1/res/drawable/abc_item_background_holo_dark.xml"
     },
     {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/library/build/intermediates/res/merged/release/drawable/abc_ic_search_api_material.xml",
         "source": "/home/master/AndroidStudioProjects/Reweyou/library/build/intermediates/exploded-aar/com.android.support/appcompat-v7/25.0.1/res/drawable/abc_ic_search_api_material.xml"
     },
     {
-        "merged": "/home/master/AndroidStudioProjects/Reweyou/library/build/intermediates/res/merged/release/drawable/abc_item_background_holo_dark.xml",
-        "source": "/home/master/AndroidStudioProjects/Reweyou/library/build/intermediates/exploded-aar/com.android.support/appcompat-v7/25.0.1/res/drawable/abc_item_background_holo_dark.xml"
+        "merged": "/home/master/AndroidStudioProjects/Reweyou/library/build/intermediates/res/merged/release/drawable/abc_edit_text_material.xml",
+        "source": "/home/master/AndroidStudioProjects/Reweyou/library/build/intermediates/exploded-aar/com.android.support/appcompat-v7/25.0.1/res/drawable/abc_edit_text_material.xml"
     },
     {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/library/build/intermediates/res/merged/release/drawable/abc_btn_check_material.xml",
