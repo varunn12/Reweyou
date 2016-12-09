@@ -1,6 +1,5 @@
 package in.reweyou.reweyou.adapter;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -37,7 +36,7 @@ import static in.reweyou.reweyou.utils.Constants.URL_NOTI_READ_STATUS;
  */
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.ViewHolder> {
-    private Context context;
+    private Notifications context;
     private List<Object> list;
 
     public NotificationAdapter(Notifications notifications) {
@@ -130,6 +129,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                             Log.d("ResponseLike", response);
                             if (response.equals("true ")) {
 
+                                context.sendReqForNotiCount();
                                 if (list.get(adapterPosition) instanceof NotificationLikesModel) {
                                     ((NotificationLikesModel) list.get(getAdapterPosition())).setReadstatus("true");
                                     notifyItemChanged(getAdapterPosition());

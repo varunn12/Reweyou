@@ -78,6 +78,7 @@ import static in.reweyou.reweyou.classes.UploadOptions.PERMISSION_ALL_VIDEO_CAPT
 import static in.reweyou.reweyou.utils.Constants.AUTH_ERROR;
 
 public class Feed extends AppCompatActivity {
+    public static final int REQ_CODE_NOTI_COUNT = 45;
     static final String[] PERMISSIONS = new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private static final int REQUEST_CODE = 0;
     private static final String PACKAGE_URL_SCHEME = "package:";
@@ -320,6 +321,8 @@ public class Feed extends AppCompatActivity {
         if (reqCode == REQ_CODE_PROFILE && resCode == RESULT_OK) {
             //called when profilepicture is updated by user
             Glide.with(Feed.this).load(session.getProfilePicture()).error(R.drawable.download).into(image);
+        } else if (reqCode == REQ_CODE_NOTI_COUNT && resCode == RESULT_OK) {
+            makeNotificationsRequest();
         } else {
             int dataType = new HandleActivityResult().handleResult(reqCode, resCode, data);
             switch (dataType) {
@@ -407,7 +410,7 @@ public class Feed extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent notifications = new Intent(Feed.this, Notifications.class);
-                startActivity(notifications);
+                startActivityForResult(notifications, REQ_CODE_NOTI_COUNT);
                 overridePendingTransition(0, 0);
             }
         });
@@ -647,7 +650,7 @@ public class Feed extends AppCompatActivity {
                     case R.id.notifications:
                         drawerLayout.closeDrawers();
                         Intent notif = new Intent(Feed.this, Notifications.class);
-                        startActivity(notif);
+                        startActivityForResult(notif, REQ_CODE_NOTI_COUNT);
                         overridePendingTransition(0, 0);
                         break;
                     case R.id.New:
@@ -679,7 +682,6 @@ public class Feed extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent profile = new Intent(Feed.this, MyProfile.class);
-
                 startActivityForResult(profile, REQ_CODE_PROFILE);
             }
         });

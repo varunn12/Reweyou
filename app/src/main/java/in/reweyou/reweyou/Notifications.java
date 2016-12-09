@@ -1,7 +1,9 @@
 package in.reweyou.reweyou;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -309,6 +311,13 @@ public class Notifications extends AppCompatActivity {
         super.onBackPressed();
         overridePendingTransition(0, 0);
 
+    }
+
+
+    public void sendReqForNotiCount() {
+        Log.d("hrere", "123");
+        Intent i = new Intent();
+        setResult(Activity.RESULT_OK, i);
     }
 }
 
