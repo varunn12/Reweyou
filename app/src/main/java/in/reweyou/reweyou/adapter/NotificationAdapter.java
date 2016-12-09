@@ -54,7 +54,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             holder.who.setText(((NotificationLikesModel) list.get(position)).getReviewer_name());
             holder.Continue.setText(" likes your report.");
             holder.time.setText(((NotificationLikesModel) list.get(position)).getFormattedTime());
-            Glide.with(context).load(((NotificationLikesModel) list.get(position)).getProfilepic()).into(holder.image);
+            Glide.with(context).load(((NotificationLikesModel) list.get(position)).getProfilepic()).error(R.drawable.download).into(holder.image);
             if (((NotificationLikesModel) list.get(position)).getReadstatus().equals("false"))
                 holder.rv.setBackgroundResource(R.drawable.noti_back);
             else
@@ -65,7 +65,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             holder.who.setText(((NotificationCommentsModel) list.get(position)).getReviewer_name());
             holder.Continue.setText(" reacted on your report.");
             holder.time.setText(((NotificationCommentsModel) list.get(position)).getFormattedTime());
-            Glide.with(context).load(((NotificationCommentsModel) list.get(position)).getProfilepic()).into(holder.image);
+            Glide.with(context).load(((NotificationCommentsModel) list.get(position)).getProfilepic()).error(R.drawable.download).into(holder.image);
             if (((NotificationCommentsModel) list.get(position)).getReadstatus().equals("false"))
                 holder.rv.setBackgroundResource(R.drawable.noti_back);
             else holder.rv.setBackgroundResource(R.drawable.noti_back_tint);
