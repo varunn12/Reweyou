@@ -151,11 +151,11 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.toString().trim().length() == 0) {
-                    sendButton.setEnabled(false);
+                    sendButton.setClickable(false);
                     sendButton.setImageResource(R.drawable.button_send_disable);
 
                 } else {
-                    sendButton.setEnabled(true);
+                    sendButton.setClickable(true);
                     sendButton.setImageResource(R.drawable.button_send_comments);
                 }
             }
@@ -166,11 +166,18 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
             }
         });
         sendButton = (ImageView) layout.findViewById(R.id.btn_send);
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (selectedImagePath == null)
+                    makeRequest(null);
+                else uploadSelectedImage();
+            }
+        });
         imagebutton = (ImageView) layout.findViewById(R.id.btn_image);
 
         imagebutton.setOnClickListener(this);
-        sendButton.setOnClickListener(this);
-        sendButton.setEnabled(false);
+        sendButton.setClickable(false);
         recyclerView = (RecyclerView) layout.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         progressBar = (ProgressBar) layout.findViewById(R.id.progress_bar);
@@ -192,16 +199,11 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
 
     @Override
     public void onClick(View v) {
-        if (v == sendButton) {
-            if (selectedImagePath == null)
-                makeRequest(null);
-            else uploadSelectedImage();
-        } else {
+
 
             onImageButtonClick();
 
 
-        }
     }
 
     public void onImageButtonClick() {
@@ -265,6 +267,8 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        loading.dismiss();
+
                         if (error instanceof NoConnectionError) {
                             showToast("no internet connectivity");
                         } else if (error instanceof TimeoutError) {
