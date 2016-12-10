@@ -462,7 +462,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             viewHolder.image.setColorFilter(Color.argb(120, 0, 0, 0)); // black Tint
 
 
-            Glide.with(mContext).load(messagelist.get(position).getImage()).placeholder(R.drawable.irongrip).diskCacheStrategy(DiskCacheStrategy.SOURCE).fallback(R.drawable.ic_reload).error(R.drawable.ic_broken_image_black_48dp).listener(new RequestListener<String, GlideDrawable>() {
+            Glide.with(mContext).load(messagelist.get(position).getImage()).placeholder(R.drawable.irongrip).diskCacheStrategy(DiskCacheStrategy.SOURCE).error(R.drawable.ic_broken_image_black_48dp).listener(new RequestListener<String, GlideDrawable>() {
                 @Override
                 public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
                     viewHolder.play.setVisibility(View.INVISIBLE);
@@ -474,7 +474,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
                     return false;
                 }
-            }).dontAnimate().into(viewHolder.image);
+            }).dontAnimate().override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).into(viewHolder.image);
         }
     }
 
@@ -1117,7 +1117,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     in.putExtra("headline", messagelist.get(getAdapterPosition()).getHead());
                     if (messagelist.get(getAdapterPosition()).getHeadline() != null)
                         in.putExtra("description", messagelist.get(getAdapterPosition()).getHeadline());
-                        mContext.startActivity(in);
+                    mContext.startActivity(in);
 
                 }
             });
