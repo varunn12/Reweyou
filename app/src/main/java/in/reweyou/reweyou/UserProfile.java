@@ -2,7 +2,6 @@ package in.reweyou.reweyou;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -129,16 +128,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         button = (Button) findViewById(R.id.button);
         profilepic = (ImageView) findViewById(R.id.profilepic);
 
-        String fontPath = "fonts/Roboto-Medium.ttf";
-        String thinpath = "fonts/Roboto-Regular.ttf";
-        Typeface font = Typeface.createFromAsset(this.getAssets(), "fontawesome-webfont.ttf");
-        Typeface tf = Typeface.createFromAsset(this.getAssets(), fontPath);
-        Typeface thin = Typeface.createFromAsset(this.getAssets(), thinpath);
-
-        Name.setTypeface(tf);
-        Reports.setTypeface(thin);
-        Info.setTypeface(thin);
-        Readers.setTypeface(thin);
 
         button.setVisibility(View.GONE);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
