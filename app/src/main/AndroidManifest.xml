@@ -68,9 +68,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CameraActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".VideoUpload"
             android:screenOrientation="portrait" />
         <activity android:name=".SearchResultsActivity" />
