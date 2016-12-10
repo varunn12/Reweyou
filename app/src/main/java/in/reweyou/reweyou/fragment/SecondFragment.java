@@ -1,7 +1,6 @@
 package in.reweyou.reweyou.fragment;
 
 import android.app.Activity;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -126,7 +125,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
         recyclerView.setItemAnimator(defaultItemAnimator);
         recyclerView.setItemViewCacheSize(4);
 
-        if (position != 19)
+        if (position != 19 || position != 15)
             recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -275,7 +274,6 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
         df = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss a");
 
 
-        Typeface font = Typeface.createFromAsset(getActivity().getAssets(), "fontawesome-webfont.ttf");
         formattedDate = df.format(c.getTime());
         location = user.get(UserSessionManager.KEY_LOCATION);
 
