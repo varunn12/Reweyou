@@ -125,7 +125,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
         recyclerView.setItemAnimator(defaultItemAnimator);
         recyclerView.setItemViewCacheSize(4);
 
-        if (position != 19 || position != 15)
+        if (position != 19 && position != 15)
             recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
