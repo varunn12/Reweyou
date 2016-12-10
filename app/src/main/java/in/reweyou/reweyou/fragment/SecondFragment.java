@@ -578,9 +578,14 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
     }
 
     @Override
-    public void passDataToFragment() {
+    public void passDataToFragment(boolean net) {
+
         Log.d("posi", String.valueOf(position));
+        if (net)
         onRefresh();
+        else if (topBar != null) {
+            topBar.setVisibility(View.VISIBLE);
+        }
     }
 
 }

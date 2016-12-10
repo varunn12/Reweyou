@@ -453,7 +453,7 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
     }
 
     @Override
-    public void passDataToFragment() {
+    public void passDataToFragment(boolean net) {
 
         onImageButtonClick();
 

@@ -168,7 +168,7 @@ public class SinglePostActivity extends AppCompatActivity {
 
 
                     if (fragmentCommunicator != null)
-                        fragmentCommunicator.passDataToFragment();
+                        fragmentCommunicator.passDataToFragment(false);
                 }
 
                 break;

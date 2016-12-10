@@ -5,5 +5,5 @@ package in.reweyou.reweyou;
  */
 
 public interface FragmentCommunicator {
-    void passDataToFragment();
+    void passDataToFragment(boolean net);
 }

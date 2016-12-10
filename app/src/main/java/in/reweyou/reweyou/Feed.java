@@ -133,15 +133,14 @@ public class Feed extends AppCompatActivity {
         registerReceiver(new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
                 Log.d("netchange", "called");
-                Log.d("netchange", "yes");
-
-
+                boolean net = false;
+                net = cd.isConnectingToInternet();
                 if (fragmentCommunicator != null)
-                    fragmentCommunicator.passDataToFragment();
+                    fragmentCommunicator.passDataToFragment(net);
                 if (fragmentCommunicator2 != null)
-                    fragmentCommunicator2.passDataToFragment();
+                    fragmentCommunicator2.passDataToFragment(net);
                 if (fragmentCommunicator3 != null)
-                    fragmentCommunicator3.passDataToFragment();
+                    fragmentCommunicator3.passDataToFragment(net);
 
 
             }
@@ -175,7 +174,7 @@ public class Feed extends AppCompatActivity {
 
     private void checkforolduserstatus() {
 
-        showProgressBarforOldUserCheck();    //show progress bar when making request to update old user data
+        showProgressBarforOldUserCheck(); //show progress bar when making request to update old user data
         tabLayout.setVisibility(View.GONE); //hide tabs bar as it empty(no tabs name) because we havent set adapter
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.URL_OLD_USER_STATUS,
