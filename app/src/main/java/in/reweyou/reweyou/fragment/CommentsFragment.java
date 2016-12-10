@@ -105,6 +105,7 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
     private String selectedImagePath;
     private TextView previewTextViewDelete;
 
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -311,6 +312,7 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         mContext = activity;
+        Log.d("context3", String.valueOf(mContext));
     }
 
     public void setpreviewImage(String path) {
@@ -430,17 +432,14 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
     }
 
     private void showSnackbar(final String s) {
-        ((Activity) mContext).runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
+
+        Log.d("context4", String.valueOf(mContext));
                 Snackbar.make(((Activity) mContext).findViewById(R.id.main_content), s, Snackbar.LENGTH_INDEFINITE).setAction("RETRY", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         getCommentsRequest(i);
                     }
                 }).show();
-            }
-        });
     }
 
     private void showToast(final String s) {
@@ -464,4 +463,6 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
         setpreviewImage(path);
 
     }
+
+
 }

@@ -70,7 +70,7 @@ public class SinglePostActivity extends AppCompatActivity {
 
     private void initViewPagerAndTabs() {
         viewPager = (ViewPager) findViewById(R.id.viewPager);
-        viewPager.setOffscreenPageLimit(2);
+        viewPager.setOffscreenPageLimit(1);
         viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
