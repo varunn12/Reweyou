@@ -1009,6 +1009,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
 
     private void startImageCropActivity(Uri data) {
         CropImage.activity(data)
+                .setActivityTitle("Crop Image")
                 .setBackgroundColor(Color.parseColor("#90000000"))
                 .setBorderCornerColor(getResources().getColor(R.color.colorPrimaryDark))
                 .setBorderLineColor(getResources().getColor(R.color.colorPrimary))
