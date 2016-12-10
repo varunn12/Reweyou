@@ -62,7 +62,6 @@ public class SinglePostActivity extends AppCompatActivity {
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(SinglePostActivity.this, Feed.class));
                 finish();
             }
         });
@@ -224,8 +223,6 @@ public class SinglePostActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        startActivity(new Intent(SinglePostActivity.this, Feed.class));
-        finish();
     }
 
     private class PagerAdapter extends FragmentStatePagerAdapter {
