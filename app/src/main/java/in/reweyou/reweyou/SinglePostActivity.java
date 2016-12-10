@@ -221,6 +221,13 @@ public class SinglePostActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(SinglePostActivity.this, Feed.class));
+        finish();
+    }
+
     private class PagerAdapter extends FragmentStatePagerAdapter {
 
         private String[] tabs = getResources().getStringArray(R.array.tabs_single_activity);
@@ -264,5 +271,4 @@ public class SinglePostActivity extends AppCompatActivity {
             return tabs[position];
         }
     }
-
 }
