@@ -401,7 +401,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
                         String respo = null;
                         if (position != 19 && position != 15)
-                            respo = MyJSON.getData(getContext(), position);
+                            respo = MyJSON.getData(mContext, position);
                         else
                             respo = MyJSON.getDataCategory(getContext(), position, category);
                         if (respo != null) {
