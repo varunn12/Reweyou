@@ -403,7 +403,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                         if (position != 19 && position != 15)
                             respo = MyJSON.getData(mContext, position);
                         else
-                            respo = MyJSON.getDataCategory(getContext(), position, category);
+                            respo = MyJSON.getDataCategory(mContext, position, category);
                         if (respo != null) {
                             JSONArray parentArray = null;
                             try {
@@ -416,7 +416,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                                     MpModel mpModel = gson.fromJson(finalObject.toString(), MpModel.class);
                                     messagelist.add(mpModel);
                                 }
-                                adapter = new FeedAdapter(getActivity(), messagelist);
+                                adapter = new FeedAdapter(mContext, messagelist);
 
                                 recyclerView.setAdapter(adapter);
 
