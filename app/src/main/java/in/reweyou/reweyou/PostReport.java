@@ -703,7 +703,6 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                 if (file_size < 5) {
                     showPreviewViews(PREVIEW_VIDEO);
                     Glide.with(PostReport.this).load(new File(selectedVideoPath)).override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).into(previewThumbnailView);
-                    selectedVideoPath = uri.getPath();
                     viewType = PREVIEW_VIDEO;
                 } else {
                     AlertDialogBox alertDialogBox = new AlertDialogBox(PostReport.this, "File size exceeded", "Please upload video upto 5 MB in size only...", "OKAY", null) {
@@ -715,8 +714,9 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                         @Override
                         public void onPositiveButtonClick(DialogInterface dialog) {
                             dialog.dismiss();
-                            selectedVideoPath = null;
+                            clearAttachedMediaPaths();
                             hidePreviewViews();
+                            showLogoContainer();
 
                         }
                     };
