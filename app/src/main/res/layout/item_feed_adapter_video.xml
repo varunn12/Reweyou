@@ -189,16 +189,25 @@
 
                 </RelativeLayout>
 
+                <TextView
+                    android:id="@+id/views"
+                    android:layout_width="wrap_content"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical|right"
+                    android:paddingTop="1dp"
+                    android:text="14 views"
+                    android:textColor="@color/main"
+                    android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/reviews"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="24dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginRight="10dp"
-
-                    android:layout_weight="0.5"
                     android:gravity="center_vertical|right"
+                    android:paddingLeft="8dp"
                     android:paddingTop="1dp"
                     android:text="0 Likes"
                     android:textColor="@color/main"

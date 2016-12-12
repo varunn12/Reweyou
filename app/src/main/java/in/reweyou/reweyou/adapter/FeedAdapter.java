@@ -343,6 +343,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         viewHolder.headline.setMovementMethod(LinkMovementMethod.getInstance());
 
 
+        setNumOfViews(viewHolder, position);
+
         setHeadline(viewHolder, position);
 
         setDescription(viewHolder, position, spannable);
@@ -366,6 +368,18 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         setLikedStatus(viewHolder, position);
 
         setFeedCategory(viewHolder, position);
+    }
+
+    private void setNumOfViews(VideoViewHolder viewHolder, int position) {
+        if (messagelist.get(position).getPostviews().equals("0")) {
+            viewHolder.views.setVisibility(View.GONE);
+        } else if (messagelist.get(position).getPostviews().equals("1")) {
+            viewHolder.views.setVisibility(View.VISIBLE);
+            viewHolder.views.setText(messagelist.get(position).getPostviews() + " view");
+        } else {
+            viewHolder.views.setVisibility(View.VISIBLE);
+            viewHolder.views.setText(messagelist.get(position).getPostviews() + " views");
+        }
     }
 
     private void setLikedStatus(BaseViewHolder viewHolder, int position) {
@@ -1096,6 +1110,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private class VideoViewHolder extends BaseViewHolder {
         protected ImageView image;
         private ImageView play;
+        private TextView views;
 
 
         public VideoViewHolder(View view) {
@@ -1104,13 +1119,14 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             image = (ImageView) view.findViewById(R.id.image);
             play = (ImageView) view.findViewById(R.id.play);
+            views = (TextView) view.findViewById(R.id.views);
 
 
             image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
-
+                    increaseViewsRequest();
                     Intent in = new Intent(mContext, VideoDisplay.class);
                     in.putExtra("myData", messagelist.get(getAdapterPosition()).getVideo());
                     in.putExtra("tag", messagelist.get(getAdapterPosition()).getCategory());
@@ -1122,6 +1138,37 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
             });
 
+
+        }
+
+        private void increaseViewsRequest() {
+
+
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.URL_INCREASE_VIEWS,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.d("responseviews", response);
+
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.d("responseviewserror", "eeror");
+
+                        }
+                    }) {
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    Map<String, String> map = new HashMap<String, String>();
+                    Log.d("po", messagelist.get(getAdapterPosition()).getPostId());
+                    map.put("postid", messagelist.get(getAdapterPosition()).getPostId());
+                    return map;
+                }
+            };
+            RequestQueue requestQueue = Volley.newRequestQueue(mContext);
+            requestQueue.add(stringRequest);
 
         }
     }
