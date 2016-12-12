@@ -35,7 +35,6 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.IOException;
 import java.util.Comparator;
-import java.util.List;
 
 import in.reweyou.reweyou.media.CameraHelper;
 
@@ -47,20 +46,18 @@ public class VideoCapturetest extends AppCompatActivity implements OnClickListen
     private static final String TAG = VideoCapturetest.class.getSimpleName();
     private File mOutputFile;
     private TextureView mSurfaceView;
-    private ImageView iv_cancel, iv_ok, iv_record, image;
+    private ImageView iv_record;
     private TextView tv_counter;
     private boolean isRecording = false;
 
     private MediaRecorder mMediaRecorder;
     private Camera mCamera;
 
-    private List<Size> mSupportVideoSizes;
 
     private String filePath;
 
     private boolean mIsRecording = false;
-    private boolean shootingVideo = false;
-    private boolean firstLoad = false;
+
     private RelativeLayout proceedContainer;
     private boolean activityPaused = false;
     private ImageView btn_cancel;
@@ -207,8 +204,9 @@ public class VideoCapturetest extends AppCompatActivity implements OnClickListen
                 if (mOutputFile != null) {
                     if (mOutputFile.length() > 0) {
                         Intent i = new Intent(VideoCapturetest.this, PostReport.class);
-                        i.putExtra("dataVideo", mOutputFile.getPath());
-                        Log.d("pathhh", mOutputFile.getPath());
+                        i.putExtra("dataVideo", mOutputFile.getAbsolutePath());
+                        // Log.d("pathhh", String.valueOf(Uri.parse(mOutputFile.getAbsolutePath())));
+
                         startActivity(i);
                         finish();
                     }
@@ -245,19 +243,15 @@ public class VideoCapturetest extends AppCompatActivity implements OnClickListen
 
         mSurfaceView = (TextureView) findViewById(R.id.surfaceView);
         iv_record = (ImageView) findViewById(R.id.iv_record);
-        iv_cancel = (ImageView) findViewById(R.id.iv_cancel);
-        iv_ok = (ImageView) findViewById(R.id.iv_ok);
-        image = (ImageView) findViewById(R.id.image);
+
        /* iv_record.setImageResource(R.mipmap.start);
         iv_record.setVisibility(View.VISIBLE);
         iv_ok.setVisibility(View.GONE);
         iv_cancel.setVisibility(View.GONE);*/
         tv_counter = (TextView) findViewById(R.id.timer);
         tv_counter.setVisibility(View.GONE);
-        iv_cancel.setOnClickListener(this);
-        iv_ok.setOnClickListener(this);
+
         iv_record.setOnClickListener(this);
-        image.setOnClickListener(this);
 
         mSurfaceView.setSurfaceTextureListener(this);
 
@@ -478,19 +472,6 @@ public class VideoCapturetest extends AppCompatActivity implements OnClickListen
     @Override
     public void onClick(View arg0) {
         switch (arg0.getId()) {
-            case R.id.iv_ok:
-
-                Intent data = new Intent();
-                if (filePath != null) {
-                    data.putExtra("videopath", filePath);
-                }
-                exit(RESULT_OK, data);
-                break;
-
-            case R.id.iv_cancel:
-                //  exit(RESULT_CANCELED, null);
-                initView();
-                break;
 
             case R.id.iv_record:
                 if (isRecording) {
@@ -528,12 +509,6 @@ public class VideoCapturetest extends AppCompatActivity implements OnClickListen
 
                 }
                 break;
-
-          /*  case R.id.image:
-                Intent video = new Intent(VideoCapturetest.this, ImageCapture.class);
-                startActivity(video);
-                finish();
-                break;*/
 
             default:
                 break;

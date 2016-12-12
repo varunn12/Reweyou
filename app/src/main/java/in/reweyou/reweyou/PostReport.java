@@ -690,10 +690,12 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
     private void handleVideo(Uri uri) {
         {
             Log.d("uriname", uri.toString());
-            if (uri.getScheme().equals("content"))
-                selectedVideoPath = uploadOptions.getAbsolutePath(uri);
-            else if (uri.getScheme().equals("file"))
-                selectedVideoPath = uri.getPath();
+            if (uri.getScheme() != null) {
+                if (uri.getScheme().equals("content"))
+                    selectedVideoPath = uploadOptions.getAbsolutePath(uri);
+                else if (uri.getScheme().equals("file"))
+                    selectedVideoPath = uri.getPath();
+            } else selectedVideoPath = uri.getPath();
             //selectedVideoPath=uri.getPath();
             Log.d("urinameweqw", selectedVideoPath);
 
