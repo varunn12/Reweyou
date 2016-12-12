@@ -529,11 +529,11 @@ public class VideoCapturetest extends AppCompatActivity implements OnClickListen
                 }
                 break;
 
-            case R.id.image:
+          /*  case R.id.image:
                 Intent video = new Intent(VideoCapturetest.this, ImageCapture.class);
                 startActivity(video);
                 finish();
-                break;
+                break;*/
 
             default:
                 break;

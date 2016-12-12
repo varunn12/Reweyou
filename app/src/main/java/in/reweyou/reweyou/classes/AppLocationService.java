@@ -1,25 +1,20 @@
 package in.reweyou.reweyou.classes;
 
-import android.Manifest;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v4.app.ActivityCompat;
 
-public class
-AppLocationService extends Service implements LocationListener {
-
-    protected LocationManager locationManager;
-    Location location;
+public class AppLocationService extends Service implements LocationListener {
 
     private static final long MIN_DISTANCE_FOR_UPDATE = 10;
     private static final long MIN_TIME_FOR_UPDATE = 1000 * 6;
+    protected LocationManager locationManager;
+    Location location;
 
     public AppLocationService(Context context) {
         locationManager = (LocationManager) context
@@ -30,8 +25,8 @@ AppLocationService extends Service implements LocationListener {
         if (locationManager.isProviderEnabled(provider)) {
 
 
-            locationManager.requestLocationUpdates(provider,0,0,this);
-          //  locationManager.requestLocationUpdates(provider,
+            locationManager.requestLocationUpdates(provider, 0, 0, this);
+            //  locationManager.requestLocationUpdates(provider,
             //        MIN_TIME_FOR_UPDATE, MIN_DISTANCE_FOR_UPDATE, this);
             if (locationManager != null) {
                 location = locationManager.getLastKnownLocation(provider);

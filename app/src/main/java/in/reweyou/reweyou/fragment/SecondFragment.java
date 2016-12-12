@@ -264,7 +264,6 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
         progressBar.setVisibility(View.VISIBLE);
         swipeLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipe_container);
         swipeLayout.setOnRefreshListener(this);
-        // staticSpinner = (Spinner)layout.findViewById(R.id.static_spinner);
 
         c = Calendar.getInstance();
         mYear = c.get(Calendar.YEAR);

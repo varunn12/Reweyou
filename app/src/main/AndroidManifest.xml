@@ -67,9 +67,6 @@
                 <data android:mimeType="video/*" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".VideoUpload"
-            android:screenOrientation="portrait" />
         <activity android:name=".SearchResultsActivity" />
 
         <receiver android:name=".Notification" />
@@ -99,9 +96,6 @@
             android:name=".Videorow"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar.Preview" />
-        <activity
-            android:name=".ImageCapture"
-            android:screenOrientation="portrait" />
         <activity
             android:name=".MyProfile"
             android:screenOrientation="portrait" />
@@ -175,16 +169,6 @@
         <activity
             android:name=".Topic"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".SinglePost"
-            android:parentActivityName=".Feed"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="in.reweyou.reweyou_SINGLE_POST">
-                    <category android:name="android.intent.category.DEFAULT" />
-                </action>
-            </intent-filter>
-        </activity>
         <activity
             android:name=".Readers"
             android:screenOrientation="portrait" />
