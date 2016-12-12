@@ -1163,6 +1163,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 protected Map<String, String> getParams() throws AuthFailureError {
                     Map<String, String> map = new HashMap<String, String>();
                     Log.d("po", messagelist.get(getAdapterPosition()).getPostId());
+                    Log.d("powwww", messagelist.get(getAdapterPosition()).getPostviews());
                     map.put("postid", messagelist.get(getAdapterPosition()).getPostId());
                     return map;
                 }

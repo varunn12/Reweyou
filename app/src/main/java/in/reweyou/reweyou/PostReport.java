@@ -802,7 +802,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                     .with(this)
                     .load(selectedImageUri)
                     .asBitmap()
-                    .toBytes(Bitmap.CompressFormat.JPEG, 90)
+                    .toBytes(Bitmap.CompressFormat.JPEG, 95)
                     .fitCenter()
                     .atMost()
                     .override(1000, 1000)
@@ -844,7 +844,6 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
 
         final ProgressDialog uploading = ProgressDialog.show(PostReport.this, "Uploading File", "Please wait...", false, false);
         AsyncHttpPost post = new AsyncHttpPost(UPLOAD_URL);
-
         getTimeout(fileType, post);
 
         MultipartFormDataBody body = new MultipartFormDataBody();
@@ -909,7 +908,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
     private AsyncHttpPost getTimeout(int fileType, AsyncHttpPost post) {
         switch (fileType) {
             case PREVIEW_IMAGE:
-                post.setTimeout(20000);
+                post.setTimeout(30000);
                 return post;
             case PREVIEW_VIDEO:
                 post.setTimeout(120000);
@@ -918,7 +917,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                 post.setTimeout(30000);
                 return post;
             case PREVIEW_TEXT:
-                post.setTimeout(15000);
+                post.setTimeout(30000);
                 return post;
             default:
                 return null;
