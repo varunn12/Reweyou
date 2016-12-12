@@ -47,7 +47,7 @@
             android:name=".Feed"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar.Feed"></activity>
+            android:theme="@style/AppTheme.NoActionBar.Feed" />
         <activity
             android:name=".PostReport"
             android:screenOrientation="portrait"
@@ -99,10 +99,7 @@
         <activity
             android:name=".MyProfile"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".ImageActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+
         <activity android:name=".Leaderboard" />
         <activity
             android:name=".Notifications"
