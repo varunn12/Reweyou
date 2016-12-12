@@ -558,8 +558,6 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                 return null;
 
         }
-
-        // return Constants.FEED_URL;
     }
 
     @Override
