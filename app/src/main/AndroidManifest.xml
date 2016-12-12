@@ -187,7 +187,7 @@
             android:label="@string/title_activity_single_post_acitivty"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden"></activity>
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
@@ -199,7 +199,7 @@
             android:name=".VideoDisplay"
             android:label="@string/title_activity_video_display"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar.Preview"></activity>
+            android:theme="@style/AppTheme.NoActionBar.Preview" />
     </application>
 
 </manifest>
