@@ -866,12 +866,20 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
         AsyncHttpClient.getDefaultInstance().executeString(post, new AsyncHttpClient.StringCallback() {
             @Override
             public void onCompleted(Exception ex, AsyncHttpResponse source, String result) {
+                uploading.dismiss();
+
                 if (ex != null) {
+                    PostReport.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(PostReport.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+
+                        }
+                    });
                     ex.printStackTrace();
                     return;
                 }
                 System.out.println("Server says: " + result);
-                uploading.dismiss();
                 if (result.equals("Successfully Uploaded")) {
                     openProfile();
                 } else if (result.trim().equals(Constants.AUTH_ERROR)) {
