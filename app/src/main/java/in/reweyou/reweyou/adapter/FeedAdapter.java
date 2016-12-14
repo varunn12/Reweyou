@@ -182,7 +182,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return combineImages(b, b2);
     }
 
-    public Bitmap combineImages(Bitmap c, Bitmap s) { // can add a 3rd parameter 'String loc' if you want to save the new image - left some code to do that at the bottom
+    private Bitmap combineImages(Bitmap c, Bitmap s) {
         Bitmap cs = null;
 
         int width, height = 0;

@@ -80,6 +80,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private String query;
     private int minPostid;
     private String category;
+    private boolean firstTimeLoad = true;
 
     public SecondFragment() {
     }
@@ -296,9 +297,24 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
         formattedDate = df.format(c.getTime());
 
         tag = "General";
-        makeRequest();
+        if (position == 0 && firstTimeLoad) {
+            firstTimeLoad = false;
+            makeRequest();
+        }
 
     }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        if (isVisibleToUser) {
+            if (isAdded())
+                makeRequest();
+
+        }
+    }
+
 
     private void makeRequest() {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, getUrl(),
@@ -579,7 +595,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
         Log.d("posi", String.valueOf(position));
         if (net)
-        onRefresh();
+            onRefresh();
         else if (topBar != null) {
             topBar.setVisibility(View.VISIBLE);
         }
