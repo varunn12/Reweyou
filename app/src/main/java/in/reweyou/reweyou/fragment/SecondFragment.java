@@ -304,6 +304,24 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
     }
 
+    private void Messages2() {
+
+        topBar.setVisibility(View.GONE);
+        Log.d("context", String.valueOf(mContext));
+        c = Calendar.getInstance();
+        mYear = c.get(Calendar.YEAR);
+        mMonth = c.get(Calendar.MONTH);
+        mDay = c.get(Calendar.DAY_OF_MONTH);
+
+        df = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss a");
+
+        formattedDate = df.format(c.getTime());
+
+        makeRequest();
+
+
+    }
+
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
@@ -515,7 +533,8 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
     @Override
     public void onRefresh() {
-        Messages();
+
+        Messages2();
     }
 
 
