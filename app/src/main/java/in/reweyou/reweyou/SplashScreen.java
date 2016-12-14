@@ -43,6 +43,7 @@ public class SplashScreen extends AppCompatActivity {
         } else {
             if (!session.checkLoginSplash()) {
                 Intent intent = new Intent(SplashScreen.this, Feed.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 finish();
             } else {

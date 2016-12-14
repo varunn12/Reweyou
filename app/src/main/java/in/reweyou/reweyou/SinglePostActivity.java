@@ -222,7 +222,11 @@ public class SinglePostActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        Intent i = new Intent(SinglePostActivity.this, Feed.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        startActivity(i);
+
+        finish();
     }
 
     private class PagerAdapter extends FragmentStatePagerAdapter {
