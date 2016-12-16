@@ -222,7 +222,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder2, final int position) {
-        Log.d("view", String.valueOf(viewHolder2.getItemViewType()));
+        //Log.d("view", String.valueOf(viewHolder2.getItemViewType()));
 
         switch (viewHolder2.getItemViewType()) {
             case VIEW_TYPE_LOADING:
@@ -888,13 +888,13 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public void onViewRecycled(RecyclerView.ViewHolder holder) {
-        Log.d("onViewRecycled", "called");
+       // Log.d("onViewRecycled", "called");
         if (holder != null) {
             if (holder instanceof BaseViewHolder) {
                 BaseViewHolder baseViewHolder = (BaseViewHolder) holder;
                 Glide.clear(baseViewHolder.profilepic);
                 if (baseViewHolder instanceof ImageViewHolder) {
-                    Log.d("onviewclear", "called");
+                  //  Log.d("onviewclear", "called");
                     Glide.clear(((ImageViewHolder) baseViewHolder).image);
                 } else if (baseViewHolder instanceof VideoViewHolder) {
                     Glide.clear(((VideoViewHolder) baseViewHolder).image);
