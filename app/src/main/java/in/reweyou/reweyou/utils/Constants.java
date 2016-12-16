@@ -66,5 +66,14 @@ public class Constants {
     public static final String FEED_LIKES = "https://www.reweyou.in/reweyou/liked.php";
     public static final String MY_SINGLE_ACTIVITY = "https://www.reweyou.in/reweyou/postbyid.php";
     public static final String CATEGORY_FEED_URL = "https://www.reweyou.in/reweyou/categoryfeed.php";
-    public static final String URL_INCREASE_VIEWS = "https://www.reweyou.in/reweyou/postviews.php";
+        public static final String URL_INCREASE_VIEWS = "https://www.reweyou.in/reweyou/postviews.php";
+
+
+    public static final int POSITION_FEED_TAB_1 = 0;
+    public static final int POSITION_FEED_TAB_2 = 1;
+    public static final int POSITION_FEED_TAB_3 = 2;
+    public static final int POSITION_MY_CITY = 10;
+    public static final int POSITION_SEARCH_TAB = 12;
+    public static final int POSITION_SINGLE_POST = 15;
+    public static final int POSITION_CATEGORY_TAG = 19;
 }

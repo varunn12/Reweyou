@@ -1,6 +1,5 @@
 package in.reweyou.reweyou;
 
-import android.Manifest;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -31,9 +30,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -79,24 +80,18 @@ import static in.reweyou.reweyou.utils.Constants.AUTH_ERROR;
 
 public class Feed extends AppCompatActivity {
     public static final int REQ_CODE_NOTI_COUNT = 45;
-    static final String[] PERMISSIONS = new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-    private static final int REQUEST_CODE = 0;
     private static final String PACKAGE_URL_SCHEME = "package:";
+    private static final String TAG = Feed.class.getSimpleName();
     private final int REQ_CODE_PROFILE = 56;
-    public FragmentCommunicator fragmentCommunicator;
-    public FragmentCommunicator fragmentCommunicator2;
-    public FragmentCommunicator fragmentCommunicator3;
-    int REQUEST_CAMERA = 0, SELECT_FILE = 1, REQUEST_VIDEO = 3;
+
     UserSessionManager session;
     Uri uri;
     PermissionsChecker checker;
     ConnectionDetector cd;
-    Boolean isInternetPresent = false;
     boolean doubleBackToExitPressedOnce = false;
     private TabLayout tabLayout;
     private DrawerLayout drawerLayout;
-    private String mCurrentPhotoPath;
-    private String videoFilePath;
+
     private Toolbar mToolbar;
     private FloatingActionButton floatingActionButton;
     private ImageView image;
@@ -104,6 +99,9 @@ public class Feed extends AppCompatActivity {
     private ProgressBar pd;
     private ViewPager viewPager;
     private PagerAdapter pagerAdapter;
+    private BroadcastReceiver netChangeReceiver;
+    private IntentFilter netChangeIntentFilter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,23 +128,40 @@ public class Feed extends AppCompatActivity {
             makeNotificationsRequest();
         }
 
-        registerReceiver(new BroadcastReceiver() {
+
+        netChangeReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
-                Log.d("netchange", "called");
-                boolean net = false;
-                net = cd.isConnectingToInternet();
-                if (fragmentCommunicator != null)
-                    fragmentCommunicator.passDataToFragment(net);
-                if (fragmentCommunicator2 != null)
-                    fragmentCommunicator2.passDataToFragment(net);
-                if (fragmentCommunicator3 != null)
-                    fragmentCommunicator3.passDataToFragment(net);
-
-
+                Log.d(TAG, "onReceive: onNetChange");
+                if (!netChangeReceiver.isInitialStickyBroadcast())
+                    if (viewPager != null) {
+                        if (pagerAdapter != null) {
+                            Fragment page = pagerAdapter.getRegisteredFragment(viewPager.getCurrentItem());
+                            if (page != null) {
+                                Log.d(TAG, "onReceive: onRefresh of fragment " + viewPager.getCurrentItem() + " is called");
+                                ((SecondFragment) page).onRefresh();
+                            }
+                        }
+                    }
             }
-        }, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
+        };
+
+    }
 
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        registerNetChangeReceiver();
+    }
+
+    private void registerNetChangeReceiver() {
+        registerReceiver(netChangeReceiver, netChangeIntentFilter);
+    }
+
+    @Override
+    protected void onStop() {
+        unregisterReceiver(netChangeReceiver);
+        super.onStop();
     }
 
 
@@ -264,6 +279,29 @@ public class Feed extends AppCompatActivity {
     private void initViewPagerAndTabs() {
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         viewPager.setOffscreenPageLimit(2);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+                Fragment page = pagerAdapter.getRegisteredFragment(viewPager.getCurrentItem());
+                if (page != null) {
+                    Log.d(TAG, "onPageChange: loadFeeds() of fragment " + viewPager.getCurrentItem() + " is called");
+                    ((SecondFragment) page).loadFeeds();
+                }
+
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
     }
@@ -706,6 +744,7 @@ public class Feed extends AppCompatActivity {
 
 
     private class PagerAdapter extends FragmentStatePagerAdapter {
+        SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
 
         private String[] tabs = getResources().getStringArray(R.array.tabs);
 
@@ -721,6 +760,24 @@ public class Feed extends AppCompatActivity {
             fragment.setArguments(bundle);
             return fragment;
         }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            Fragment fragment = (Fragment) super.instantiateItem(container, position);
+            registeredFragments.put(position, fragment);
+            return fragment;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            registeredFragments.remove(position);
+            super.destroyItem(container, position, object);
+        }
+
+        public Fragment getRegisteredFragment(int position) {
+            return registeredFragments.get(position);
+        }
+
 
         @Override
         public int getCount() {
