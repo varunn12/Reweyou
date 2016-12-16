@@ -16,6 +16,7 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -292,8 +293,17 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                 } else {
                     //ok now we know the keyboard is down...
                     logoContainer.setVisibility(View.VISIBLE);
-                    bottomContainer.setVisibility(View.VISIBLE);
-                    bottomline.setVisibility(View.VISIBLE);
+
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (bottomContainer != null && bottomline != null) {
+                                bottomContainer.setVisibility(View.VISIBLE);
+                                bottomline.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    }, 300);
+
                     toolbar.setVisibility(View.VISIBLE);
                 }
             }
