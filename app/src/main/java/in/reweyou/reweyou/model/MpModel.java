@@ -120,9 +120,7 @@ public class MpModel {
     }
 
     public void setImage(String image) {
-        // String url ="https://www.reweyou.in/thumb/230/226/";
         this.image = image;
-        // String image = image + url;
     }
 
     public String getProfilepic() {
@@ -130,9 +128,7 @@ public class MpModel {
     }
 
     public void setProfilepic(String profilepic) {
-        // String url ="https://www.reweyou.in/thumb/230/226/";
         this.profilepic = profilepic;
-        // String image = image + url;
     }
 
     public String getVideo() {
@@ -264,13 +260,4 @@ public class MpModel {
         return locationPost;
     }
 
-
-
-
-
-    /*private boolean hasGIF() {
-        if(get==null){
-            return false;
-        }else return true;
-    }*/
 }
