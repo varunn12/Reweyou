@@ -40,14 +40,15 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
-import com.koushikdutta.async.http.AsyncHttpClient;
-import com.koushikdutta.async.http.AsyncHttpPost;
-import com.koushikdutta.async.http.AsyncHttpResponse;
-import com.koushikdutta.async.http.body.MultipartFormDataBody;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -509,7 +510,6 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                 Log.d("place", place);
                 Log.d("address", address);
                 if (validateFields()) {
-
                     switch (viewType) {
                         case PREVIEW_IMAGE:
                             compressSelectedImage();
@@ -843,13 +843,89 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
     private void uploadFile(int fileType, String encodedImage) {
 
         final ProgressDialog uploading = ProgressDialog.show(PostReport.this, "Uploading File", "Please wait...", false, false);
-        AsyncHttpPost post = new AsyncHttpPost(UPLOAD_URL);
+
+        RequestParams params = new RequestParams();
+        try {
+            getUploadFileExtraParams(fileType, params, encodedImage);
+            params.add(POST_REPORT_KEY_LOCATION, place);
+            params.add(POST_REPORT_KEY_NAME, name);
+            params.add(POST_REPORT_KEY_CATEGORY, currentSpinnerPositionString);
+            params.add(POST_REPORT_KEY_ADDRESS, address);
+            params.add(POST_REPORT_KEY_NUMBER, number);
+            params.add(POST_REPORT_KEY_TAG, parameterEditTag);
+            if (parameterHeadline != null)
+                params.add(POST_REPORT_KEY_HEADLINE, parameterHeadline);
+            params.add(POST_REPORT_KEY_DESCRIPTION, parameterDescription);
+            params.add("token", session.getKeyAuthToken());
+            params.add("deviceid", session.getDeviceid());
+
+            AsyncHttpClient client = new AsyncHttpClient();
+
+            client.setMaxRetriesAndTimeout(0, 0);
+            client.setTimeout(10000);
+            client.setResponseTimeout(60000);
+            client.post(UPLOAD_URL, params, new AsyncHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody) {
+                    uploading.dismiss();
+                    Log.w("reach", "onsuccess");
+
+                    try {
+                        Log.w("reach", "onsuccess1");
+                        String result = new String(responseBody, "UTF-8");
+                        if (result.equals("Successfully Uploaded")) {
+                            openProfile();
+                        } else if (result.trim().equals(Constants.AUTH_ERROR)) {
+                            Log.d("autherror", "errorauth");
+                            session.logoutUser();
+
+                        }
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                        Log.w("reach", "onerror2");
+
+                    }
+
+                }
+
+                @Override
+                public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, Throwable error) {
+                    uploading.dismiss();
+                    Log.w("reach", "one3");
+
+                }
+
+                @Override
+                public void onRetry(int retryNo) {
+                    super.onRetry(retryNo);
+                }
+
+                @Override
+                public void onStart() {
+                    super.onStart();
+                    Log.w("reach", "start");
+
+                }
+            });
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            Log.e("error", "filenull");
+        }
+
+
+
+
+
+
+
+        /*AsyncHttpPost post = new AsyncHttpPost(UPLOAD_URL);
         getTimeout(fileType, post);
 
         MultipartFormDataBody body = new MultipartFormDataBody();
 
         getUploadFileExtraParams(fileType, body, encodedImage);
-
+        Log.w("uploadFile", "caalled");
         body.addStringPart(POST_REPORT_KEY_LOCATION, place);
         body.addStringPart(POST_REPORT_KEY_NAME, name);
         body.addStringPart(POST_REPORT_KEY_CATEGORY, currentSpinnerPositionString);
@@ -902,42 +978,66 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                     });
                 }
             }
-        });
+        });*/
     }
 
-    private AsyncHttpPost getTimeout(int fileType, AsyncHttpPost post) {
+    /*  private AsyncHttpPost getTimeout(int fileType, AsyncHttpPost post) {
+          switch (fileType) {
+              case PREVIEW_IMAGE:
+                  post.setTimeout(30000);
+                  return post;
+              case PREVIEW_VIDEO:
+                  post.setTimeout(120000);
+                  return post;
+              case PREVIEW_GIF:
+                  post.setTimeout(30000);
+                  return post;
+              case PREVIEW_TEXT:
+                  post.setTimeout(30000);
+                  return post;
+              default:
+                  return null;
+          }
+      }
+
+      private MultipartFormDataBody getUploadFileExtraParams(int fileType, MultipartFormDataBody body, String encodedImage) {
+          switch (fileType) {
+              case PREVIEW_IMAGE:
+                  body.addStringPart(POST_REPORT_KEY_REPORT, "image");
+                  body.addStringPart(POST_REPORT_KEY_IMAGE, encodedImage);
+                  return body;
+              case PREVIEW_VIDEO:
+                  body.addFilePart("myFile", new File(selectedVideoPath));
+                  body.addStringPart(POST_REPORT_KEY_REPORT, "video");
+                  body.addStringPart(POST_REPORT_KEY_IMAGE, encodedImage);
+                  return body;
+              case PREVIEW_GIF:
+                  body.addFilePart("myFile", new File(selectedGifPath));
+                  body.addStringPart(POST_REPORT_KEY_REPORT, "gif");
+                  return body;
+              case PREVIEW_TEXT:
+                  return body;
+              default:
+                  return body;
+          }
+      }
+
+  */
+
+    private RequestParams getUploadFileExtraParams(int fileType, RequestParams body, String encodedImage) throws FileNotFoundException {
         switch (fileType) {
             case PREVIEW_IMAGE:
-                post.setTimeout(30000);
-                return post;
-            case PREVIEW_VIDEO:
-                post.setTimeout(120000);
-                return post;
-            case PREVIEW_GIF:
-                post.setTimeout(30000);
-                return post;
-            case PREVIEW_TEXT:
-                post.setTimeout(30000);
-                return post;
-            default:
-                return null;
-        }
-    }
-
-    private MultipartFormDataBody getUploadFileExtraParams(int fileType, MultipartFormDataBody body, String encodedImage) {
-        switch (fileType) {
-            case PREVIEW_IMAGE:
-                body.addStringPart(POST_REPORT_KEY_REPORT, "image");
-                body.addStringPart(POST_REPORT_KEY_IMAGE, encodedImage);
+                body.add(POST_REPORT_KEY_REPORT, "image");
+                body.add(POST_REPORT_KEY_IMAGE, encodedImage);
                 return body;
             case PREVIEW_VIDEO:
-                body.addFilePart("myFile", new File(selectedVideoPath));
-                body.addStringPart(POST_REPORT_KEY_REPORT, "video");
-                body.addStringPart(POST_REPORT_KEY_IMAGE, encodedImage);
+                body.put("myFile", new File(selectedVideoPath));
+                body.add(POST_REPORT_KEY_REPORT, "video");
+                body.add(POST_REPORT_KEY_IMAGE, encodedImage);
                 return body;
             case PREVIEW_GIF:
-                body.addFilePart("myFile", new File(selectedGifPath));
-                body.addStringPart(POST_REPORT_KEY_REPORT, "gif");
+                body.put("myFile", new File(selectedGifPath));
+                body.add(POST_REPORT_KEY_REPORT, "gif");
                 return body;
             case PREVIEW_TEXT:
                 return body;
@@ -945,7 +1045,6 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                 return body;
         }
     }
-
 
     private void openProfile() {
         Intent i = new Intent(this, Feed.class);

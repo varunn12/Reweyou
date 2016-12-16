@@ -51,10 +51,11 @@ dependencies {
                 transitive = true;
             }
     compile 'it.sephiroth.android.library.imagezoom:imagezoom:+'
-    compile 'com.koushikdutta.async:androidasync:2.+'
     compile 'com.theartofdev.edmodo:android-image-cropper:2.3.+'
 
     compile 'com.google.firebase:firebase-crash:9.8.0'
+    compile 'com.loopj.android:android-async-http:1.4.9'
+
     compile project(path: ':videoPreviewLib')
 }
 
