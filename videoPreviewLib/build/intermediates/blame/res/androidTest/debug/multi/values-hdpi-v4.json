@@ -1,31 +1,5 @@
 [
     {
-        "outputFile": "/home/master/AndroidStudioProjects/Reweyou/library/build/intermediates/incremental/mergeDebugAndroidTestResources/merged.dir/values-hdpi-v4/values-hdpi-v4.xml",
-        "map": [
-            {
-                "to": {
-                    "startLine": 2,
-                    "startColumn": 4,
-                    "startOffset": 55,
-                    "endLine": 6,
-                    "endColumn": 13,
-                    "endOffset": 327
-                },
-                "from": {
-                    "file": "/home/master/AndroidStudioProjects/Reweyou/library/build/intermediates/exploded-aar/com.android.support/appcompat-v7/25.0.1/res/values-hdpi-v4/values-hdpi-v4.xml",
-                    "position": {
-                        "startLine": 2,
-                        "startColumn": 4,
-                        "startOffset": 55,
-                        "endLine": 6,
-                        "endColumn": 13,
-                        "endOffset": 327
-                    }
-                }
-            }
-        ]
-    },
-    {
         "outputFile": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/incremental/mergeDebugAndroidTestResources/merged.dir/values-hdpi-v4/values-hdpi-v4.xml",
         "map": [
             {
@@ -38,7 +12,7 @@
                     "endOffset": 327
                 },
                 "from": {
-                    "file": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/exploded-aar/com.android.support/appcompat-v7/25.0.1/res/values-hdpi-v4/values-hdpi-v4.xml",
+                    "file": "/home/master/.android/build-cache/3750f18d9840bcca827b9ea0bf417283a9d6d0d5/output/res/values-hdpi-v4/values-hdpi-v4.xml",
                     "position": {
                         "startLine": 2,
                         "startColumn": 4,
