@@ -16,16 +16,16 @@
         "source": "/home/master/.android/build-cache/3750f18d9840bcca827b9ea0bf417283a9d6d0d5/output/res/layout/abc_list_menu_item_icon.xml"
     },
     {
-        "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/debug/layout/exomedia_default_native_texture_video_view.xml",
-        "source": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/src/main/res/layout/exomedia_default_native_texture_video_view.xml"
+        "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/debug/layout/notification_template_icon_group.xml",
+        "source": "/home/master/.android/build-cache/3750f18d9840bcca827b9ea0bf417283a9d6d0d5/output/res/layout/notification_template_icon_group.xml"
     },
     {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/debug/layout/exomedia_default_exo_surface_video_view.xml",
         "source": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/src/main/res/layout/exomedia_default_exo_surface_video_view.xml"
     },
     {
-        "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/debug/layout/notification_template_icon_group.xml",
-        "source": "/home/master/.android/build-cache/3750f18d9840bcca827b9ea0bf417283a9d6d0d5/output/res/layout/notification_template_icon_group.xml"
+        "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/debug/layout/exomedia_default_native_texture_video_view.xml",
+        "source": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/src/main/res/layout/exomedia_default_native_texture_video_view.xml"
     },
     {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/debug/layout/notification_template_lines_media.xml",
