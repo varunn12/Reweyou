@@ -119,9 +119,6 @@
             android:name=".Comments1"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".LocationActivity"
-            android:screenOrientation="portrait" />
 
         <!-- Firebase Notifications -->
         <service android:name=".fcm.MyFirebaseMessagingService">

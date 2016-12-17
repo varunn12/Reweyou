@@ -11,7 +11,6 @@ import android.view.View;
 
 import java.util.List;
 
-import in.reweyou.reweyou.adapter.CityAdapter;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.fragment.SecondFragment;
 import in.reweyou.reweyou.model.MpModel;
@@ -19,7 +18,6 @@ import in.reweyou.reweyou.model.MpModel;
 public class SearchResultsActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private List<MpModel> messagelist;
-    private CityAdapter adapter;
     private String query;
     private Toolbar toolbar;
     private UserSessionManager sessionManager;
