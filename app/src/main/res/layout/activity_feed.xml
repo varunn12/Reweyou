@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
 
-    tools:openDrawer="start">
+    tools:openDrawer="left">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -27,7 +27,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:elevation="2dp"
-                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                app:layout_behavior="in.reweyou.reweyou.customView.scrollHelpers.AppBarSnapBehavior">
 
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbar"
@@ -35,7 +36,7 @@
                     android:layout_height="?attr/actionBarSize"
                     android:background="?attr/colorPrimary"
                     android:elevation="2dp"
-                    app:layout_scrollFlags="scroll|enterAlways"
+                    app:layout_scrollFlags="scroll|snap|enterAlways"
 
                     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                     app:theme="@style/MyThemeOverlay.ActionBar" />
@@ -51,14 +52,12 @@
                     app:tabTextColor="#ccc" />
             </android.support.design.widget.AppBarLayout>
 
-
             <android.support.v4.view.ViewPager
                 android:id="@+id/viewPager"
                 android:layout_width="match_parent"
 
                 android:layout_height="match_parent"
-
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+                app:layout_behavior="in.reweyou.reweyou.customView.scrollHelpers.ScrollingViewBehavior" />
 
             <ProgressBar
                 android:id="@+id/pd"
