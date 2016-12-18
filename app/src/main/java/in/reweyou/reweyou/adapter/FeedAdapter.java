@@ -14,6 +14,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
@@ -98,6 +99,26 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final String prelike = "prelike";
     private final String errorunliking = "errorunliking";
     private final String errorliking = "errorliking";
+
+    private final int PRE_UNLIKE = 1;
+    private final int PRE_LIKE = 2;
+    private final int ERROR_UNLIKING = -1;
+    private final int ERROR_LIKING = -2;
+
+
+    private final int REBIND_NUM_LIKES = 11;
+    private final int REBIND_NUM_REACTIONS = 12;
+    private final int REBIND_TIME = 13;
+    private final int REBIND_TAG = 13;
+
+   /* private final int REBIND_HEADLINE = 13;
+    private final int REBIND_DESCRIPTION = 13;
+    private final int REBIND_PROFILEPIC = 13;
+    private final int REBIND_DESCRIPTION = 13;
+    private final int REBIND_DESCRIPTION = 13;
+    private final int REBIND_DESCRIPTION = 13;*/
+
+
     Activity activity;
     Boolean isInternetPresent = false;
     ConnectionDetector cd;
@@ -125,7 +146,28 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         mCustomTabActivityHelper = new CustomTabActivityHelper();
         session = new UserSessionManager(mContext);
         uploadOption = new UploadOptions((Activity) mContext);
+        initTimer();
 
+    }
+
+    private void initTimer() {
+        final CountDownTimer countDownTimer = new CountDownTimer(30000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+            }
+
+            public void onFinish() {
+                start();
+                updateReportTime();
+            }
+
+        };
+
+        countDownTimer.start();
+    }
+
+    private void updateReportTime() {
+        notifyItemRangeChanged(0, messagelist.size(), REBIND_TIME);
     }
 
     public FeedAdapter(Context context, List<MpModel> mlist, String placename, SecondFragment secondFragment) {
@@ -141,6 +183,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         Log.d("reach", "constr    " + this.placename + "   " + placename);
 
         this.fragment = secondFragment;
+
     }
 
     public FeedAdapter(Context context, List<MpModel> mlist, String placename, SecondFragment secondFragment, int qu_position) {
@@ -157,6 +200,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         this.qu_position = qu_position;
         this.fragment = secondFragment;
+
     }
 
     private static Bitmap drawToBitmap(Context context, final int layoutResId, final int width, final int height) {
@@ -258,7 +302,10 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             BaseViewHolder holder = (BaseViewHolder) mHolder;
             if (payloads.isEmpty())
                 super.onBindViewHolder(holder, position, payloads);
-            else if (payloads.contains(prelike)) {
+            else if (payloads.contains(REBIND_TIME)) {
+                Log.d(TAG, "onBindViewHolder: REBIND_TIME called");
+                setDate(holder,position);
+            } else if (payloads.contains(prelike)) {
                 Log.d("reach", prelike);
 
                 holder.upicon.setImageResource(R.drawable.ic_thumb_up_primary_16px);
@@ -888,13 +935,13 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public void onViewRecycled(RecyclerView.ViewHolder holder) {
-       // Log.d("onViewRecycled", "called");
+        // Log.d("onViewRecycled", "called");
         if (holder != null) {
             if (holder instanceof BaseViewHolder) {
                 BaseViewHolder baseViewHolder = (BaseViewHolder) holder;
                 Glide.clear(baseViewHolder.profilepic);
                 if (baseViewHolder instanceof ImageViewHolder) {
-                  //  Log.d("onviewclear", "called");
+                    //  Log.d("onviewclear", "called");
                     Glide.clear(((ImageViewHolder) baseViewHolder).image);
                 } else if (baseViewHolder instanceof VideoViewHolder) {
                     Glide.clear(((VideoViewHolder) baseViewHolder).image);
