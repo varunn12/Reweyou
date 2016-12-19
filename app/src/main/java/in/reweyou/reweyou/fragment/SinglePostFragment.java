@@ -218,9 +218,9 @@ public class SinglePostFragment extends Fragment {
             if (result.getGif().isEmpty()) {
                 image.setVisibility(View.GONE);
             } else
-                Glide.with(getActivity()).load(result.getGif()).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).error(R.drawable.ic_error).dontAnimate().into(image);
+                Glide.with(getActivity()).load(result.getGif()).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).dontAnimate().into(image);
         } else
-            Glide.with(getActivity()).load(result.getImage()).diskCacheStrategy(DiskCacheStrategy.SOURCE).error(R.drawable.ic_error).dontAnimate().into(image);
+            Glide.with(getActivity()).load(result.getImage()).diskCacheStrategy(DiskCacheStrategy.SOURCE).dontAnimate().into(image);
 
 
         if (result.getLocation() == null || result.getLocation().isEmpty())

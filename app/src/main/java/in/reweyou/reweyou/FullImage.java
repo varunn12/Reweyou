@@ -61,7 +61,7 @@ public class FullImage extends AppCompatActivity {
     }
 
     private void showimage(String i) {
-        Glide.with(FullImage.this).load(i).diskCacheStrategy(DiskCacheStrategy.SOURCE).fitCenter().error(R.drawable.ic_error).into(imageView);
+        Glide.with(FullImage.this).load(i).diskCacheStrategy(DiskCacheStrategy.SOURCE).fitCenter().into(imageView);
     }
 
     @Override
