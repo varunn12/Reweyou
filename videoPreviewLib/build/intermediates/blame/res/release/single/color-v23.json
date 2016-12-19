@@ -8,6 +8,10 @@
         "source": "/home/master/.android/build-cache/3750f18d9840bcca827b9ea0bf417283a9d6d0d5/output/res/color-v23/abc_tint_default.xml"
     },
     {
+        "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/release/color-v23/abc_btn_colored_text_material.xml",
+        "source": "/home/master/.android/build-cache/4ca31d5b8c0e05d449a864280e779743a46a225f/output/res/color-v23/abc_btn_colored_text_material.xml"
+    },
+    {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/release/color-v23/abc_tint_btn_checkable.xml",
         "source": "/home/master/.android/build-cache/3750f18d9840bcca827b9ea0bf417283a9d6d0d5/output/res/color-v23/abc_tint_btn_checkable.xml"
     },

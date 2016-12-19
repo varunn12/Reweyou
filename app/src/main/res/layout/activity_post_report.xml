@@ -30,7 +30,6 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <ScrollView
-            android:id="@+id/scoll"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true">
@@ -150,7 +149,6 @@
                         android:background="@color/greylight" />
 
                     <LinearLayout
-                        android:id="@+id/linear"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="4dp"
@@ -288,7 +286,6 @@
                         android:layout_weight="0.4" />
 
                     <ImageView
-                        android:id="@+id/a"
                         android:layout_width="56dp"
                         android:layout_height="56dp"
                         android:layout_gravity="center_horizontal"

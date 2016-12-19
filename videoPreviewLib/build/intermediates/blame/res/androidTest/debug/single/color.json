@@ -1,31 +1,35 @@
 [
     {
+        "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/androidTest/debug/color/abc_btn_colored_text_material.xml",
+        "source": "/home/master/.android/build-cache/4ca31d5b8c0e05d449a864280e779743a46a225f/output/res/color/abc_btn_colored_text_material.xml"
+    },
+    {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/androidTest/debug/color/abc_primary_text_disable_only_material_dark.xml",
-        "source": "/home/master/.android/build-cache/3750f18d9840bcca827b9ea0bf417283a9d6d0d5/output/res/color/abc_primary_text_disable_only_material_dark.xml"
+        "source": "/home/master/.android/build-cache/4ca31d5b8c0e05d449a864280e779743a46a225f/output/res/color/abc_primary_text_disable_only_material_dark.xml"
     },
     {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/androidTest/debug/color/abc_primary_text_disable_only_material_light.xml",
-        "source": "/home/master/.android/build-cache/3750f18d9840bcca827b9ea0bf417283a9d6d0d5/output/res/color/abc_primary_text_disable_only_material_light.xml"
+        "source": "/home/master/.android/build-cache/4ca31d5b8c0e05d449a864280e779743a46a225f/output/res/color/abc_primary_text_disable_only_material_light.xml"
     },
     {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/androidTest/debug/color/abc_primary_text_material_dark.xml",
-        "source": "/home/master/.android/build-cache/3750f18d9840bcca827b9ea0bf417283a9d6d0d5/output/res/color/abc_primary_text_material_dark.xml"
+        "source": "/home/master/.android/build-cache/4ca31d5b8c0e05d449a864280e779743a46a225f/output/res/color/abc_primary_text_material_dark.xml"
     },
     {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/androidTest/debug/color/abc_hint_foreground_material_dark.xml",
-        "source": "/home/master/.android/build-cache/3750f18d9840bcca827b9ea0bf417283a9d6d0d5/output/res/color/abc_hint_foreground_material_dark.xml"
+        "source": "/home/master/.android/build-cache/4ca31d5b8c0e05d449a864280e779743a46a225f/output/res/color/abc_hint_foreground_material_dark.xml"
     },
     {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/androidTest/debug/color/abc_tint_btn_checkable.xml",
-        "source": "/home/master/.android/build-cache/3750f18d9840bcca827b9ea0bf417283a9d6d0d5/output/res/color/abc_tint_btn_checkable.xml"
+        "source": "/home/master/.android/build-cache/4ca31d5b8c0e05d449a864280e779743a46a225f/output/res/color/abc_tint_btn_checkable.xml"
     },
     {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/androidTest/debug/color/abc_tint_default.xml",
-        "source": "/home/master/.android/build-cache/3750f18d9840bcca827b9ea0bf417283a9d6d0d5/output/res/color/abc_tint_default.xml"
+        "source": "/home/master/.android/build-cache/4ca31d5b8c0e05d449a864280e779743a46a225f/output/res/color/abc_tint_default.xml"
     },
     {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/androidTest/debug/color/abc_tint_spinner.xml",
-        "source": "/home/master/.android/build-cache/3750f18d9840bcca827b9ea0bf417283a9d6d0d5/output/res/color/abc_tint_spinner.xml"
+        "source": "/home/master/.android/build-cache/4ca31d5b8c0e05d449a864280e779743a46a225f/output/res/color/abc_tint_spinner.xml"
     },
     {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/androidTest/debug/color/exomedia_default_controls_button_selector.xml",
@@ -33,50 +37,50 @@
     },
     {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/androidTest/debug/color/abc_hint_foreground_material_light.xml",
-        "source": "/home/master/.android/build-cache/3750f18d9840bcca827b9ea0bf417283a9d6d0d5/output/res/color/abc_hint_foreground_material_light.xml"
+        "source": "/home/master/.android/build-cache/4ca31d5b8c0e05d449a864280e779743a46a225f/output/res/color/abc_hint_foreground_material_light.xml"
     },
     {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/androidTest/debug/color/abc_tint_seek_thumb.xml",
-        "source": "/home/master/.android/build-cache/3750f18d9840bcca827b9ea0bf417283a9d6d0d5/output/res/color/abc_tint_seek_thumb.xml"
+        "source": "/home/master/.android/build-cache/4ca31d5b8c0e05d449a864280e779743a46a225f/output/res/color/abc_tint_seek_thumb.xml"
     },
     {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/androidTest/debug/color/abc_tint_edittext.xml",
-        "source": "/home/master/.android/build-cache/3750f18d9840bcca827b9ea0bf417283a9d6d0d5/output/res/color/abc_tint_edittext.xml"
+        "source": "/home/master/.android/build-cache/4ca31d5b8c0e05d449a864280e779743a46a225f/output/res/color/abc_tint_edittext.xml"
     },
     {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/androidTest/debug/color/abc_search_url_text.xml",
-        "source": "/home/master/.android/build-cache/3750f18d9840bcca827b9ea0bf417283a9d6d0d5/output/res/color/abc_search_url_text.xml"
+        "source": "/home/master/.android/build-cache/4ca31d5b8c0e05d449a864280e779743a46a225f/output/res/color/abc_search_url_text.xml"
     },
     {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/androidTest/debug/color/abc_tint_switch_track.xml",
-        "source": "/home/master/.android/build-cache/3750f18d9840bcca827b9ea0bf417283a9d6d0d5/output/res/color/abc_tint_switch_track.xml"
+        "source": "/home/master/.android/build-cache/4ca31d5b8c0e05d449a864280e779743a46a225f/output/res/color/abc_tint_switch_track.xml"
     },
     {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/androidTest/debug/color/abc_secondary_text_material_light.xml",
-        "source": "/home/master/.android/build-cache/3750f18d9840bcca827b9ea0bf417283a9d6d0d5/output/res/color/abc_secondary_text_material_light.xml"
+        "source": "/home/master/.android/build-cache/4ca31d5b8c0e05d449a864280e779743a46a225f/output/res/color/abc_secondary_text_material_light.xml"
     },
     {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/androidTest/debug/color/abc_tint_switch_thumb.xml",
-        "source": "/home/master/.android/build-cache/3750f18d9840bcca827b9ea0bf417283a9d6d0d5/output/res/color/abc_tint_switch_thumb.xml"
+        "source": "/home/master/.android/build-cache/4ca31d5b8c0e05d449a864280e779743a46a225f/output/res/color/abc_tint_switch_thumb.xml"
     },
     {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/androidTest/debug/color/switch_thumb_material_dark.xml",
-        "source": "/home/master/.android/build-cache/3750f18d9840bcca827b9ea0bf417283a9d6d0d5/output/res/color/switch_thumb_material_dark.xml"
+        "source": "/home/master/.android/build-cache/4ca31d5b8c0e05d449a864280e779743a46a225f/output/res/color/switch_thumb_material_dark.xml"
     },
     {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/androidTest/debug/color/abc_primary_text_material_light.xml",
-        "source": "/home/master/.android/build-cache/3750f18d9840bcca827b9ea0bf417283a9d6d0d5/output/res/color/abc_primary_text_material_light.xml"
+        "source": "/home/master/.android/build-cache/4ca31d5b8c0e05d449a864280e779743a46a225f/output/res/color/abc_primary_text_material_light.xml"
     },
     {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/androidTest/debug/color/abc_btn_colored_borderless_text_material.xml",
-        "source": "/home/master/.android/build-cache/3750f18d9840bcca827b9ea0bf417283a9d6d0d5/output/res/color/abc_btn_colored_borderless_text_material.xml"
+        "source": "/home/master/.android/build-cache/4ca31d5b8c0e05d449a864280e779743a46a225f/output/res/color/abc_btn_colored_borderless_text_material.xml"
     },
     {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/androidTest/debug/color/switch_thumb_material_light.xml",
-        "source": "/home/master/.android/build-cache/3750f18d9840bcca827b9ea0bf417283a9d6d0d5/output/res/color/switch_thumb_material_light.xml"
+        "source": "/home/master/.android/build-cache/4ca31d5b8c0e05d449a864280e779743a46a225f/output/res/color/switch_thumb_material_light.xml"
     },
     {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/androidTest/debug/color/abc_secondary_text_material_dark.xml",
-        "source": "/home/master/.android/build-cache/3750f18d9840bcca827b9ea0bf417283a9d6d0d5/output/res/color/abc_secondary_text_material_dark.xml"
+        "source": "/home/master/.android/build-cache/4ca31d5b8c0e05d449a864280e779743a46a225f/output/res/color/abc_secondary_text_material_dark.xml"
     }
 ]

@@ -33,7 +33,6 @@
                 card_view:srcCompat="@drawable/ic_location_on_red_18px" />
 
             <TextView
-                android:id="@+id/preLocationText"
                 android:layout_width="wrap_content"
                 android:layout_height="56dp"
                 android:drawablePadding="8dp"

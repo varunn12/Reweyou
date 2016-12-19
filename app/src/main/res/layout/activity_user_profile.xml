@@ -95,7 +95,6 @@
                         android:textColor="@color/colorPrimaryDark" />
 
                     <Button
-                        android:id="@+id/button2"
                         android:layout_width="wrap_content"
                         android:layout_height="20dp"
                         android:layout_below="@id/Info"
@@ -229,7 +228,6 @@
             android:layout_marginTop="32dp" />
 
         <LinearLayout
-            android:id="@+id/empty1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"

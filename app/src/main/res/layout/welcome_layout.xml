@@ -10,7 +10,6 @@
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/image_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="56dp"
@@ -53,7 +52,6 @@
         android:layout_marginBottom="128dp" />
 
     <LinearLayout
-        android:id="@+id/image_cont"
         android:layout_width="match_parent"
         android:layout_height="470dp"
         android:layout_marginTop="56dp"
@@ -66,7 +64,6 @@
     </LinearLayout>
 
     <RelativeLayout
-        android:id="@+id/button_layout"
         android:layout_width="match_parent"
 
         android:layout_height="118dp"

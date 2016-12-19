@@ -6,7 +6,6 @@
     android:background="@null">
 
     <LinearLayout
-        android:id="@+id/image_container"
         android:layout_width="300dp"
 
         android:layout_height="match_parent"
