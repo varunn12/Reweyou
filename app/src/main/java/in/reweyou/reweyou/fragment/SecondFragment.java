@@ -255,14 +255,16 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
         formattedDate = df.format(Calendar.getInstance().getTime());
         location = user.get(UserSessionManager.KEY_LOCATION);
 
-        if (position == Constants.POSITION_FEED_TAB_1)
+        if (position == Constants.POSITION_FEED_TAB_1){
             loadFeeds();
+            Log.d(TAG, "onCreateView: loadfeeds called");}
 
         return layout;
     }
 
 
     public void loadFeeds() {
+        Log.d(TAG, "loadFeeds: called");
         if (!dataFetched) {
 
             topBar.setVisibility(View.GONE);
@@ -274,6 +276,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
 
     private void makeRequest() {
+        Log.d(TAG, "makeRequest: called");
         StringRequest stringRequest = new StringRequest(Request.Method.POST, getUrl(),
                 new Response.Listener<String>() {
                     @Override
@@ -477,6 +480,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
       //  Messages2();
         topBar.setVisibility(View.GONE);
         formattedDate = df.format(Calendar.getInstance().getTime());
+        Log.d(TAG, "onRefresh: called");
         makeRequest();
     }
 
