@@ -26,7 +26,7 @@ public class Notification extends BroadcastReceiver {
                 new Intent(context, Feed.class), PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder mBuilder =
                 (NotificationCompat.Builder) new NotificationCompat.Builder(context)
-                        .setSmallIcon(R.drawable.ic_launcher)
+                        .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentTitle("Reweyou")
                         .setAutoCancel(true).setWhen(when)
                         .setContentText("Report news and issues around you. Click, Report and Share.");
