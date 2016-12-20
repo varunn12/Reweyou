@@ -19,7 +19,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -27,8 +26,6 @@ import android.text.method.LinkMovementMethod;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -78,11 +75,10 @@ import in.reweyou.reweyou.classes.UploadOptions;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.classes.Util;
 import in.reweyou.reweyou.fragment.SecondFragment;
-import in.reweyou.reweyou.model.MpModel;
+import in.reweyou.reweyou.model.FeedModel;
 import in.reweyou.reweyou.utils.Constants;
 
 import static in.reweyou.reweyou.utils.Constants.EDIT_URL;
-import static in.reweyou.reweyou.utils.Constants.SUGGEST_URL;
 import static in.reweyou.reweyou.utils.Constants.URL_LIKE;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_IMAGE;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_LOADING;
@@ -129,7 +125,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private int qu_position = -3;
     private SecondFragment fragment;
     private String placename;
-    private List<MpModel> messagelist;
+    private List<Object> messagelist;
     private Context mContext;
     private String id, postid;
     private EditText editTextHeadline;
@@ -138,7 +134,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private String username;
 
 
-    public FeedAdapter(Context context, List<MpModel> mlist) {
+    public FeedAdapter(Context context, List<Object> mlist) {
         this.mContext = context;
         activity = (Activity) context;
         this.messagelist = mlist;
@@ -150,29 +146,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     }
 
-    private void initTimer() {
-        final CountDownTimer countDownTimer = new CountDownTimer(30000, 1000) {
-
-            public void onTick(long millisUntilFinished) {
-            }
-
-            public void onFinish() {
-                start();
-                updateReportTime();
-            }
-
-        };
-
-        countDownTimer.start();
-    }
-
-    private void updateReportTime() {
-        notifyItemRangeChanged(0, messagelist.size(), REBIND_TIME);
-    }
-
-    public FeedAdapter(Context context, List<MpModel> mlist, String placename, SecondFragment secondFragment) {
-
-        Log.d("reach", "constr");
+    public FeedAdapter(Context context, List<Object> mlist, String placename, SecondFragment secondFragment) {
         this.mContext = context;
         activity = (Activity) context;
         this.messagelist = mlist;
@@ -186,9 +160,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     }
 
-    public FeedAdapter(Context context, List<MpModel> mlist, String placename, SecondFragment secondFragment, int qu_position) {
+    public FeedAdapter(Context context, List<Object> mlist, String placename, SecondFragment secondFragment, int qu_position) {
 
-        Log.d("reach", "constr");
         this.mContext = context;
         activity = (Activity) context;
         this.messagelist = mlist;
@@ -216,32 +189,24 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return bmp;
     }
 
-    private Bitmap loadBitmapFromView(View v, int width, int height) {
-        Bitmap b = Bitmap.createBitmap(v.getWidth(), v.getHeight(), Bitmap.Config.ARGB_4444);
-        Canvas c = new Canvas(b);
-        v.draw(c);
+    private void initTimer() {
+        final CountDownTimer countDownTimer = new CountDownTimer(30000, 1000) {
 
-        final DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
-        final Bitmap b2 = drawToBitmap(mContext, R.layout.share_reweyou_tag, metrics.widthPixels, metrics.heightPixels);
-        return combineImages(b, b2);
+            public void onTick(long millisUntilFinished) {
+            }
+
+            public void onFinish() {
+                start();
+                updateReportTime();
+            }
+
+        };
+
+        countDownTimer.start();
     }
 
-    private Bitmap combineImages(Bitmap c, Bitmap s) {
-        Bitmap cs = null;
-
-        int width, height = 0;
-
-        width = s.getWidth();
-        height = c.getHeight() + s.getHeight();
-        Log.d("width", "" + c.getWidth() + "     " + s.getWidth());
-        Log.d("height", "" + c.getHeight() + "     " + s.getHeight());
-        cs = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
-
-        Canvas comboImage = new Canvas(cs);
-
-        comboImage.drawBitmap(c, 0f, 0f, null);
-        comboImage.drawBitmap(s, 0f, c.getHeight(), null);
-        return cs;
+    private void updateReportTime() {
+        notifyItemRangeChanged(0, messagelist.size(), REBIND_TIME);
     }
 
 
@@ -267,7 +232,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder2, final int position) {
         //Log.d("view", String.valueOf(viewHolder2.getItemViewType()));
-
         switch (viewHolder2.getItemViewType()) {
             case VIEW_TYPE_LOADING:
                 break;
@@ -280,10 +244,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             case VIEW_TYPE_LOCATION:
                 bindLocation(position, viewHolder2);
                 break;
-          /*  default:
-                bindImageOrGif(position, viewHolder2);
-                break;*/
-
         }
     }
 
@@ -304,49 +264,49 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 super.onBindViewHolder(holder, position, payloads);
             else if (payloads.contains(REBIND_TIME)) {
                 Log.d(TAG, "onBindViewHolder: REBIND_TIME called");
-                setDate(holder,position);
+                setDate(holder, position);
             } else if (payloads.contains(prelike)) {
                 Log.d("reach", prelike);
 
                 holder.upicon.setImageResource(R.drawable.ic_thumb_up_primary_16px);
                 holder.upvote.setTextColor(mContext.getResources().getColor(R.color.rank));
-                if (Integer.parseInt(messagelist.get(position).getReviews()) == 0)
-                    holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews()) + 1) + " like");
+                if (Integer.parseInt(((FeedModel) messagelist.get(position)).getReviews()) == 0)
+                    holder.reviews.setText(String.valueOf(Integer.parseInt(((FeedModel) messagelist.get(position)).getReviews()) + 1) + " like");
                 else
-                    holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews()) + 1) + " likes");
+                    holder.reviews.setText(String.valueOf(Integer.parseInt(((FeedModel) messagelist.get(position)).getReviews()) + 1) + " likes");
 
                 holder.reviews.setTypeface(Typeface.DEFAULT_BOLD);
                 holder.reviews.setTextColor(mContext.getResources().getColor(R.color.rank));
-                Log.d("likes", String.valueOf(Integer.parseInt(messagelist.get(position).getReviews()) + 1));
+                Log.d("likes", String.valueOf(Integer.parseInt(((FeedModel) messagelist.get(position)).getReviews()) + 1));
             } else if (payloads.contains(errorliking)) {
                 Log.d("reach", errorliking);
 
                 holder.upicon.setImageResource(R.drawable.ic_thumb_up_black_16px);
                 holder.upvote.setTextColor(mContext.getResources().getColor(R.color.likeText));
-                if (Integer.parseInt(messagelist.get(position).getReviews()) == 0) {
+                if (Integer.parseInt(((FeedModel) messagelist.get(position)).getReviews()) == 0) {
                     holder.reviews.setTypeface(Typeface.DEFAULT);
                     holder.reviews.setTextColor(mContext.getResources().getColor(R.color.main));
-                    holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews())) + " like");
+                    holder.reviews.setText(String.valueOf(Integer.parseInt(((FeedModel) messagelist.get(position)).getReviews())) + " like");
 
-                } else if (Integer.parseInt(messagelist.get(position).getReviews()) == 1)
-                    holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews())) + " like");
+                } else if (Integer.parseInt(((FeedModel) messagelist.get(position)).getReviews()) == 1)
+                    holder.reviews.setText(String.valueOf(Integer.parseInt(((FeedModel) messagelist.get(position)).getReviews())) + " like");
                 else
-                    holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews())) + " likes");
+                    holder.reviews.setText(String.valueOf(Integer.parseInt(((FeedModel) messagelist.get(position)).getReviews())) + " likes");
 
             } else if (payloads.contains(preunlike)) {
                 Log.d("reach", preunlike);
                 holder.upicon.setImageResource(R.drawable.ic_thumb_up_black_16px);
                 holder.upvote.setTextColor(mContext.getResources().getColor(R.color.likeText));
-                if (Integer.parseInt(messagelist.get(position).getReviews()) == 2) {
-                    holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews()) - 1) + " like");
+                if (Integer.parseInt(((FeedModel) messagelist.get(position)).getReviews()) == 2) {
+                    holder.reviews.setText(String.valueOf(Integer.parseInt(((FeedModel) messagelist.get(position)).getReviews()) - 1) + " like");
 
-                } else if (Integer.parseInt(messagelist.get(position).getReviews()) == 1) {
+                } else if (Integer.parseInt(((FeedModel) messagelist.get(position)).getReviews()) == 1) {
                     holder.reviews.setTypeface(Typeface.DEFAULT);
                     holder.reviews.setTextColor(mContext.getResources().getColor(R.color.main));
-                    holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews()) - 1) + " like");
+                    holder.reviews.setText(String.valueOf(Integer.parseInt(((FeedModel) messagelist.get(position)).getReviews()) - 1) + " like");
 
                 } else
-                    holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews()) - 1) + " likes");
+                    holder.reviews.setText(String.valueOf(Integer.parseInt(((FeedModel) messagelist.get(position)).getReviews()) - 1) + " likes");
             } else if (payloads.contains(errorunliking)) {
                 Log.d("reach", errorunliking);
 
@@ -354,7 +314,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 holder.upvote.setTextColor(mContext.getResources().getColor(R.color.rank));
                 holder.reviews.setTypeface(Typeface.DEFAULT_BOLD);
                 holder.reviews.setTextColor(mContext.getResources().getColor(R.color.rank));
-                holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews())) + " likes");
+                holder.reviews.setText(String.valueOf(Integer.parseInt(((FeedModel) messagelist.get(position)).getReviews())) + " likes");
             }
         } else super.onBindViewHolder(mHolder, position, payloads);
 
@@ -362,20 +322,28 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemViewType(int position) {
-        switch (messagelist.get(position).getViewType()) {
-            case VIEW_TYPE_IMAGE:
-                return VIEW_TYPE_IMAGE;
-            case VIEW_TYPE_VIDEO:
-                return VIEW_TYPE_VIDEO;
-            case VIEW_TYPE_LOADING:
-                return VIEW_TYPE_LOADING;
-            case VIEW_TYPE_NEW_POST:
-                return VIEW_TYPE_NEW_POST;
-            case VIEW_TYPE_LOCATION:
-                return VIEW_TYPE_LOCATION;
-            default:
-                return super.getItemViewType(position);
-        }
+        if (messagelist.get(position) instanceof FeedModel) {
+            switch (((FeedModel) messagelist.get(position)).getViewType()) {
+                case VIEW_TYPE_IMAGE:
+                    return VIEW_TYPE_IMAGE;
+                case VIEW_TYPE_VIDEO:
+                    Log.i(TAG, "getItemViewType: video");
+                    return VIEW_TYPE_VIDEO;
+                default:
+                    return super.getItemViewType(position);
+            }
+        } else if (messagelist.get(position) instanceof Integer) {
+            switch ((int) messagelist.get(position)) {
+                case VIEW_TYPE_LOADING:
+                    return VIEW_TYPE_LOADING;
+                case VIEW_TYPE_NEW_POST:
+                    return VIEW_TYPE_NEW_POST;
+                case VIEW_TYPE_LOCATION:
+                    return VIEW_TYPE_LOCATION;
+                default:
+                    return super.getItemViewType(position);
+            }
+        } else return super.getItemViewType(position);
     }
 
     @Override
@@ -386,7 +354,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private void bindImageOrGif(final int position, RecyclerView.ViewHolder viewHolder2) {
         final ImageViewHolder viewHolder = (ImageViewHolder) viewHolder2;
 
-        Spannable spannable = new SpannableString(messagelist.get(position).getHeadline());
+        Spannable spannable = new SpannableString(((FeedModel) messagelist.get(position)).getHeadline());
         Util.linkifyUrl(spannable, new CustomTabsOnClickListener(activity, mCustomTabActivityHelper));
 
 
@@ -419,7 +387,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private void bindVideo(final int position, RecyclerView.ViewHolder viewHolder2) {
         final VideoViewHolder viewHolder = (VideoViewHolder) viewHolder2;
-        Spannable spannable = new SpannableString(messagelist.get(position).getHeadline());
+        Spannable spannable = new SpannableString(((FeedModel) messagelist.get(position)).getHeadline());
         Util.linkifyUrl(spannable, new CustomTabsOnClickListener(activity, mCustomTabActivityHelper));
 
 
@@ -455,20 +423,20 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     private void setNumOfViews(VideoViewHolder viewHolder, int position) {
-        if (messagelist.get(position).getPostviews().equals("0")) {
+        if (((FeedModel) messagelist.get(position)).getPostviews().equals("0")) {
             viewHolder.views.setVisibility(View.GONE);
-        } else if (messagelist.get(position).getPostviews().equals("1")) {
+        } else if (((FeedModel) messagelist.get(position)).getPostviews().equals("1")) {
             viewHolder.views.setVisibility(View.VISIBLE);
-            viewHolder.views.setText(messagelist.get(position).getPostviews() + " view");
+            viewHolder.views.setText(((FeedModel) messagelist.get(position)).getPostviews() + " view");
         } else {
             viewHolder.views.setVisibility(View.VISIBLE);
-            viewHolder.views.setText(messagelist.get(position).getPostviews() + " views");
+            viewHolder.views.setText(((FeedModel) messagelist.get(position)).getPostviews() + " views");
         }
     }
 
     private void setLikedStatus(BaseViewHolder viewHolder, int position) {
 
-        if (messagelist.get(position).isLiked()) {
+        if (((FeedModel) messagelist.get(position)).isLiked()) {
             viewHolder.upicon.setImageResource(R.drawable.ic_thumb_up_primary_16px);
             viewHolder.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.rank));
 
@@ -480,21 +448,21 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private void setFeedCategory(BaseViewHolder viewHolder, int position) {
         viewHolder.source.setVisibility(View.VISIBLE);
-        viewHolder.source.setText('#' + messagelist.get(position).getCategory());
+        viewHolder.source.setText('#' + ((FeedModel) messagelist.get(position)).getCategory());
 
     }
 
     private void setLikesNumber(BaseViewHolder viewHolder, int position) {
-        if (messagelist.get(position).getReviews().equals("0")) {
+        if (((FeedModel) messagelist.get(position)).getReviews().equals("0")) {
             viewHolder.reviews.setText("0 like");
             viewHolder.reviews.setTypeface(Typeface.DEFAULT);
             viewHolder.reviews.setTextColor(mContext.getResources().getColor(R.color.main));
-        } else if (messagelist.get(position).getReviews().equals("1")) {
+        } else if (((FeedModel) messagelist.get(position)).getReviews().equals("1")) {
             viewHolder.reviews.setText("1 like");
             viewHolder.reviews.setTypeface(Typeface.DEFAULT_BOLD);
             viewHolder.reviews.setTextColor(mContext.getResources().getColor(R.color.rank));
         } else {
-            viewHolder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews())) + " likes");
+            viewHolder.reviews.setText(String.valueOf(Integer.parseInt(((FeedModel) messagelist.get(position)).getReviews())) + " likes");
             viewHolder.reviews.setTypeface(Typeface.DEFAULT_BOLD);
 
             viewHolder.reviews.setTextColor(mContext.getResources().getColor(R.color.rank));
@@ -503,19 +471,19 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     private void setReactions(BaseViewHolder viewHolder, int position) {
-        if (messagelist.get(position).getComments() == null || messagelist.get(position).getComments().isEmpty())
+        if (((FeedModel) messagelist.get(position)).getComments() == null || ((FeedModel) messagelist.get(position)).getComments().isEmpty())
             viewHolder.app.setText("0 Reactions");
         else {
-            viewHolder.app.setText(messagelist.get(position).getComments() + " Reactions");
-            if (!messagelist.get(position).getComments().equals("0") && messagelist.get(position).getReaction() != null) {
+            viewHolder.app.setText(((FeedModel) messagelist.get(position)).getComments() + " Reactions");
+            if (!((FeedModel) messagelist.get(position)).getComments().equals("0") && ((FeedModel) messagelist.get(position)).getReaction() != null) {
                 viewHolder.rv.setVisibility(View.VISIBLE);
 
-                Spannable spannables = new SpannableString(messagelist.get(position).getReaction());
+                Spannable spannables = new SpannableString(((FeedModel) messagelist.get(position)).getReaction());
                 Util.linkifyUrl(spannables, new CustomTabsOnClickListener(activity, mCustomTabActivityHelper));
                 viewHolder.userName.setText(spannables);
                 viewHolder.userName.setMovementMethod(LinkMovementMethod.getInstance());
 
-                viewHolder.name.setText(messagelist.get(position).getFrom());
+                viewHolder.name.setText(((FeedModel) messagelist.get(position)).getFrom());
             } else {
                 viewHolder.rv.setVisibility(View.GONE);
             }
@@ -526,33 +494,33 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private void setReporterName(BaseViewHolder viewHolder, int position) {
 
         viewHolder.from.setVisibility(View.VISIBLE);
-        viewHolder.from.setText(messagelist.get(position).getName());
+        viewHolder.from.setText(((FeedModel) messagelist.get(position)).getName());
 
     }
 
     private void setFeedLocation(BaseViewHolder viewHolder, int position) {
-        viewHolder.place.setText(messagelist.get(position).getLocation());
+        viewHolder.place.setText(((FeedModel) messagelist.get(position)).getLocation());
 
     }
 
     private void setFeedImage(ImageViewHolder viewHolder, int position) {
         viewHolder.image.setVisibility(View.VISIBLE);
-        if (messagelist.get(position).getImage().isEmpty()) {
-            if (messagelist.get(position).getGif().isEmpty()) {
+        if (((FeedModel) messagelist.get(position)).getImage().isEmpty()) {
+            if (((FeedModel) messagelist.get(position)).getGif().isEmpty()) {
                 viewHolder.image.setVisibility(View.GONE);
             } else {
                 viewHolder.image.setAdjustViewBounds(false);
-                Glide.with(mContext).load(messagelist.get(position).getGif()).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).error(R.drawable.ic_broken_image_black_48dp).dontAnimate().into(viewHolder.image);
+                Glide.with(mContext).load(((FeedModel) messagelist.get(position)).getGif()).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).error(R.drawable.ic_broken_image_black_48dp).dontAnimate().into(viewHolder.image);
             }
         } else {
             viewHolder.image.setAdjustViewBounds(true);
-            Glide.with(mContext).load(messagelist.get(position).getImage()).diskCacheStrategy(DiskCacheStrategy.SOURCE).override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).error(R.drawable.ic_broken_image_black_48dp).dontAnimate().into(viewHolder.image);
+            Glide.with(mContext).load(((FeedModel) messagelist.get(position)).getImage()).diskCacheStrategy(DiskCacheStrategy.SOURCE).override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).error(R.drawable.ic_broken_image_black_48dp).dontAnimate().into(viewHolder.image);
         }
     }
 
     private void setFeedVideoThumbnail(final VideoViewHolder viewHolder, int position) {
 
-        if (messagelist.get(position).getImage() == null || messagelist.get(position).getImage().isEmpty()) {
+        if (((FeedModel) messagelist.get(position)).getImage() == null || ((FeedModel) messagelist.get(position)).getImage().isEmpty()) {
             viewHolder.image.setVisibility(View.GONE);
         } else {
             viewHolder.play.setVisibility(View.VISIBLE);
@@ -560,7 +528,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             viewHolder.image.setColorFilter(Color.argb(120, 0, 0, 0)); // black Tint
 
 
-            Glide.with(mContext).load(messagelist.get(position).getImage()).diskCacheStrategy(DiskCacheStrategy.SOURCE).error(R.drawable.ic_broken_image_black_48dp).listener(new RequestListener<String, GlideDrawable>() {
+            Glide.with(mContext).load(((FeedModel) messagelist.get(position)).getImage()).diskCacheStrategy(DiskCacheStrategy.SOURCE).error(R.drawable.ic_broken_image_black_48dp).listener(new RequestListener<String, GlideDrawable>() {
                 @Override
                 public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
                     viewHolder.play.setVisibility(View.INVISIBLE);
@@ -577,19 +545,19 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     private void setReactionsNumber(BaseViewHolder viewHolder, int position) {
-        if (messagelist.get(position).getComments() == null || messagelist.get(position).getComments().isEmpty())
+        if (((FeedModel) messagelist.get(position)).getComments() == null || ((FeedModel) messagelist.get(position)).getComments().isEmpty())
             viewHolder.app.setText("0 Reaction");
         else {
-            viewHolder.app.setText(messagelist.get(position).getComments() + " Reactions");
-            if (!messagelist.get(position).getComments().equals("0") && messagelist.get(position).getReaction() != null) {
+            viewHolder.app.setText(((FeedModel) messagelist.get(position)).getComments() + " Reactions");
+            if (!((FeedModel) messagelist.get(position)).getComments().equals("0") && ((FeedModel) messagelist.get(position)).getReaction() != null) {
                 viewHolder.rv.setVisibility(View.VISIBLE);
 
-                Spannable spannables = new SpannableString(messagelist.get(position).getReaction());
+                Spannable spannables = new SpannableString(((FeedModel) messagelist.get(position)).getReaction());
                 Util.linkifyUrl(spannables, new CustomTabsOnClickListener(activity, mCustomTabActivityHelper));
                 viewHolder.userName.setText(spannables);
                 viewHolder.userName.setMovementMethod(LinkMovementMethod.getInstance());
 
-                viewHolder.name.setText(messagelist.get(position).getFrom());
+                viewHolder.name.setText(((FeedModel) messagelist.get(position)).getFrom());
             } else {
                 viewHolder.rv.setVisibility(View.GONE);
             }
@@ -597,18 +565,18 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     private void setReporterProfilePic(BaseViewHolder viewHolder, int position) {
-        Glide.with(mContext).load(messagelist.get(position).getProfilepic()).placeholder(R.drawable.download).error(R.drawable.download).fallback(R.drawable.download).dontAnimate().into(viewHolder.profilepic);
+        Glide.with(mContext).load(((FeedModel) messagelist.get(position)).getProfilepic()).placeholder(R.drawable.download).error(R.drawable.download).fallback(R.drawable.download).dontAnimate().into(viewHolder.profilepic);
 
     }
 
     private void setDate(BaseViewHolder viewHolder, int position) {
         viewHolder.date.setVisibility(View.VISIBLE);
-        viewHolder.date.setText(messagelist.get(position).getDate());
+        viewHolder.date.setText(((FeedModel) messagelist.get(position)).getDate());
     }
 
     private void setDescription(BaseViewHolder viewHolder, int position, Spannable spannable) {
 
-        if (messagelist.get(position).getHeadline() == null || messagelist.get(position).getHeadline().isEmpty())
+        if (((FeedModel) messagelist.get(position)).getHeadline() == null || ((FeedModel) messagelist.get(position)).getHeadline().isEmpty())
             viewHolder.headline.setVisibility(View.GONE);
         else {
             viewHolder.headline.setVisibility(View.VISIBLE);
@@ -619,17 +587,16 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     private void setHeadline(BaseViewHolder viewHolder, int position) {
-        if (messagelist.get(position).getHead() == null || messagelist.get(position).getHead().isEmpty())
+        if (((FeedModel) messagelist.get(position)).getHead() == null || ((FeedModel) messagelist.get(position)).getHead().isEmpty())
             viewHolder.head.setVisibility(View.GONE);
         else {
             viewHolder.head.setVisibility(View.VISIBLE);
-            viewHolder.head.setText(messagelist.get(position).getHead());
+            viewHolder.head.setText(((FeedModel) messagelist.get(position)).getHead());
         }
     }
 
     public void add() {
-        MpModel loader = new MpModel();
-        messagelist.add(loader);
+        messagelist.add(VIEW_TYPE_LOADING);
         new Handler().post(new Runnable() {
             @Override
             public void run() {
@@ -643,12 +610,12 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         notifyItemRemoved(messagelist.size());
     }
 
-    public void loadMore(List<MpModel> messagelist2) {
+    public void loadMore(List<FeedModel> messagelist2) {
         this.messagelist.addAll(messagelist2);
         notifyItemRangeInserted(this.messagelist.size() - messagelist2.size(), messagelist2.size());
     }
 
-    private void takeScreenshot(int adapterPostition, CardView cv) {
+    private void takeScreenshot(CardView cv) {
         Date now = new Date();
         android.text.format.DateFormat.format("yyyy-MM-dd_hh:mm:ss", now);
 
@@ -669,7 +636,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             int quality = 90;
             cv.setDrawingCacheEnabled(true);
             cv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
-            loadBitmapFromView(cv, cv.getWidth(), cv.getHeight()).compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
+            loadBitmapFromView(cv).compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
             outputStream.flush();
             outputStream.close();
 
@@ -679,36 +646,32 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     }
 
-    private Bitmap getViewBitmap(View v) {
-        v.clearFocus();
-        v.setPressed(false);
+    private Bitmap loadBitmapFromView(View v) {
+        Bitmap b = Bitmap.createBitmap(v.getWidth(), v.getHeight(), Bitmap.Config.ARGB_4444);
+        Canvas c = new Canvas(b);
+        v.draw(c);
 
-        boolean willNotCache = v.willNotCacheDrawing();
-        v.setWillNotCacheDrawing(false);
+        final DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
+        final Bitmap b2 = drawToBitmap(mContext, R.layout.share_reweyou_tag, metrics.widthPixels, metrics.heightPixels);
+        return combineImages(b, b2);
+    }
 
-        // Reset the drawing cache background color to fully transparent
-        // for the duration of this operation
-        int color = v.getDrawingCacheBackgroundColor();
-        v.setDrawingCacheBackgroundColor(0);
+    private Bitmap combineImages(Bitmap c, Bitmap s) {
+        Bitmap cs = null;
 
-        if (color != 0) {
-            v.destroyDrawingCache();
-        }
-        v.buildDrawingCache();
-        Bitmap cacheBitmap = v.getDrawingCache();
-        if (cacheBitmap == null) {
-            Log.e(TAG, "failed getViewBitmap(" + v + ")", new RuntimeException());
-            return null;
-        }
+        int width, height = 0;
 
-        Bitmap bitmap = Bitmap.createBitmap(cacheBitmap);
+        width = s.getWidth();
+        height = c.getHeight() + s.getHeight();
+        Log.d("width", "" + c.getWidth() + "     " + s.getWidth());
+        Log.d("height", "" + c.getHeight() + "     " + s.getHeight());
+        cs = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
 
-        // Restore the view
-        v.destroyDrawingCache();
-        v.setWillNotCacheDrawing(willNotCache);
-        v.setDrawingCacheBackgroundColor(color);
+        Canvas comboImage = new Canvas(cs);
 
-        return bitmap;
+        comboImage.drawBitmap(c, 0f, 0f, null);
+        comboImage.drawBitmap(s, 0f, c.getHeight(), null);
+        return cs;
     }
 
     private void ShareIntent() {
@@ -726,12 +689,12 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         LayoutInflater li = LayoutInflater.from(mContext);
         //Creating a view to get the dialog box
         View confirmDialog = li.inflate(R.layout.dialog_edit, null);
-        postid = messagelist.get(position).getPostId();
+        postid = ((FeedModel) messagelist.get(position)).getPostId();
         //  number=session.getMobileNumber();
         //Initizliaing confirm button fo dialog box and edittext of dialog box
         buttonEdit = (Button) confirmDialog.findViewById(R.id.buttonConfirm);
         editTextHeadline = (EditText) confirmDialog.findViewById(R.id.editTextOtp);
-        editTextHeadline.setText(messagelist.get(position).getHeadline());
+        editTextHeadline.setText(((FeedModel) messagelist.get(position)).getHeadline());
         editTextHeadline.setSelection(editTextHeadline.getText().length());
 
         //Creating an alertdialog builder
@@ -803,57 +766,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         });
     }
 
-    private void showPopupMenu(View view, int adapterPosition, CardView cv) {
-        // inflate menu
-
-        PopupMenu popup = new PopupMenu(mContext, view);
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.menu_story, popup.getMenu());
-        popup.setOnMenuItemClickListener(new MyMenuItemClickListener(adapterPosition, cv));
-        popup.show();
-    }
-
-    private void suggest(int position) {
-        id = messagelist.get(position).getPostId();
-        username = session.getUsername();
-        number = session.getMobileNumber();
-        Log.e("id", id);
-        Log.e("username", username);
-        Log.e("number", number);
-        if (messagelist.get(position).getReaders().equals("100")) {
-            Toast.makeText(mContext, "This feature will be added in next update", Toast.LENGTH_SHORT).show();
-        } else {
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, SUGGEST_URL,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            if (response.trim().equals("success")) {
-                                //button.setText("Reviewed");
-                            } else {
-                                Toast.makeText(mContext, response, Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(mContext, error.toString(), Toast.LENGTH_LONG).show();
-                        }
-                    }) {
-                @Override
-                protected Map<String, String> getParams() throws AuthFailureError {
-                    Map<String, String> map = new HashMap<String, String>();
-                    map.put("postid", id);
-                    map.put("username", username);
-                    map.put("number", number);
-                    return map;
-                }
-            };
-
-            RequestQueue requestQueue = Volley.newRequestQueue(mContext);
-            requestQueue.add(stringRequest);
-        }
-    }
 
     private void makeRequest(final int adapterPosition) {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_LIKE,
@@ -861,19 +773,19 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     @Override
                     public void onResponse(String response) {
                         if (response.equals("like")) {
-                            session.addlike(messagelist.get(adapterPosition).getPostId());
-                            messagelist.get(adapterPosition).setLiked(true);
-                            messagelist.get(adapterPosition).setReviews(String.valueOf((Integer.parseInt(messagelist.get(adapterPosition).getReviews()) + 1)));
+                            session.addlike(((FeedModel) messagelist.get(adapterPosition)).getPostId());
+                            ((FeedModel) messagelist.get(adapterPosition)).setLiked(true);
+                            ((FeedModel) messagelist.get(adapterPosition)).setReviews(String.valueOf((Integer.parseInt(((FeedModel) messagelist.get(adapterPosition)).getReviews()) + 1)));
 
                         } else if (response.equals("unlike")) {
-                            session.removelike(messagelist.get(adapterPosition).getPostId());
-                            messagelist.get(adapterPosition).setLiked(false);
-                            messagelist.get(adapterPosition).setReviews(String.valueOf((Integer.parseInt(messagelist.get(adapterPosition).getReviews()) - 1)));
+                            session.removelike(((FeedModel) messagelist.get(adapterPosition)).getPostId());
+                            ((FeedModel) messagelist.get(adapterPosition)).setLiked(false);
+                            ((FeedModel) messagelist.get(adapterPosition)).setReviews(String.valueOf((Integer.parseInt(((FeedModel) messagelist.get(adapterPosition)).getReviews()) - 1)));
 
 
                         } else if (response.equals("Error")) {
 
-                            if (messagelist.get(adapterPosition).isLiked()) {
+                            if (((FeedModel) messagelist.get(adapterPosition)).isLiked()) {
                                 notifyItemChanged(adapterPosition, errorunliking);
 
                             } else notifyItemChanged(adapterPosition, errorliking);
@@ -884,7 +796,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
                         } else if (response.equals(Constants.AUTH_ERROR)) {
 
-                            if (messagelist.get(adapterPosition).isLiked()) {
+                            if (((FeedModel) messagelist.get(adapterPosition)).isLiked()) {
                                 notifyItemChanged(adapterPosition, errorliking);
 
                             } else notifyItemChanged(adapterPosition, errorunliking);
@@ -903,7 +815,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        if (messagelist.get(adapterPosition).isLiked()) {
+                        if (((FeedModel) messagelist.get(adapterPosition)).isLiked()) {
                             notifyItemChanged(adapterPosition, errorunliking);
 
                         } else notifyItemChanged(adapterPosition, errorliking);
@@ -919,8 +831,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> data = new HashMap<>();
-                data.put("from", messagelist.get(adapterPosition).getNumber());
-                data.put("postid", messagelist.get(adapterPosition).getPostId());
+                data.put("from", ((FeedModel) messagelist.get(adapterPosition)).getNumber());
+                data.put("postid", ((FeedModel) messagelist.get(adapterPosition)).getPostId());
                 data.put("number", session.getMobileNumber());
                 data.put("token", session.getKeyAuthToken());
                 data.put("deviceid", session.getDeviceid());
@@ -998,7 +910,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 @Override
                 public void onClick(View v) {
                     Intent i = new Intent(mContext, LikesActivity.class);
-                    i.putExtra("postid", messagelist.get(getAdapterPosition()).getPostId());
+                    i.putExtra("postid", ((FeedModel) messagelist.get(getAdapterPosition())).getPostId());
                     mContext.startActivity(i);
                     ((Activity) mContext).overridePendingTransition(0, 0);
 
@@ -1007,7 +919,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (messagelist.get(getAdapterPosition()).isLiked()) {
+                    if (((FeedModel) messagelist.get(getAdapterPosition())).isLiked()) {
                         Log.d("reach here", "here");
                         notifyItemChanged(getAdapterPosition(), preunlike);
 
@@ -1024,7 +936,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 public void onClick(View view) {
 
                     if (uploadOption.showShareOptions()) {
-                        takeScreenshot(getAdapterPosition(), cv);
+                        takeScreenshot(cv);
                         ShareIntent();
                     }
                 }
@@ -1036,7 +948,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     isInternetPresent = cd.isConnectingToInternet();
                     if (isInternetPresent) {
                         Bundle bundle = new Bundle();
-                        bundle.putString("myData", messagelist.get(getAdapterPosition()).getNumber());
+                        bundle.putString("myData", ((FeedModel) messagelist.get(getAdapterPosition())).getNumber());
                         Intent in = new Intent(mContext, UserProfile.class);
                         in.putExtras(bundle);
                         mContext.startActivity(in);
@@ -1052,7 +964,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 public void onClick(View view) {
 
                     Bundle bundle = new Bundle();
-                    bundle.putString("myData", messagelist.get(getAdapterPosition()).getNumber());
+                    bundle.putString("myData", ((FeedModel) messagelist.get(getAdapterPosition())).getNumber());
                     Intent in = new Intent(mContext, UserProfile.class);
                     in.putExtras(bundle);
                     mContext.startActivity(in);
@@ -1068,9 +980,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 public void onClick(View view) {
                     if (qu_position != 15) {
                         Bundle bundle = new Bundle();
-                        bundle.putString("myData", messagelist.get(getAdapterPosition()).getPostId());
-                        bundle.putString("headline", messagelist.get(getAdapterPosition()).getHeadline());
-                        bundle.putString("image", messagelist.get(getAdapterPosition()).getImage());
+                        bundle.putString("myData", ((FeedModel) messagelist.get(getAdapterPosition())).getPostId());
+                        bundle.putString("headline", ((FeedModel) messagelist.get(getAdapterPosition())).getHeadline());
+                        bundle.putString("image", ((FeedModel) messagelist.get(getAdapterPosition())).getImage());
                         Intent in = new Intent(mContext, Comments1.class);
 
                         in.putExtras(bundle);
@@ -1088,9 +1000,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 public void onClick(View view) {
                     if (qu_position != 15) {
                         Bundle bundle = new Bundle();
-                        bundle.putString("myData", messagelist.get(getAdapterPosition()).getPostId());
-                        bundle.putString("headline", messagelist.get(getAdapterPosition()).getHeadline());
-                        bundle.putString("image", messagelist.get(getAdapterPosition()).getImage());
+                        bundle.putString("myData", ((FeedModel) messagelist.get(getAdapterPosition())).getPostId());
+                        bundle.putString("headline", ((FeedModel) messagelist.get(getAdapterPosition())).getHeadline());
+                        bundle.putString("image", ((FeedModel) messagelist.get(getAdapterPosition())).getImage());
                         Intent in = new Intent(mContext, Comments1.class);
                         in.putExtras(bundle);
                         mContext.startActivity(in);
@@ -1106,7 +1018,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 @Override
                 public void onClick(View view) {
                     Intent in = new Intent(mContext, MyCityActivity.class);
-                    in.putExtra("place", messagelist.get(getAdapterPosition()).getLocation());
+                    in.putExtra("place", ((FeedModel) messagelist.get(getAdapterPosition())).getLocation());
                     mContext.startActivity(in);
                     ((Activity) mContext).overridePendingTransition(0, 0);
                 }
@@ -1116,7 +1028,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 @Override
                 public void onClick(View view) {
                     try {
-                        if (session.getMobileNumber().equals(messagelist.get(getAdapterPosition()).getNumber())) {
+                        if (session.getMobileNumber().equals(((FeedModel) messagelist.get(getAdapterPosition())).getNumber())) {
                             editHeadline(getAdapterPosition());
                         } else {
 
@@ -1131,7 +1043,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 @Override
                 public void onClick(View view) {
                     session = new UserSessionManager(mContext);
-                    session.setCategory(messagelist.get(getAdapterPosition()).getCategory());
+                    session.setCategory(((FeedModel) messagelist.get(getAdapterPosition())).getCategory());
                     Intent in = new Intent(mContext, CategoryActivity.class);
                     mContext.startActivity(in);
                     ((Activity) mContext).overridePendingTransition(0, 0);
@@ -1143,9 +1055,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 public void onClick(View view) {
                     if (qu_position != 15) {
                         Bundle bundle = new Bundle();
-                        bundle.putString("myData", messagelist.get(getAdapterPosition()).getPostId());
-                        bundle.putString("headline", messagelist.get(getAdapterPosition()).getHeadline());
-                        bundle.putString("image", messagelist.get(getAdapterPosition()).getImage());
+                        bundle.putString("myData", ((FeedModel) messagelist.get(getAdapterPosition())).getPostId());
+                        bundle.putString("headline", ((FeedModel) messagelist.get(getAdapterPosition())).getHeadline());
+                        bundle.putString("image", ((FeedModel) messagelist.get(getAdapterPosition())).getImage());
                         Intent in = new Intent(mContext, Comments1.class);
                         ((Activity) mContext).overridePendingTransition(0, 0);
 
@@ -1175,11 +1087,11 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (messagelist.get(getAdapterPosition()).getGif().isEmpty()) {
+                    if (((FeedModel) messagelist.get(getAdapterPosition())).getGif().isEmpty()) {
                         Bundle bundle = new Bundle();
-                        bundle.putString("myData", messagelist.get(getAdapterPosition()).getImage());
-                        bundle.putString("tag", messagelist.get(getAdapterPosition()).getCategory());
-                        bundle.putString("headline", messagelist.get(getAdapterPosition()).getHead());
+                        bundle.putString("myData", ((FeedModel) messagelist.get(getAdapterPosition())).getImage());
+                        bundle.putString("tag", ((FeedModel) messagelist.get(getAdapterPosition())).getCategory());
+                        bundle.putString("headline", ((FeedModel) messagelist.get(getAdapterPosition())).getHead());
                         Intent in = new Intent(mContext, FullImage.class);
                         in.putExtras(bundle);
                         mContext.startActivity(in);
@@ -1212,11 +1124,11 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
                     increaseViewsRequest();
                     Intent in = new Intent(mContext, VideoDisplay.class);
-                    in.putExtra("myData", messagelist.get(getAdapterPosition()).getVideo());
-                    in.putExtra("tag", messagelist.get(getAdapterPosition()).getCategory());
-                    in.putExtra("headline", messagelist.get(getAdapterPosition()).getHead());
-                    if (messagelist.get(getAdapterPosition()).getHeadline() != null)
-                        in.putExtra("description", messagelist.get(getAdapterPosition()).getHeadline());
+                    in.putExtra("myData", ((FeedModel) messagelist.get(getAdapterPosition())).getVideo());
+                    in.putExtra("tag", ((FeedModel) messagelist.get(getAdapterPosition())).getCategory());
+                    in.putExtra("headline", ((FeedModel) messagelist.get(getAdapterPosition())).getHead());
+                    if (((FeedModel) messagelist.get(getAdapterPosition())).getHeadline() != null)
+                        in.putExtra("description", ((FeedModel) messagelist.get(getAdapterPosition())).getHeadline());
                     mContext.startActivity(in);
 
                 }
@@ -1246,9 +1158,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 @Override
                 protected Map<String, String> getParams() throws AuthFailureError {
                     Map<String, String> map = new HashMap<String, String>();
-                    Log.d("po", messagelist.get(getAdapterPosition()).getPostId());
-                    Log.d("powwww", messagelist.get(getAdapterPosition()).getPostviews());
-                    map.put("postid", messagelist.get(getAdapterPosition()).getPostId());
+                    Log.d("po", ((FeedModel) messagelist.get(getAdapterPosition())).getPostId());
+                    Log.d("powwww", ((FeedModel) messagelist.get(getAdapterPosition())).getPostviews());
+                    map.put("postid", ((FeedModel) messagelist.get(getAdapterPosition())).getPostId());
                     return map;
                 }
             };
@@ -1333,32 +1245,5 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-    private class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
-
-        private CardView cv;
-        private int adapterPostition;
-
-        public MyMenuItemClickListener(int adapterPosition, CardView cv) {
-            this.adapterPostition = adapterPosition;
-            this.cv = cv;
-        }
-
-        @Override
-        public boolean onMenuItemClick(MenuItem menuItem) {
-            switch (menuItem.getItemId()) {
-                case R.id.share:
-                    //takeScreenshot(adapterPostition,cv);
-                    //ShareIntent();
-                    return true;
-                case R.id.send:
-                    Toast.makeText(mContext, "This feature will be added in next update", Toast.LENGTH_SHORT).show();
-                    // suggest(currentposition);
-
-                    return true;
-                default:
-            }
-            return false;
-        }
-    }
 
 }

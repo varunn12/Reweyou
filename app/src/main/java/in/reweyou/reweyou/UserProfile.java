@@ -52,7 +52,7 @@ import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.DividerItemDecoration;
 import in.reweyou.reweyou.classes.RequestHandler;
 import in.reweyou.reweyou.classes.UserSessionManager;
-import in.reweyou.reweyou.model.MpModel;
+import in.reweyou.reweyou.model.FeedModel;
 
 import static in.reweyou.reweyou.utils.Constants.USER_PROFILE_URL_FOLLOW;
 import static in.reweyou.reweyou.utils.Constants.USER_PROFILE_URL_VERIFY_FOLLOW;
@@ -391,7 +391,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         }
     }
 
-    public class JSONTasks extends AsyncTask<String, String, List<MpModel>> {
+    public class JSONTasks extends AsyncTask<String, String, List<Object>> {
 
         @Override
         protected void onPreExecute() {
@@ -400,7 +400,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         }
 
         @Override
-        protected List<MpModel> doInBackground(String... params) {
+        protected List<Object> doInBackground(String... params) {
             HttpURLConnection connection = null;
             BufferedReader reader = null;
             RequestHandler rh = new RequestHandler();
@@ -432,15 +432,14 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
                 Log.d("final", finalJson);
                 JSONArray parentArray = new JSONArray(finalJson);
-                StringBuffer finalBufferedData = new StringBuffer();
                 length = parentArray.length();
-                List<MpModel> messagelist = new ArrayList<>();
+                List<Object> messagelist = new ArrayList<>();
 
                 Gson gson = new Gson();
                 for (int i = 0; i < parentArray.length(); i++) {
                     JSONObject finalObject = parentArray.getJSONObject(i);
-                    MpModel mpModel = gson.fromJson(finalObject.toString(), MpModel.class);
-                    messagelist.add(mpModel);
+                    FeedModel feedModel = gson.fromJson(finalObject.toString(), FeedModel.class);
+                    messagelist.add(feedModel);
                 }
 
                 return messagelist;
@@ -467,7 +466,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         }
 
         @Override
-        protected void onPostExecute(List<MpModel> result) {
+        protected void onPostExecute(List<Object> result) {
             super.onPostExecute(result);
             progressBar.setVisibility(View.GONE);
             FeedAdapter adapter = new FeedAdapter(UserProfile.this, result);

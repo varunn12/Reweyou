@@ -49,9 +49,12 @@ import in.reweyou.reweyou.adapter.FeedAdapter;
 import in.reweyou.reweyou.classes.DividerItemDecoration;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.customView.PreCachingLayoutManager;
-import in.reweyou.reweyou.model.MpModel;
+import in.reweyou.reweyou.model.FeedModel;
 import in.reweyou.reweyou.utils.Constants;
 import in.reweyou.reweyou.utils.MyJSON;
+
+import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_LOCATION;
+import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_NEW_POST;
 
 
 public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, View.OnClickListener, FragmentCommunicator {
@@ -61,12 +64,11 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
     UserSessionManager session;
     int pastVisiblesItems, visibleItemCount, totalItemCount;
     private RecyclerView recyclerView;
-    private List<MpModel> messagelist = new ArrayList<>();
+    private List<Object> messagelist = new ArrayList<>();
     private ProgressBar progressBar;
     private String location, formattedDate, number;
     private boolean loading = true;
     private SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss a", Locale.ENGLISH);
-    ;
     private FeedAdapter adapter;
     private Calendar c;
     private String lastPostid;
@@ -114,12 +116,9 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
         recyclerView = (RecyclerView) layout.findViewById(R.id.recycler_view);
         RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecoration(ContextCompat.getDrawable(getActivity(), R.drawable.line));
         recyclerView.addItemDecoration(dividerItemDecoration);
-
         recyclerView.setLayoutManager(new PreCachingLayoutManager(getActivity()));
         final PreCachingLayoutManager layoutManager = (PreCachingLayoutManager) recyclerView.getLayoutManager();
-        DefaultItemAnimator defaultItemAnimator = new DefaultItemAnimator();
-        recyclerView.setItemAnimator(defaultItemAnimator);
-
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
         if (position != 19 && position != 15)
             recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
@@ -162,7 +161,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                                     Log.d("Response", response);
                                     List<String> likeslist = session.getLikesList();
                                     Log.d("likeslist", String.valueOf(likeslist));
-                                    List<MpModel> list = new ArrayList<MpModel>();
+                                    List<FeedModel> list = new ArrayList<FeedModel>();
                                     JSONArray parentArray = null;
                                     try {
                                         parentArray = new JSONArray(response);
@@ -172,21 +171,21 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                                         Log.d("lenght", String.valueOf(parentArray.length()));
                                         for (int i = 0; i < parentArray.length(); i++) {
                                             JSONObject finalObject = parentArray.getJSONObject(i);
-                                            MpModel mpModel = gson.fromJson(finalObject.toString(), MpModel.class);
+                                            FeedModel feedModel = gson.fromJson(finalObject.toString(), FeedModel.class);
 
-                                            if (likeslist.contains(mpModel.getPostId())) {
-                                                Log.d("true", mpModel.getPostId() + "    ");
+                                            if (likeslist.contains(feedModel.getPostId())) {
+                                                Log.d("true", feedModel.getPostId() + "    ");
 
-                                                mpModel.setLiked(true);
+                                                feedModel.setLiked(true);
 
                                             }
 
 
-                                            list.add(mpModel);
+                                            list.add(feedModel);
                                             if (i == parentArray.length() - 1) {
-                                                // formattedDate = mpModel.getDate1();
-                                                //Log.d("last", mpModel.getCategory());
-                                                lastPostid = mpModel.getPostId();
+                                                // formattedDate = feedModel.getDate1();
+                                                //Log.d("last", feedModel.getCategory());
+                                                lastPostid = feedModel.getPostId();
                                             }
                                         }
 
@@ -243,21 +242,47 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
             });
 
 
-        session = new UserSessionManager(getActivity());
+        session = new UserSessionManager(mContext);
         HashMap<String, String> user = session.getUserDetails();
         number = session.getMobileNumber();
+
+
         //Progress bar
         progressBar = (ProgressBar) layout.findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.VISIBLE);
+
+
         swipeLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipe_container);
         swipeLayout.setOnRefreshListener(this);
+
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    Log.d(TAG, "onScrollStateChanged: dragging");
+                    swipeLayout.setEnabled(false);
+                } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    Log.d(TAG, "onScrollStateChanged: idle");
+                    swipeLayout.setEnabled(true);
+                }
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
 
         formattedDate = df.format(Calendar.getInstance().getTime());
         location = user.get(UserSessionManager.KEY_LOCATION);
 
-        if (position == Constants.POSITION_FEED_TAB_1){
+        if (position == Constants.POSITION_FEED_TAB_1) {
             loadFeeds();
-            Log.d(TAG, "onCreateView: loadfeeds called");}
+            Log.d(TAG, "onCreateView: loadfeeds called");
+        }
 
         return layout;
     }
@@ -271,7 +296,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
             formattedDate = df.format(Calendar.getInstance().getTime());
             makeRequest();
 
-        }else Log.d(TAG, "loadFeeds: datafetched true");
+        } else Log.d(TAG, "loadFeeds: datafetched true");
     }
 
 
@@ -288,18 +313,14 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
                             List<String> likeslist = session.getLikesList();
 
-                            List<MpModel> messagelist = new ArrayList<>();
+                            List<Object> messagelist = new ArrayList<>();
 
-                            if (position == 0) {
-                                MpModel newPost = new MpModel();
-                                newPost.newPost = true;
-                                messagelist.add(newPost);
+                            if (position == Constants.POSITION_FEED_TAB_1) {
+                                messagelist.add(VIEW_TYPE_NEW_POST);
                             }
 
-                            if (position == 10) {
-                                MpModel locationFilter = new MpModel();
-                                locationFilter.locationPost = true;
-                                messagelist.add(locationFilter);
+                            if (position == Constants.POSITION_MY_CITY) {
+                                messagelist.add(VIEW_TYPE_LOCATION);
                             }
 
                             Gson gson = new Gson();
@@ -308,25 +329,25 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
                             for (int i = 0; i < parentArray.length(); i++) {
                                 JSONObject feedObject = parentArray.getJSONObject(i);
-                                MpModel mpModel = gson.fromJson(feedObject.toString(), MpModel.class);
+                                FeedModel feedModel = gson.fromJson(feedObject.toString(), FeedModel.class);
 
-                                if (likeslist.contains(mpModel.getPostId())) {
-                                    mpModel.setLiked(true);
+                                if (likeslist.contains(feedModel.getPostId())) {
+                                    feedModel.setLiked(true);
                                 }
 
                                 if (i == 0) {
-                                    minPostid = Integer.parseInt(mpModel.getPostId());
+                                    minPostid = Integer.parseInt(feedModel.getPostId());
                                 }
 
-                                if (minPostid > Integer.parseInt(mpModel.getPostId())) {
-                                    minPostid = Integer.parseInt(mpModel.getPostId());
+                                if (minPostid > Integer.parseInt(feedModel.getPostId())) {
+                                    minPostid = Integer.parseInt(feedModel.getPostId());
                                 }
 
 
-                                messagelist.add(mpModel);
+                                messagelist.add(feedModel);
 
                                 if (i == parentArray.length() - 1) {
-                                    lastPostid = mpModel.getPostId();
+                                    lastPostid = feedModel.getPostId();
                                     Log.d(TAG, "onResponse: lastPostid: " + lastPostid);
                                     Log.d(TAG, "onResponse: minPostid: " + minPostid);
 
@@ -344,7 +365,8 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
                                 dataFetched = true;
                                 recyclerView.setAdapter(adapter);
-                            }else Log.w(TAG, "onResponse: fragment got detached when setting adapter");
+                            } else
+                                Log.w(TAG, "onResponse: fragment got detached when setting adapter");
                             swipeLayout.setRefreshing(false);
 
                             cacheLoad = false;
@@ -390,8 +412,8 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                                     Gson gson = new Gson();
                                     for (int i = 0; i < parentArray.length(); i++) {
                                         JSONObject finalObject = parentArray.getJSONObject(i);
-                                        MpModel mpModel = gson.fromJson(finalObject.toString(), MpModel.class);
-                                        messagelist.add(mpModel);
+                                        FeedModel feedModel = gson.fromJson(finalObject.toString(), FeedModel.class);
+                                        messagelist.add(feedModel);
                                     }
                                     adapter = new FeedAdapter(mContext, messagelist);
                                     dataFetched = true;
@@ -477,7 +499,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
     @Override
     public void onRefresh() {
 
-      //  Messages2();
+        //  Messages2();
         topBar.setVisibility(View.GONE);
         formattedDate = df.format(Calendar.getInstance().getTime());
         Log.d(TAG, "onRefresh: called");
@@ -547,11 +569,9 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
         super.onAttach(context);
         Log.d(TAG, "onAttach: called");
 
-
         if (context instanceof Activity)
             mContext = (Activity) context;
-        else Log.e(TAG, "onAttach: " + "context is null");
-
+        else Log.w(TAG, "onAttach: " + "context is null");
     }
 
 
@@ -573,7 +593,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
     @Override
     public void onDestroy() {
-        Log.d(TAG, "onDestroy:"+position+" called");
+        Log.d(TAG, "onDestroy:" + position + " called");
         super.onDestroy();
     }
 }

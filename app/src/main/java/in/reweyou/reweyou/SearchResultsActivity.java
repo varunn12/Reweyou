@@ -13,11 +13,11 @@ import java.util.List;
 
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.fragment.SecondFragment;
-import in.reweyou.reweyou.model.MpModel;
+import in.reweyou.reweyou.model.FeedModel;
 
 public class SearchResultsActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
-    private List<MpModel> messagelist;
+    private List<FeedModel> messagelist;
     private String query;
     private Toolbar toolbar;
     private UserSessionManager sessionManager;
@@ -118,7 +118,7 @@ public class SearchResultsActivity extends AppCompatActivity {
 
 
 /*
-    public class JSONTask extends AsyncTask<String, String, List<MpModel>> {
+    public class JSONTask extends AsyncTask<String, String, List<FeedModel>> {
 
         @Override
         protected void onPreExecute() {
@@ -127,7 +127,7 @@ public class SearchResultsActivity extends AppCompatActivity {
         }
 
         @Override
-        protected List<MpModel> doInBackground(String... params) {
+        protected List<FeedModel> doInBackground(String... params) {
             HttpURLConnection connection = null;
             BufferedReader reader = null;
             RequestHandler rh = new RequestHandler();
@@ -157,12 +157,12 @@ public class SearchResultsActivity extends AppCompatActivity {
                 JSONArray parentArray = new JSONArray(finalJson);
                 StringBuffer finalBufferedData = new StringBuffer();
 
-                List<MpModel> messagelist = new ArrayList<>();
+                List<FeedModel> messagelist = new ArrayList<>();
 
                 Gson gson = new Gson();
                 for (int i = 0; i < parentArray.length(); i++) {
                     JSONObject finalObject = parentArray.getJSONObject(i);
-                    MpModel mpModel = gson.fromJson(finalObject.toString(), MpModel.class);
+                    FeedModel mpModel = gson.fromJson(finalObject.toString(), FeedModel.class);
                     messagelist.add(mpModel);
                 }
 
@@ -191,7 +191,7 @@ public class SearchResultsActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(List<MpModel> result) {
+        protected void onPostExecute(List<FeedModel> result) {
             super.onPostExecute(result);
             progressBar.setVisibility(View.GONE);
             CityAdapter adapter = new CityAdapter(SearchResultsActivity.this, result);

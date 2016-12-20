@@ -38,7 +38,7 @@ import in.reweyou.reweyou.classes.DividerItemDecoration;
 import in.reweyou.reweyou.classes.HidingScrollListener;
 import in.reweyou.reweyou.classes.RequestHandler;
 import in.reweyou.reweyou.classes.UserSessionManager;
-import in.reweyou.reweyou.model.MpModel;
+import in.reweyou.reweyou.model.FeedModel;
 
 
 public class MyCityFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
@@ -46,7 +46,7 @@ public class MyCityFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
     SwipeRefreshLayout swipeLayout;
     private RecyclerView recyclerView;
-    private List<MpModel> messagelist;
+    private List<Object> messagelist;
     private FeedAdapter adapter;
     private ProgressBar progressBar;
     private Spinner staticSpinner;
@@ -120,8 +120,7 @@ public class MyCityFragment extends Fragment implements SwipeRefreshLayout.OnRef
     }
 
 
-
-    public class JSONTask extends AsyncTask<String, String, List<MpModel>> {
+    public class JSONTask extends AsyncTask<String, String, List<Object>> {
 
         @Override
         protected void onPreExecute() {
@@ -130,7 +129,7 @@ public class MyCityFragment extends Fragment implements SwipeRefreshLayout.OnRef
         }
 
         @Override
-        protected List<MpModel> doInBackground(String... params) {
+        protected List<Object> doInBackground(String... params) {
             HttpURLConnection connection = null;
             BufferedReader reader = null;
             RequestHandler rh= new RequestHandler();
@@ -164,13 +163,13 @@ public class MyCityFragment extends Fragment implements SwipeRefreshLayout.OnRef
                 JSONArray parentArray = new JSONArray(finalJson);
                 StringBuffer finalBufferedData = new StringBuffer();
 
-                List<MpModel> messagelist = new ArrayList<>();
+                List<Object> messagelist = new ArrayList<>();
 
                 Gson gson = new Gson();
                 for (int i = 0; i < parentArray.length(); i++) {
                     JSONObject finalObject = parentArray.getJSONObject(i);
-                    MpModel mpModel = gson.fromJson(finalObject.toString(), MpModel.class);
-                    messagelist.add(mpModel);
+                    FeedModel feedModel = gson.fromJson(finalObject.toString(), FeedModel.class);
+                    messagelist.add(feedModel);
                 }
 
                 return messagelist;
@@ -197,7 +196,7 @@ public class MyCityFragment extends Fragment implements SwipeRefreshLayout.OnRef
         }
 
         @Override
-        protected void onPostExecute(List<MpModel> result) {
+        protected void onPostExecute(List<Object> result) {
             super.onPostExecute(result);
             progressBar.setVisibility(View.GONE);
             FeedAdapter adapter = new FeedAdapter(getActivity(), result);

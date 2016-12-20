@@ -48,7 +48,7 @@ import in.reweyou.reweyou.classes.CustomTabActivityHelper;
 import in.reweyou.reweyou.classes.CustomTabsOnClickListener;
 import in.reweyou.reweyou.classes.RequestHandler;
 import in.reweyou.reweyou.classes.Util;
-import in.reweyou.reweyou.model.MpModel;
+import in.reweyou.reweyou.model.FeedModel;
 
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_GIF;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_IMAGE;
@@ -90,7 +90,7 @@ public class SinglePostFragment extends Fragment {
         return layout;
     }
 
-    private void setData(final MpModel result, View view, final int i) {
+    private void setData(final FeedModel result, View view, final int i) {
         ImageView image, profilepic, overflow;
         TextView headline, upvote, head;
         TextView place;
@@ -301,9 +301,9 @@ public class SinglePostFragment extends Fragment {
         });*/
     }
 
-    public class JSONTask extends AsyncTask<String, String, MpModel> {
+    public class JSONTask extends AsyncTask<String, String, FeedModel> {
 
-        private MpModel mpModel;
+        private FeedModel feedModel;
 
         @Override
         protected void onPreExecute() {
@@ -313,7 +313,7 @@ public class SinglePostFragment extends Fragment {
         }
 
         @Override
-        protected MpModel doInBackground(String... params) {
+        protected FeedModel doInBackground(String... params) {
             HttpURLConnection connection = null;
             BufferedReader reader = null;
             RequestHandler rh = new RequestHandler();
@@ -346,10 +346,10 @@ public class SinglePostFragment extends Fragment {
                 Gson gson = new Gson();
                 for (int i = 0; i < parentArray.length(); i++) {
                     JSONObject finalObject = parentArray.getJSONObject(i);
-                    mpModel = gson.fromJson(finalObject.toString(), MpModel.class);
+                    feedModel = gson.fromJson(finalObject.toString(), FeedModel.class);
                 }
 
-                return mpModel;
+                return feedModel;
 
                 //return buffer.toString();
             } catch (MalformedURLException e) {
@@ -374,7 +374,7 @@ public class SinglePostFragment extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(MpModel result) {
+        protected void onPostExecute(FeedModel result) {
             super.onPostExecute(result);
             progressBar.setVisibility(View.GONE);
 

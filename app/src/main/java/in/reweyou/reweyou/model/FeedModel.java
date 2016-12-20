@@ -1,28 +1,23 @@
 package in.reweyou.reweyou.model;
 
 import android.text.format.DateUtils;
+import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import in.reweyou.reweyou.utils.Constants;
-
 import static android.text.format.DateUtils.getRelativeTimeSpanString;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_IMAGE;
-import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_LOADING;
-import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_NEW_POST;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_VIDEO;
 
 /**
  * Created by Reweyou on 10/5/2015.
  */
 
-public class MpModel {
+public class FeedModel {
 
-    public boolean newPost = false;
-    public boolean locationPost = false;
     private SimpleDateFormat dfs = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss a", Locale.US);
     private String name;
     private String number;
@@ -44,7 +39,6 @@ public class MpModel {
     private String reaction;
     private String from;
     private String gif;
-    private boolean loadingView = false;
     private boolean liked = false;
 
     public String getName() {
@@ -67,9 +61,6 @@ public class MpModel {
         return comments;
     }
 
-    public void setComments(String comments) {
-        this.comments = comments;
-    }
 
     public String getHeadline() {
         return headline;
@@ -111,9 +102,6 @@ public class MpModel {
         this.date = date;
     }
 
-    public String getDate1() {
-        return date;
-    }
 
     public String getImage() {
         return image;
@@ -156,9 +144,6 @@ public class MpModel {
         return postviews;
     }
 
-    public void setPostviews(String postviews) {
-        this.postviews = postviews;
-    }
 
     public String getId() {
         return id;
@@ -172,9 +157,6 @@ public class MpModel {
         return postid;
     }
 
-    public void setPostId(String postid) {
-        this.postid = postid;
-    }
 
     public String getSource() {
         return source;
@@ -192,21 +174,11 @@ public class MpModel {
         this.head = head;
     }
 
-    public String getReaders() {
-        return readers;
-    }
-
-    public void setReaders(String readers) {
-        this.readers = readers;
-    }
 
     public String getReaction() {
         return reaction;
     }
 
-    public void setReaction(String reaction) {
-        this.reaction = reaction;
-    }
 
     public String getFrom() {
         return from;
@@ -220,33 +192,16 @@ public class MpModel {
         return gif;
     }
 
-    public void setGif(String gif) {
-        this.gif = gif;
-    }
-
-    public boolean hasVideo() {
-        return getVideo() != null;
-    }
-
-    public boolean hasImage() {
-        return getImage() != null;
-    }
 
     public int getViewType() {
-        if (getImage() == null && getVideo() == null && getGif() == null) {
-            if (isNewPost()) {
-                return VIEW_TYPE_NEW_POST;
-            } else if (isLocationPost())
-                return Constants.VIEW_TYPE_LOCATION;
-            return VIEW_TYPE_LOADING;
+        Log.d("getVideo", getVideo());
+        if (getImage().isEmpty() && getVideo().isEmpty() && getGif().isEmpty()) {
+            return VIEW_TYPE_IMAGE;
         } else if (!getVideo().isEmpty()) {
             return VIEW_TYPE_VIDEO;
         } else return VIEW_TYPE_IMAGE;
     }
 
-    public boolean isNewPost() {
-        return newPost;
-    }
 
     public boolean isLiked() {
         return liked;
@@ -256,8 +211,5 @@ public class MpModel {
         this.liked = liked;
     }
 
-    public boolean isLocationPost() {
-        return locationPost;
-    }
 
 }
