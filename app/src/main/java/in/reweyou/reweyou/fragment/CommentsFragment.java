@@ -61,12 +61,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import in.reweyou.reweyou.ApplicationClass;
 import in.reweyou.reweyou.FragmentCommunicator;
 import in.reweyou.reweyou.FragmentCommunicator2;
 import in.reweyou.reweyou.PermissionsChecker;
 import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.SinglePostActivity;
-import in.reweyou.reweyou.UILApplication;
 import in.reweyou.reweyou.adapter.CommentsAdapter;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.model.CommentsModel;
@@ -218,7 +218,7 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
                     Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     intent.setType("image/*");
                     getActivity().startActivityForResult(intent, SELECT_FILE);
-                    UILApplication.getInstance().trackEvent("Gallery", "Gallery", "For Pics");
+                    ApplicationClass.getInstance().trackEvent("Gallery", "Gallery", "For Pics");
                 }
             }
         });

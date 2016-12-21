@@ -16,9 +16,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
+import in.reweyou.reweyou.ApplicationClass;
 import in.reweyou.reweyou.PermissionsChecker;
 import in.reweyou.reweyou.R;
-import in.reweyou.reweyou.UILApplication;
 import in.reweyou.reweyou.VideoCapturetest;
 
 /**
@@ -127,7 +127,7 @@ public class UploadOptions {
             Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             intent.setType("image/*");
             ((Activity) context).startActivityForResult(intent, SELECT_IMAGE_FILE);
-            UILApplication.getInstance().trackEvent("Gallery", "Gallery", "For Pics");
+            ApplicationClass.getInstance().trackEvent("Gallery", "Gallery", "For Pics");
         }
     }
 

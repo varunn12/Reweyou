@@ -13,16 +13,16 @@ import in.reweyou.reweyou.classes.AnalyticsTracker;
 /**
  * Created by Reweyou on 2/25/2016.
  */
-public class UILApplication extends Application {
-    public static final String TAG = UILApplication.class
+public class ApplicationClass extends Application {
+    public static final String TAG = ApplicationClass.class
             .getSimpleName();
-    private static UILApplication mInstance;
+    private static ApplicationClass mInstance;
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
-    public static synchronized UILApplication getInstance() {
+    public static synchronized ApplicationClass getInstance() {
         return mInstance;
     }
 
