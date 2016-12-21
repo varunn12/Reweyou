@@ -134,7 +134,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private String username;
 
 
-    public FeedAdapter(Context context, List<Object> mlist) {
+    public FeedAdapter(Context context, List<Object> mlist, SecondFragment secondFragment) {
         this.mContext = context;
         activity = (Activity) context;
         this.messagelist = mlist;
@@ -142,6 +142,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         mCustomTabActivityHelper = new CustomTabActivityHelper();
         session = new UserSessionManager(mContext);
         uploadOption = new UploadOptions((Activity) mContext);
+        this.fragment = secondFragment;
+
         initTimer();
 
     }
@@ -327,7 +329,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 case VIEW_TYPE_IMAGE:
                     return VIEW_TYPE_IMAGE;
                 case VIEW_TYPE_VIDEO:
-                    Log.i(TAG, "getItemViewType: video");
                     return VIEW_TYPE_VIDEO;
                 default:
                     return super.getItemViewType(position);
@@ -640,6 +641,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             outputStream.flush();
             outputStream.close();
 
+            ShareIntent();
+
         } catch (Throwable e) {
             e.printStackTrace();
         }
@@ -731,6 +734,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                     loading.dismiss();
 
                                     //Starting a new activity
+                                    if (fragment != null)
+                                        fragment.onRefresh();
                                 } else {
                                     //Displaying a toast if the otp entered is wrong
                                     loading.dismiss();
@@ -937,7 +942,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
                     if (uploadOption.showShareOptions()) {
                         takeScreenshot(cv);
-                        ShareIntent();
                     }
                 }
             });
