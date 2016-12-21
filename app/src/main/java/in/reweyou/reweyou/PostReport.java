@@ -25,8 +25,12 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -127,6 +131,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
 
     private Uri selectedImageUri;
     private ImageView previewThumbnailView;
+    private RelativeLayout hangingNoti;
 
     public static boolean isLocationEnabled(Context context) {
         int locationMode = 0;
@@ -211,6 +216,39 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
 
             }
         }
+
+        showHangingNoti();
+    }
+
+    private void showHangingNoti() {
+
+
+        if (!session.getFirstLoad()) {
+            session.setFirstLoad();
+            hangingNoti.setVisibility(View.VISIBLE);
+            TranslateAnimation mAnimation = new TranslateAnimation(
+                    TranslateAnimation.ABSOLUTE, 0f,
+                    TranslateAnimation.ABSOLUTE, 0f,
+                    TranslateAnimation.RELATIVE_TO_PARENT, 0f,
+                    TranslateAnimation.RELATIVE_TO_PARENT, 0.03f);
+            mAnimation.setDuration(400);
+            mAnimation.setRepeatCount(-1);
+            mAnimation.setRepeatMode(Animation.REVERSE);
+            mAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
+            hangingNoti.setAnimation(mAnimation);
+            hangingNoti.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    hangingNoti.setAnimation(null);
+                    hangingNoti.setVisibility(View.GONE);
+                    hangingNoti.setOnTouchListener(null);
+
+                    return true;
+                }
+
+
+            });
+        }
     }
 
 
@@ -267,6 +305,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
         previewThumbnailView = (ImageView) findViewById(R.id.videoShow);
         previewThumbnailView.setColorFilter(Color.argb(120, 0, 0, 0));
 
+        hangingNoti = (RelativeLayout) findViewById(R.id.haning);
         //click listners for preview layout views
         setClickListeners();
 
@@ -302,7 +341,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                                 bottomline.setVisibility(View.VISIBLE);
                             }
                         }
-                    }, 300);
+                    }, 100);
 
                     toolbar.setVisibility(View.VISIBLE);
                 }
@@ -852,7 +891,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
 
     private void uploadFile(int fileType, String encodedImage) {
 
-        final ProgressDialog uploading = ProgressDialog.show(PostReport.this, "Uploading File", "Please wait...", false, false);
+        final ProgressDialog uploading = ProgressDialog.show(PostReport.this, "Uploading", "Please wait...", false, false);
 
         RequestParams params = new RequestParams();
         try {

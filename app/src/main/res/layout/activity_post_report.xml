@@ -29,6 +29,7 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -394,6 +395,49 @@
                 android:visibility="gone" />
 
         </LinearLayout>
-        ]
+
+
+        <RelativeLayout
+            android:id="@+id/haning"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:visibility="gone">
+
+            <RelativeLayout
+                android:id="@+id/rlv1"
+                android:layout_width="220dp"
+                android:layout_height="36dp"
+                android:layout_above="@+id/rll"
+
+
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/tut_noti_rectangle"
+                android:elevation="1dp">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="Add an attachment to report"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rll"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
+
+                android:layout_marginBottom="50dp"
+                android:background="@drawable/tut_noti_triangle"
+                android:elevation="1dp"
+                android:rotation="180" />
+        </RelativeLayout>
     </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>
