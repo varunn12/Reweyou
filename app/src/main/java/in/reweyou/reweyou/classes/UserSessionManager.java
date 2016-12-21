@@ -28,7 +28,6 @@ public class UserSessionManager {
     public static final String KEY_MOBILE_NUMBER = "mobilenumber";
     public static final String KEY_LOGIN_LOCATION = "loginlocation";
     public static final String KEY_CATEGORY = "category";
-    public static final String KEY_CITY_LOCATION = "citylocation";
     public static final String KEY_LOGIN_FULLNAME = "fullname";
     // Sharedpref file name
     private static final String PREFER_NAME = "ReweyouPref";
@@ -55,13 +54,8 @@ public class UserSessionManager {
         editor = pref.edit();
     }
 
-    public String getCityLocation() {
-        return pref.getString(KEY_CITY_LOCATION, null);
-    }
-
-    public void setCityLocation(String location) {
-        editor.putString(KEY_CITY_LOCATION, location);
-        editor.commit();
+    public static String getKeyLocation() {
+        return KEY_LOCATION;
     }
 
     public String getCategory() {
@@ -135,7 +129,6 @@ public class UserSessionManager {
         // commit changes
         editor.commit();
     }
-
 
     /**
      * Check login method will check user login status

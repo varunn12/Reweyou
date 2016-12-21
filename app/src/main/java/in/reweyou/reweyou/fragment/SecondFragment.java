@@ -57,7 +57,7 @@ import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_LOCATION;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_NEW_POST;
 
 
-public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, View.OnClickListener, FragmentCommunicator {
+public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, FragmentCommunicator {
 
     private static final String TAG = SecondFragment.class.getSimpleName();
     SwipeRefreshLayout swipeLayout;
@@ -100,6 +100,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
         Log.d("pos", String.valueOf(position));
 
+        session = new UserSessionManager(mContext);
 
         if (query != null)
             Log.d("pos", query);
@@ -114,12 +115,40 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
         topBar = (TextView) layout.findViewById(R.id.no);
 
         recyclerView = (RecyclerView) layout.findViewById(R.id.recycler_view);
-        RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecoration(ContextCompat.getDrawable(getActivity(), R.drawable.line));
+        RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecoration(ContextCompat.getDrawable(mContext, R.drawable.line));
         recyclerView.addItemDecoration(dividerItemDecoration);
-        recyclerView.setLayoutManager(new PreCachingLayoutManager(getActivity()));
+        recyclerView.setLayoutManager(new PreCachingLayoutManager(mContext));
         final PreCachingLayoutManager layoutManager = (PreCachingLayoutManager) recyclerView.getLayoutManager();
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        if (position != 19 && position != 15)
+
+        setScrollListener(layoutManager);
+
+
+        number = session.getMobileNumber();
+
+
+        //Progress bar
+        progressBar = (ProgressBar) layout.findViewById(R.id.progress_bar);
+        progressBar.setVisibility(View.VISIBLE);
+
+
+        swipeLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipe_container);
+        swipeLayout.setOnRefreshListener(this);
+
+
+        formattedDate = df.format(Calendar.getInstance().getTime());
+        location = session.getLoginLocation();
+
+        if (position == Constants.POSITION_FEED_TAB_1 || position == Constants.POSITION_SINGLE_POST || position == Constants.POSITION_CATEGORY_TAG || position == Constants.POSITION_MY_CITY) {
+            loadFeeds();
+            Log.d(TAG, "onCreateView: loadfeeds called");
+        }
+
+        return layout;
+    }
+
+    private void setScrollListener(final PreCachingLayoutManager layoutManager) {
+        if (position != Constants.POSITION_CATEGORY_TAG && position != Constants.POSITION_SINGLE_POST)
             recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -148,6 +177,20 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                                 }
                             }
                     }
+
+
+                }
+
+                @Override
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                    if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                        // Log.d(TAG, "onScrollStateChanged: dragging");
+                        swipeLayout.setEnabled(false);
+                    } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        //Log.d(TAG, "onScrollStateChanged: idle");
+                        swipeLayout.setEnabled(true);
+                    }
+                    super.onScrollStateChanged(recyclerView, newState);
                 }
 
                 private void makeLoadMoreRequest() {
@@ -233,58 +276,15 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                     };
 
 
-                    stringRequest.setRetryPolicy(new DefaultRetryPolicy(10 * 1000, 0,
-                            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-                    RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-                    requestQueue.add(stringRequest);
+                    if (isAdded()) {
+                        stringRequest.setRetryPolicy(new DefaultRetryPolicy(10 * 1000, 0,
+                                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                        RequestQueue requestQueue = Volley.newRequestQueue(mContext);
+                        requestQueue.add(stringRequest);
+                    }
 
                 }
             });
-
-
-        session = new UserSessionManager(mContext);
-        HashMap<String, String> user = session.getUserDetails();
-        number = session.getMobileNumber();
-
-
-        //Progress bar
-        progressBar = (ProgressBar) layout.findViewById(R.id.progress_bar);
-        progressBar.setVisibility(View.VISIBLE);
-
-
-        swipeLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipe_container);
-        swipeLayout.setOnRefreshListener(this);
-
-
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-
-                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                    Log.d(TAG, "onScrollStateChanged: dragging");
-                    swipeLayout.setEnabled(false);
-                } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    Log.d(TAG, "onScrollStateChanged: idle");
-                    swipeLayout.setEnabled(true);
-                }
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-            }
-        });
-
-        formattedDate = df.format(Calendar.getInstance().getTime());
-        location = user.get(UserSessionManager.KEY_LOCATION);
-
-        if (position == Constants.POSITION_FEED_TAB_1) {
-            loadFeeds();
-            Log.d(TAG, "onCreateView: loadfeeds called");
-        }
-
-        return layout;
     }
 
 
@@ -356,12 +356,12 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                             progressBar.setVisibility(View.GONE);
 
                             if (isAdded()) {
-                                if (position == 15) {
+                                if (position == Constants.POSITION_SINGLE_POST) {
                                     adapter = new FeedAdapter(mContext, messagelist, placename, SecondFragment.this, position);
-                                } else if (position == 10)
+                                } else if (position == Constants.POSITION_MY_CITY)
                                     adapter = new FeedAdapter(mContext, messagelist, placename, SecondFragment.this);
                                 else
-                                    adapter = new FeedAdapter(mContext, messagelist);
+                                    adapter = new FeedAdapter(mContext, messagelist, SecondFragment.this);
 
                                 dataFetched = true;
                                 recyclerView.setAdapter(adapter);
@@ -415,7 +415,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                                         FeedModel feedModel = gson.fromJson(finalObject.toString(), FeedModel.class);
                                         messagelist.add(feedModel);
                                     }
-                                    adapter = new FeedAdapter(mContext, messagelist);
+                                    adapter = new FeedAdapter(mContext, messagelist, SecondFragment.this);
                                     dataFetched = true;
 
                                     recyclerView.setAdapter(adapter);
@@ -489,58 +489,28 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
             }
         };
 
-
-        stringRequest.setRetryPolicy(new DefaultRetryPolicy(10 * 1000, 0,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        RequestQueue requestQueue = Volley.newRequestQueue(mContext);
-        requestQueue.add(stringRequest);
+        if (isAdded()) {
+            stringRequest.setRetryPolicy(new DefaultRetryPolicy(10 * 1000, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            RequestQueue requestQueue = Volley.newRequestQueue(mContext);
+            requestQueue.add(stringRequest);
+        }
     }
 
     @Override
     public void onRefresh() {
 
         //  Messages2();
-        topBar.setVisibility(View.GONE);
-        formattedDate = df.format(Calendar.getInstance().getTime());
-        Log.d(TAG, "onRefresh: called");
-        makeRequest();
+        if (isAdded()) {
+            formattedDate = df.format(Calendar.getInstance().getTime());
+            Log.d(TAG, "onRefresh: called");
+
+            topBar.setVisibility(View.GONE);
+            makeRequest();
+
+
+        }
     }
 
-
-    @Override
-    public void onClick(View v) {
-/*
-        DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
-                new DatePickerDialog.OnDateSetListener() {
-
-                    @Override
-                    public void onDateSet(DatePicker view, int year,
-                                          int monthOfYear, int dayOfMonth) {
-                        int realmonth = monthOfYear + 1;
-
-
-                        String selected = dayOfMonth + "-" + realmonth + "-"
-                                + year;
-                        DateFormat inputFormatter1 = new SimpleDateFormat("dd-MM-yyyy");
-                        Date date1 = null;
-                        try {
-                            date1 = inputFormatter1.parse(selected);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-
-                        DateFormat outputFormatter1 = new SimpleDateFormat("dd-MMM-yyyy");
-                        formattedDate = outputFormatter1.format(date1);
-                        Log.e("D", formattedDate);
-                        new JSONTask().execute(tag, location, formattedDate, number);
-
-                        datepick.setText(formattedDate);
-                        //  txtDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
-
-                    }
-                }, mYear, mMonth, mDay);
-        datePickerDialog.show();*/
-    }
 
     public String getUrl() {
         switch (position) {

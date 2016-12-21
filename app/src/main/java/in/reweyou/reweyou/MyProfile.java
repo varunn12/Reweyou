@@ -91,7 +91,6 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
 
 
     private static final String PACKAGE_URL_SCHEME = "package:";
-    private final String MY_PROFILE_UPLOAD_URL = "https://www.reweyou.in/reweyou/report_pic.php";
     Boolean isInternetPresent = false;
     ConnectionDetector cd;
     UserSessionManager session;
@@ -459,7 +458,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                 param.put("token", session.getKeyAuthToken());
                 param.put("deviceid", session.getDeviceid());
 
-                String result = rh.sendPostRequest(MY_PROFILE_UPLOAD_URL, param);
+                String result = rh.sendPostRequest(Constants.MY_PROFILE_UPLOAD_URL, param);
                 return result;
             }
         }
@@ -738,6 +737,11 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
         startActivity(intent);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
     public class JSONTask extends AsyncTask<String, String, List<String>> {
 
         @Override
@@ -847,7 +851,8 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                 });
 
                 // imageLoader.displayImage(result.get(2), profilepic, option);
-                Glide.with(MyProfile.this).load(result.get(2)).error(R.drawable.download).into(profilepic);
+
+                Glide.with(getApplicationContext()).load(result.get(2)).error(R.drawable.download).into(profilepic);
                 user = result.get(4);
                 Mobile.setText(result.get(4));
                 Location.setText(result.get(5));
@@ -941,7 +946,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                 if (result.isEmpty()) {
                     Empty.setVisibility(View.VISIBLE);
                 }
-                FeedAdapter adapter = new FeedAdapter(MyProfile.this, result);
+                FeedAdapter adapter = new FeedAdapter(MyProfile.this, result, null);
                 // total.setText("You have reported "+ String.valueOf(length)+ " stories.");
                 recyclerView.setAdapter(adapter);
                 //need to set data to the list

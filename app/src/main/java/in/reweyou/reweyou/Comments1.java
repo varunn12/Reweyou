@@ -19,9 +19,6 @@ import in.reweyou.reweyou.fragment.CommentsFragment;
 import static in.reweyou.reweyou.classes.UploadOptions.PERMISSION_ALL_IMAGE;
 
 public class Comments1 extends AppCompatActivity {
-    public static final String UPLOAD_URL = "https://www.reweyou.in/reweyou/post_comments_new.php";
-    public static final String KEY_NAME = "name";
-    public static final String KEY_NUMBER = "number";
     private static final String PACKAGE_URL_SCHEME = "package:";
 
     int SELECT_FILE = 1;

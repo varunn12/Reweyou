@@ -56,6 +56,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -101,6 +102,7 @@ public class Feed extends AppCompatActivity {
     private PagerAdapter pagerAdapter;
     private BroadcastReceiver netChangeReceiver;
     private IntentFilter netChangeIntentFilter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+    private FirebaseAnalytics mFirebaseAnalytics;
 
 
     @Override
@@ -108,6 +110,7 @@ public class Feed extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
 
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         session = new UserSessionManager(getApplicationContext());
         cd = new ConnectionDetector(Feed.this);
@@ -294,6 +297,12 @@ public class Feed extends AppCompatActivity {
                     Log.d(TAG, "onPageChange: loadFeeds() of fragment " + viewPager.getCurrentItem() + " is called");
                     ((SecondFragment) page).loadFeeds();
                 }
+
+                Bundle bundle = new Bundle();
+                bundle.putInt(FirebaseAnalytics.Param.VALUE, position);
+
+                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+
 
 
             }

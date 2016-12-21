@@ -102,7 +102,7 @@ public class MyCityFragment extends Fragment implements SwipeRefreshLayout.OnRef
         String city = session.getLoginLocation();
         location = city;
         Messages();
-        adapter = new FeedAdapter(getActivity(), messagelist);
+        adapter = new FeedAdapter(getActivity(), messagelist, null);
         recyclerView.setAdapter(adapter);
 
     }
@@ -199,7 +199,7 @@ public class MyCityFragment extends Fragment implements SwipeRefreshLayout.OnRef
         protected void onPostExecute(List<Object> result) {
             super.onPostExecute(result);
             progressBar.setVisibility(View.GONE);
-            FeedAdapter adapter = new FeedAdapter(getActivity(), result);
+            FeedAdapter adapter = new FeedAdapter(getActivity(), result, null);
             recyclerView.setAdapter(adapter);
             swipeLayout.setRefreshing(false);
             //need to set data to the list

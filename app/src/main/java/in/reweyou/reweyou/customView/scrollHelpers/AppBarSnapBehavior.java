@@ -15,19 +15,24 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 public class AppBarSnapBehavior extends CoordinatorLayout.Behavior<AppBarLayout> {
-    public AppBarSnapBehavior(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
-
     private Integer mCurrentTop = null;
     private int mOriginalTop = 0;
     private int mLastDyConsumed = 0;
     private ValueAnimator mAnimator;
-
     // For dispatching offset updates to the AppBarLayout listeners
     // (using reflection, since listeners are stored in private field).
     private Field mAppBarListenersField = null;
     private List<AppBarLayout.OnOffsetChangedListener> mAppBarListeners;
+
+    public AppBarSnapBehavior(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    private static void tickleInvalidationFlag(View view) {
+        final float x = ViewCompat.getTranslationX(view);
+        ViewCompat.setTranslationY(view, x + 1);
+        ViewCompat.setTranslationY(view, x);
+    }
 
     @Override
     public boolean onLayoutChild(CoordinatorLayout parent, AppBarLayout abl, int layoutDirection) {
@@ -78,6 +83,7 @@ public class AppBarSnapBehavior extends CoordinatorLayout.Behavior<AppBarLayout>
 
     @Override
     public void onNestedPreScroll(CoordinatorLayout coordinatorLayout, AppBarLayout child, View target, int dx, int dy, int[] consumed) {
+        // Log.d("onnestedpreScroll","called");
         int offset = scroll(child, dy);
 
         if (offset != 0) {
@@ -89,6 +95,8 @@ public class AppBarSnapBehavior extends CoordinatorLayout.Behavior<AppBarLayout>
 
     @Override
     public void onNestedScroll(CoordinatorLayout coordinatorLayout, AppBarLayout child, View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed) {
+        //Log.d("onnestedScroll", "  " + dyConsumed + "    " + dyUnconsumed);
+
         int offset = scroll(child, dyConsumed + dyUnconsumed);
 
         if (offset != 0) {
@@ -115,6 +123,8 @@ public class AppBarSnapBehavior extends CoordinatorLayout.Behavior<AppBarLayout>
 
     @Override
     public boolean onNestedFling(CoordinatorLayout coordinatorLayout, AppBarLayout child, View target, float velocityX, float velocityY, boolean consumed) {
+
+        //Log.d("onnestedfling", "  " + velocityY + "    " + consumed);
         return false;
     }
 
@@ -206,12 +216,6 @@ public class AppBarSnapBehavior extends CoordinatorLayout.Behavior<AppBarLayout>
         }
 
         return updateTopBottomOffset(abl, newTop);
-    }
-
-    private static void tickleInvalidationFlag(View view) {
-        final float x = ViewCompat.getTranslationX(view);
-        ViewCompat.setTranslationY(view, x + 1);
-        ViewCompat.setTranslationY(view, x);
     }
 
     private void dispatchOffsetUpdates(AppBarLayout abl) {

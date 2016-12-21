@@ -7,13 +7,10 @@ package in.reweyou.reweyou.utils;
 
 public class Constants {
 
-    public static final String REVIEW_URL = "https://www.reweyou.in/reweyou/reviews.php";
-    public static final String VIEW_URL = "https://www.reweyou.in/reweyou/postviews.php";
-    public static final String SUGGEST_URL = "https://www.reweyou.in/reweyou/suggest.php";
+
     public static final String EDIT_URL = "https://www.reweyou.in/reweyou/editheadline_new.php";
 
     public static final String FEED_URL = "https://www.reweyou.in/reweyou/testfeed.php";
-    //public static final String FEED_URL = "https://www.reweyou.in/reweyou/test_list.php";
     public static final String TRENDING_URL = "https://www.reweyou.in/reweyou/trending.php";
     public static final String READING_URL = "https://www.reweyou.in/reweyou/readingfeed.php";
     public static final String MY_CITY_URL = "https://www.reweyou.in/reweyou/report_cityfeed.php";
@@ -21,7 +18,8 @@ public class Constants {
     //My Profile Class
     public static final String MY_PROFILE_URL_VERIFY_FOLLOW = "https://www.reweyou.in/reweyou/verify_follow.php";
     public static final String MY_PROFILE_URL_FOLLOW = "https://www.reweyou.in/reweyou/follow_new.php";
-    public static final String MY_PROFILE_UPLOAD_URL = "https://www.reweyou.in/reweyou/profile_picture.php";
+    public static final String MY_PROFILE_UPLOAD_URL = "https://www.reweyou.in/reweyou/report_pic.php";
+
     public static final String MY_PROFILE_EDIT_URL = "https://www.reweyou.in/reweyou/report_profile.php";
 
     public static final String USER_PROFILE_URL_VERIFY_FOLLOW = "https://www.reweyou.in/reweyou/verify_follow.php";
@@ -66,7 +64,7 @@ public class Constants {
     public static final String FEED_LIKES = "https://www.reweyou.in/reweyou/liked.php";
     public static final String MY_SINGLE_ACTIVITY = "https://www.reweyou.in/reweyou/postbyid.php";
     public static final String CATEGORY_FEED_URL = "https://www.reweyou.in/reweyou/categoryfeed.php";
-        public static final String URL_INCREASE_VIEWS = "https://www.reweyou.in/reweyou/postviews.php";
+    public static final String URL_INCREASE_VIEWS = "https://www.reweyou.in/reweyou/postviews.php";
 
 
     public static final int POSITION_FEED_TAB_1 = 0;

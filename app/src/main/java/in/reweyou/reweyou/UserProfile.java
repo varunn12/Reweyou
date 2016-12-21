@@ -376,7 +376,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                     Reports.setText(result.get(1));
                     Info.setText(result.get(3));
                     // imageLoader.displayImage(result.get(2), profilepic, option);
-                    Glide.with(UserProfile.this).load(result.get(2)).error(R.drawable.download).into(profilepic);
+                    Glide.with(getApplicationContext()).load(result.get(2)).error(R.drawable.download).into(profilepic);
                     user = result.get(4);
                     Readers.setText(result.get(5));
                 }
@@ -469,7 +469,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         protected void onPostExecute(List<Object> result) {
             super.onPostExecute(result);
             progressBar.setVisibility(View.GONE);
-            FeedAdapter adapter = new FeedAdapter(UserProfile.this, result);
+            FeedAdapter adapter = new FeedAdapter(UserProfile.this, result, null);
             // total.setText("You have reported "+ String.valueOf(length)+ " stories.");
             recyclerView.setAdapter(adapter);
             //need to set data to the list

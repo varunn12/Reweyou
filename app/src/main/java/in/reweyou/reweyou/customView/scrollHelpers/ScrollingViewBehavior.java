@@ -28,10 +28,7 @@ public class ScrollingViewBehavior extends CoordinatorLayout.Behavior<View> {
         return dependency instanceof AppBarLayout;
     }
 
-    @Override
-    public boolean onMeasureChild(CoordinatorLayout parent, View child, int parentWidthMeasureSpec, int widthUsed, int parentHeightMeasureSpec, int heightUsed) {
-        return super.onMeasureChild(parent, child, parentWidthMeasureSpec, widthUsed, parentHeightMeasureSpec, heightUsed);
-    }
+
 
     @Override
     public boolean onLayoutChild(CoordinatorLayout parent, View child, int layoutDirection) {
@@ -91,15 +88,13 @@ public class ScrollingViewBehavior extends CoordinatorLayout.Behavior<View> {
 
     @Override
     public void onNestedPreScroll(CoordinatorLayout coordinatorLayout, View child, View target, int dx, int dy, int[] consumed) {
-        if ((dy > 0 && child.getTop() > mOriginalTop - mAppBarLayout.getTotalScrollRange()) ||
-                (dy < 0 && child.getTop() < mOriginalTop)) {
+        if ((dy > 0 && child.getTop() > mOriginalTop - mAppBarLayout.getTotalScrollRange()) || (dy < 0 && child.getTop() < mOriginalTop)) {
             consumed[1] = scroll(child, dy);
         }
     }
 
     @Override
     public void onNestedScroll(CoordinatorLayout coordinatorLayout, View child, View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed) {
-
     }
 
     @Override

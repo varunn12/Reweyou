@@ -1,7 +1,6 @@
 package in.reweyou.reweyou.model;
 
 import android.text.format.DateUtils;
-import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -194,7 +193,6 @@ public class FeedModel {
 
 
     public int getViewType() {
-        Log.d("getVideo", getVideo());
         if (getImage().isEmpty() && getVideo().isEmpty() && getGif().isEmpty()) {
             return VIEW_TYPE_IMAGE;
         } else if (!getVideo().isEmpty()) {
