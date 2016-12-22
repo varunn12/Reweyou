@@ -157,7 +157,6 @@ public class Notifications extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         pd.setVisibility(View.GONE);
-                        Log.d("Error.Response", error.getMessage());
                         if (error instanceof NoConnectionError) {
                             showSnackBar("no internet connectivity");
                         } else if (error instanceof TimeoutError) {
