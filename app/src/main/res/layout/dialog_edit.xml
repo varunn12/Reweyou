@@ -35,7 +35,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="12dp"
         android:alpha=".74"
-        android:text="(headline should be 600 characters or less)"
+        android:text="(description should be 600 characters or less)"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="12dp" />
 
