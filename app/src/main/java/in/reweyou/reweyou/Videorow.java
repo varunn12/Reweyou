@@ -1,7 +1,6 @@
 package in.reweyou.reweyou;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -50,46 +49,12 @@ public class Videorow extends AppCompatActivity {
         videoview = (VideoView) findViewById(R.id.video);
         progressbar = (ProgressBar) findViewById(R.id.progressBar2);
         // Execute StreamVideo AsyncTask
-        Intent in = getIntent();
         Bundle bundle = getIntent().getExtras();
         url = bundle.getString("myData");
         Log.d("ewdwefdwef", url);
         initToolbar();
 
-      /*  Headline = (TextView) findViewById(R.id.Who);
-        place = (TextView) findViewById(R.id.place);
-        Date = (TextView) findViewById(R.id.date);
-        tag = (TextView) findViewById(R.id.tag);
-        share = (Button)findViewById(R.id.share);
-        tv = (TextView) findViewById(R.id.tv);
-        From=(TextView) findViewById(R.id.from);
 
-        headline =bundle.getString("headline");
-        reviews=bundle.getString("reviews");
-        category=bundle.getString("tag");
-        location=bundle.getString("place");
-        date=bundle.getString("date");
-        from=bundle.getString("from");
-
-        Headline.setText(headline);
-        place.setText(location);
-        Date.setText(date);
-        tag.setText(category);
-        share.setVisibility(View.GONE);
-        From.setText(from);
-*/
-
-        // Create a progressbar
-      /*  pDialog = new ProgressDialog(Videorow.this);
-        // Set progressbar title
-        pDialog.setTitle("Android Video Streaming Tutorial");
-        // Set progressbar message
-        pDialog.setMessage("Buffering...");
-        pDialog.setIndeterminate(false);
-        pDialog.setCancelable(false);
-        // Show progressbar
-        pDialog.show();
-*/
         progressbar.setVisibility(View.VISIBLE);
         try {
             // Start the MediaController
