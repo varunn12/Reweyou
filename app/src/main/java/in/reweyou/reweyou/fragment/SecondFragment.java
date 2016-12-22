@@ -98,8 +98,6 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
         category = getArguments().getString("category");
         query = getArguments().getString("query");
 
-        Log.d("pos", String.valueOf(position));
-
         session = new UserSessionManager(mContext);
 
         if (query != null)
@@ -139,7 +137,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
         formattedDate = df.format(Calendar.getInstance().getTime());
         location = session.getLoginLocation();
 
-        if (position == Constants.POSITION_FEED_TAB_1 || position == Constants.POSITION_SINGLE_POST || position == Constants.POSITION_CATEGORY_TAG || position == Constants.POSITION_MY_CITY) {
+        if (position == Constants.POSITION_FEED_TAB_1 || position == Constants.POSITION_SINGLE_POST || position == Constants.POSITION_CATEGORY_TAG || position == Constants.POSITION_MY_CITY || position == Constants.POSITION_SEARCH_TAB) {
             loadFeeds();
             Log.d(TAG, "onCreateView: loadfeeds called");
         }
@@ -148,7 +146,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
     }
 
     private void setScrollListener(final PreCachingLayoutManager layoutManager) {
-        if (position != Constants.POSITION_CATEGORY_TAG && position != Constants.POSITION_SINGLE_POST)
+        if (position != Constants.POSITION_CATEGORY_TAG && position != Constants.POSITION_SINGLE_POST && position != Constants.POSITION_SEARCH_TAB)
             recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -371,10 +369,9 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
                             cacheLoad = false;
                             if (isAdded()) {
-                                if (position != 19)
+                                if (position != 19 && position != 15 && position != Constants.POSITION_SEARCH_TAB)
                                     MyJSON.saveData(getContext(), response, position);
-                                else
-                                    MyJSON.saveDataCategory(getContext(), response, position, category);
+
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -399,10 +396,9 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
                         if (isAdded()) {
                             String respo = null;
-                            if (position != 19 && position != 15)
+                            if (position != 19 && position != 15 && position != Constants.POSITION_SEARCH_TAB)
                                 respo = MyJSON.getData(mContext, position);
-                            else
-                                respo = MyJSON.getDataCategory(mContext, position, category);
+
                             if (respo != null) {
                                 JSONArray parentArray = null;
                                 try {
