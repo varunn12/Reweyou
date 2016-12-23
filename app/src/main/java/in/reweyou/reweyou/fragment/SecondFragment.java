@@ -45,6 +45,7 @@ import java.util.Map;
 import in.reweyou.reweyou.FragmentCommunicator;
 import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.adapter.FeedAdapter;
+import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.DividerItemDecoration;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.customView.PreCachingLayoutManager;
@@ -142,7 +143,7 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
         formattedDate = df.format(Calendar.getInstance().getTime());
         location = session.getLoginLocation();
 
-        if (position == Constants.POSITION_FEED_TAB_1 || position == Constants.POSITION_SINGLE_POST || position == Constants.POSITION_CATEGORY_TAG || position == Constants.POSITION_MY_CITY || position == Constants.POSITION_SEARCH_TAB) {
+        if (position == Constants.POSITION_FEED_TAB_MAIN_FEED || position == Constants.POSITION_SINGLE_POST || position == Constants.POSITION_CATEGORY_TAG || position == Constants.POSITION_SEARCH_TAB) {
             loadFeeds();
             Log.d(TAG, "onCreateView: loadfeeds called");
         }
@@ -321,11 +322,11 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
 
                             List<Object> messagelist = new ArrayList<>();
 
-                            if (position == Constants.POSITION_FEED_TAB_1) {
+                            if (position == Constants.POSITION_FEED_TAB_MAIN_FEED) {
                                 messagelist.add(VIEW_TYPE_NEW_POST);
                             }
 
-                            if (position == Constants.POSITION_MY_CITY) {
+                            if (position == Constants.POSITION_FEED_TAB_MY_CITY) {
                                 messagelist.add(VIEW_TYPE_LOCATION);
                             }
 
@@ -364,7 +365,7 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
                             if (isAdded()) {
                                 if (position == Constants.POSITION_SINGLE_POST) {
                                     adapter = new FeedAdapter(mContext, messagelist, placename, SecondFragment.this, position);
-                                } else if (position == Constants.POSITION_MY_CITY)
+                                } else if (position == Constants.POSITION_FEED_TAB_MY_CITY)
                                     adapter = new FeedAdapter(mContext, messagelist, placename, SecondFragment.this);
                                 else
                                     adapter = new FeedAdapter(mContext, messagelist, SecondFragment.this);
@@ -511,21 +512,34 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
 
             topBar.setVisibility(View.GONE);
             makeRequest();
+        }
+    }
 
+    public void onNetChange() {
+
+
+        if (isAdded()) {
+
+            if (new ConnectionDetector(mContext).isConnectingToInternet()) {
+                formattedDate = df.format(Calendar.getInstance().getTime());
+                Log.d(TAG, "onRefresh: called");
+
+                topBar.setVisibility(View.GONE);
+                makeRequest();
+            } else topBar.setVisibility(View.VISIBLE);
 
         }
     }
 
-
     public String getUrl() {
         switch (position) {
-            case Constants.POSITION_FEED_TAB_1:
+            case Constants.POSITION_FEED_TAB_MAIN_FEED:
                 return Constants.FEED_URL;
             case Constants.POSITION_FEED_TAB_2:
                 return Constants.TRENDING_URL;
             case Constants.POSITION_FEED_TAB_3:
                 return Constants.READING_URL;
-            case Constants.POSITION_MY_CITY:
+            case Constants.POSITION_FEED_TAB_MY_CITY:
                 return Constants.MY_CITY_URL;
             case Constants.POSITION_SEARCH_TAB:
                 return Constants.SEARCH_QUERY;
@@ -571,5 +585,7 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
         Log.d(TAG, "onDestroy:" + position + " called");
         super.onDestroy();
     }
+
+
 }
 
