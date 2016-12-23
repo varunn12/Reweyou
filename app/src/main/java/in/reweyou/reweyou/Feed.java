@@ -1,6 +1,7 @@
 package in.reweyou.reweyou;
 
 import android.app.SearchManager;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -128,6 +129,7 @@ public class Feed extends AppCompatActivity {
         } else {                              //for new users we didnt need this check
             pagerAdapter = new PagerAdapter(getSupportFragmentManager());
             viewPager.setAdapter(pagerAdapter);
+            viewPager.setCurrentItem(1);
             makeNotificationsRequest();
         }
 
@@ -141,7 +143,9 @@ public class Feed extends AppCompatActivity {
                             Fragment page = pagerAdapter.getRegisteredFragment(viewPager.getCurrentItem());
                             if (page != null) {
                                 Log.d(TAG, "onReceive: onRefresh of fragment " + viewPager.getCurrentItem() + " is called");
-                                ((SecondFragment) page).onRefresh();
+
+
+                                ((SecondFragment) page).onNetChange();
                             }
                         }
                     }
@@ -223,6 +227,7 @@ public class Feed extends AppCompatActivity {
                                         tabLayout.setVisibility(View.VISIBLE);
                                         pagerAdapter = new PagerAdapter(getSupportFragmentManager());
                                         viewPager.setAdapter(pagerAdapter);
+                                        viewPager.setCurrentItem(1);
                                         if (image != null)
                                             Glide.with(Feed.this).load(session.getProfilePicture()).error(R.drawable.download).into(image);
                                         makeNotificationsRequest();
@@ -282,7 +287,6 @@ public class Feed extends AppCompatActivity {
     private void initViewPagerAndTabs() {
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         viewPager.setOffscreenPageLimit(2);
-
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -298,11 +302,7 @@ public class Feed extends AppCompatActivity {
                     ((SecondFragment) page).loadFeeds();
                 }
 
-                Bundle bundle = new Bundle();
-                bundle.putInt(FirebaseAnalytics.Param.VALUE, position);
-
-                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
-
+                ApplicationClass.getInstance().trackEvent("FEED_TAB", String.valueOf(position), "current selected tab");
 
 
             }
@@ -682,12 +682,6 @@ public class Feed extends AppCompatActivity {
                 int id = menuItem.getItemId();
 
                 switch (id) {
-                    case R.id.mycity:
-                        drawerLayout.closeDrawers();
-                        Intent news = new Intent(Feed.this, MyCityActivity.class);
-                        startActivity(news);
-                        overridePendingTransition(0, 0);
-                        break;
                     case R.id.myreports:
                         drawerLayout.closeDrawers();
                         Intent reports = new Intent(Feed.this, Topic.class);
@@ -716,6 +710,10 @@ public class Feed extends AppCompatActivity {
                         Intent leader = new Intent(Feed.this, Leaderboard.class);
                         startActivity(leader);
                         overridePendingTransition(0, 0);
+                        break;
+                    case R.id.nav_rate:
+                        drawerLayout.closeDrawers();
+                        openplaystore();
                         break;
                 }
                 return true;
@@ -752,6 +750,22 @@ public class Feed extends AppCompatActivity {
         actionBarDrawerToggle.syncState();
     }
 
+    private void openplaystore() {
+        Uri uri = Uri.parse("market://details?id=" + Feed.this.getPackageName());
+        Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+        // To count with Play market backstack, After pressing back button,
+        // to taken back to our application, we need to add following flags to intent.
+        goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
+                Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
+                Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+        try {
+            startActivity(goToMarket);
+        } catch (ActivityNotFoundException e) {
+            startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("http://play.google.com/store/apps/details?id=" + Feed.this.getPackageName())));
+        }
+    }
+
 
     private class PagerAdapter extends FragmentStatePagerAdapter {
         SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
@@ -766,7 +780,14 @@ public class Feed extends AppCompatActivity {
         public Fragment getItem(int position) {
             SecondFragment fragment = new SecondFragment();
             Bundle bundle = new Bundle();
-            bundle.putInt("position", position);
+            if (position == 0) {
+                bundle.putInt("position", Constants.POSITION_FEED_TAB_MY_CITY);
+                bundle.putString("place", session.getLoginLocation());
+            } else if (position == 1)
+                bundle.putInt("position", Constants.POSITION_FEED_TAB_MAIN_FEED);
+            else bundle.putInt("position", position);
+
+
             fragment.setArguments(bundle);
             return fragment;
         }

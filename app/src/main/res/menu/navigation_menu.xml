@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+
     <group android:checkableBehavior="none">
-        <item
-            android:id="@+id/mycity"
-            android:icon="@drawable/ic_location_on_black_24px_nave"
-            android:title="My City" />
+
         <item
             android:id="@+id/myreports"
             android:icon="@drawable/ic_assignment_black_24px"
@@ -16,15 +14,25 @@
         <item
             android:id="@+id/leaderboard"
             android:icon="@drawable/cup"
-
             android:title="Top Reporters" />
         <item
             android:id="@+id/New"
             android:icon="@drawable/ic_new_releases_black_24px"
-            android:title="What's New?"></item>
+            android:title="What's New?" />
         <item
             android:id="@+id/logout"
             android:icon="@drawable/ic_delete_black_24px"
-            android:title="Logout"></item>
+            android:title="Logout" />
     </group>
+
+    <item android:title="Other">
+        <menu>
+            <item
+                android:id="@+id/nav_rate"
+                android:icon="@drawable/ic_star_rate_black_24px"
+                android:title="Rate us" />
+        </menu>
+    </item>
+
+
 </menu>
