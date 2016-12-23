@@ -14,11 +14,13 @@
         android:visibility="gone" />
 
 
-    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/swipe_container"
+    <in.reweyou.reweyou.customView.swipeRefresh.PullRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/no">
+        android:layout_below="@+id/no"
+
+        >
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
@@ -30,7 +32,7 @@
             android:paddingBottom="4dp"
             android:paddingTop="4dp"
             android:scrollbars="vertical" />
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </in.reweyou.reweyou.customView.swipeRefresh.PullRefreshLayout>
 
     <ProgressBar
         android:id="@+id/progress_bar"

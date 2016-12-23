@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -49,6 +48,7 @@ import in.reweyou.reweyou.adapter.FeedAdapter;
 import in.reweyou.reweyou.classes.DividerItemDecoration;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.customView.PreCachingLayoutManager;
+import in.reweyou.reweyou.customView.swipeRefresh.PullRefreshLayout;
 import in.reweyou.reweyou.model.FeedModel;
 import in.reweyou.reweyou.utils.Constants;
 import in.reweyou.reweyou.utils.MyJSON;
@@ -57,10 +57,10 @@ import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_LOCATION;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_NEW_POST;
 
 
-public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, FragmentCommunicator {
+public class SecondFragment extends Fragment implements FragmentCommunicator {
 
     private static final String TAG = SecondFragment.class.getSimpleName();
-    SwipeRefreshLayout swipeLayout;
+    PullRefreshLayout swipeLayout;
     UserSessionManager session;
     int pastVisiblesItems, visibleItemCount, totalItemCount;
     private RecyclerView recyclerView;
@@ -84,6 +84,7 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private String category;
     private boolean firstTimeLoad = true;
     private boolean dataFetched;
+    private boolean scrollFlag;
 
     public SecondFragment() {
     }
@@ -118,7 +119,6 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
         recyclerView.setLayoutManager(new PreCachingLayoutManager(mContext));
         final PreCachingLayoutManager layoutManager = (PreCachingLayoutManager) recyclerView.getLayoutManager();
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-
         setScrollListener(layoutManager);
 
 
@@ -130,8 +130,13 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
         progressBar.setVisibility(View.VISIBLE);
 
 
-        swipeLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipe_container);
-        swipeLayout.setOnRefreshListener(this);
+        swipeLayout = (PullRefreshLayout) layout.findViewById(R.id.swipeRefreshLayout);
+        swipeLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                SecondFragment.this.onRefresh();
+            }
+        });
 
 
         formattedDate = df.format(Calendar.getInstance().getTime());
@@ -150,6 +155,9 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
             recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    Log.d(TAG, "onScrolled: " + dx + "   " + dy);
+
+
                     if (dy > 0) //check for scroll down
                     {
                         visibleItemCount = layoutManager.getChildCount();
@@ -182,12 +190,12 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
                 @Override
                 public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                     if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                        // Log.d(TAG, "onScrollStateChanged: dragging");
-                        swipeLayout.setEnabled(false);
+                        Log.d(TAG, "onScrollStateChanged: dragging");
                     } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        //Log.d(TAG, "onScrollStateChanged: idle");
-                        swipeLayout.setEnabled(true);
-                    }
+                        Log.d(TAG, "onScrollStateChanged: idle");
+                    } else if (newState == RecyclerView.SCROLL_STATE_SETTLING)
+                        Log.d(TAG, "onScrollStateChanged: settling");
+
                     super.onScrollStateChanged(recyclerView, newState);
                 }
 
@@ -492,10 +500,11 @@ public class SecondFragment extends Fragment implements SwipeRefreshLayout.OnRef
         }
     }
 
-    @Override
+
     public void onRefresh() {
 
         //  Messages2();
+
         if (isAdded()) {
             formattedDate = df.format(Calendar.getInstance().getTime());
             Log.d(TAG, "onRefresh: called");

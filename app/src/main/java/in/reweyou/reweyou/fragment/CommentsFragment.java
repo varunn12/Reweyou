@@ -15,7 +15,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -69,6 +68,7 @@ import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.SinglePostActivity;
 import in.reweyou.reweyou.adapter.CommentsAdapter;
 import in.reweyou.reweyou.classes.UserSessionManager;
+import in.reweyou.reweyou.customView.swipeRefresh.PullRefreshLayout;
 import in.reweyou.reweyou.model.CommentsModel;
 import in.reweyou.reweyou.utils.Constants;
 
@@ -78,7 +78,7 @@ import static in.reweyou.reweyou.classes.UploadOptions.PERMISSION_ALL_IMAGE;
  * Created by master on 20/11/16.
  */
 
-public class CommentsFragment extends Fragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, FragmentCommunicator, FragmentCommunicator2 {
+public class CommentsFragment extends Fragment implements View.OnClickListener, FragmentCommunicator, FragmentCommunicator2 {
     public static final String KEY_TEXT = "comments";
     public static final String KEY_NAME = "name";
     public static final String KEY_ID = "postid";
@@ -100,7 +100,7 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
     private ImageView imagebutton;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
-    private SwipeRefreshLayout swipeLayout;
+    private PullRefreshLayout swipeLayout;
     private Context mContext;
     private ImageView previewImageView;
     private String selectedImagePath;
@@ -183,8 +183,15 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
         recyclerView = (RecyclerView) layout.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         progressBar = (ProgressBar) layout.findViewById(R.id.progress_bar);
-        swipeLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipe_container);
-        swipeLayout.setOnRefreshListener(this);
+        swipeLayout = (PullRefreshLayout) layout.findViewById(R.id.swipeRefreshLayout);
+        swipeLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                CommentsFragment.this.onRefresh();
+            }
+        });
+        //   swipeLayout.setEnabled(false);
+
         if (getArguments() != null) {
             i = getArguments().getString("myData");
             getCommentsRequest(i);
@@ -193,8 +200,12 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
         return layout;
     }
 
-
     @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+
     public void onRefresh() {
         getCommentsRequest(i);
     }
@@ -203,7 +214,7 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
     public void onClick(View v) {
 
 
-            onImageButtonClick();
+        onImageButtonClick();
 
 
     }
@@ -436,12 +447,12 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
     private void showSnackbar(final String s) {
 
         Log.d("context4", String.valueOf(mContext));
-                Snackbar.make(((Activity) mContext).findViewById(R.id.main_content), s, Snackbar.LENGTH_INDEFINITE).setAction("RETRY", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        getCommentsRequest(i);
-                    }
-                }).show();
+        Snackbar.make(((Activity) mContext).findViewById(R.id.main_content), s, Snackbar.LENGTH_INDEFINITE).setAction("RETRY", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getCommentsRequest(i);
+            }
+        }).show();
     }
 
     private void showToast(final String s) {
