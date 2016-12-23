@@ -69,7 +69,7 @@ public class Constants {
 
     public static final int POSITION_FEED_TAB_MAIN_FEED = 20;
     public static final int POSITION_FEED_TAB_2 = 21;
-    public static final int POSITION_FEED_TAB_3 = 22;
+    public static final int POSITION_FEED_TAB_3 = 2;
     public static final int POSITION_FEED_TAB_MY_CITY = 10;
     public static final int POSITION_SEARCH_TAB = 12;
     public static final int POSITION_SINGLE_POST = 15;

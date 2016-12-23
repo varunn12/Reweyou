@@ -474,13 +474,12 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
             protected Map<String, String> getParams() {
                 Map<String, String> data = new HashMap<>();
 
-                if (position != 1) {
-                    if (position != 12) {
-                        if (position == 10)
+                if (position != Constants.POSITION_SEARCH_TAB) {
+                    if (position == Constants.POSITION_FEED_TAB_MY_CITY)
                             data.put("location", placename);
-                        else if (position == 15) {
+                    else if (position == Constants.POSITION_SINGLE_POST) {
                             data.put("query", query);
-                        } else if (position == 19) {
+                    } else if (position == Constants.POSITION_CATEGORY_TAG) {
                             if (category != null)
                                 data.put("category", category);
                         } else
@@ -488,8 +487,9 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
                         data.put("date", formattedDate);
                         data.put("number", number);
 
+                    Log.d("dataaaaa", location + "   " + formattedDate + "  " + number);
                     } else data.put("query", query);
-                }
+
                 return data;
             }
         };
