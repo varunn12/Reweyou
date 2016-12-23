@@ -57,7 +57,6 @@ dependencies {
     compile 'com.theartofdev.edmodo:android-image-cropper:2.3.+'
     compile 'com.google.firebase:firebase-crash:10.0.1'
     compile 'com.loopj.android:android-async-http:1.4.9'
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha5'
     testCompile 'junit:junit:4.12'
 
 }
