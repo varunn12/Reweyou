@@ -354,14 +354,15 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private void bindImageOrGif(final int position, RecyclerView.ViewHolder viewHolder2) {
         final ImageViewHolder viewHolder = (ImageViewHolder) viewHolder2;
+        if (((FeedModel) messagelist.get(position)).getHeadline() != null) {
+            Spannable spannable = new SpannableString(((FeedModel) messagelist.get(position)).getHeadline());
+            Util.linkifyUrl(spannable, new CustomTabsOnClickListener(activity, mCustomTabActivityHelper));
+            setDescription(viewHolder, position, spannable);
 
-        Spannable spannable = new SpannableString(((FeedModel) messagelist.get(position)).getHeadline());
-        Util.linkifyUrl(spannable, new CustomTabsOnClickListener(activity, mCustomTabActivityHelper));
-
-
+        }
+        setEditButton(viewHolder, position);
         setHeadline(viewHolder, position);
 
-        setDescription(viewHolder, position, spannable);
 
         setDate(viewHolder, position);
 
@@ -386,21 +387,23 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     }
 
+
     private void bindVideo(final int position, RecyclerView.ViewHolder viewHolder2) {
         final VideoViewHolder viewHolder = (VideoViewHolder) viewHolder2;
-        Spannable spannable = new SpannableString(((FeedModel) messagelist.get(position)).getHeadline());
-        Util.linkifyUrl(spannable, new CustomTabsOnClickListener(activity, mCustomTabActivityHelper));
 
+        if (((FeedModel) messagelist.get(position)).getHeadline() != null) {
+            Spannable spannable = new SpannableString(((FeedModel) messagelist.get(position)).getHeadline());
+            Util.linkifyUrl(spannable, new CustomTabsOnClickListener(activity, mCustomTabActivityHelper));
+            setDescription(viewHolder, position, spannable);
 
-        viewHolder.headline.setText(spannable);
-        viewHolder.headline.setMovementMethod(LinkMovementMethod.getInstance());
+        }
 
+        setEditButton(viewHolder, position);
 
         setNumOfViews(viewHolder, position);
 
         setHeadline(viewHolder, position);
 
-        setDescription(viewHolder, position, spannable);
 
         setDate(viewHolder, position);
 
@@ -421,6 +424,13 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         setLikedStatus(viewHolder, position);
 
         setFeedCategory(viewHolder, position);
+    }
+
+    private void setEditButton(BaseViewHolder viewHolder, int position) {
+        if (session.getMobileNumber().equals(((FeedModel) messagelist.get(position)).getNumber())) {
+            viewHolder.menuEdit.setVisibility(View.VISIBLE);
+        } else viewHolder.menuEdit.setVisibility(View.GONE);
+
     }
 
     private void setNumOfViews(VideoViewHolder viewHolder, int position) {
@@ -882,6 +892,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         protected CardView cv;
         protected TextView reviews, source;
         protected TextView app;
+        private ImageView menuEdit;
         private RelativeLayout actions;
         private LinearLayout linearLayout;
         private ImageView upicon;
@@ -910,7 +921,21 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             linearLayout = (LinearLayout) view.findViewById(R.id.like);
             upicon = (ImageView) view.findViewById(R.id.upicon);
             actions = (RelativeLayout) view.findViewById(R.id.actions);
+            menuEdit = (ImageView) view.findViewById(R.id.action_edit);
 
+
+            menuEdit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    try {
+                        if (session.getMobileNumber().equals(((FeedModel) messagelist.get(getAdapterPosition())).getNumber())) {
+                            editHeadline(getAdapterPosition());
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
             reviews.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
