@@ -92,6 +92,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
 
     private static final String PACKAGE_URL_SCHEME = "package:";
     private static final int PERMISSION_ALL = 1;
+    private static final String TAG = PostReport.class.getSimpleName();
     private final int PREVIEW_TEXT = 3;
     private final int PREVIEW_IMAGE = 4;
     private final int PREVIEW_GIF = 5;
@@ -908,7 +909,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
             params.add("token", session.getKeyAuthToken());
             params.add("deviceid", session.getDeviceid());
 
-            AsyncHttpClient client = new AsyncHttpClient();
+            AsyncHttpClient client = new AsyncHttpClient(true, 80, 443);
 
             client.setMaxRetriesAndTimeout(0, 0);
             client.setTimeout(10000);
@@ -940,7 +941,9 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                 @Override
                 public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, Throwable error) {
                     uploading.dismiss();
+                    Log.e(TAG, "onFailure: statusCode: " + statusCode);
                     Log.w("reach", "one3");
+
 
                 }
 
