@@ -60,8 +60,6 @@
                 android:layout_alignParentBottom="true"
                 android:layout_gravity="bottom"
                 android:alpha=".74"
-                android:background="#fff"
-
                 android:orientation="horizontal">
 
                 <Space

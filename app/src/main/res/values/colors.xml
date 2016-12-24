@@ -5,10 +5,13 @@
     <color name="transparent">#00000000</color>
     <color name="black">#000000</color>
     <color name="black2">#bdbdbd</color>
+    <color name="black3">#9f9f9f</color>
 
     <color name="likeText">#80000000</color>
 
     <color name="colorPrimary">#05A8AA</color>
+    <color name="colorPrimary1">#1005A8AA</color>
+    <color name="colorPrimary2">#1205A8AA</color>
 
     <color name="colorPrimaryDark">#048C8E</color>
     <color name="colorAccent">#05A8AA</color>
@@ -20,5 +23,6 @@
     <color name="divider">#BDBDBD</color>
     <color name="greylight">#25000000</color>
     <color name="main">#75000000</color>
+    <color name="navyblue">#3949AB</color>
     -
 </resources>

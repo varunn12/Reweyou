@@ -576,7 +576,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     private void setReporterProfilePic(BaseViewHolder viewHolder, int position) {
-        Glide.with(mContext).load(((FeedModel) messagelist.get(position)).getProfilepic()).placeholder(R.drawable.download).error(R.drawable.download).fallback(R.drawable.download).dontAnimate().into(viewHolder.profilepic);
+        Glide.with(mContext).load(((FeedModel) messagelist.get(position)).getProfilepic()).diskCacheStrategy(DiskCacheStrategy.SOURCE).placeholder(R.drawable.download).error(R.drawable.download).fallback(R.drawable.download).dontAnimate().into(viewHolder.profilepic);
 
     }
 

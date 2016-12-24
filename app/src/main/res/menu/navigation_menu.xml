@@ -11,14 +11,17 @@
             android:id="@+id/notifications"
             android:icon="@drawable/ic_notifications_black_24px"
             android:title="Notifications" />
+
+        <item
+            android:id="@+id/contacts"
+            android:icon="@drawable/ic_person_primary_24px"
+            android:title="Inbox" />
+
         <item
             android:id="@+id/leaderboard"
             android:icon="@drawable/cup"
             android:title="Top Reporters" />
-        <item
-            android:id="@+id/New"
-            android:icon="@drawable/ic_new_releases_black_24px"
-            android:title="What's New?" />
+
         <item
             android:id="@+id/logout"
             android:icon="@drawable/ic_delete_black_24px"
@@ -26,7 +29,12 @@
     </group>
 
     <item android:title="Other">
+
         <menu>
+            <item
+                android:id="@+id/New"
+                android:icon="@drawable/ic_new_releases_black_24px"
+                android:title="What's New?" />
             <item
                 android:id="@+id/nav_rate"
                 android:icon="@drawable/ic_star_rate_black_24px"
