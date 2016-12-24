@@ -134,34 +134,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private String username;
 
 
-    public FeedAdapter(Context context, List<Object> mlist, SecondFragment secondFragment) {
-        this.mContext = context;
-        activity = (Activity) context;
-        this.messagelist = mlist;
-        cd = new ConnectionDetector(mContext);
-        mCustomTabActivityHelper = new CustomTabActivityHelper();
-        session = new UserSessionManager(mContext);
-        uploadOption = new UploadOptions((Activity) mContext);
-        this.fragment = secondFragment;
-
-        initTimer();
-
-    }
-
-    public FeedAdapter(Context context, List<Object> mlist, String placename, SecondFragment secondFragment) {
-        this.mContext = context;
-        activity = (Activity) context;
-        this.messagelist = mlist;
-        cd = new ConnectionDetector(mContext);
-        mCustomTabActivityHelper = new CustomTabActivityHelper();
-        session = new UserSessionManager(mContext);
-        this.placename = placename;
-        Log.d("reach", "constr    " + this.placename + "   " + placename);
-
-        this.fragment = secondFragment;
-
-    }
-
     public FeedAdapter(Context context, List<Object> mlist, String placename, SecondFragment secondFragment, int qu_position) {
 
         this.mContext = context;
@@ -171,8 +143,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         mCustomTabActivityHelper = new CustomTabActivityHelper();
         session = new UserSessionManager(mContext);
         this.placename = placename;
-        Log.d("reach", "constr    " + this.placename + "   " + placename);
-
         this.qu_position = qu_position;
         this.fragment = secondFragment;
 

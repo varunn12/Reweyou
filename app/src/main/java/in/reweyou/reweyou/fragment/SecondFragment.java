@@ -18,13 +18,9 @@ import android.widget.TextView;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkError;
-import com.android.volley.NoConnectionError;
-import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.ServerError;
-import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -47,15 +43,12 @@ import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.adapter.FeedAdapter;
 import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.DividerItemDecoration;
+import in.reweyou.reweyou.classes.GsonFeedRequest;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.customView.PreCachingLayoutManager;
 import in.reweyou.reweyou.customView.swipeRefresh.PullRefreshLayout;
 import in.reweyou.reweyou.model.FeedModel;
 import in.reweyou.reweyou.utils.Constants;
-import in.reweyou.reweyou.utils.MyJSON;
-
-import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_LOCATION;
-import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_NEW_POST;
 
 
 public class SecondFragment extends Fragment implements FragmentCommunicator {
@@ -156,7 +149,7 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
             recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                    Log.d(TAG, "onScrolled: " + dx + "   " + dy);
+                    // Log.d(TAG, "onScrolled: " + dx + "   " + dy);
 
 
                     if (dy > 0) //check for scroll down
@@ -191,13 +184,13 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
                 @Override
                 public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                     if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                        Log.d(TAG, "onScrollStateChanged: dragging");
+                        //Log.d(TAG, "onScrollStateChanged: dragging");
                     } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        Log.d(TAG, "onScrollStateChanged: idle");
+                        //Log.d(TAG, "onScrollStateChanged: idle");
                     } else if (newState == RecyclerView.SCROLL_STATE_SETTLING)
-                        Log.d(TAG, "onScrollStateChanged: settling");
+                        //  Log.d(TAG, "onScrollStateChanged: settling");
 
-                    super.onScrollStateChanged(recyclerView, newState);
+                        super.onScrollStateChanged(recyclerView, newState);
                 }
 
                 private void makeLoadMoreRequest() {
@@ -307,7 +300,7 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
     }
 
 
-    private void makeRequest() {
+    /*private void makeRequest() {
         Log.d(TAG, "makeRequest: called");
         StringRequest stringRequest = new StringRequest(Request.Method.POST, getUrl(),
                 new Response.Listener<String>() {
@@ -360,6 +353,7 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
 
                                 }
                             }
+
                             progressBar.setVisibility(View.GONE);
 
                             if (isAdded()) {
@@ -437,7 +431,7 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
                     private void showNoti(String msg) {
                         topBar.setText(msg);
                         topBar.setVisibility(View.VISIBLE);
-/*
+*//*
 
                         if (!session.getFirstLoad()) {
                             session.setFirstLoad();
@@ -466,7 +460,7 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
 
                             });
                         }
-*/
+*//*
 
                     }
                 }) {
@@ -499,8 +493,68 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
             RequestQueue requestQueue = Volley.newRequestQueue(mContext);
             requestQueue.add(stringRequest);
         }
-    }
+    }*/
 
+    private void makeRequest() {
+        Map<String, String> data = new HashMap<>();
+
+        if (position != Constants.POSITION_SEARCH_TAB) {
+            if (position == Constants.POSITION_FEED_TAB_MY_CITY)
+                data.put("location", placename);
+            else if (position == Constants.POSITION_SINGLE_POST) {
+                data.put("query", query);
+            } else if (position == Constants.POSITION_CATEGORY_TAG) {
+                if (category != null)
+                    data.put("category", category);
+            } else
+                data.put("location", location);
+            data.put("date", formattedDate);
+            data.put("number", number);
+        } else data.put("query", query);
+
+        GsonFeedRequest<List> gsonFeedRequest = new GsonFeedRequest<>(position, getUrl(), new FeedModel(), data, new Response.Listener<List>() {
+            @Override
+            public void onResponse(List response) {
+                progressBar.setVisibility(View.GONE);
+
+                Log.d("resss", String.valueOf(response.size()));
+                lastPostid = (String) response.get(response.size() - 2);
+                minPostid = (int) response.get(response.size() - 1);
+
+                response.remove(response.size() - 1);
+                response.remove(response.size() - 1);
+                messagelist = response;
+
+                if (isAdded()) {
+                    adapter = new FeedAdapter(mContext, messagelist, placename, SecondFragment.this, position);
+                    dataFetched = true;
+                    recyclerView.setAdapter(adapter);
+                } else
+                    Log.w(TAG, "onResponse: fragment got detached when setting adapter");
+                swipeLayout.setRefreshing(false);
+
+                cacheLoad = false;
+
+               /*if (isAdded()) {
+                    if (position != 19 && position != 15 && position != Constants.POSITION_SEARCH_TAB)
+                        MyJSON.saveData(getContext(), response, position);
+                }*/
+
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }, session);
+
+        if (isAdded()) {
+            gsonFeedRequest.setRetryPolicy(new DefaultRetryPolicy(10 * 1000, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            RequestQueue requestQueue = Volley.newRequestQueue(mContext);
+            requestQueue.add(gsonFeedRequest);
+        }
+    }
 
     public void onRefresh() {
 

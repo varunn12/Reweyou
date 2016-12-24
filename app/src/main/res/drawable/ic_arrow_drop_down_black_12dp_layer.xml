@@ -1,0 +1,5 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:drawable="@drawable/ic_arrow_drop_down_black_12dp"
+        android:top="8dp" />
+</layer-list>

@@ -2,10 +2,8 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="140dp"
     android:layout_height="fill_parent"
-    android:drawablePadding="8dp"
-
-    android:drawableRight="@drawable/abc_spinner_mtrl_am_alpha"
+    android:drawablePadding="1dp"
+    android:drawableRight="@drawable/ic_arrow_drop_down_black_12dp_layer"
     android:gravity="center"
-
     android:textColor="#757575"
     android:textSize="14sp" />
