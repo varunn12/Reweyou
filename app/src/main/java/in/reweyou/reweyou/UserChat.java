@@ -77,7 +77,8 @@ public class UserChat extends AppCompatActivity {
             chatroomid = getIntent().getStringExtra("chatroomid");
             othernumber = getIntent().getStringExtra("othernumber");
             othername = getIntent().getStringExtra("othername");
-            toolbar.setTitle(othername);
+            Log.d(TAG, "onCreate: othername" + othername);
+            getSupportActionBar().setTitle(othername);
         } catch (Exception e) {
             Log.w(TAG, "onCreate: chatroomid is null");
         }
