@@ -12,7 +12,6 @@
         android:layout_centerVertical="true"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="24dp"
-        android:src="@drawable/download"
         app:myborderWidth="0dp" />
 
     <in.reweyou.reweyou.customView.CircularImageView
