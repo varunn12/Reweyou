@@ -29,6 +29,8 @@ import com.androidnetworking.interfaces.StringRequestListener;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -185,145 +187,88 @@ public class UserChat extends AppCompatActivity {
 
     private void getChatList() {
 
-        HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("chatroomid", chatroomid);
-        final Gson gson = new Gson();
-        final List<Object> list = new ArrayList<>();
-        AndroidNetworking.post("https://www.reweyou.in/reweyou/message_read.php")
-                .addBodyParameter(hashMap).setTag("test")
-                .setPriority(Priority.MEDIUM)
-                .build()
-                .setAnalyticsListener(new AnalyticsListener() {
-                    @Override
-                    public void onReceived(long timeTakenInMillis, long bytesSent, long bytesReceived, boolean isFromCache) {
-                        Log.d(TAG, "onReceived: isFromCache: " + isFromCache);
-                    }
-                })
+       /* HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("chatroomid", chatroomid);*/
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("chatroomid", chatroomid);
+
+            final Gson gson = new Gson();
+            final List<Object> list = new ArrayList<>();
+            AndroidNetworking.post("https://www.reweyou.in/reweyou/message_read.php")
+                    .addJSONObjectBody(jsonObject).setTag("test")
+                    .setPriority(Priority.MEDIUM)
+                    .build()
+                    .setAnalyticsListener(new AnalyticsListener() {
+                        @Override
+                        public void onReceived(long timeTakenInMillis, long bytesSent, long bytesReceived, boolean isFromCache) {
+                            Log.d(TAG, "onReceived: isFromCache: " + isFromCache);
+                        }
+                    })
 
 
-                .getAsJSONArray(new JSONArrayRequestListener() {
-                    String previousDate;
+                    .getAsJSONArray(new JSONArrayRequestListener() {
+                        String previousDate;
 
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        try {
-                            Log.d(TAG, "onResponse: " + response);
+                        @Override
+                        public void onResponse(JSONArray response) {
+                            try {
+                                Log.d(TAG, "onResponse: " + response);
 
-                            for (int i = 0; i < response.length(); i++) {
-                                UserChatModel userChatModel = gson.fromJson(response.getJSONObject(i).toString(), UserChatModel.class);
-                                Log.d(TAG, "onResponse: " + userChatModel.getSender() + session.getMobileNumber());
+                                for (int i = 0; i < response.length(); i++) {
+                                    UserChatModel userChatModel = gson.fromJson(response.getJSONObject(i).toString(), UserChatModel.class);
+                                    Log.d(TAG, "onResponse: " + userChatModel.getSender() + session.getMobileNumber());
 
-                                int temp = -1;
-                                if (i != 0)
-                                    temp = checkDates(userChatModel.getTime(), previousDate);
-                                else
-                                    temp = gettimeforfirst(userChatModel.getTime());
+                                    int temp = -1;
+                                    if (i != 0)
+                                        temp = checkDates(userChatModel.getTime(), previousDate);
+                                    else
+                                        temp = gettimeforfirst(userChatModel.getTime());
 
-                                switch (temp) {
-                                    case 0:
-                                        String s = getDateFormat(userChatModel.getTime());
-                                        if (s != null) {
-                                            list.add("TODAY " + s);
-                                            previousDate = userChatModel.getTime();
-                                        }
-                                        break;
-                                    case 1:
-                                        String s1 = getDateFormat2(userChatModel.getTime());
-                                        if (s1 != null) {
-                                            list.add(s1);
-                                            previousDate = userChatModel.getTime();
-                                        }
-                                        break;
-                                    case 2:
-                                        String s2 = getDateFormat3(userChatModel.getTime());
-                                        if (s2 != null) {
-                                            list.add("YESTERDAY " + s2);
-                                            previousDate = userChatModel.getTime();
-                                        }
-                                        break;
+                                    switch (temp) {
+                                        case 0:
+                                            String s = getDateFormat(userChatModel.getTime());
+                                            if (s != null) {
+                                                list.add("TODAY " + s);
+                                                previousDate = userChatModel.getTime();
+                                            }
+                                            break;
+                                        case 1:
+                                            String s1 = getDateFormat2(userChatModel.getTime());
+                                            if (s1 != null) {
+                                                list.add(s1);
+                                                previousDate = userChatModel.getTime();
+                                            }
+                                            break;
+                                        case 2:
+                                            String s2 = getDateFormat3(userChatModel.getTime());
+                                            if (s2 != null) {
+                                                list.add("YESTERDAY " + s2);
+                                                previousDate = userChatModel.getTime();
+                                            }
+                                            break;
 
+                                    }
+                                    list.add(userChatModel);
                                 }
-                                list.add(userChatModel);
+
+
+                                Log.d(TAG, "onResponse: sizzz " + list.size());
+                                userChatAdapter = new UserChatAdapter(list, session);
+                                recyclerView.setAdapter(userChatAdapter);
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-
-
-                            Log.d(TAG, "onResponse: sizzz " + list.size());
-                            userChatAdapter = new UserChatAdapter(list, session);
-                            recyclerView.setAdapter(userChatAdapter);
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    private int gettimeforfirst(String time) {
-                        try {
-                            Date date = dfs.parse(time);
-                            Calendar c1 = Calendar.getInstance(); // today
-                            Calendar c2 = Calendar.getInstance();
-                            c2.setTime(date); // your date
-
-                            if (c1.get(Calendar.DAY_OF_YEAR) != c2.get(Calendar.DAY_OF_YEAR)) {
-                                c1.add(Calendar.DAY_OF_YEAR, -1);
-                                if (c1.get(Calendar.DAY_OF_YEAR) == c2.get(Calendar.DAY_OF_YEAR))
-                                    return 2;
-                                else
-                                    return 1;
-                            } else
-                                return 0;
-                        } catch (ParseException e) {
-
-                            e.printStackTrace();
-                            return -1;
                         }
 
-
-                    }
-
-                    private String getDateFormat(String time) {
-                        try {
-                            Date date = dfs.parse(time);
-                            return todayDateFormat.format(date);
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        return null;
-                    }
-
-                    private String getDateFormat2(String time) {
-                        try {
-                            Date date = dfs.parse(time);
-                            return previousDateFormat.format(date);
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        return null;
-                    }
-
-                    private String getDateFormat3(String time) {
-                        try {
-                            Date date = dfs.parse(time);
-                            return yesterdayDateFormat.format(date);
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        return null;
-                    }
-
-                    private int checkDates(String time, String previousDate) {
-                        try {
-                            Date date1 = dfs.parse(time);
-                            Date date;
-                            date = dfs.parse(previousDate);
-                            long difference = date1.getTime() - date.getTime();
-                            Log.d(TAG, "checkDates: diff: " + difference);
-                            if (difference > 30 * 60 * 1000) {
+                        private int gettimeforfirst(String time) {
+                            try {
+                                Date date = dfs.parse(time);
                                 Calendar c1 = Calendar.getInstance(); // today
                                 Calendar c2 = Calendar.getInstance();
-                                c2.setTime(date1); // your date
+                                c2.setTime(date); // your date
 
                                 if (c1.get(Calendar.DAY_OF_YEAR) != c2.get(Calendar.DAY_OF_YEAR)) {
                                     c1.add(Calendar.DAY_OF_YEAR, -1);
@@ -333,27 +278,91 @@ public class UserChat extends AppCompatActivity {
                                         return 1;
                                 } else
                                     return 0;
-                            } else return -1;
+                            } catch (ParseException e) {
+
+                                e.printStackTrace();
+                                return -1;
+                            }
 
 
-                        } catch (Exception e) {
-                            e.printStackTrace();
                         }
 
-                        return 0;
-                    }
+                        private String getDateFormat(String time) {
+                            try {
+                                Date date = dfs.parse(time);
+                                return todayDateFormat.format(date);
 
-                    @Override
-                    public void onError(ANError anError) {
-
-                        try {
-                            Log.d(TAG, "onError: " + anError.getResponse());
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            return null;
                         }
-                    }
-                });
 
+                        private String getDateFormat2(String time) {
+                            try {
+                                Date date = dfs.parse(time);
+                                return previousDateFormat.format(date);
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            return null;
+                        }
+
+                        private String getDateFormat3(String time) {
+                            try {
+                                Date date = dfs.parse(time);
+                                return yesterdayDateFormat.format(date);
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            return null;
+                        }
+
+                        private int checkDates(String time, String previousDate) {
+                            try {
+                                Date date1 = dfs.parse(time);
+                                Date date;
+                                date = dfs.parse(previousDate);
+                                long difference = date1.getTime() - date.getTime();
+                                Log.d(TAG, "checkDates: diff: " + difference);
+                                if (difference > 30 * 60 * 1000) {
+                                    Calendar c1 = Calendar.getInstance(); // today
+                                    Calendar c2 = Calendar.getInstance();
+                                    c2.setTime(date1); // your date
+
+                                    if (c1.get(Calendar.DAY_OF_YEAR) != c2.get(Calendar.DAY_OF_YEAR)) {
+                                        c1.add(Calendar.DAY_OF_YEAR, -1);
+                                        if (c1.get(Calendar.DAY_OF_YEAR) == c2.get(Calendar.DAY_OF_YEAR))
+                                            return 2;
+                                        else
+                                            return 1;
+                                    } else
+                                        return 0;
+                                } else return -1;
+
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                            return 0;
+                        }
+
+                        @Override
+                        public void onError(ANError anError) {
+
+                            try {
+                                Log.d(TAG, "onError: " + anError.getResponse());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void sendMessage(String message) {
