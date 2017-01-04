@@ -105,6 +105,9 @@ public class UserChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void changestateofsendingmessage(boolean b) {
         if (b) {
             notifyItemChanged(list.size() - 1, "true");
+            ((UserChatModel) list.get(list.size() - 1)).setFailed(false);
+            ((UserChatModel) list.get(list.size() - 1)).setSending(false);
+
         } else {
             notifyItemChanged(list.size() - 1, "false");
             ((UserChatModel) list.get(list.size() - 1)).setSending(false);
