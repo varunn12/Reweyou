@@ -175,7 +175,11 @@ public class Contacts extends AppCompatActivity {
             if (phoneNumber.length() >= 10) {
 
                 String number = phoneNumber.replaceAll("\\D+", "");
-                contactList.add(new ContactListModel(phoneNumberName, number.substring(number.length() - 10), phoneNumberPic));
+                try {
+                    contactList.add(new ContactListModel(phoneNumberName, number.substring(number.length() - 10), phoneNumberPic));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
         phones.close();
