@@ -140,12 +140,25 @@ public class UserChatThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         private TextView username;
         private TextView number;
         private ImageView pic;
+        private RelativeLayout container;
 
         ViewHolderContact(View itemView) {
             super(itemView);
             username = (TextView) itemView.findViewById(R.id.username);
             number = (TextView) itemView.findViewById(R.id.number);
             pic = (ImageView) itemView.findViewById(R.id.pic);
+            container = (RelativeLayout) itemView.findViewById(R.id.container);
+
+            container.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(context, UserChat.class);
+                    // i.putExtra(ADD_CHAT_MESSAGE_CHATROOM_ID, ((UserChatThreadModel) list.get(getAdapterPosition())).getChatroom_id());
+                    i.putExtra(ADD_CHAT_MESSAGE_SENDER_NUMBER, ((ContactListModel) list.get(getAdapterPosition())).getNumber());
+                    i.putExtra(ADD_CHAT_MESSAGE_SENDER_NAME, ((ContactListModel) list.get(getAdapterPosition())).getName());
+                    context.startActivity(i);
+                }
+            });
         }
     }
 

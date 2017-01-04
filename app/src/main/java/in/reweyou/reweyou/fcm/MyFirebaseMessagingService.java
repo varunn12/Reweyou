@@ -102,7 +102,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 if (UserChat.userChatActivityOpen) {
                     Intent intent = new Intent(Constants.ADD_CHAT_MESSAGE_EVENT);
 
-                    intent.putExtra(Constants.ADD_CHAT_MESSAGE_SENDER_NUMBER, payload.getString("sender_number"));
+                    intent.putExtra(Constants.ADD_CHAT_MESSAGE_SENDER_NUMBER, payload.getString("sender_name"));
                     intent.putExtra(Constants.ADD_CHAT_MESSAGE_MESSAGE, message);
                     intent.putExtra(Constants.ADD_CHAT_MESSAGE_TIMESTAMP, timestamp);
                     intent.putExtra(Constants.ADD_CHAT_MESSAGE_CHATROOM_ID, payload.getString("chatroom_id"));

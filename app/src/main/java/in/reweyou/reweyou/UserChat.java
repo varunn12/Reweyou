@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.androidnetworking.AndroidNetworking;
@@ -89,6 +90,7 @@ public class UserChat extends AppCompatActivity {
             }
         }
     };
+    private LinearLayout empty;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,7 +108,7 @@ public class UserChat extends AppCompatActivity {
                 onBackPressed();
             }
         });
-
+        empty = (LinearLayout) findViewById(R.id.empty);
 
         try {
             othername = getIntent().getStringExtra(ADD_CHAT_MESSAGE_SENDER_NAME);
@@ -136,9 +138,10 @@ public class UserChat extends AppCompatActivity {
 
         recyclerView.setLayoutManager(linearLayoutManager);
 
-
-        getChatList();
-
+        if (chatroomid != null)
+            getChatList();
+        else
+            empty.setVisibility(View.VISIBLE);
 
         editBox = (EditText) findViewById(R.id.editBox);
 
@@ -148,12 +151,18 @@ public class UserChat extends AppCompatActivity {
             public void onClick(View v) {
                 if (editBox.getText().toString().trim().length() > 0) {
 
+                    empty.setVisibility(View.GONE);
                     final UserChatModel userChatModel = new UserChatModel();
                     userChatModel.setMessage(editBox.getText().toString());
                     userChatModel.setSender(session.getMobileNumber());
                     userChatModel.setSending(true);
-                    userChatAdapter.add(userChatModel);
+                    if (userChatAdapter == null) {
+                        final List<Object> list = new ArrayList<>();
 
+                        userChatAdapter = new UserChatAdapter(list, session);
+                        recyclerView.setAdapter(userChatAdapter);
+                        userChatAdapter.add(userChatModel);
+                    } else userChatAdapter.add(userChatModel);
                     sendMessage(editBox.getText().toString());
 
 

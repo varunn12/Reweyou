@@ -17,6 +17,33 @@
         android:clipToPadding="false"
         android:paddingTop="4dp" />
 
+
+    <LinearLayout
+        android:id="@+id/empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:srcCompat="@drawable/ic_comment_black_64px" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="4dp"
+            android:alpha=".20"
+            android:gravity="center"
+            android:text="This is the beginning of your conversation"
+            android:textColor="#000"
+            android:textSize="14dp"
+            android:visibility="visible" />
+    </LinearLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="0.7dp"
