@@ -1,6 +1,5 @@
 package in.reweyou.reweyou;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
@@ -11,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -113,8 +111,8 @@ public class UserChat extends AppCompatActivity {
 
 
                     editBox.setText("");
-                    InputMethodManager imm = (InputMethodManager) UserChat.this.getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(editBox.getWindowToken(), 0);
+                    /*InputMethodManager imm = (InputMethodManager) UserChat.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(editBox.getWindowToken(), 0);*/
 
                     new Handler().post(new Runnable() {
                         @Override
