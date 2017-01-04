@@ -90,7 +90,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
 
         initCollapsingToolbar();
-        Intent in = getIntent();
         Bundle bundle = getIntent().getExtras();
         i = bundle.getString("myData");
         cd = new ConnectionDetector(UserProfile.this);

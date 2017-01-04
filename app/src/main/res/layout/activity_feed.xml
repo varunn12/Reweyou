@@ -27,8 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:elevation="2dp"
-                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-                app:layout_behavior="in.reweyou.reweyou.customView.scrollHelpers.AppBarSnapBehavior">
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbar"
@@ -57,7 +56,7 @@
                 android:layout_width="match_parent"
 
                 android:layout_height="match_parent"
-                app:layout_behavior="in.reweyou.reweyou.customView.scrollHelpers.ScrollingViewBehavior" />
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
             <ProgressBar
                 android:id="@+id/pd"
@@ -83,7 +82,6 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-
         app:headerLayout="@layout/nav_header"
         app:menu="@menu/navigation_menu" />
 </android.support.v4.widget.DrawerLayout>

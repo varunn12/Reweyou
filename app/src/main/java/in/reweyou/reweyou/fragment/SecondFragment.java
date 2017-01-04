@@ -12,23 +12,26 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.view.ViewTreeObserver;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkError;
-import com.android.volley.NoConnectionError;
-import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.ServerError;
-import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.AnalyticsListener;
+import com.androidnetworking.interfaces.ParsedRequestListener;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,10 +52,8 @@ import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.DividerItemDecoration;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.customView.PreCachingLayoutManager;
-import in.reweyou.reweyou.customView.swipeRefresh.PullRefreshLayout;
 import in.reweyou.reweyou.model.FeedModel;
 import in.reweyou.reweyou.utils.Constants;
-import in.reweyou.reweyou.utils.MyJSON;
 
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_LOCATION;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_NEW_POST;
@@ -61,7 +62,6 @@ import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_NEW_POST;
 public class SecondFragment extends Fragment implements FragmentCommunicator {
 
     private static final String TAG = SecondFragment.class.getSimpleName();
-    PullRefreshLayout swipeLayout;
     UserSessionManager session;
     int pastVisiblesItems, visibleItemCount, totalItemCount;
     private RecyclerView recyclerView;
@@ -71,21 +71,18 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
     private boolean loading = true;
     private SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss a", Locale.ENGLISH);
     private FeedAdapter adapter;
-    private Calendar c;
     private String lastPostid;
     private int position = -1;
     private boolean cacheLoad = false;
     private String placename;
     private Activity mContext;
     private TextView topBar;
-    private LinearLayout hangingNoti;
     private View layout;
     private String query;
-    private int minPostid;
     private String category;
-    private boolean firstTimeLoad = true;
     private boolean dataFetched;
-    private boolean scrollFlag;
+    private Gson gson = new Gson();
+    private HashMap<String, String> bodyHashMap;
 
     public SecondFragment() {
     }
@@ -128,17 +125,7 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
 
         //Progress bar
         progressBar = (ProgressBar) layout.findViewById(R.id.progress_bar);
-        progressBar.setVisibility(View.VISIBLE);
-
-
-        swipeLayout = (PullRefreshLayout) layout.findViewById(R.id.swipeRefreshLayout);
-        swipeLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                SecondFragment.this.onRefresh();
-            }
-        });
-
+        progressBar.setVisibility(View.GONE);
 
         formattedDate = df.format(Calendar.getInstance().getTime());
         location = session.getLoginLocation();
@@ -156,11 +143,9 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
             recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                    Log.d(TAG, "onScrolled: " + dx + "   " + dy);
 
 
-                    if (dy > 0) //check for scroll down
-                    {
+                    if (dy > 0) {
                         visibleItemCount = layoutManager.getChildCount();
                         totalItemCount = layoutManager.getItemCount();
                         pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
@@ -169,10 +154,7 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
                             if (loading) {
                                 if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
                                     loading = false;
-
-                                    Log.v("...", "Last Item Wow !");
                                     adapter.add();
-
                                     new Handler().postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
@@ -188,17 +170,6 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
 
                 }
 
-                @Override
-                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                    if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                        Log.d(TAG, "onScrollStateChanged: dragging");
-                    } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        Log.d(TAG, "onScrollStateChanged: idle");
-                    } else if (newState == RecyclerView.SCROLL_STATE_SETTLING)
-                        Log.d(TAG, "onScrollStateChanged: settling");
-
-                    super.onScrollStateChanged(recyclerView, newState);
-                }
 
                 private void makeLoadMoreRequest() {
                     final long mRequestStartTime = System.currentTimeMillis();
@@ -217,7 +188,6 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
                                         parentArray = new JSONArray(response);
                                         adapter.remove();
 
-                                        Gson gson = new Gson();
                                         Log.d("lenght", String.valueOf(parentArray.length()));
                                         for (int i = 0; i < parentArray.length(); i++) {
                                             JSONObject finalObject = parentArray.getJSONObject(i);
@@ -267,17 +237,9 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
                         @Override
                         protected Map<String, String> getParams() {
                             Map<String, String> data = new HashMap<>();
-                            if (position != 2) {
-                                data.put("location", location);
-                                data.put("postid", lastPostid);
-                                data.put("number", number);
-                            } else {
-                                data.put("postid", String.valueOf(minPostid));
-                                data.put("location", location);
-                                data.put("postid", lastPostid);
-                                data.put("number", number);
-                            }
-                            Log.d("minid", String.valueOf(data));
+                            data.put("location", location);
+                            data.put("postid", lastPostid);
+                            data.put("number", number);
                             return data;
                         }
                     };
@@ -309,196 +271,154 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
 
     private void makeRequest() {
         Log.d(TAG, "makeRequest: called");
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, getUrl(),
-                new Response.Listener<String>() {
+
+        HashMap<String, String> data = getBodyHashMap();
+
+
+        AndroidNetworking.get(getUrl())
+                .setTag("test")
+                .setPriority(Priority.HIGH)
+                .getResponseOnlyIfCached()
+                .build()
+                .setAnalyticsListener(new AnalyticsListener() {
                     @Override
-                    public void onResponse(String response) {
-                        Log.d("ResponseSecond", response);
-                        JSONArray parentArray;
-                        try {
-                            parentArray = new JSONArray(response);
+                    public void onReceived(long timeTakenInMillis, long bytesSent, long bytesReceived, boolean isFromCache) {
+                        Log.d(TAG, "onReceived: time: " + timeTakenInMillis + " bytesReceived: " + bytesReceived + " isFromCache: " + isFromCache);
+                    }
+                })
+                .getAsParsed(new TypeToken<List<FeedModel>>() {
+                }, new ParsedRequestListener<List<FeedModel>>() {
+                    @Override
+                    public void onResponse(List<FeedModel> feedModels) {
+                        // do anything with response
 
-                            List<String> likeslist = session.getLikesList();
-
-                            List<Object> messagelist = new ArrayList<>();
-
-                            if (position == Constants.POSITION_FEED_TAB_MAIN_FEED) {
-                                messagelist.add(VIEW_TYPE_NEW_POST);
-                            }
-
-                            if (position == Constants.POSITION_FEED_TAB_MY_CITY) {
-                                messagelist.add(VIEW_TYPE_LOCATION);
-                            }
-
-                            Gson gson = new Gson();
-
-                            Log.d(TAG, "onResponse: Size: " + parentArray.length());
-
-                            for (int i = 0; i < parentArray.length(); i++) {
-                                JSONObject feedObject = parentArray.getJSONObject(i);
-                                FeedModel feedModel = gson.fromJson(feedObject.toString(), FeedModel.class);
-
-                                if (likeslist.contains(feedModel.getPostId())) {
-                                    feedModel.setLiked(true);
-                                }
-
-                                if (i == 0) {
-                                    minPostid = Integer.parseInt(feedModel.getPostId());
-                                }
-
-                                if (minPostid > Integer.parseInt(feedModel.getPostId())) {
-                                    minPostid = Integer.parseInt(feedModel.getPostId());
-                                }
-
-
-                                messagelist.add(feedModel);
-
-                                if (i == parentArray.length() - 1) {
-                                    lastPostid = feedModel.getPostId();
-                                    Log.d(TAG, "onResponse: lastPostid: " + lastPostid);
-                                    Log.d(TAG, "onResponse: minPostid: " + minPostid);
-
-                                }
-                            }
-                            progressBar.setVisibility(View.GONE);
-
-                            if (isAdded()) {
-                                if (position == Constants.POSITION_SINGLE_POST) {
-                                    adapter = new FeedAdapter(mContext, messagelist, placename, SecondFragment.this, position);
-                                } else if (position == Constants.POSITION_FEED_TAB_MY_CITY)
-                                    adapter = new FeedAdapter(mContext, messagelist, placename, SecondFragment.this);
-                                else
-                                    adapter = new FeedAdapter(mContext, messagelist, SecondFragment.this);
-
-                                dataFetched = true;
-                                recyclerView.setAdapter(adapter);
-                            } else
-                                Log.w(TAG, "onResponse: fragment got detached when setting adapter");
-                            swipeLayout.setRefreshing(false);
-
-                            cacheLoad = false;
-                            if (isAdded()) {
-                                if (position != 19 && position != 15 && position != Constants.POSITION_SEARCH_TAB)
-                                    MyJSON.saveData(getContext(), response, position);
-
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        onfetchResponse(feedModels, false);
 
                     }
 
-                },
-                new Response.ErrorListener() {
                     @Override
-                    public void onErrorResponse(VolleyError error) {
-                        progressBar.setVisibility(View.GONE);
-
-                        if (error instanceof NoConnectionError) {
-                            showNoti("No internet connectivity");
-                        } else if (error instanceof TimeoutError) {
-                            showNoti("poor internet connectivity");
-                        } else if (error instanceof NetworkError || error instanceof ParseError || error instanceof ServerError) {
-                            showNoti("something went wrong");
-                        }
-                        swipeLayout.setRefreshing(false);
-
-                        if (isAdded()) {
-                            String respo = null;
-                            if (position != 19 && position != 15 && position != Constants.POSITION_SEARCH_TAB)
-                                respo = MyJSON.getData(mContext, position);
-
-                            if (respo != null) {
-                                JSONArray parentArray = null;
-                                try {
-                                    parentArray = new JSONArray(respo);
-                                    Log.d("aaa", String.valueOf(parentArray));
-
-                                    Gson gson = new Gson();
-                                    for (int i = 0; i < parentArray.length(); i++) {
-                                        JSONObject finalObject = parentArray.getJSONObject(i);
-                                        FeedModel feedModel = gson.fromJson(finalObject.toString(), FeedModel.class);
-                                        messagelist.add(feedModel);
+                    public void onError(ANError anError) {
+                        // handle error
+                        Log.d(TAG, "onError: " + anError.getErrorCode());
+                        AndroidNetworking.get(getUrl())
+                                .setTag("test")
+                                .setPriority(Priority.HIGH)
+                                .getResponseOnlyFromNetwork()
+                                .build()
+                                .setAnalyticsListener(new AnalyticsListener() {
+                                    @Override
+                                    public void onReceived(long timeTakenInMillis, long bytesSent, long bytesReceived, boolean isFromCache) {
+                                        Log.d(TAG, "onReceived2: time: " + timeTakenInMillis + " bytesReceived: " + bytesReceived + " isFromCache: " + isFromCache);
                                     }
-                                    adapter = new FeedAdapter(mContext, messagelist, SecondFragment.this);
-                                    dataFetched = true;
+                                })
+                                .getAsParsed(new TypeToken<List<FeedModel>>() {
+                                }, new ParsedRequestListener<List<FeedModel>>() {
+                                    @Override
+                                    public void onResponse(List<FeedModel> feedModels) {
+                                        // do anything with response
 
-                                    recyclerView.setAdapter(adapter);
+                                        onfetchResponse(feedModels, true);
 
-                                    cacheLoad = true;
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
+                                    }
 
+                                    @Override
+                                    public void onError(ANError anError) {
+                                        // handle error
+                                        Log.d(TAG, "onError2: " + anError.getErrorCode());
+
+                                    }
+                                });
                     }
+                });
+    }
 
-                    private void showNoti(String msg) {
-                        topBar.setText(msg);
-                        topBar.setVisibility(View.VISIBLE);
-/*
+    private void onfetchResponse(List<FeedModel> feedModels, boolean flag) {
+        Log.d(TAG, "userList size : " + feedModels.size());
 
-                        if (!session.getFirstLoad()) {
-                            session.setFirstLoad();
-                            hangingNoti.setVisibility(View.VISIBLE);
-                            TranslateAnimation mAnimation = new TranslateAnimation(
-                                    TranslateAnimation.ABSOLUTE, 0f,
-                                    TranslateAnimation.ABSOLUTE, 0f,
-                                    TranslateAnimation.RELATIVE_TO_PARENT, 0f,
-                                    TranslateAnimation.RELATIVE_TO_PARENT, 0.05f);
-                            mAnimation.setDuration(500);
-                            mAnimation.setRepeatCount(-1);
-                            mAnimation.setRepeatMode(Animation.REVERSE);
-                            mAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
-                            hangingNoti.setAnimation(mAnimation);
-                            // recyclerView.setBackground((Color.parseColor("#50000000")));
-                            hangingNoti.setOnTouchListener(new View.OnTouchListener() {
-                                @Override
-                                public boolean onTouch(View v, MotionEvent event) {
-                                    hangingNoti.setAnimation(null);
-                                    hangingNoti.setVisibility(View.GONE);
-                                    hangingNoti.setOnTouchListener(null);
+        List<String> likeslist = session.getLikesList();
 
-                                    return true;
-                                }
+        List<Object> messagelist = new ArrayList<>();
 
+        if (position == Constants.POSITION_FEED_TAB_MAIN_FEED) {
+            messagelist.add(VIEW_TYPE_NEW_POST);
+        }
 
-                            });
-                        }
-*/
+        if (position == Constants.POSITION_FEED_TAB_MY_CITY) {
+            messagelist.add(VIEW_TYPE_LOCATION);
+        }
 
-                    }
-                }) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> data = new HashMap<>();
-
-                if (position != Constants.POSITION_SEARCH_TAB) {
-                    if (position == Constants.POSITION_FEED_TAB_MY_CITY)
-                            data.put("location", placename);
-                    else if (position == Constants.POSITION_SINGLE_POST) {
-                            data.put("query", query);
-                    } else if (position == Constants.POSITION_CATEGORY_TAG) {
-                            if (category != null)
-                                data.put("category", category);
-                        } else
-                            data.put("location", location);
-                        data.put("date", formattedDate);
-                        data.put("number", number);
-
-                    Log.d("dataaaaa", location + "   " + formattedDate + "  " + number);
-                    } else data.put("query", query);
-
-                return data;
+        for (FeedModel feedModel : feedModels) {
+            if (likeslist.contains(feedModel.getPostId())) {
+                feedModel.setLiked(true);
             }
-        };
+            messagelist.add(feedModel);
+
+
+        }
+
+        lastPostid = feedModels.get(feedModels.size() - 1).getPostId();
+
+        progressBar.setVisibility(View.GONE);
 
         if (isAdded()) {
-            stringRequest.setRetryPolicy(new DefaultRetryPolicy(10 * 1000, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-            RequestQueue requestQueue = Volley.newRequestQueue(mContext);
-            requestQueue.add(stringRequest);
-        }
+            if (position == Constants.POSITION_SINGLE_POST) {
+                adapter = new FeedAdapter(mContext, messagelist, placename, SecondFragment.this, position);
+            } else if (position == Constants.POSITION_FEED_TAB_MY_CITY)
+                adapter = new FeedAdapter(mContext, messagelist, placename, SecondFragment.this);
+            else
+                adapter = new FeedAdapter(mContext, messagelist, SecondFragment.this);
+
+            dataFetched = true;
+            recyclerView.setAdapter(adapter);
+
+            if (!flag)
+                recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+
+                        Log.d(TAG, "onGlobalLayout: called");
+
+
+                        AndroidNetworking.get(getUrl())
+                                .setTag("test")
+                                .setPriority(Priority.HIGH)
+                                .getResponseOnlyFromNetwork()
+                                .build()
+                                .setAnalyticsListener(new AnalyticsListener() {
+                                    @Override
+                                    public void onReceived(long timeTakenInMillis, long bytesSent, long bytesReceived, boolean isFromCache) {
+                                        Log.d(TAG, "onReceived1: time: " + timeTakenInMillis + " bytesReceived: " + bytesReceived + " isFromCache: " + isFromCache);
+                                    }
+                                })
+                                .getAsParsed(new TypeToken<List<FeedModel>>() {
+                                }, new ParsedRequestListener<List<FeedModel>>() {
+                                    @Override
+                                    public void onResponse(List<FeedModel> feedModels) {
+                                        // do anything with response
+
+                                        onfetchResponse(feedModels, true);
+
+
+                                    }
+
+                                    @Override
+                                    public void onError(ANError anError) {
+                                        // handle error
+                                        Log.d(TAG, "onError1: " + anError.getErrorCode());
+                                        if (isAdded())
+                                            Toast.makeText(mContext, "couldn't connect", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
+
+                        recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    }
+                });
+        } else
+            Log.w(TAG, "onResponse: fragment got detached when setting adapter");
+
+        cacheLoad = false;
+
     }
 
 
@@ -587,5 +507,26 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
     }
 
 
+    public HashMap<String, String> getBodyHashMap() {
+        HashMap<String, String> data = new HashMap<>();
+
+        if (position != Constants.POSITION_SEARCH_TAB) {
+            if (position == Constants.POSITION_FEED_TAB_MY_CITY)
+                data.put("location", placename);
+            else if (position == Constants.POSITION_SINGLE_POST) {
+                data.put("query", query);
+            } else if (position == Constants.POSITION_CATEGORY_TAG) {
+                if (category != null)
+                    data.put("category", category);
+            } else
+                data.put("location", location);
+            data.put("date", formattedDate);
+            data.put("number", number);
+
+            Log.d("dataaaaa", location + "   " + formattedDate + "  " + number);
+        } else data.put("query", query);
+
+        return data;
+    }
 }
 

@@ -700,6 +700,12 @@ public class Feed extends AppCompatActivity {
                         startActivity(New);
                         overridePendingTransition(0, 0);
                         break;
+                    case R.id.contacts:
+                        drawerLayout.closeDrawers();
+                        Intent s = new Intent(Feed.this, Contacts.class);
+                        startActivity(s);
+                        overridePendingTransition(0, 0);
+                        break;
                     case R.id.logout:
                         drawerLayout.closeDrawers();
                         alertMessage();
