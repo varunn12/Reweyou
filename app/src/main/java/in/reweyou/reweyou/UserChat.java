@@ -76,7 +76,7 @@ public class UserChat extends AppCompatActivity {
                 if (chatroomid.equals(UserChat.this.chatroomid)) {
                     UserChatModel userChatModel = new UserChatModel();
                     userChatModel.setMessage(message);
-                    userChatModel.setSender("9711188949");
+                    userChatModel.setSender(sendernumber);
                     userChatModel.setTime(timestamp);
                     userChatModel.setReceiver(session.getMobileNumber());
 

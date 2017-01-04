@@ -102,7 +102,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 if (UserChat.userChatActivityOpen) {
                     Intent intent = new Intent(Constants.ADD_CHAT_MESSAGE_EVENT);
 
-                    // intent.putExtra(Constants.ADD_CHAT_MESSAGE_SENDER_NUMBER, payload.getString("sender_number"));
+                    intent.putExtra(Constants.ADD_CHAT_MESSAGE_SENDER_NUMBER, payload.getString("sender_number"));
                     intent.putExtra(Constants.ADD_CHAT_MESSAGE_MESSAGE, message);
                     intent.putExtra(Constants.ADD_CHAT_MESSAGE_TIMESTAMP, timestamp);
                     intent.putExtra(Constants.ADD_CHAT_MESSAGE_CHATROOM_ID, payload.getString("chatroom_id"));
@@ -112,10 +112,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     Log.w(TAG, "handleDataMessage: chat activity is background");
                     Intent i = new Intent(this, UserChat.class);
 
-                    i.putExtra(Constants.ADD_CHAT_MESSAGE_SENDER_NAME, payload.getString("sender_name"));
+                    i.putExtra(Constants.ADD_CHAT_MESSAGE_SENDER_NAME, title);
                     i.putExtra(Constants.ADD_CHAT_MESSAGE_CHATROOM_ID, payload.getString("chatroom_id"));
-                    // i.putExtra(Constants.ADD_CHAT_MESSAGE_SENDER_NUMBER, payload.getString("sender_number"));
-                    i.putExtra(Constants.ADD_CHAT_MESSAGE_SENDER_NUMBER, "9711188949");
+                    i.putExtra(Constants.ADD_CHAT_MESSAGE_SENDER_NUMBER, payload.getString("sender_name"));
+                    //   i.putExtra(Constants.ADD_CHAT_MESSAGE_SENDER_NUMBER, "9711188949");
 
                     PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -123,8 +123,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                             .setSmallIcon(R.drawable.logo_plain)
                             .setContentIntent(pendingIntent)
                             .setAutoCancel(true)
+                            .setDefaults(NotificationCompat.DEFAULT_VIBRATE)
+
                             .setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(), R.mipmap.ic_launcher))
-                            .setContentTitle(payload.getString("sender_name") + " messaged you")
+                            .setContentTitle(title + " messaged you")
                             .setContentText(message);
 
                     NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
