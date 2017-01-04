@@ -22,6 +22,10 @@ import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.model.ContactListModel;
 import in.reweyou.reweyou.model.UserChatThreadModel;
 
+import static in.reweyou.reweyou.utils.Constants.ADD_CHAT_MESSAGE_CHATROOM_ID;
+import static in.reweyou.reweyou.utils.Constants.ADD_CHAT_MESSAGE_SENDER_NAME;
+import static in.reweyou.reweyou.utils.Constants.ADD_CHAT_MESSAGE_SENDER_NUMBER;
+
 /**
  * Created by master on 1/1/17.
  */
@@ -122,9 +126,9 @@ public class UserChatThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 @Override
                 public void onClick(View v) {
                     Intent i = new Intent(context, UserChat.class);
-                    i.putExtra("chatroomid", ((UserChatThreadModel) list.get(getAdapterPosition())).getChatroom_id());
-                    i.putExtra("othernumber", ((UserChatThreadModel) list.get(getAdapterPosition())).getshowNumber());
-                    i.putExtra("othername", ((UserChatThreadModel) list.get(getAdapterPosition())).getname());
+                    i.putExtra(ADD_CHAT_MESSAGE_CHATROOM_ID, ((UserChatThreadModel) list.get(getAdapterPosition())).getChatroom_id());
+                    i.putExtra(ADD_CHAT_MESSAGE_SENDER_NUMBER, ((UserChatThreadModel) list.get(getAdapterPosition())).getshowNumber());
+                    i.putExtra(ADD_CHAT_MESSAGE_SENDER_NAME, ((UserChatThreadModel) list.get(getAdapterPosition())).getname());
                     context.startActivity(i);
                 }
             });

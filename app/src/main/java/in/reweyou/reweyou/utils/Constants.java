@@ -74,4 +74,11 @@ public class Constants {
     public static final int POSITION_SEARCH_TAB = 12;
     public static final int POSITION_SINGLE_POST = 15;
     public static final int POSITION_CATEGORY_TAG = 19;
+
+    public static final String ADD_CHAT_MESSAGE_EVENT = "acm";
+    public static final String ADD_CHAT_MESSAGE_CHATROOM_ID = "aa";
+    public static final String ADD_CHAT_MESSAGE_SENDER_NAME = "aswsz";
+    public static final String ADD_CHAT_MESSAGE_SENDER_NUMBER = "adwqdc";
+    public static final String ADD_CHAT_MESSAGE_MESSAGE = "da";
+    public static final String ADD_CHAT_MESSAGE_TIMESTAMP = "dc";
 }

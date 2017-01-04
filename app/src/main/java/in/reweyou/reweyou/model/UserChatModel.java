@@ -19,6 +19,10 @@ public class UserChatModel {
         return id;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getMessage() {
         return message;
     }
@@ -29,6 +33,10 @@ public class UserChatModel {
 
     public String getReceiver() {
         return receiver;
+    }
+
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
     }
 
     public String getSender() {
@@ -42,6 +50,10 @@ public class UserChatModel {
     public String getTime() {
 
         return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 
     public boolean getSending() {

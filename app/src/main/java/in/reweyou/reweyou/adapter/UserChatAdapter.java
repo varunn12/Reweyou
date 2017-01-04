@@ -2,6 +2,7 @@ package in.reweyou.reweyou.adapter;
 
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import in.reweyou.reweyou.model.UserChatModel;
  */
 
 public class UserChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private static final String TAG = UserChatAdapter.class.getSimpleName();
     private final int VIEW_TYPE_RECEIVER = 2;
     private final int VIEW_TYPE_SENDER = 3;
     private final int VIEW_TYPE_DATE = 5;
@@ -32,6 +34,7 @@ public class UserChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Log.d(TAG, "onCreateViewHolder: called");
         if (viewType == VIEW_TYPE_SENDER)
             return new ViewHolder2(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_user_chat_self, parent, false));
         else if (viewType == VIEW_TYPE_RECEIVER)
@@ -44,6 +47,7 @@ public class UserChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        Log.d(TAG, "onBindViewHolder: called");
         if (holder instanceof ViewHolder2) {
             if (list.get(position) instanceof UserChatModel) {
                 ((ViewHolder2) holder).textView.setText(((UserChatModel) list.get(position)).getMessage());
@@ -88,12 +92,15 @@ public class UserChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public void add(UserChatModel userChatModel) {
         list.add(userChatModel);
+        Log.d(TAG, "add: called" + userChatModel.getSender());
         notifyItemInserted(list.size() - 1);
     }
 
     @Override
     public int getItemViewType(int position) {
+        Log.d(TAG, "getItemViewType: called");
         if (list.get(position) instanceof UserChatModel) {
+            Log.d(TAG, "getItemViewType: sender" + ((UserChatModel) list.get(position)).getSender());
             if (((UserChatModel) list.get(position)).getSender().equals(session.getMobileNumber()))
                 return VIEW_TYPE_SENDER;
             else return VIEW_TYPE_RECEIVER;

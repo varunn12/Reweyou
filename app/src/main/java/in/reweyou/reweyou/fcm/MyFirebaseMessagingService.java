@@ -3,9 +3,14 @@ package in.reweyou.reweyou.fcm;
 /**
  * Created by Reweyou on 10/14/2016.
  */
+
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -17,11 +22,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import in.reweyou.reweyou.MyProfile;
+import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.SinglePostActivity;
+import in.reweyou.reweyou.UserChat;
+import in.reweyou.reweyou.utils.Constants;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = MyFirebaseMessagingService.class.getSimpleName();
+    private static final String NOTI_TYPE_CHAT = "chat";
 
     private NotificationUtils notificationUtils;
 
@@ -61,7 +70,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             // play notification sound
             NotificationUtils notificationUtils = new NotificationUtils(getApplicationContext());
             notificationUtils.playNotificationSound();
-        }else{
+        } else {
             // If the app is in background, firebase itself handles the notification
         }
     }
@@ -78,7 +87,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             String imageUrl = data.getString("image");
             String timestamp = data.getString("timestamp");
             JSONObject payload = data.getJSONObject("payload");
-            String postid=payload.getString("postid");
+            String postid = payload.getString("postid");
 
 
             Log.e(TAG, "title: " + title);
@@ -88,14 +97,47 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Log.e(TAG, "imageUrl: " + imageUrl);
             Log.e(TAG, "timestamp: " + timestamp);
 
-            if (!NotificationUtils.isAppIsInBackground(getApplicationContext())) {
+            if (postid.equals(NOTI_TYPE_CHAT)) {
+
+                if (UserChat.userChatActivityOpen) {
+                    Intent intent = new Intent(Constants.ADD_CHAT_MESSAGE_EVENT);
+
+                    // intent.putExtra(Constants.ADD_CHAT_MESSAGE_SENDER_NUMBER, payload.getString("sender_number"));
+                    intent.putExtra(Constants.ADD_CHAT_MESSAGE_MESSAGE, message);
+                    intent.putExtra(Constants.ADD_CHAT_MESSAGE_TIMESTAMP, timestamp);
+                    intent.putExtra(Constants.ADD_CHAT_MESSAGE_CHATROOM_ID, payload.getString("chatroom_id"));
+
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+                } else {
+                    Log.w(TAG, "handleDataMessage: chat activity is background");
+                    Intent i = new Intent(this, UserChat.class);
+
+                    i.putExtra(Constants.ADD_CHAT_MESSAGE_SENDER_NAME, payload.getString("sender_name"));
+                    i.putExtra(Constants.ADD_CHAT_MESSAGE_CHATROOM_ID, payload.getString("chatroom_id"));
+                    // i.putExtra(Constants.ADD_CHAT_MESSAGE_SENDER_NUMBER, payload.getString("sender_number"));
+                    i.putExtra(Constants.ADD_CHAT_MESSAGE_SENDER_NUMBER, "9711188949");
+
+                    PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                    NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext())
+                            .setSmallIcon(R.drawable.logo_plain)
+                            .setContentIntent(pendingIntent)
+                            .setAutoCancel(true)
+                            .setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(), R.mipmap.ic_launcher))
+                            .setContentTitle(payload.getString("sender_name") + " messaged you")
+                            .setContentText(message);
+
+                    NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+                    notificationManager.notify(100, mBuilder.build());
+                }
+
+            } else if (!NotificationUtils.isAppIsInBackground(getApplicationContext())) {
                 // app is in foreground, broadcast the push message
-                if(postid.equals("0"))
-                {
+                if (postid.equals("0")) {
                     Intent resultIntent = new Intent(this, MyProfile.class);
                     showNotificationMessage(getApplicationContext(), title, message, timestamp, resultIntent);
-                }
-                else {
+                } else {
                     Bundle bundle = new Bundle();
                     bundle.putString("postid", postid);
                     Intent resultIntent = new Intent(this, SinglePostActivity.class);
@@ -114,21 +156,20 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 if (postid.equals("0")) {
                     Intent resultIntent = new Intent(this, MyProfile.class);
                     showNotificationMessage(getApplicationContext(), title, message, timestamp, resultIntent);
-                } else
-                {
-                    Bundle bundle = new Bundle();
-                bundle.putString("postid", postid);
-                    Intent resultIntent = new Intent(this, SinglePostActivity.class);
-                resultIntent.putExtras(bundle);
-                resultIntent.setAction(Long.toString(System.currentTimeMillis()));
-                // check for image attachment
-                if (TextUtils.isEmpty(imageUrl)) {
-                    showNotificationMessage(getApplicationContext(), title, message, timestamp, resultIntent);
                 } else {
-                    // image is present, show notification with image
-                    showNotificationMessageWithBigImage(getApplicationContext(), title, message, timestamp, resultIntent, imageUrl);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("postid", postid);
+                    Intent resultIntent = new Intent(this, SinglePostActivity.class);
+                    resultIntent.putExtras(bundle);
+                    resultIntent.setAction(Long.toString(System.currentTimeMillis()));
+                    // check for image attachment
+                    if (TextUtils.isEmpty(imageUrl)) {
+                        showNotificationMessage(getApplicationContext(), title, message, timestamp, resultIntent);
+                    } else {
+                        // image is present, show notification with image
+                        showNotificationMessageWithBigImage(getApplicationContext(), title, message, timestamp, resultIntent, imageUrl);
+                    }
                 }
-            }
             }
         } catch (JSONException e) {
             Log.e(TAG, "Json Exception: " + e.getMessage());

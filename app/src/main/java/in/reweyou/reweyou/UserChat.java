@@ -1,9 +1,14 @@
 package in.reweyou.reweyou;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -37,10 +42,16 @@ import in.reweyou.reweyou.adapter.UserChatAdapter;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.classes.VerticalSpaceItemDecorator;
 import in.reweyou.reweyou.model.UserChatModel;
+import in.reweyou.reweyou.utils.Constants;
+
+import static in.reweyou.reweyou.utils.Constants.ADD_CHAT_MESSAGE_CHATROOM_ID;
+import static in.reweyou.reweyou.utils.Constants.ADD_CHAT_MESSAGE_SENDER_NAME;
+import static in.reweyou.reweyou.utils.Constants.ADD_CHAT_MESSAGE_SENDER_NUMBER;
 
 public class UserChat extends AppCompatActivity {
 
     private static final String TAG = UserChat.class.getName();
+    public static boolean userChatActivityOpen;
     private RecyclerView recyclerView;
     private UserChatAdapter userChatAdapter;
     private EditText editBox;
@@ -53,7 +64,31 @@ public class UserChat extends AppCompatActivity {
     private String chatroomid = "abc";
     private String othernumber;
     private String othername;
+    private BroadcastReceiver addMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try {
+                String sendernumber = intent.getStringExtra(Constants.ADD_CHAT_MESSAGE_SENDER_NUMBER);
+                String message = intent.getStringExtra(Constants.ADD_CHAT_MESSAGE_MESSAGE);
+                String timestamp = intent.getStringExtra(Constants.ADD_CHAT_MESSAGE_TIMESTAMP);
+                String chatroomid = intent.getStringExtra(ADD_CHAT_MESSAGE_CHATROOM_ID);
 
+                if (chatroomid.equals(UserChat.this.chatroomid)) {
+                    UserChatModel userChatModel = new UserChatModel();
+                    userChatModel.setMessage(message);
+                    userChatModel.setSender("9711188949");
+                    userChatModel.setTime(timestamp);
+                    userChatModel.setReceiver(session.getMobileNumber());
+
+                    addMessage(userChatModel);
+                } else
+                    Log.w(TAG, "onReceive: message was from anotherchat");
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,10 +109,9 @@ public class UserChat extends AppCompatActivity {
 
 
         try {
-            chatroomid = getIntent().getStringExtra("chatroomid");
-            othernumber = getIntent().getStringExtra("othernumber");
-            othername = getIntent().getStringExtra("othername");
-            Log.d(TAG, "onCreate: othername" + othername);
+            othername = getIntent().getStringExtra(ADD_CHAT_MESSAGE_SENDER_NAME);
+            chatroomid = getIntent().getStringExtra(ADD_CHAT_MESSAGE_CHATROOM_ID);
+            othernumber = getIntent().getStringExtra(ADD_CHAT_MESSAGE_SENDER_NUMBER);
             getSupportActionBar().setTitle(othername);
         } catch (Exception e) {
             Log.w(TAG, "onCreate: chatroomid is null");
@@ -368,6 +402,32 @@ public class UserChat extends AppCompatActivity {
                     }
                 });
 
+    }
+
+    public void addMessage(UserChatModel userChatModel) {
+        userChatAdapter.add(userChatModel);
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                recyclerView.smoothScrollToPosition(userChatAdapter.getItemCount() - 1);
+            }
+        });
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        userChatActivityOpen = true;
+        LocalBroadcastManager.getInstance(this).registerReceiver(addMessageReceiver,
+                new IntentFilter(Constants.ADD_CHAT_MESSAGE_EVENT));
+    }
+
+    @Override
+    protected void onStop() {
+        userChatActivityOpen = false;
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(addMessageReceiver);
+        super.onStop();
     }
 
 
