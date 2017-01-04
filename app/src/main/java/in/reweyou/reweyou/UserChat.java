@@ -61,11 +61,23 @@ public class UserChat extends AppCompatActivity {
         setContentView(R.layout.activity_user_chat);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
 
         try {
             chatroomid = getIntent().getStringExtra("chatroomid");
             othernumber = getIntent().getStringExtra("othernumber");
             othername = getIntent().getStringExtra("othername");
+            toolbar.setTitle(othername);
         } catch (Exception e) {
             Log.w(TAG, "onCreate: chatroomid is null");
         }
