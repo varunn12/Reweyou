@@ -78,11 +78,7 @@ public class HttpService extends Service {
     }
 
 
-    /**
-     * Posting the OTP to server and activating the user
-     *
-     * @param
-     */
+
     public void verifyOtp(final String otp) {
 
         unregisterReceiver(mybroadcast);
@@ -180,9 +176,8 @@ public class HttpService extends Service {
 
         // Starting TokenTest
         Intent i = new Intent(this, WelcomeActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i); // Call once you redirect to another activity
         stopSelf();
 
