@@ -323,6 +323,7 @@ public class UserChat extends AppCompatActivity {
         hashMap.put("r_name", othername);
         hashMap.put("message", message);
 
+
         AndroidNetworking.post("https://www.reweyou.in/reweyou/chatroom.php")
                 .addBodyParameter(hashMap)
                 .setTag("test")
