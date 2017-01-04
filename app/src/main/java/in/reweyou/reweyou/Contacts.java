@@ -115,7 +115,7 @@ public class Contacts extends AppCompatActivity {
                                             if (contactList.get(j).getNumber().equals(userChatThreadModel.getSender())) {
                                                 userChatThreadModel.setPic(contactList.get(j).getPic());
                                                 userChatThreadModel.setshowNumber(userChatThreadModel.getSender());
-                                                userChatThreadModel.setname(userChatThreadModel.getReceiver_name());
+                                                userChatThreadModel.setname(userChatThreadModel.getSender_name());
 
 
                                                 break;
