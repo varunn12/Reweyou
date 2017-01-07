@@ -171,7 +171,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".UserProfile"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/DialogActivity" />
         <activity
             android:name=".Topic"
             android:screenOrientation="portrait" />

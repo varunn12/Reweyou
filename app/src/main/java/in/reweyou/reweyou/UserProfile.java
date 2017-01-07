@@ -2,15 +2,12 @@ package in.reweyou.reweyou;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -49,7 +46,6 @@ import java.util.Map;
 
 import in.reweyou.reweyou.adapter.FeedAdapter;
 import in.reweyou.reweyou.classes.ConnectionDetector;
-import in.reweyou.reweyou.classes.DividerItemDecoration;
 import in.reweyou.reweyou.classes.RequestHandler;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.model.FeedModel;
@@ -75,18 +71,9 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_profile);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        setContentView(R.layout.activity_user_profile);
 
 
         //initCollapsingToolbar();
@@ -94,21 +81,8 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         i = bundle.getString("myData");
         cd = new ConnectionDetector(UserProfile.this);
         session = new UserSessionManager(getApplicationContext());
-        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
-        progressBar.setVisibility(View.VISIBLE);
-        isInternetPresent = cd.isConnectingToInternet();
 
-       /* noInternet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(isInternetPresent) {
-                    progressBar.setVisibility(View.VISIBLE);
-                    new JSONTask().execute(i);
-                    new JSONTasks().execute(tag, i);
-                    button(i);
-                }
-            }
-        });*/
+
         Name = (TextView) findViewById(R.id.Name);
         Reports = (TextView) findViewById(R.id.Reports);
         Info = (TextView) findViewById(R.id.Info);
@@ -127,24 +101,13 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         button = (Button) findViewById(R.id.button);
         profilepic = (ImageView) findViewById(R.id.profilepic);
 
-
-        button.setVisibility(View.GONE);
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecoration(ContextCompat.getDrawable(this, R.drawable.line));
-        recyclerView.addItemDecoration(dividerItemDecoration);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-
         //Progress bar
-        tag = "Random";
         button.setOnClickListener(this);
-        if (isInternetPresent) {
-            new JSONTask().execute(i);
-            // new JSONTasks().execute(tag, i);
-            button(i);
-        } else {
-            Toast.makeText(this, "You are not connected to Internet", Toast.LENGTH_LONG).show();
-        }
+
+        new JSONTask().execute(i);
+        // new JSONTasks().execute(tag, i);
+        button(i);
+
 
     }
 
@@ -152,7 +115,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.button:
-                final int status = (Integer) button.getTag();
                 reading(i);
                 break;
 
@@ -259,38 +221,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         requestQueue.add(stringRequest);
     }
 
-    /* Initializing collapsing toolbar
-    * Will show and hide the toolbar title on scroll
-    */
-    private void initCollapsingToolbar() {
-        final CollapsingToolbarLayout collapsingToolbar =
-                (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        collapsingToolbar.setTitle(" ");
-        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
-        appBarLayout.setExpanded(true);
-
-        // hiding & showing the title when toolbar expanded & collapsed
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            boolean isShow = false;
-            int scrollRange = -1;
-
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.getTotalScrollRange();
-                }
-                if (scrollRange + verticalOffset == 0) {
-                    collapsingToolbar.setTitle(getString(R.string.app_name));
-
-
-                    isShow = true;
-                } else if (isShow) {
-                    collapsingToolbar.setTitle(" ");
-                    isShow = false;
-                }
-            }
-        });
-    }
 
     public class JSONTask extends AsyncTask<String, String, List<String>> {
 
@@ -369,20 +299,24 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         @Override
         protected void onPostExecute(List<String> result) {
             super.onPostExecute(result);
-            if (result != null) {
-                if (!result.isEmpty()) {
-                    Name.setText(result.get(0));
-                    Reports.setText(result.get(1));
-                    Info.setText(result.get(3));
-                    // imageLoader.displayImage(result.get(2), profilepic, option);
-                    Glide.with(getApplicationContext()).load(result.get(2)).error(R.drawable.download).into(profilepic);
-                    user = result.get(4);
-                    Readers.setText(result.get(5));
+            try {
+                if (result != null) {
+                    if (!result.isEmpty()) {
+                        Name.setText(result.get(0));
+                        Reports.setText(result.get(1));
+                        Info.setText(result.get(3));
+
+                        Glide.with(UserProfile.this).load(result.get(2)).dontAnimate().error(R.drawable.download).into(profilepic);
+                        user = result.get(4);
+                        Readers.setText(result.get(5));
+                    }
+
+                } else {
+                    Toast.makeText(getApplicationContext(), "Couldn't fetch data", Toast.LENGTH_LONG).show();
+
                 }
-
-            } else {
-                Toast.makeText(getApplicationContext(), "Couldn't fetch data", Toast.LENGTH_LONG).show();
-
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
             //    progressBar.setVisibility(View.GONE);
@@ -474,5 +408,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
             //need to set data to the list
         }
     }
+
 
 }
