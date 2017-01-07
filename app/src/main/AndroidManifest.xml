@@ -212,14 +212,16 @@
         <activity
             android:name=".Contacts"
             android:label="@string/title_activity_contacts"
-
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".UserChat"
             android:label="@string/title_activity_user_chat"
-
             android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Invite"
+            android:label="@string/title_activity_invite"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

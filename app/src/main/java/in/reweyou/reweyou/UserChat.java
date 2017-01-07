@@ -15,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -75,6 +76,7 @@ public class UserChat extends AppCompatActivity {
                 String message = intent.getStringExtra(Constants.ADD_CHAT_MESSAGE_MESSAGE);
                 String timestamp = intent.getStringExtra(Constants.ADD_CHAT_MESSAGE_TIMESTAMP);
                 String chatroomid = intent.getStringExtra(ADD_CHAT_MESSAGE_CHATROOM_ID);
+                String postid = intent.getStringExtra("postid");
 
                 if (chatroomid.equals(UserChat.this.chatroomid)) {
                     UserChatModel userChatModel = new UserChatModel();
@@ -82,6 +84,7 @@ public class UserChat extends AppCompatActivity {
                     userChatModel.setSender(sendernumber);
                     userChatModel.setTime(timestamp);
                     userChatModel.setReceiver(session.getMobileNumber());
+                    userChatModel.setPostid(postid);
 
                     addMessage(userChatModel);
                 } else
@@ -93,6 +96,7 @@ public class UserChat extends AppCompatActivity {
         }
     };
     private LinearLayout empty;
+    private String postid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,6 +120,7 @@ public class UserChat extends AppCompatActivity {
             othername = getIntent().getStringExtra(ADD_CHAT_MESSAGE_SENDER_NAME);
             chatroomid = getIntent().getStringExtra(ADD_CHAT_MESSAGE_CHATROOM_ID);
             othernumber = getIntent().getStringExtra(ADD_CHAT_MESSAGE_SENDER_NUMBER);
+            postid = getIntent().getStringExtra("postid");
             getSupportActionBar().setTitle(othername);
         } catch (Exception e) {
             Log.w(TAG, "onCreate: chatroomid is null");
@@ -161,7 +166,7 @@ public class UserChat extends AppCompatActivity {
                     if (userChatAdapter == null) {
                         final List<Object> list = new ArrayList<>();
 
-                        userChatAdapter = new UserChatAdapter(list, session);
+                        userChatAdapter = new UserChatAdapter(list, session, UserChat.this);
                         recyclerView.setAdapter(userChatAdapter);
                         userChatAdapter.add(userChatModel);
                     } else userChatAdapter.add(userChatModel);
@@ -255,10 +260,35 @@ public class UserChat extends AppCompatActivity {
 
 
                                 Log.d(TAG, "onResponse: sizzz " + list.size());
-                                userChatAdapter = new UserChatAdapter(list, session);
-                                recyclerView.setAdapter(userChatAdapter);
+                                if (postid != null) {
+                                    final UserChatModel userChatModel = new UserChatModel();
+                                    userChatModel.setMessage(editBox.getText().toString());
+                                    userChatModel.setSender(session.getMobileNumber());
+                                    userChatModel.setSending(true);
+                                    userChatModel.setPostid(postid);
+                                    list.add(userChatModel);
+                                }
 
-                            } catch (Exception e) {
+                                userChatAdapter = new UserChatAdapter(list, session, UserChat.this);
+                                recyclerView.setAdapter(userChatAdapter);
+                                recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                                    @Override
+                                    public void onGlobalLayout() {
+                                        Log.d(TAG, "onGlobalLayout: callll");
+
+                                        if (postid != null) {
+                                            sendMessage("Shared a post");
+                                        }
+
+
+                                    }
+                                });
+
+
+                            } catch (
+                                    Exception e)
+
+                            {
                                 e.printStackTrace();
                             }
                         }
@@ -360,7 +390,10 @@ public class UserChat extends AppCompatActivity {
                             }
                         }
                     });
-        } catch (JSONException e) {
+        } catch (
+                JSONException e)
+
+        {
             e.printStackTrace();
         }
     }
@@ -374,6 +407,8 @@ public class UserChat extends AppCompatActivity {
         hashMap.put("s_name", session.getUsername());
         hashMap.put("r_name", othername);
         hashMap.put("message", message);
+        if (postid != null)
+            hashMap.put("postid", postid);
 
 
         AndroidNetworking.post("https://www.reweyou.in/reweyou/chatroom.php")
@@ -385,6 +420,7 @@ public class UserChat extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         try {
+                            postid = null;
                             Log.d(TAG, "onResponse: " + response);
                             if (response.equals("sent")) {
 
@@ -409,6 +445,7 @@ public class UserChat extends AppCompatActivity {
                     public void onError(ANError anError) {
 
                         try {
+                            postid = null;
                             //Toast.makeText(UserChat.this, "an error occured", Toast.LENGTH_SHORT).show();
                             Log.d(TAG, "onError: " + anError.getResponse());
                             userChatAdapter.changestateofsendingmessage(false);

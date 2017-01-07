@@ -6,6 +6,7 @@
         android:color="@color/greylight" />
     <corners
 
+        android:bottomLeftRadius="16dp"
         android:bottomRightRadius="16dp"
         android:topRightRadius="16dp" />
 

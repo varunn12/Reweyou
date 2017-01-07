@@ -3,13 +3,12 @@ package in.reweyou.reweyou.model;
 import android.text.format.DateUtils;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 import static android.text.format.DateUtils.getRelativeTimeSpanString;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_IMAGE;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_VIDEO;
+import static in.reweyou.reweyou.utils.Constants.dfs;
 
 /**
  * Created by Reweyou on 10/5/2015.
@@ -17,7 +16,6 @@ import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_VIDEO;
 
 public class FeedModel {
 
-    private SimpleDateFormat dfs = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss a", Locale.US);
     private String name;
     private String number;
     private String head;
@@ -86,7 +84,6 @@ public class FeedModel {
             try {
                 dates = dfs.parse(date);
                 long epochs = dates.getTime();
-                //   Log.e("Time", String.valueOf(epochs));
                 CharSequence timePassedString = getRelativeTimeSpanString(epochs, System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS);
                 return (String) timePassedString;
             } catch (ParseException e) {

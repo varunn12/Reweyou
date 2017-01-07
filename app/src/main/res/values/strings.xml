@@ -69,5 +69,6 @@
     <string name="title_activity_video_display">VideoDisplay</string>
     <string name="title_activity_contacts">Contacts</string>
     <string name="title_activity_user_chat">UserChat</string>
+    <string name="title_activity_invite">Invite</string>
 
 </resources>

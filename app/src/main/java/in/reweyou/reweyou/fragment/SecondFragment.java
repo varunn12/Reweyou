@@ -28,8 +28,7 @@ import com.android.volley.toolbox.Volley;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.AnalyticsListener;
-import com.androidnetworking.interfaces.ParsedRequestListener;
+import com.androidnetworking.interfaces.JSONArrayRequestListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -37,6 +36,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -83,6 +83,7 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
     private boolean dataFetched;
     private Gson gson = new Gson();
     private HashMap<String, String> bodyHashMap;
+    private HashMap<String, String> data;
 
     public SecondFragment() {
     }
@@ -272,28 +273,72 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
     private void makeRequest() {
         Log.d(TAG, "makeRequest: called");
 
-        HashMap<String, String> data = getBodyHashMap();
+        data = getBodyHashMap();
 
+        try {
+            JSONArray jsonArray = new JSONArray(agetDataa(position));
+            Type listType = new TypeToken<List<FeedModel>>() {
+            }.getType();
+            List<FeedModel> myModelList = gson.fromJson(jsonArray.toString(), listType);
+            onfetchResponse(myModelList, false);
 
-        AndroidNetworking.get(getUrl())
+        } catch (Exception e) {
+            e.printStackTrace();
+            AndroidNetworking.post(getUrl())
+                    .addBodyParameter(data)
+                    .setTag("test")
+                    .setPriority(Priority.IMMEDIATE)
+                    .build()
+                    .getAsJSONArray(new JSONArrayRequestListener() {
+                        @Override
+                        public void onResponse(JSONArray response) {
+
+                            savedata(response.toString(), position);
+                            try {
+                                Type listType = new TypeToken<List<FeedModel>>() {
+                                }.getType();
+                                List<FeedModel> myModelList = gson.fromJson(response.toString(), listType);
+                                onfetchResponse(myModelList, false);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                if (isAdded())
+                                    Toast.makeText(mContext, "couldn't connect", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onError(ANError anError) {
+
+                        }
+                    });
+        }
+       /* AndroidNetworking.get(getUrl())
                 .setTag("test")
                 .setPriority(Priority.HIGH)
                 .getResponseOnlyIfCached()
                 .build()
-                .setAnalyticsListener(new AnalyticsListener() {
+                .getAsJSONArray(new JSONArrayRequestListener() {
                     @Override
-                    public void onReceived(long timeTakenInMillis, long bytesSent, long bytesReceived, boolean isFromCache) {
-                        Log.d(TAG, "onReceived: time: " + timeTakenInMillis + " bytesReceived: " + bytesReceived + " isFromCache: " + isFromCache);
+                    public void onResponse(JSONArray response) {
+                        //savedata(response.toString());
+                        agetDataa();
                     }
-                })
-                .getAsParsed(new TypeToken<List<FeedModel>>() {
+
+                    @Override
+                    public void onError(ANError anError) {
+
+                    }
+                });*/
+                /*.getAsParsed(new TypeToken<List<FeedModel>>() {
                 }, new ParsedRequestListener<List<FeedModel>>() {
                     @Override
                     public void onResponse(List<FeedModel> feedModels) {
-                        // do anything with response
 
                         onfetchResponse(feedModels, false);
 
+                       //savedata(feedModels);
+
+                        agetDataa();
                     }
 
                     @Override
@@ -305,17 +350,10 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
                                 .setPriority(Priority.HIGH)
                                 .getResponseOnlyFromNetwork()
                                 .build()
-                                .setAnalyticsListener(new AnalyticsListener() {
-                                    @Override
-                                    public void onReceived(long timeTakenInMillis, long bytesSent, long bytesReceived, boolean isFromCache) {
-                                        Log.d(TAG, "onReceived2: time: " + timeTakenInMillis + " bytesReceived: " + bytesReceived + " isFromCache: " + isFromCache);
-                                    }
-                                })
                                 .getAsParsed(new TypeToken<List<FeedModel>>() {
                                 }, new ParsedRequestListener<List<FeedModel>>() {
                                     @Override
                                     public void onResponse(List<FeedModel> feedModels) {
-                                        // do anything with response
 
                                         onfetchResponse(feedModels, true);
 
@@ -329,7 +367,16 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
                                     }
                                 });
                     }
-                });
+                });*/
+    }
+
+    private String agetDataa(int position) {
+        return session.getData(position);
+    }
+
+    private void savedata(String feedModels, int position) {
+
+        session.saveData(feedModels, position);
     }
 
     private void onfetchResponse(List<FeedModel> feedModels, boolean flag) {
@@ -377,34 +424,31 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
                     public void onGlobalLayout() {
 
                         Log.d(TAG, "onGlobalLayout: called");
-
-
-                        AndroidNetworking.get(getUrl())
+                        AndroidNetworking.post(getUrl())
+                                .addBodyParameter(data)
                                 .setTag("test")
-                                .setPriority(Priority.HIGH)
-                                .getResponseOnlyFromNetwork()
+                                .setPriority(Priority.IMMEDIATE)
                                 .build()
-                                .setAnalyticsListener(new AnalyticsListener() {
+                                .getAsJSONArray(new JSONArrayRequestListener() {
                                     @Override
-                                    public void onReceived(long timeTakenInMillis, long bytesSent, long bytesReceived, boolean isFromCache) {
-                                        Log.d(TAG, "onReceived1: time: " + timeTakenInMillis + " bytesReceived: " + bytesReceived + " isFromCache: " + isFromCache);
-                                    }
-                                })
-                                .getAsParsed(new TypeToken<List<FeedModel>>() {
-                                }, new ParsedRequestListener<List<FeedModel>>() {
-                                    @Override
-                                    public void onResponse(List<FeedModel> feedModels) {
-                                        // do anything with response
+                                    public void onResponse(JSONArray response) {
 
-                                        onfetchResponse(feedModels, true);
+                                        savedata(response.toString(), position);
+                                        try {
+                                            Type listType = new TypeToken<List<FeedModel>>() {
+                                            }.getType();
 
-
+                                            List<FeedModel> myModelList = gson.fromJson(response.toString(), listType);
+                                            onfetchResponse(myModelList, true);
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                            if (isAdded())
+                                                Toast.makeText(mContext, "couldn't connect", Toast.LENGTH_SHORT).show();
+                                        }
                                     }
 
                                     @Override
                                     public void onError(ANError anError) {
-                                        // handle error
-                                        Log.d(TAG, "onError1: " + anError.getErrorCode());
                                         if (isAdded())
                                             Toast.makeText(mContext, "couldn't connect", Toast.LENGTH_SHORT).show();
                                     }
@@ -414,9 +458,7 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
                         recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     }
                 });
-        } else
-            Log.w(TAG, "onResponse: fragment got detached when setting adapter");
-
+        }
         cacheLoad = false;
 
     }
@@ -498,12 +540,6 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
         else if (topBar != null) {
             topBar.setVisibility(View.VISIBLE);
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        Log.d(TAG, "onDestroy:" + position + " called");
-        super.onDestroy();
     }
 
 

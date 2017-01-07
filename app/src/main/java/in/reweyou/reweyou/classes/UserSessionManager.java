@@ -210,6 +210,15 @@ public class UserSessionManager {
         editor.commit();
     }
 
+    public void saveData(String data, int position) {
+        editor.putString("feed" + position, data);
+        editor.commit();
+    }
+
+    public String getData(int position) {
+        return pref.getString("feed" + position, null);
+    }
+
     public void setAuthToken(String token) {
         editor.putString(KEY_AUTH_TOKEN, token);
         editor.commit();

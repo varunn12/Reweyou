@@ -14,7 +14,7 @@
 
         <item
             android:id="@+id/contacts"
-            android:icon="@drawable/ic_person_primary_24px"
+            android:icon="@drawable/ic_email_black_24px"
             android:title="Inbox" />
 
         <item
@@ -39,6 +39,11 @@
                 android:id="@+id/nav_rate"
                 android:icon="@drawable/ic_star_rate_black_24px"
                 android:title="Rate us" />
+            <!-- <item
+                 android:id="@+id/invite"
+                 android:icon="@drawable/ic_stay_current_portrait_black_24px"
+                 android:title="Invite?" />-->
+
         </menu>
     </item>
 

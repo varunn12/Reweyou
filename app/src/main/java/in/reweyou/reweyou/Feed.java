@@ -717,10 +717,17 @@ public class Feed extends AppCompatActivity {
                         startActivity(leader);
                         overridePendingTransition(0, 0);
                         break;
+                   /* case R.id.invite:
+                        drawerLayout.closeDrawers();
+                        Intent i = new Intent(Feed.this, Invite.class);
+                        startActivity(i);
+                        overridePendingTransition(0, 0);
+                        break;*/
                     case R.id.nav_rate:
                         drawerLayout.closeDrawers();
                         openplaystore();
                         break;
+
                 }
                 return true;
             }
