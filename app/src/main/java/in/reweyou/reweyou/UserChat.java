@@ -217,7 +217,7 @@ public class UserChat extends AppCompatActivity {
                         String previousDate;
 
                         @Override
-                        public void onResponse(JSONArray response) {
+                        public void onResponse(final JSONArray response) {
                             try {
                                 Log.d(TAG, "onResponse: " + response);
 
@@ -275,8 +275,9 @@ public class UserChat extends AppCompatActivity {
                                     @Override
                                     public void onGlobalLayout() {
                                         Log.d(TAG, "onGlobalLayout: callll");
-
+                                        recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                                         if (postid != null) {
+
                                             sendMessage("Shared a post");
                                         }
 

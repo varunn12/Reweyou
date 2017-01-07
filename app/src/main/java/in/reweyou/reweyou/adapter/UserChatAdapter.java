@@ -100,10 +100,18 @@ public class UserChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (payloads.isEmpty())
             super.onBindViewHolder(holder, position, payloads);
         else if (payloads.contains("true")) {
-            ((ViewHolder2) holder).textView.setTextColor(Color.parseColor("#05A8AA"));
+            if (holder instanceof ViewHolder2)
+                ((ViewHolder2) holder).textView.setTextColor(Color.parseColor("#05A8AA"));
+            else if (holder instanceof ViewHolder)
+                ((ViewHolder) holder).textView.setTextColor(Color.parseColor("#05A8AA"));
+
 
         } else if (payloads.contains("false")) {
-            ((ViewHolder2) holder).fail.setVisibility(View.VISIBLE);
+            if (holder instanceof ViewHolder2)
+                ((ViewHolder2) holder).fail.setVisibility(View.VISIBLE);
+            else if (holder instanceof ViewHolder)
+                ((ViewHolder) holder).textView.setTextColor(Color.parseColor("#05A8AA"));
+
         }
     }
 
