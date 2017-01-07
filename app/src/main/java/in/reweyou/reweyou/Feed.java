@@ -525,9 +525,10 @@ public class Feed extends AppCompatActivity {
         if (doubleBackToExitPressedOnce) {
             finish();
         }
+        if (!doubleBackToExitPressedOnce)
+            Toast.makeText(this, "Press again to exit.", Toast.LENGTH_SHORT).show();
 
         this.doubleBackToExitPressedOnce = true;
-        Toast.makeText(this, "Press again to exit.", Toast.LENGTH_SHORT).show();
 
         new Handler().postDelayed(new Runnable() {
 
