@@ -16,9 +16,11 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidnetworking.AndroidNetworking;
@@ -66,7 +68,7 @@ public class UserChat extends AppCompatActivity {
     private SimpleDateFormat todayDateFormat = new SimpleDateFormat("hh:mm a", Locale.US);
     private SimpleDateFormat previousDateFormat = new SimpleDateFormat("dd MMM hh:mm a", Locale.US);
     private SimpleDateFormat yesterdayDateFormat = new SimpleDateFormat("hh:mm a", Locale.US);
-    private String chatroomid = "abc";
+    private String chatroomid;
     private String othernumber;
     private String othername;
     private BroadcastReceiver addMessageReceiver = new BroadcastReceiver() {
@@ -103,6 +105,28 @@ public class UserChat extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_chat);
+        session = new UserSessionManager(UserChat.this);
+
+        LinearLayout inviteConatiner = (LinearLayout) findViewById(R.id.invite_container);
+        Button invitebutton = (Button) findViewById(R.id.btnInvite);
+        TextView invitename = (TextView) findViewById(R.id.inname);
+        invitebutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    Intent i = new Intent(Intent.ACTION_SEND);
+                    i.setType("text/plain");
+                    i.putExtra(Intent.EXTRA_SUBJECT, "Reweyou");
+                    String sAux = session.getUsername() + " has invite you to join Reweyou.\n\n";
+                    sAux = sAux + "Download app: https://play.google.com/store/apps/details?id=in.reweyou.reweyou";
+                    i.putExtra(Intent.EXTRA_TEXT, sAux);
+                    startActivity(Intent.createChooser(i, "choose one"));
+                } catch (Exception e) {
+                    //e.toString();
+                    e.printStackTrace();
+                }
+            }
+        });
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -121,12 +145,14 @@ public class UserChat extends AppCompatActivity {
             othername = getIntent().getStringExtra(ADD_CHAT_MESSAGE_SENDER_NAME);
             chatroomid = getIntent().getStringExtra(ADD_CHAT_MESSAGE_CHATROOM_ID);
             othernumber = getIntent().getStringExtra(ADD_CHAT_MESSAGE_SENDER_NUMBER);
-
+            if (chatroomid == null) {
+                inviteConatiner.setVisibility(View.VISIBLE);
+                invitename.setText(othername);
+            }
             getSupportActionBar().setTitle(othername);
         } catch (Exception e) {
             Log.w(TAG, "onCreate: chatroomid is null");
         }
-        session = new UserSessionManager(UserChat.this);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,7 +173,7 @@ public class UserChat extends AppCompatActivity {
         recyclerView.setLayoutManager(linearLayoutManager);
 
 
-            getChatList();
+        getChatList();
         //     empty.setVisibility(View.VISIBLE);
 
         editBox = (EditText) findViewById(R.id.editBox);
@@ -488,4 +514,6 @@ public class UserChat extends AppCompatActivity {
     public void onBackPressed() {
         finish();
     }
+
+
 }
