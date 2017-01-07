@@ -9,7 +9,6 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.StandardExceptionParser;
 import com.google.android.gms.analytics.Tracker;
 import com.orm.SugarApp;
-import com.squareup.leakcanary.LeakCanary;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -52,13 +51,13 @@ public class ApplicationClass extends SugarApp {
         AnalyticsTracker.initialize(this);
         AnalyticsTracker.getInstance().get(AnalyticsTracker.Target.APP);
 
-        if (LeakCanary.isInAnalyzerProcess(this)) {
+       /* if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.
             // You should not init your app in this process.
             return;
         }
         LeakCanary.install(this);
-        // Normal app init code...
+        // Normal app init code...*/
 
         final OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
                 .connectTimeout(5, TimeUnit.SECONDS)
