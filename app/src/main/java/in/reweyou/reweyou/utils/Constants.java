@@ -88,4 +88,5 @@ public class Constants {
 
     public static final SimpleDateFormat dfs = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss a", Locale.US);
 
+    public static String suggestpostid;
 }

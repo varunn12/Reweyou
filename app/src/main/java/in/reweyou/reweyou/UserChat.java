@@ -51,6 +51,7 @@ import in.reweyou.reweyou.utils.Constants;
 import static in.reweyou.reweyou.utils.Constants.ADD_CHAT_MESSAGE_CHATROOM_ID;
 import static in.reweyou.reweyou.utils.Constants.ADD_CHAT_MESSAGE_SENDER_NAME;
 import static in.reweyou.reweyou.utils.Constants.ADD_CHAT_MESSAGE_SENDER_NUMBER;
+import static in.reweyou.reweyou.utils.Constants.suggestpostid;
 
 public class UserChat extends AppCompatActivity {
 
@@ -76,7 +77,6 @@ public class UserChat extends AppCompatActivity {
                 String message = intent.getStringExtra(Constants.ADD_CHAT_MESSAGE_MESSAGE);
                 String timestamp = intent.getStringExtra(Constants.ADD_CHAT_MESSAGE_TIMESTAMP);
                 String chatroomid = intent.getStringExtra(ADD_CHAT_MESSAGE_CHATROOM_ID);
-                String postid = intent.getStringExtra("postid");
 
                 if (chatroomid.equals(UserChat.this.chatroomid)) {
                     UserChatModel userChatModel = new UserChatModel();
@@ -84,7 +84,8 @@ public class UserChat extends AppCompatActivity {
                     userChatModel.setSender(sendernumber);
                     userChatModel.setTime(timestamp);
                     userChatModel.setReceiver(session.getMobileNumber());
-                    userChatModel.setPostid(postid);
+                    if (Constants.suggestpostid != null)
+                        userChatModel.setPostid(Constants.suggestpostid);
 
                     addMessage(userChatModel);
                 } else
@@ -96,7 +97,6 @@ public class UserChat extends AppCompatActivity {
         }
     };
     private LinearLayout empty;
-    private String postid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,9 +120,7 @@ public class UserChat extends AppCompatActivity {
             othername = getIntent().getStringExtra(ADD_CHAT_MESSAGE_SENDER_NAME);
             chatroomid = getIntent().getStringExtra(ADD_CHAT_MESSAGE_CHATROOM_ID);
             othernumber = getIntent().getStringExtra(ADD_CHAT_MESSAGE_SENDER_NUMBER);
-            postid = getIntent().getStringExtra("postid");
 
-            Log.w(TAG, "onCreate: postid" + postid);
             getSupportActionBar().setTitle(othername);
         } catch (Exception e) {
             Log.w(TAG, "onCreate: chatroomid is null");
@@ -214,7 +212,6 @@ public class UserChat extends AppCompatActivity {
                         }
                     })
 
-
                     .getAsJSONArray(new JSONArrayRequestListener() {
                         String previousDate;
 
@@ -259,12 +256,12 @@ public class UserChat extends AppCompatActivity {
                                 }
 
 
-                                if (postid != null) {
+                                if (Constants.suggestpostid != null) {
                                     final UserChatModel userChatModel = new UserChatModel();
                                     userChatModel.setMessage(editBox.getText().toString());
                                     userChatModel.setSender(session.getMobileNumber());
                                     userChatModel.setSending(true);
-                                    userChatModel.setPostid(postid);
+                                    userChatModel.setPostid(Constants.suggestpostid);
                                     list.add(userChatModel);
                                 }
 
@@ -275,8 +272,7 @@ public class UserChat extends AppCompatActivity {
                                     public void onGlobalLayout() {
                                         Log.d(TAG, "onGlobalLayout: callll");
                                         recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                                        if (postid != null) {
-
+                                        if (Constants.suggestpostid != null) {
                                             sendMessage("Shared a post");
                                         }
 
@@ -406,10 +402,10 @@ public class UserChat extends AppCompatActivity {
         hashMap.put("s_name", session.getUsername());
         hashMap.put("r_name", othername);
         hashMap.put("message", message);
-        if (postid != null)
-            hashMap.put("postid", postid);
+        if (Constants.suggestpostid != null)
+            hashMap.put("postid", Constants.suggestpostid);
 
-        postid = null;
+        suggestpostid = null;
         AndroidNetworking.post("https://www.reweyou.in/reweyou/chatroom.php")
                 .addBodyParameter(hashMap)
                 .setTag("test")

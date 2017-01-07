@@ -108,7 +108,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     intent.putExtra(Constants.ADD_CHAT_MESSAGE_TIMESTAMP, timestamp);
                     intent.putExtra(Constants.ADD_CHAT_MESSAGE_CHATROOM_ID, payload.getString("chatroom_id"));
                     if (payload.has("suggestid"))
-                        intent.putExtra("postid", payload.getString("suggestid"));
+                        Constants.suggestpostid = payload.getString("suggestid");
+
+
 
 
                     LocalBroadcastManager.getInstance(this).sendBroadcast(intent);

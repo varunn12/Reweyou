@@ -931,8 +931,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             sendmessage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Constants.suggestpostid = (((FeedModel) messagelist.get(getAdapterPosition())).getPostId());
                     Intent i = new Intent(mContext, Contacts.class);
-                    i.putExtra("postid", (((FeedModel) messagelist.get(getAdapterPosition())).getPostId()));
                     mContext.startActivity(i);
                 }
             });
