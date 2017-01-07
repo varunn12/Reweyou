@@ -159,6 +159,8 @@ public class UserChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                         Intent i = new Intent(mContext, SinglePostActivity.class);
                         i.putExtra("postid", ((UserChatModel) list.get(getAdapterPosition())).getPostid());
+                        i.putExtra("fromchat", true);
+
                         mContext.startActivity(i);
                     }
                 }
@@ -181,6 +183,7 @@ public class UserChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     if (!((UserChatModel) list.get(getAdapterPosition())).getPostid().isEmpty()) {
                         Intent i = new Intent(mContext, SinglePostActivity.class);
                         i.putExtra("postid", ((UserChatModel) list.get(getAdapterPosition())).getPostid());
+                        i.putExtra("fromchat", true);
                         mContext.startActivity(i);
                     }
                 }
