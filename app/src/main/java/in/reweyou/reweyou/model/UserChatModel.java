@@ -7,11 +7,12 @@ package in.reweyou.reweyou.model;
 public class UserChatModel {
 
 
-    String id;
-    String message;
-    String sender;
-    String receiver;
-    String time;
+    private String id;
+    private String postid;
+    private String message;
+    private String sender;
+    private String receiver;
+    private String time;
     private boolean sending;
     private boolean failed;
 
@@ -70,5 +71,13 @@ public class UserChatModel {
 
     public void setFailed(boolean failed) {
         this.failed = failed;
+    }
+
+    public String getPostid() {
+        return postid;
+    }
+
+    public void setPostid(String postid) {
+        this.postid = postid;
     }
 }

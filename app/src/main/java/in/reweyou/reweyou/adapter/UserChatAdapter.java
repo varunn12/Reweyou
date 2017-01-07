@@ -1,7 +1,10 @@
 package in.reweyou.reweyou.adapter;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +15,8 @@ import android.widget.TextView;
 import java.util.List;
 
 import in.reweyou.reweyou.R;
+import in.reweyou.reweyou.SinglePostActivity;
+import in.reweyou.reweyou.UserChat;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.model.UserChatModel;
 
@@ -21,15 +26,18 @@ import in.reweyou.reweyou.model.UserChatModel;
 
 public class UserChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String TAG = UserChatAdapter.class.getSimpleName();
+    private final String POST_SHARE_MESSAGE = "Have a look at this post";
     private final int VIEW_TYPE_RECEIVER = 2;
     private final int VIEW_TYPE_SENDER = 3;
     private final int VIEW_TYPE_DATE = 5;
     private final List<Object> list;
     private final UserSessionManager session;
+    private final UserChat mContext;
 
-    public UserChatAdapter(List<Object> list, UserSessionManager session) {
+    public UserChatAdapter(List<Object> list, UserSessionManager session, UserChat userChat) {
         this.list = list;
         this.session = session;
+        this.mContext = userChat;
     }
 
     @Override
@@ -50,7 +58,15 @@ public class UserChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         Log.d(TAG, "onBindViewHolder: called");
         if (holder instanceof ViewHolder2) {
             if (list.get(position) instanceof UserChatModel) {
-                ((ViewHolder2) holder).textView.setText(((UserChatModel) list.get(position)).getMessage());
+
+                if (((UserChatModel) list.get(position)).getPostid().isEmpty())
+                    ((ViewHolder2) holder).textView.setText(((UserChatModel) list.get(position)).getMessage());
+                else {
+                    SpannableString content = new SpannableString(POST_SHARE_MESSAGE);
+                    content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+                    ((ViewHolder2) holder).textView.setText(content);
+                }
+
                 if (!((UserChatModel) list.get(position)).getFailed()) {
                     ((ViewHolder2) holder).fail.setVisibility(View.INVISIBLE);
 
@@ -65,7 +81,13 @@ public class UserChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
         } else if (holder instanceof ViewHolder) {
             if (list.get(position) instanceof UserChatModel) {
-                ((ViewHolder) holder).textView.setText(((UserChatModel) list.get(position)).getMessage());
+                if (((UserChatModel) list.get(position)).getPostid().isEmpty())
+                    ((ViewHolder) holder).textView.setText(((UserChatModel) list.get(position)).getMessage());
+                else {
+                    SpannableString content = new SpannableString(POST_SHARE_MESSAGE);
+                    content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+                    ((ViewHolder) holder).textView.setText(content);
+                }
             } else if (list.get(position) instanceof String)
                 ((ViewHolder) holder).textView.setText(((String) list.get(position)));
         }
@@ -103,7 +125,8 @@ public class UserChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             Log.d(TAG, "getItemViewType: sender" + ((UserChatModel) list.get(position)).getSender());
             if (((UserChatModel) list.get(position)).getSender().equals(session.getMobileNumber()))
                 return VIEW_TYPE_SENDER;
-            else return VIEW_TYPE_RECEIVER;
+            else
+                return VIEW_TYPE_RECEIVER;
         } else if (list.get(position) instanceof String) {
             return VIEW_TYPE_DATE;
         } else return super.getItemViewType(position);
@@ -129,17 +152,40 @@ public class UserChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public ViewHolder(View itemView) {
             super(itemView);
             textView = (TextView) itemView.findViewById(R.id.textView);
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!((UserChatModel) list.get(getAdapterPosition())).getPostid().isEmpty()) {
+
+                        Intent i = new Intent(mContext, SinglePostActivity.class);
+                        i.putExtra("postid", ((UserChatModel) list.get(getAdapterPosition())).getPostid());
+                        mContext.startActivity(i);
+                    }
+                }
+            });
+
         }
     }
 
-    public class ViewHolder2 extends RecyclerView.ViewHolder {
+    private class ViewHolder2 extends RecyclerView.ViewHolder {
         private TextView textView;
         private ImageView fail;
 
-        public ViewHolder2(View itemView) {
+        ViewHolder2(View itemView) {
             super(itemView);
             textView = (TextView) itemView.findViewById(R.id.textView);
             fail = (ImageView) itemView.findViewById(R.id.fail);
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!((UserChatModel) list.get(getAdapterPosition())).getPostid().isEmpty()) {
+                        Intent i = new Intent(mContext, SinglePostActivity.class);
+                        i.putExtra("postid", ((UserChatModel) list.get(getAdapterPosition())).getPostid());
+                        mContext.startActivity(i);
+                    }
+                }
+            });
+
         }
     }
 }

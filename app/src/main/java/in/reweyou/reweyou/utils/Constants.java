@@ -1,5 +1,8 @@
 package in.reweyou.reweyou.utils;
 
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 /**
  * Created by master on 1/11/16.
  */
@@ -81,4 +84,8 @@ public class Constants {
     public static final String ADD_CHAT_MESSAGE_SENDER_NUMBER = "adwqdc";
     public static final String ADD_CHAT_MESSAGE_MESSAGE = "da";
     public static final String ADD_CHAT_MESSAGE_TIMESTAMP = "dc";
+
+
+    public static final SimpleDateFormat dfs = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss a", Locale.US);
+
 }

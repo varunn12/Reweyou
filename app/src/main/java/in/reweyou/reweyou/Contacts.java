@@ -40,6 +40,7 @@ public class Contacts extends AppCompatActivity {
     private List<UserChatThreadModel> chatThreadList = new ArrayList<>();
     private RecyclerView recyclerView;
     private UserSessionManager session;
+    private String postid = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +52,11 @@ public class Contacts extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        try {
+            postid = getIntent().getStringExtra("postid");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,7 +150,7 @@ public class Contacts extends AppCompatActivity {
                                     }
                             }
 
-                            UserChatThreadAdapter userChatThreadAdapter = new UserChatThreadAdapter(Contacts.this, chatThreadList, finalMatchContactList, session);
+                            UserChatThreadAdapter userChatThreadAdapter = new UserChatThreadAdapter(Contacts.this, chatThreadList, finalMatchContactList, session, postid);
                             recyclerView.setAdapter(userChatThreadAdapter);
                         } catch (JSONException e) {
                             e.printStackTrace();

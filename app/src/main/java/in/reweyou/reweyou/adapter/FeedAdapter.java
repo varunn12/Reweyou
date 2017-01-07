@@ -60,6 +60,7 @@ import java.util.Map;
 
 import in.reweyou.reweyou.CategoryActivity;
 import in.reweyou.reweyou.Comments1;
+import in.reweyou.reweyou.Contacts;
 import in.reweyou.reweyou.FullImage;
 import in.reweyou.reweyou.LikesActivity;
 import in.reweyou.reweyou.MyCityActivity;
@@ -214,6 +215,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+
+        Log.w(TAG, "onCreateViewHolder: called");
         switch (viewType) {
             case VIEW_TYPE_IMAGE:
                 return new ImageViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_feed_adapter_image, viewGroup, false));
@@ -234,6 +237,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder2, final int position) {
         //Log.d("view", String.valueOf(viewHolder2.getItemViewType()));
+        Log.w(TAG, "onBindViewHolder: called");
         switch (viewHolder2.getItemViewType()) {
             case VIEW_TYPE_LOADING:
                 break;
@@ -881,7 +885,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     private class BaseViewHolder extends RecyclerView.ViewHolder {
-        protected ImageView profilepic, overflow;
+        protected ImageView profilepic, overflow, sendmessage;
         protected TextView headline, upvote, head;
         protected TextView place;
         protected TextView icon;
@@ -912,6 +916,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             reaction = (ImageView) view.findViewById(R.id.comment);
             date = (TextView) view.findViewById(R.id.date);
             overflow = (ImageView) view.findViewById(R.id.overflow);
+            sendmessage = (ImageView) view.findViewById(R.id.action_msg);
             profilepic = (ImageView) view.findViewById(R.id.profilepic);
             from = (TextView) view.findViewById(R.id.from);
             reviews = (TextView) view.findViewById(R.id.reviews);
@@ -923,6 +928,14 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             actions = (RelativeLayout) view.findViewById(R.id.actions);
             menuEdit = (ImageView) view.findViewById(R.id.action_edit);
 
+            sendmessage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(mContext, Contacts.class);
+                    i.putExtra("postid", (((FeedModel) messagelist.get(getAdapterPosition())).getPostId()));
+                    mContext.startActivity(i);
+                }
+            });
 
             menuEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -1200,7 +1213,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     private class LoadingViewHolder extends RecyclerView.ViewHolder {
-        public LoadingViewHolder(View view) {
+        LoadingViewHolder(View view) {
             super(view);
         }
     }
@@ -1208,7 +1221,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private class NewPostViewHolder extends RecyclerView.ViewHolder {
         LinearLayout con;
 
-        public NewPostViewHolder(View view) {
+        NewPostViewHolder(View view) {
             super(view);
             con = (LinearLayout) view.findViewById(R.id.newCon);
             ImageView img = (ImageView) view.findViewById(R.id.pic);
@@ -1272,7 +1285,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
             });
         }
-    }
 
+    }
 
 }

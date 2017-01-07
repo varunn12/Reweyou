@@ -39,10 +39,11 @@ public class UserChatThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private final int VIEWTYPE_CHAT_THREAD = 2;
     private final int VIEWTYPE_CONTACT_GROUP = 4;
     private final int LIST_CHAT_THREAD_LIST_SIZE;
+    private final String postid;
     private List<Object> list = new ArrayList<>();
     private Context context;
 
-    public UserChatThreadAdapter(Contacts contacts, List<UserChatThreadModel> chatThreadList, List<ContactListModel> matchContactList, UserSessionManager session) {
+    public UserChatThreadAdapter(Contacts contacts, List<UserChatThreadModel> chatThreadList, List<ContactListModel> matchContactList, UserSessionManager session, String postid) {
         list.add(VIEWTYPE_ACTIVE_CHATS);
         LIST_CHAT_THREAD_LIST_SIZE = chatThreadList.size() + 1;
         list.addAll(chatThreadList);
@@ -52,6 +53,7 @@ public class UserChatThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         this.session = session;
 
         this.context = contacts;
+        this.postid = postid;
 
     }
 
@@ -125,10 +127,13 @@ public class UserChatThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+
                     Intent i = new Intent(context, UserChat.class);
                     i.putExtra(ADD_CHAT_MESSAGE_CHATROOM_ID, ((UserChatThreadModel) list.get(getAdapterPosition())).getChatroom_id());
                     i.putExtra(ADD_CHAT_MESSAGE_SENDER_NUMBER, ((UserChatThreadModel) list.get(getAdapterPosition())).getshowNumber());
                     i.putExtra(ADD_CHAT_MESSAGE_SENDER_NAME, ((UserChatThreadModel) list.get(getAdapterPosition())).getname());
+                    i.putExtra("postid", postid);
                     context.startActivity(i);
                 }
             });
@@ -156,6 +161,8 @@ public class UserChatThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     // i.putExtra(ADD_CHAT_MESSAGE_CHATROOM_ID, ((UserChatThreadModel) list.get(getAdapterPosition())).getChatroom_id());
                     i.putExtra(ADD_CHAT_MESSAGE_SENDER_NUMBER, ((ContactListModel) list.get(getAdapterPosition())).getNumber());
                     i.putExtra(ADD_CHAT_MESSAGE_SENDER_NAME, ((ContactListModel) list.get(getAdapterPosition())).getName());
+                    i.putExtra("postid", postid);
+
                     context.startActivity(i);
                 }
             });
