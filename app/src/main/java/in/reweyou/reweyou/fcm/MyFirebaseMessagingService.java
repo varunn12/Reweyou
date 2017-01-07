@@ -118,7 +118,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     i.putExtra(Constants.ADD_CHAT_MESSAGE_SENDER_NAME, title);
                     i.putExtra(Constants.ADD_CHAT_MESSAGE_CHATROOM_ID, payload.getString("chatroom_id"));
                     i.putExtra(Constants.ADD_CHAT_MESSAGE_SENDER_NUMBER, payload.getString("sender_name"));
-                    i.putExtra("postid", payload.getString("suggestid"));
+                    if (payload.has("suggestid"))
+                        i.putExtra("postid", payload.getString("suggestid"));
                     //   i.putExtra(Constants.ADD_CHAT_MESSAGE_SENDER_NUMBER, "9711188949");
 
                     PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
