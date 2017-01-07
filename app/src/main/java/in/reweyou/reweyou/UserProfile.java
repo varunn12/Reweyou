@@ -140,7 +140,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         button.setOnClickListener(this);
         if (isInternetPresent) {
             new JSONTask().execute(i);
-            new JSONTasks().execute(tag, i);
+            // new JSONTasks().execute(tag, i);
             button(i);
         } else {
             Toast.makeText(this, "You are not connected to Internet", Toast.LENGTH_LONG).show();
