@@ -473,6 +473,11 @@ public class Feed extends AppCompatActivity {
 
             case R.id.action_search:
                 return true;
+            case R.id.action_message:
+                Intent s = new Intent(Feed.this, Contacts.class);
+                startActivity(s);
+                overridePendingTransition(0, 0);
+                return true;
 
             default:
                 return super.onOptionsItemSelected(item);

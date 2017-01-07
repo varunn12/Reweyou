@@ -5,9 +5,9 @@
     <!-- TODO: Remove or change this placeholder text -->
 
 
-    <string name="tab_1">Local</string>
+    <string name="tab_1">My City</string>
     <string name="tab_4">News</string>
-    <string name="tab_5">Opinion</string>
+    <string name="tab_5">Reading</string>
 
     <string-array name="tabs">
         <item>@string/tab_1</item>

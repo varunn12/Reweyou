@@ -14,7 +14,7 @@
 
         <item
             android:id="@+id/contacts"
-            android:icon="@drawable/ic_email_black_24px"
+            android:icon="@drawable/ic_close_envelope"
             android:title="Inbox" />
 
         <item
