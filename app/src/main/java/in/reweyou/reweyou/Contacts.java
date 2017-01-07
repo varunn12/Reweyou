@@ -192,6 +192,11 @@ public class Contacts extends AppCompatActivity {
         // getContacts();
     }
 
+    @Override
+    public void onBackPressed() {
+        finish();
+        overridePendingTransition(0, 0);
+    }
 
     private class FetchContacts extends AsyncTask<Void, Void, Integer> {
 
