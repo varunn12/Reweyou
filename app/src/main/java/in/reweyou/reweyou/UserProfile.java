@@ -89,7 +89,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         });
 
 
-        initCollapsingToolbar();
+        //initCollapsingToolbar();
         Bundle bundle = getIntent().getExtras();
         i = bundle.getString("myData");
         cd = new ConnectionDetector(UserProfile.this);
