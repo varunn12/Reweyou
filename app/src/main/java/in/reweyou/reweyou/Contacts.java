@@ -35,6 +35,7 @@ public class Contacts extends AppCompatActivity {
 
     private String TAG = Contacts.class.getSimpleName();
     private List<String> matchContactList = new ArrayList<>();
+    private List<String> tempContactList = new ArrayList<>();
     private List<ContactListModel> contactList = new ArrayList<>();
     private List<ContactListModel> finalMatchContactList = new ArrayList<>();
     private Gson gson = new Gson();
@@ -51,7 +52,6 @@ public class Contacts extends AppCompatActivity {
         getSupportActionBar().setTitle("Inbox");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-
 
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -109,6 +109,7 @@ public class Contacts extends AppCompatActivity {
                                                 userChatThreadModel.setPic(contactList.get(j).getPic());
                                                 userChatThreadModel.setshowNumber(userChatThreadModel.getReceiver());
                                                 userChatThreadModel.setname(userChatThreadModel.getReceiver_name());
+                                                tempContactList.add(userChatThreadModel.getReceiver());
                                                 break;
                                             }
                                         }
@@ -119,6 +120,7 @@ public class Contacts extends AppCompatActivity {
                                                 userChatThreadModel.setshowNumber(userChatThreadModel.getSender());
                                                 userChatThreadModel.setname(userChatThreadModel.getSender_name());
 
+                                                tempContactList.add(userChatThreadModel.getSender());
 
                                                 break;
                                             }
@@ -128,13 +130,21 @@ public class Contacts extends AppCompatActivity {
                                 }
                             }
 
-
                             if (jsonObject1.has("contact")) {
                                 JSONObject jsonObject_contact = jsonObject1.getJSONObject("contact");
 
                                 for (Iterator<String> iter = jsonObject_contact.keys(); iter.hasNext(); ) {
                                     String key = iter.next();
                                     matchContactList.add(jsonObject_contact.getString(key));
+                                }
+                                tempContactList.add(session.getMobileNumber());
+                                for (int i = 0; i < tempContactList.size(); i++) {
+                                    for (int j = 0; j < matchContactList.size(); j++) {
+                                        if (matchContactList.get(j).equals(tempContactList.get(i))) {
+                                            matchContactList.remove(tempContactList.get(i));
+                                            Log.d(TAG, "onResponse: temp" + tempContactList.get(i));
+                                        }
+                                    }
                                 }
                             }
 
