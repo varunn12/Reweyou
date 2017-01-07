@@ -87,6 +87,7 @@ public class UserChat extends AppCompatActivity {
                     if (Constants.suggestpostid != null)
                         userChatModel.setPostid(Constants.suggestpostid);
 
+                    Constants.suggestpostid = null;
                     addMessage(userChatModel);
                 } else
                     Log.w(TAG, "onReceive: message was from anotherchat");
@@ -478,5 +479,8 @@ public class UserChat extends AppCompatActivity {
         super.onStop();
     }
 
-
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
 }
