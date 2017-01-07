@@ -29,6 +29,7 @@ import in.reweyou.reweyou.adapter.UserChatThreadAdapter;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.model.ContactListModel;
 import in.reweyou.reweyou.model.UserChatThreadModel;
+import in.reweyou.reweyou.utils.Constants;
 
 public class Contacts extends AppCompatActivity {
 
@@ -191,6 +192,7 @@ public class Contacts extends AppCompatActivity {
     public void onBackPressed() {
         finish();
         overridePendingTransition(0, 0);
+        Constants.suggestpostid = null;
     }
 
     private class FetchContacts extends AsyncTask<Void, Void, Integer> {

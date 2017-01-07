@@ -146,10 +146,9 @@ public class UserChat extends AppCompatActivity {
 
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        if (chatroomid != null)
+
             getChatList();
-        else
-            empty.setVisibility(View.VISIBLE);
+        //     empty.setVisibility(View.VISIBLE);
 
         editBox = (EditText) findViewById(R.id.editBox);
 
@@ -220,6 +219,9 @@ public class UserChat extends AppCompatActivity {
                         public void onResponse(final JSONArray response) {
                             try {
 
+                                if (response.length() == 0)
+                                    empty.setVisibility(View.VISIBLE);
+
                                 for (int i = 0; i < response.length(); i++) {
                                     UserChatModel userChatModel = gson.fromJson(response.getJSONObject(i).toString(), UserChatModel.class);
 
@@ -268,6 +270,8 @@ public class UserChat extends AppCompatActivity {
 
                                 userChatAdapter = new UserChatAdapter(list, session, UserChat.this);
                                 recyclerView.setAdapter(userChatAdapter);
+
+
                                 recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                                     @Override
                                     public void onGlobalLayout() {
@@ -275,6 +279,7 @@ public class UserChat extends AppCompatActivity {
                                         recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                                         if (Constants.suggestpostid != null) {
                                             sendMessage("Shared a post");
+                                            empty.setVisibility(View.GONE);
                                         }
 
 
