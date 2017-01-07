@@ -8,7 +8,7 @@ public class UserChatModel {
 
 
     private String id;
-    private String postid;
+    private String postid = "";
     private String message;
     private String sender;
     private String receiver;
