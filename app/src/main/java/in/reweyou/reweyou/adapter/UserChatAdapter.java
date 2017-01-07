@@ -42,7 +42,6 @@ public class UserChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.d(TAG, "onCreateViewHolder: called");
         if (viewType == VIEW_TYPE_SENDER)
             return new ViewHolder2(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_user_chat_self, parent, false));
         else if (viewType == VIEW_TYPE_RECEIVER)
@@ -55,7 +54,6 @@ public class UserChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        Log.d(TAG, "onBindViewHolder: called");
         if (holder instanceof ViewHolder2) {
             if (list.get(position) instanceof UserChatModel) {
 
@@ -128,9 +126,7 @@ public class UserChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public int getItemViewType(int position) {
-        Log.d(TAG, "getItemViewType: called");
         if (list.get(position) instanceof UserChatModel) {
-            Log.d(TAG, "getItemViewType: sender" + ((UserChatModel) list.get(position)).getSender());
             if (((UserChatModel) list.get(position)).getSender().equals(session.getMobileNumber()))
                 return VIEW_TYPE_SENDER;
             else

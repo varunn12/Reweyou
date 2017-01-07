@@ -121,6 +121,8 @@ public class UserChat extends AppCompatActivity {
             chatroomid = getIntent().getStringExtra(ADD_CHAT_MESSAGE_CHATROOM_ID);
             othernumber = getIntent().getStringExtra(ADD_CHAT_MESSAGE_SENDER_NUMBER);
             postid = getIntent().getStringExtra("postid");
+
+            Log.w(TAG, "onCreate: postid" + postid);
             getSupportActionBar().setTitle(othername);
         } catch (Exception e) {
             Log.w(TAG, "onCreate: chatroomid is null");
@@ -219,11 +221,9 @@ public class UserChat extends AppCompatActivity {
                         @Override
                         public void onResponse(final JSONArray response) {
                             try {
-                                Log.d(TAG, "onResponse: " + response);
 
                                 for (int i = 0; i < response.length(); i++) {
                                     UserChatModel userChatModel = gson.fromJson(response.getJSONObject(i).toString(), UserChatModel.class);
-                                    Log.d(TAG, "onResponse: " + userChatModel.getSender() + session.getMobileNumber());
 
                                     int temp = -1;
                                     if (i != 0)
@@ -259,7 +259,6 @@ public class UserChat extends AppCompatActivity {
                                 }
 
 
-                                Log.d(TAG, "onResponse: sizzz " + list.size());
                                 if (postid != null) {
                                     final UserChatModel userChatModel = new UserChatModel();
                                     userChatModel.setMessage(editBox.getText().toString());
@@ -357,7 +356,6 @@ public class UserChat extends AppCompatActivity {
                                 Date date;
                                 date = dfs.parse(previousDate);
                                 long difference = date1.getTime() - date.getTime();
-                                Log.d(TAG, "checkDates: diff: " + difference);
                                 if (difference > 30 * 60 * 1000) {
                                     Calendar c1 = Calendar.getInstance(); // today
                                     Calendar c2 = Calendar.getInstance();
@@ -411,7 +409,7 @@ public class UserChat extends AppCompatActivity {
         if (postid != null)
             hashMap.put("postid", postid);
 
-
+        postid = null;
         AndroidNetworking.post("https://www.reweyou.in/reweyou/chatroom.php")
                 .addBodyParameter(hashMap)
                 .setTag("test")
@@ -421,7 +419,6 @@ public class UserChat extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         try {
-                            postid = null;
                             Log.d(TAG, "onResponse: " + response);
                             if (response.equals("sent")) {
 
@@ -444,9 +441,8 @@ public class UserChat extends AppCompatActivity {
 
                     @Override
                     public void onError(ANError anError) {
-
                         try {
-                            postid = null;
+
                             //Toast.makeText(UserChat.this, "an error occured", Toast.LENGTH_SHORT).show();
                             Log.d(TAG, "onError: " + anError.getResponse());
                             userChatAdapter.changestateofsendingmessage(false);
