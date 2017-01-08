@@ -295,11 +295,7 @@
                 android:textSize="13sp" />
         </RelativeLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.7dp"
-            android:alpha=".48"
-            android:background="@color/divider" />
+
     </LinearLayout>
 
 
