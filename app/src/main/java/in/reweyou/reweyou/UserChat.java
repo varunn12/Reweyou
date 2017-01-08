@@ -414,6 +414,8 @@ public class UserChat extends AppCompatActivity {
 
                             try {
                                 Log.d(TAG, "onError: " + anError.getResponse());
+                                Toast.makeText(UserChat.this, "Couldn't get data", Toast.LENGTH_SHORT).show();
+
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }

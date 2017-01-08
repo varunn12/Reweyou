@@ -19,6 +19,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
@@ -185,6 +186,8 @@ public class Contacts extends AppCompatActivity {
                     public void onError(ANError anError) {
                         try {
                             Log.d(TAG, "onError: " + anError.getErrorCode());
+
+                            Toast.makeText(Contacts.this, "Couldn't get data", Toast.LENGTH_SHORT).show();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
