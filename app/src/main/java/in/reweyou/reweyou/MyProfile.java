@@ -554,71 +554,76 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                 //Hiding the alert dialog
                 alertDialog.dismiss();
                 //Displaying a progressbar
-                if (!editTextHeadline.getText().toString().equals(Info.getText().toString())) {
-                    final ProgressDialog loading = ProgressDialog.show(MyProfile.this, "Updating", "Please wait", false, false);
-                    //Getting the user entered otp from edittext
-                    final String headline = editTextHeadline.getText().toString().trim();
-                    final String location = editLocation.getText().toString().trim();
-                    //Creating an string request
-                    StringRequest stringRequest = new StringRequest(Request.Method.POST, MY_PROFILE_EDIT_URL,
-                            new Response.Listener<String>() {
-                                @Override
-                                public void onResponse(String response) {
-                                    //if the server response is success
-                                    if (response.equalsIgnoreCase("success")) {
-                                        //dismissing the progressbar
-                                        loading.dismiss();
+                Log.d("b", "onClick: reached");
+                Log.d("b", "onClick: reached" + editTextHeadline.getText().toString());
+                Log.d("b", "onClick: reached" + Info.getText().toString());
 
-                                        if (!headline.isEmpty()) {
-                                            Info.setText(headline);
-                                            Info.setTextColor(getResources().getColor(android.R.color.white));
-                                        } else {
-                                            Info.setText(getResources().getString(R.string.emptyStatus));
-                                            Info.setTextColor(getResources().getColor(android.R.color.holo_red_light));
-                                            Info.setPaintFlags(Info.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                Log.d("b", "onClick: reached1w1w1");
 
-                                        }
-                                        Toast.makeText(MyProfile.this, "Profile Updated!", Toast.LENGTH_LONG).show();
-                                        //Starting a new activity
-                                    } else {
-                                        //Displaying a toast if the otp entered is wrong
-                                        loading.dismiss();
-                                        Toast.makeText(MyProfile.this, "Something went wrong!", Toast.LENGTH_LONG).show();
-
-                                    }
-                                }
-                            },
-                            new Response.ErrorListener() {
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
-                                    alertDialog.dismiss();
+                final ProgressDialog loading = ProgressDialog.show(MyProfile.this, "Updating", "Please wait", false, false);
+                //Getting the user entered otp from edittext
+                final String headline = editTextHeadline.getText().toString().trim();
+                final String location = editLocation.getText().toString().trim();
+                //Creating an string request
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, MY_PROFILE_EDIT_URL,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                //if the server response is success
+                                if (response.equalsIgnoreCase("success")) {
+                                    //dismissing the progressbar
                                     loading.dismiss();
 
-                                    Toast.makeText(MyProfile.this, "Try again later", Toast.LENGTH_LONG).show();
-                                    String body;
-                                    //get status code here
-                                    String statusCode = String.valueOf(error.networkResponse.statusCode);
-                                    Log.d("bodsssy", statusCode);
+                                    if (!headline.isEmpty()) {
+                                        Info.setText(headline);
+                                        Info.setTextColor(getResources().getColor(android.R.color.white));
+                                    } else {
+                                        Info.setText(getResources().getString(R.string.emptyStatus));
+                                        Info.setTextColor(getResources().getColor(android.R.color.holo_red_light));
+                                        Info.setPaintFlags(Info.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
+                                    }
+                                    Toast.makeText(MyProfile.this, "Profile Updated!", Toast.LENGTH_LONG).show();
+                                    //Starting a new activity
+                                } else {
+                                    //Displaying a toast if the otp entered is wrong
+                                    loading.dismiss();
+                                    Toast.makeText(MyProfile.this, "Something went wrong!", Toast.LENGTH_LONG).show();
 
                                 }
-                            }) {
-                        @Override
-                        protected Map<String, String> getParams() throws AuthFailureError {
-                            Map<String, String> params = new HashMap<String, String>();
-                            //Adding the parameters otp and username
-                            params.put("number", i);
-                            params.put("info", headline);
-                            params.put("location", location);
-                            params.put("token", session.getKeyAuthToken());
-                            params.put("deviceid", session.getDeviceid());
-                            // params.put("number",number);
-                            return params;
-                        }
-                    };
-                    //Adding the request to the queue
-                    RequestQueue requestQueue = Volley.newRequestQueue(MyProfile.this);
-                    requestQueue.add(stringRequest);
-                }
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                alertDialog.dismiss();
+                                loading.dismiss();
+
+                                Toast.makeText(MyProfile.this, "Try again later", Toast.LENGTH_LONG).show();
+                                String body;
+                                //get status code here
+                                String statusCode = String.valueOf(error.networkResponse.statusCode);
+                                Log.d("bodsssy", statusCode);
+
+                            }
+                        }) {
+                    @Override
+                    protected Map<String, String> getParams() throws AuthFailureError {
+                        Map<String, String> params = new HashMap<String, String>();
+                        //Adding the parameters otp and username
+                        params.put("number", i);
+                        params.put("info", headline);
+                        params.put("location", location);
+                        params.put("token", session.getKeyAuthToken());
+                        params.put("deviceid", session.getDeviceid());
+                        // params.put("number",number);
+                        return params;
+                    }
+                };
+                //Adding the request to the queue
+                RequestQueue requestQueue = Volley.newRequestQueue(MyProfile.this);
+                requestQueue.add(stringRequest);
+
             }
         });
 
