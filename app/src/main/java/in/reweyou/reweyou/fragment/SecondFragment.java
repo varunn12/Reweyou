@@ -37,16 +37,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import in.reweyou.reweyou.FragmentCommunicator;
 import in.reweyou.reweyou.R;
+import in.reweyou.reweyou.UserProfile;
 import in.reweyou.reweyou.adapter.FeedAdapter;
 import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.DividerItemDecoration;
@@ -55,8 +54,10 @@ import in.reweyou.reweyou.customView.PreCachingLayoutManager;
 import in.reweyou.reweyou.model.FeedModel;
 import in.reweyou.reweyou.utils.Constants;
 
+import static in.reweyou.reweyou.utils.Constants.POSITION_SINGLE_POST;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_LOCATION;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_NEW_POST;
+import static in.reweyou.reweyou.utils.Constants.dfs;
 
 
 public class SecondFragment extends Fragment implements FragmentCommunicator {
@@ -69,7 +70,6 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
     private ProgressBar progressBar;
     private String location, formattedDate, number;
     private boolean loading = true;
-    private SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss a", Locale.ENGLISH);
     private FeedAdapter adapter;
     private String lastPostid;
     private int position = -1;
@@ -128,10 +128,10 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
         progressBar = (ProgressBar) layout.findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.GONE);
 
-        formattedDate = df.format(Calendar.getInstance().getTime());
+        formattedDate = dfs.format(Calendar.getInstance().getTime());
         location = session.getLoginLocation();
 
-        if (position == Constants.POSITION_FEED_TAB_MAIN_FEED || position == Constants.POSITION_SINGLE_POST || position == Constants.POSITION_CATEGORY_TAG || position == Constants.POSITION_SEARCH_TAB) {
+        if (position == Constants.POSITION_FEED_TAB_MAIN_FEED || position == Constants.POSITION_SINGLE_POST || position == Constants.POSITION_CATEGORY_TAG || position == Constants.POSITION_SEARCH_TAB || position == 29) {
             loadFeeds();
             Log.d(TAG, "onCreateView: loadfeeds called");
         }
@@ -263,7 +263,7 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
         if (!dataFetched) {
 
             topBar.setVisibility(View.GONE);
-            formattedDate = df.format(Calendar.getInstance().getTime());
+            formattedDate = dfs.format(Calendar.getInstance().getTime());
             makeRequest();
 
         } else Log.d(TAG, "loadFeeds: datafetched true");
@@ -312,62 +312,6 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
                         }
                     });
         }
-       /* AndroidNetworking.get(getUrl())
-                .setTag("test")
-                .setPriority(Priority.HIGH)
-                .getResponseOnlyIfCached()
-                .build()
-                .getAsJSONArray(new JSONArrayRequestListener() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        //savedata(response.toString());
-                        agetDataa();
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-
-                    }
-                });*/
-                /*.getAsParsed(new TypeToken<List<FeedModel>>() {
-                }, new ParsedRequestListener<List<FeedModel>>() {
-                    @Override
-                    public void onResponse(List<FeedModel> feedModels) {
-
-                        onfetchResponse(feedModels, false);
-
-                       //savedata(feedModels);
-
-                        agetDataa();
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        // handle error
-                        Log.d(TAG, "onError: " + anError.getErrorCode());
-                        AndroidNetworking.get(getUrl())
-                                .setTag("test")
-                                .setPriority(Priority.HIGH)
-                                .getResponseOnlyFromNetwork()
-                                .build()
-                                .getAsParsed(new TypeToken<List<FeedModel>>() {
-                                }, new ParsedRequestListener<List<FeedModel>>() {
-                                    @Override
-                                    public void onResponse(List<FeedModel> feedModels) {
-
-                                        onfetchResponse(feedModels, true);
-
-                                    }
-
-                                    @Override
-                                    public void onError(ANError anError) {
-                                        // handle error
-                                        Log.d(TAG, "onError2: " + anError.getErrorCode());
-
-                                    }
-                                });
-                    }
-                });*/
     }
 
     private String agetDataa(int position) {
@@ -375,8 +319,8 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
     }
 
     private void savedata(String feedModels, int position) {
-
-        session.saveData(feedModels, position);
+        if (position != POSITION_SINGLE_POST)
+            session.saveData(feedModels, position);
     }
 
     private void onfetchResponse(List<FeedModel> feedModels, boolean flag) {
@@ -469,7 +413,7 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
         //  Messages2();
 
         if (isAdded()) {
-            formattedDate = df.format(Calendar.getInstance().getTime());
+            formattedDate = dfs.format(Calendar.getInstance().getTime());
             Log.d(TAG, "onRefresh: called");
 
             topBar.setVisibility(View.GONE);
@@ -478,12 +422,10 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
     }
 
     public void onNetChange() {
-
-
         if (isAdded()) {
 
             if (new ConnectionDetector(mContext).isConnectingToInternet()) {
-                formattedDate = df.format(Calendar.getInstance().getTime());
+                formattedDate = dfs.format(Calendar.getInstance().getTime());
                 Log.d(TAG, "onRefresh: called");
 
                 topBar.setVisibility(View.GONE);
@@ -509,6 +451,8 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
                 return Constants.MY_SINGLE_ACTIVITY;
             case Constants.POSITION_CATEGORY_TAG:
                 return Constants.CATEGORY_FEED_URL;
+            case 29:
+                return Constants.URL_MY_REPORTS;
             default:
                 return null;
 
@@ -557,12 +501,24 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
             } else
                 data.put("location", location);
             data.put("date", formattedDate);
-            data.put("number", number);
+            if (position != 29)
+                data.put("number", number);
+            else
+                data.put("number", UserProfile.userprofilenumber);
+
 
             Log.d("dataaaaa", location + "   " + formattedDate + "  " + number);
         } else data.put("query", query);
 
         return data;
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.d(TAG, "onDestroyFragment: position" + position);
+        super.onDestroy();
+
+
     }
 }
 
