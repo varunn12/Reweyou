@@ -158,6 +158,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         session = new UserSessionManager(mContext);
         this.placename = placename;
         Log.d("reach", "constr    " + this.placename + "   " + placename);
+        uploadOption = new UploadOptions((Activity) mContext);
 
         this.fragment = secondFragment;
 
@@ -173,6 +174,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         session = new UserSessionManager(mContext);
         this.placename = placename;
         Log.d("reach", "constr    " + this.placename + "   " + placename);
+        uploadOption = new UploadOptions((Activity) mContext);
 
         this.qu_position = qu_position;
         this.fragment = secondFragment;
