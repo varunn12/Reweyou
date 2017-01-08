@@ -25,7 +25,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
-import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,16 +43,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import in.reweyou.reweyou.adapter.FeedAdapter;
 import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.RequestHandler;
 import in.reweyou.reweyou.classes.UserSessionManager;
-import in.reweyou.reweyou.model.FeedModel;
 
 import static in.reweyou.reweyou.utils.Constants.USER_PROFILE_URL_FOLLOW;
 import static in.reweyou.reweyou.utils.Constants.USER_PROFILE_URL_VERIFY_FOLLOW;
 
 public class UserProfile extends AppCompatActivity implements View.OnClickListener {
+    public static String userprofilenumber;
     Boolean isInternetPresent = false;
     ConnectionDetector cd;
     UserSessionManager session;
@@ -66,7 +64,10 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     private Button button;
     private ProgressBar progressBar;
     private RecyclerView recyclerView;
-
+    private TextView viewreport;
+    private boolean dataloaded;
+    private String name;
+    private String usernumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +83,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         cd = new ConnectionDetector(UserProfile.this);
         session = new UserSessionManager(getApplicationContext());
 
-
+        viewreport = (TextView) findViewById(R.id.viewreport);
         Name = (TextView) findViewById(R.id.Name);
         Reports = (TextView) findViewById(R.id.Reports);
         Info = (TextView) findViewById(R.id.Info);
@@ -107,6 +108,19 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         new JSONTask().execute(i);
         // new JSONTasks().execute(tag, i);
         button(i);
+
+        viewreport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (dataloaded) {
+                    Intent i = new Intent(UserProfile.this, SearchResultsActivity.class);
+                    i.putExtra("position", 29);
+                    userprofilenumber = usernumber;
+                    i.putExtra("query", name);
+                    startActivity(i);
+                }
+            }
+        });
 
 
     }
@@ -265,6 +279,8 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 for (int i = 0; i < parentArray.length(); i++) {
                     JSONObject finalObject = parentArray.getJSONObject(i);
                     profilelist.add(finalObject.getString("name"));
+                    name = finalObject.getString("name");
+                    usernumber = finalObject.getString("number");
                     profilelist.add(finalObject.getString("total_reviews"));
                     profilelist.add(finalObject.getString("profilepic"));
                     profilelist.add(finalObject.getString("info"));
@@ -272,6 +288,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                     profilelist.add(finalObject.getString("readers"));
                 }
 
+                dataloaded = true;
                 return profilelist;
 
                 //return buffer.toString();
@@ -324,90 +341,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         }
     }
 
-    public class JSONTasks extends AsyncTask<String, String, List<Object>> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            //setProgressBarIndeterminateVisibility(true);
-        }
-
-        @Override
-        protected List<Object> doInBackground(String... params) {
-            HttpURLConnection connection = null;
-            BufferedReader reader = null;
-            RequestHandler rh = new RequestHandler();
-            HashMap<String, String> data = new HashMap<String, String>();
-            data.put("tag", params[0]);
-            data.put("number", params[1]);
-            //  tag="All";
-            try {
-                URL url = new URL("https://www.reweyou.in/reweyou/myreports.php");
-                connection = (HttpURLConnection) url.openConnection();
-
-                connection.setDoOutput(true);
-                connection.setRequestMethod("POST");
-
-
-                OutputStreamWriter wr = new OutputStreamWriter(connection.getOutputStream());
-                wr.write(rh.getPostDataString(data));
-                wr.flush();
-
-                InputStream stream = connection.getInputStream();
-                reader = new BufferedReader(new InputStreamReader(stream));
-                StringBuffer buffer = new StringBuffer();
-
-                String line = "";
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line);
-                }
-                String finalJson = buffer.toString();
-
-                Log.d("final", finalJson);
-                JSONArray parentArray = new JSONArray(finalJson);
-                length = parentArray.length();
-                List<Object> messagelist = new ArrayList<>();
-
-                Gson gson = new Gson();
-                for (int i = 0; i < parentArray.length(); i++) {
-                    JSONObject finalObject = parentArray.getJSONObject(i);
-                    FeedModel feedModel = gson.fromJson(finalObject.toString(), FeedModel.class);
-                    messagelist.add(feedModel);
-                }
-
-                return messagelist;
-                //return buffer.toString();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } finally {
-                if (connection != null) {
-                    connection.disconnect();
-                }
-                try {
-                    if (reader != null) {
-                        reader.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(List<Object> result) {
-            super.onPostExecute(result);
-            progressBar.setVisibility(View.GONE);
-            FeedAdapter adapter = new FeedAdapter(UserProfile.this, result, null);
-            // total.setText("You have reported "+ String.valueOf(length)+ " stories.");
-            recyclerView.setAdapter(adapter);
-            //need to set data to the list
-        }
-    }
 
 
 }

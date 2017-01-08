@@ -86,7 +86,9 @@ public class Constants {
     public static final String ADD_CHAT_MESSAGE_TIMESTAMP = "dc";
 
 
-    public static final SimpleDateFormat dfs = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss a", Locale.US);
+    public static final SimpleDateFormat dfs = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss a", Locale.ENGLISH);
+    public static final String URL_MY_REPORTS = "https://www.reweyou.in/reweyou/myreports.php";
+    public static final String SEND_NOTI_CHANGE_REQUEST = "abx";
 
     public static String suggestpostid;
 }
