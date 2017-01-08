@@ -22,6 +22,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -104,7 +105,22 @@ public class Feed extends AppCompatActivity {
     private BroadcastReceiver netChangeReceiver;
     private IntentFilter netChangeIntentFilter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
     private FirebaseAnalytics mFirebaseAnalytics;
+    private BroadcastReceiver addnotireceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try {
 
+                if (session.getDeviceid() != null) {
+                    makeNotificationsRequest();
+                }
+
+                Log.w(TAG, "onReceive: feed noti change request called");
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,13 +170,13 @@ public class Feed extends AppCompatActivity {
 
     }
 
-
     @Override
     protected void onStart() {
         super.onStart();
         if (session.getDeviceid() != null) {
             makeNotificationsRequest();
         }
+        LocalBroadcastManager.getInstance(this).registerReceiver(addnotireceiver, new IntentFilter(Constants.SEND_NOTI_CHANGE_REQUEST));
         registerNetChangeReceiver();
     }
 
@@ -171,10 +187,10 @@ public class Feed extends AppCompatActivity {
     @Override
     protected void onStop() {
         unregisterReceiver(netChangeReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(addnotireceiver);
 
         super.onStop();
     }
-
 
     private void initViews() {
         initToolbar();
