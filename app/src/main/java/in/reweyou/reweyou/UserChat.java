@@ -59,6 +59,7 @@ public class UserChat extends AppCompatActivity {
 
     private static final String TAG = UserChat.class.getName();
     public static boolean userChatActivityOpen;
+    public static String chatroomid;
     private RecyclerView recyclerView;
     private UserChatAdapter userChatAdapter;
     private EditText editBox;
@@ -68,9 +69,10 @@ public class UserChat extends AppCompatActivity {
     private SimpleDateFormat todayDateFormat = new SimpleDateFormat("hh:mm a", Locale.US);
     private SimpleDateFormat previousDateFormat = new SimpleDateFormat("dd MMM hh:mm a", Locale.US);
     private SimpleDateFormat yesterdayDateFormat = new SimpleDateFormat("hh:mm a", Locale.US);
-    private String chatroomid;
     private String othernumber;
     private String othername;
+
+
     private BroadcastReceiver addMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -79,17 +81,17 @@ public class UserChat extends AppCompatActivity {
                 String message = intent.getStringExtra(Constants.ADD_CHAT_MESSAGE_MESSAGE);
                 String timestamp = intent.getStringExtra(Constants.ADD_CHAT_MESSAGE_TIMESTAMP);
                 String chatroomid = intent.getStringExtra(ADD_CHAT_MESSAGE_CHATROOM_ID);
-
-                if (chatroomid.equals(UserChat.this.chatroomid)) {
+                String suggestid = intent.getStringExtra("suggestid");
+                if (chatroomid.equals(UserChat.chatroomid)) {
                     UserChatModel userChatModel = new UserChatModel();
                     userChatModel.setMessage(message);
                     userChatModel.setSender(sendernumber);
                     userChatModel.setTime(timestamp);
                     userChatModel.setReceiver(session.getMobileNumber());
-                    if (Constants.suggestpostid != null)
-                        userChatModel.setPostid(Constants.suggestpostid);
-
-                    Constants.suggestpostid = null;
+                    if (!suggestid.equals("null")) {
+                        Log.d(TAG, "onReceive: reachedhere" + suggestid);
+                        userChatModel.setPostid(suggestid);
+                    } else userChatModel.setPostid("");
                     addMessage(userChatModel);
                 } else
                     Log.w(TAG, "onReceive: message was from anotherchat");
@@ -173,7 +175,6 @@ public class UserChat extends AppCompatActivity {
         recyclerView.setLayoutManager(linearLayoutManager);
 
 
-        getChatList();
         //     empty.setVisibility(View.VISIBLE);
 
         editBox = (EditText) findViewById(R.id.editBox);
@@ -228,9 +229,10 @@ public class UserChat extends AppCompatActivity {
             final Gson gson = new Gson();
             final List<Object> list = new ArrayList<>();
             AndroidNetworking.post("https://www.reweyou.in/reweyou/message_read.php")
-                    .addJSONObjectBody(jsonObject).setTag("test")
+                    .addJSONObjectBody(jsonObject).setTag("test124")
                     .setPriority(Priority.MEDIUM)
                     .build()
+
                     .setAnalyticsListener(new AnalyticsListener() {
                         @Override
                         public void onReceived(long timeTakenInMillis, long bytesSent, long bytesReceived, boolean isFromCache) {
@@ -498,6 +500,7 @@ public class UserChat extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        getChatList();
         userChatActivityOpen = true;
         LocalBroadcastManager.getInstance(this).registerReceiver(addMessageReceiver,
                 new IntentFilter(Constants.ADD_CHAT_MESSAGE_EVENT));
@@ -515,5 +518,25 @@ public class UserChat extends AppCompatActivity {
         finish();
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        Log.d(TAG, "onNewIntent: called");
 
+        try {
+            if (!intent.getStringExtra(ADD_CHAT_MESSAGE_CHATROOM_ID).equals(chatroomid)) {
+                othername = intent.getStringExtra(ADD_CHAT_MESSAGE_SENDER_NAME);
+                chatroomid = intent.getStringExtra(ADD_CHAT_MESSAGE_CHATROOM_ID);
+                othernumber = intent.getStringExtra(ADD_CHAT_MESSAGE_SENDER_NUMBER);
+                getSupportActionBar().setTitle(othername);
+                AndroidNetworking.forceCancel("test124");
+                if (userChatAdapter != null) {
+                    userChatAdapter.clear();
+                }
+                getChatList();
+            } else Log.w(TAG, "onNewIntent: chat id is equal");
+        } catch (Exception e) {
+            Log.w(TAG, "onnewintent: fail");
+        }
+
+    }
 }

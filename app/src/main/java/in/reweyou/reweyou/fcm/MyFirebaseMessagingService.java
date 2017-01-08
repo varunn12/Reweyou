@@ -100,28 +100,22 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
             if (postid.equals(NOTI_TYPE_CHAT)) {
 
-                if (UserChat.userChatActivityOpen) {
+                if (UserChat.userChatActivityOpen && payload.getString("chatroom_id").equals(UserChat.chatroomid)) {
                     Intent intent = new Intent(Constants.ADD_CHAT_MESSAGE_EVENT);
 
                     intent.putExtra(Constants.ADD_CHAT_MESSAGE_SENDER_NUMBER, payload.getString("sender_name"));
                     intent.putExtra(Constants.ADD_CHAT_MESSAGE_MESSAGE, message);
                     intent.putExtra(Constants.ADD_CHAT_MESSAGE_TIMESTAMP, timestamp);
                     intent.putExtra(Constants.ADD_CHAT_MESSAGE_CHATROOM_ID, payload.getString("chatroom_id"));
-                    if (payload.has("suggestid"))
-                        Constants.suggestpostid = payload.getString("suggestid");
-
-
-
+                    intent.putExtra("suggestid", payload.getString("suggestid"));
 
                     LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
                 } else {
                     Log.w(TAG, "handleDataMessage: chat activity is background");
                     Intent i = new Intent(this, UserChat.class);
-
                     i.putExtra(Constants.ADD_CHAT_MESSAGE_SENDER_NAME, title);
                     i.putExtra(Constants.ADD_CHAT_MESSAGE_CHATROOM_ID, payload.getString("chatroom_id"));
                     i.putExtra(Constants.ADD_CHAT_MESSAGE_SENDER_NUMBER, payload.getString("sender_name"));
-                    //   i.putExtra(Constants.ADD_CHAT_MESSAGE_SENDER_NUMBER, "9711188949");
 
                     PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
 

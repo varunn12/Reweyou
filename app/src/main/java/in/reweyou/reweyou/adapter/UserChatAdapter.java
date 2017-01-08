@@ -93,8 +93,7 @@ public class UserChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position, List<
-            Object> payloads) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position, List<Object> payloads) {
         if (payloads.isEmpty())
             super.onBindViewHolder(holder, position, payloads);
         else if (payloads.contains("true")) {
@@ -120,7 +119,7 @@ public class UserChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public void add(UserChatModel userChatModel) {
         list.add(userChatModel);
-        Log.d(TAG, "add: called" + userChatModel.getSender());
+        Log.d(TAG, "add: called" + userChatModel.getPostid());
         notifyItemInserted(list.size() - 1);
     }
 
@@ -148,6 +147,11 @@ public class UserChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((UserChatModel) list.get(list.size() - 1)).setFailed(true);
         }
 
+    }
+
+    public void clear() {
+        list.clear();
+        notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

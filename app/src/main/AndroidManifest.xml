@@ -218,6 +218,7 @@
         <activity
             android:name=".UserChat"
             android:label="@string/title_activity_user_chat"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
