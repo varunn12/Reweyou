@@ -3,17 +3,11 @@
     android:layout_height="match_parent"
     android:background="#eeeeee">
 
-    <TextView
-        android:id="@+id/no"
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="@color/red"
-        android:gravity="center"
-        android:text="no internet connectivity"
-        android:textColor="#fff"
-        android:visibility="gone" />
-
-
+        android:layout_height="wrap_content">
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
@@ -25,6 +19,7 @@
         android:paddingBottom="4dp"
         android:paddingTop="4dp"
         android:scrollbars="vertical" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <ProgressBar
         android:id="@+id/progress_bar"

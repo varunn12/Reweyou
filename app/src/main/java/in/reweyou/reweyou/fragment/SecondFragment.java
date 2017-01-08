@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -76,7 +76,6 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
     private boolean cacheLoad = false;
     private String placename;
     private Activity mContext;
-    private TextView topBar;
     private View layout;
     private String query;
     private String category;
@@ -84,6 +83,7 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
     private Gson gson = new Gson();
     private HashMap<String, String> bodyHashMap;
     private HashMap<String, String> data;
+    private SwipeRefreshLayout swipe;
 
     public SecondFragment() {
     }
@@ -110,8 +110,15 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
                              Bundle savedInstanceState) {
         layout = inflater.inflate(R.layout.fragment_second, container, false);
 
-        topBar = (TextView) layout.findViewById(R.id.no);
+        swipe = (SwipeRefreshLayout) layout.findViewById(R.id.swipe);
+        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                SecondFragment.this.onRefresh();
+            }
+        });
 
+        swipe.setEnabled(false);
         recyclerView = (RecyclerView) layout.findViewById(R.id.recycler_view);
         RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecoration(ContextCompat.getDrawable(mContext, R.drawable.line));
         recyclerView.addItemDecoration(dividerItemDecoration);
@@ -262,7 +269,6 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
         Log.d(TAG, "loadFeeds: called");
         if (!dataFetched) {
 
-            topBar.setVisibility(View.GONE);
             formattedDate = dfs.format(Calendar.getInstance().getTime());
             makeRequest();
 
@@ -281,8 +287,10 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
             }.getType();
             List<FeedModel> myModelList = gson.fromJson(jsonArray.toString(), listType);
             onfetchResponse(myModelList, false);
+            swipe.setEnabled(true);
 
         } catch (Exception e) {
+            swipe.setEnabled(true);
             e.printStackTrace();
             AndroidNetworking.post(getUrl())
                     .addBodyParameter(data)
@@ -292,7 +300,7 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
                     .getAsJSONArray(new JSONArrayRequestListener() {
                         @Override
                         public void onResponse(JSONArray response) {
-
+                            swipe.setEnabled(true);
                             savedata(response.toString(), position);
                             try {
                                 Type listType = new TypeToken<List<FeedModel>>() {
@@ -308,7 +316,7 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
 
                         @Override
                         public void onError(ANError anError) {
-
+                            swipe.setEnabled(true);
                         }
                     });
         }
@@ -325,6 +333,7 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
 
     private void onfetchResponse(List<FeedModel> feedModels, boolean flag) {
         Log.d(TAG, "userList size : " + feedModels.size());
+
 
         List<String> likeslist = session.getLikesList();
 
@@ -368,35 +377,8 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
                     public void onGlobalLayout() {
 
                         Log.d(TAG, "onGlobalLayout: called");
-                        AndroidNetworking.post(getUrl())
-                                .addBodyParameter(data)
-                                .setTag("test")
-                                .setPriority(Priority.IMMEDIATE)
-                                .build()
-                                .getAsJSONArray(new JSONArrayRequestListener() {
-                                    @Override
-                                    public void onResponse(JSONArray response) {
 
-                                        savedata(response.toString(), position);
-                                        try {
-                                            Type listType = new TypeToken<List<FeedModel>>() {
-                                            }.getType();
-
-                                            List<FeedModel> myModelList = gson.fromJson(response.toString(), listType);
-                                            onfetchResponse(myModelList, true);
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                            if (isAdded())
-                                                Toast.makeText(mContext, "couldn't connect", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onError(ANError anError) {
-                                        if (isAdded())
-                                            Toast.makeText(mContext, "couldn't connect", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
+                        fetchnewData();
 
 
                         recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
@@ -404,6 +386,42 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
                 });
         }
         cacheLoad = false;
+
+    }
+
+    private void fetchnewData() {
+
+        AndroidNetworking.post(getUrl())
+                .addBodyParameter(data)
+                .setTag("test")
+                .setPriority(Priority.IMMEDIATE)
+                .build()
+                .getAsJSONArray(new JSONArrayRequestListener() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+
+                        swipe.setRefreshing(false);
+                        savedata(response.toString(), position);
+                        try {
+                            Type listType = new TypeToken<List<FeedModel>>() {
+                            }.getType();
+
+                            List<FeedModel> myModelList = gson.fromJson(response.toString(), listType);
+                            onfetchResponse(myModelList, true);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            if (isAdded())
+                                Toast.makeText(mContext, "couldn't connect", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        swipe.setRefreshing(false);
+                        if (isAdded())
+                            Toast.makeText(mContext, "couldn't connect", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
     }
 
@@ -416,8 +434,7 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
             formattedDate = dfs.format(Calendar.getInstance().getTime());
             Log.d(TAG, "onRefresh: called");
 
-            topBar.setVisibility(View.GONE);
-            makeRequest();
+            fetchnewData();
         }
     }
 
@@ -428,9 +445,8 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
                 formattedDate = dfs.format(Calendar.getInstance().getTime());
                 Log.d(TAG, "onRefresh: called");
 
-                topBar.setVisibility(View.GONE);
-                makeRequest();
-            } else topBar.setVisibility(View.VISIBLE);
+                onRefresh();
+            }
 
         }
     }
@@ -481,9 +497,7 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
         Log.d("posi", String.valueOf(position));
         if (net)
             onRefresh();
-        else if (topBar != null) {
-            topBar.setVisibility(View.VISIBLE);
-        }
+
     }
 
 
