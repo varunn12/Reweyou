@@ -488,7 +488,7 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
 
     public void onLocationSet(String location) {
         this.placename = location;
-        onRefresh();
+        makeRequest();
     }
 
     @Override
