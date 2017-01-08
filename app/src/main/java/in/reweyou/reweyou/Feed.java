@@ -158,6 +158,9 @@ public class Feed extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        if (session.getDeviceid() != null) {
+            makeNotificationsRequest();
+        }
         registerNetChangeReceiver();
     }
 
@@ -168,6 +171,7 @@ public class Feed extends AppCompatActivity {
     @Override
     protected void onStop() {
         unregisterReceiver(netChangeReceiver);
+
         super.onStop();
     }
 
@@ -368,8 +372,6 @@ public class Feed extends AppCompatActivity {
         if (reqCode == REQ_CODE_PROFILE && resCode == RESULT_OK) {
             //called when profilepicture is updated by user
             Glide.with(Feed.this).load(session.getProfilePicture()).error(R.drawable.download).into(image);
-        } else if (reqCode == REQ_CODE_NOTI_COUNT && resCode == RESULT_OK) {
-            makeNotificationsRequest();
         } else {
             int dataType = new HandleActivityResult().handleResult(reqCode, resCode, data);
             switch (dataType) {
@@ -429,6 +431,7 @@ public class Feed extends AppCompatActivity {
                 if (!query.isEmpty()) {
                     Intent i = new Intent(Feed.this, SearchResultsActivity.class);
                     i.putExtra("query", query);
+                    i.putExtra("position", 12);
                     startActivity(i);
                 }
 

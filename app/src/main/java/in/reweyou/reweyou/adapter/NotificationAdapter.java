@@ -114,8 +114,10 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                     else if (list.get(getAdapterPosition()) instanceof NotificationCommentsModel)
                         bundle.putString("postid", ((NotificationCommentsModel) list.get(getAdapterPosition())).getPostid());
                     Intent resultIntent = new Intent(context, SinglePostActivity.class);
+                    resultIntent.putExtra("fromnoti", true);
                     resultIntent.putExtras(bundle);
                     context.startActivity(resultIntent);
+
 
                 }
             });
@@ -129,7 +131,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                             Log.d("ResponseLike", response);
                             if (response.equals("true ")) {
 
-                                context.sendReqForNotiCount();
+
                                 if (list.get(adapterPosition) instanceof NotificationLikesModel) {
                                     ((NotificationLikesModel) list.get(getAdapterPosition())).setReadstatus("true");
                                     notifyItemChanged(getAdapterPosition());
