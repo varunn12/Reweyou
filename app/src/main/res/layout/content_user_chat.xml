@@ -118,6 +118,7 @@
             android:hint="Say something..."
             android:inputType="textMultiLine"
             android:lines="10"
+            android:maxLength="250"
             android:maxLines="10"
             android:minLines="1"
             android:paddingBottom="16dp"
