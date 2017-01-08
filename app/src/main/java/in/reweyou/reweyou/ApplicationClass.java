@@ -1,5 +1,6 @@
 package in.reweyou.reweyou;
 
+import android.app.Application;
 import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 
@@ -8,7 +9,6 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.StandardExceptionParser;
 import com.google.android.gms.analytics.Tracker;
-import com.orm.SugarApp;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -20,7 +20,7 @@ import okhttp3.OkHttpClient;
 /**
  * Created by Reweyou on 2/25/2016.
  */
-public class ApplicationClass extends SugarApp {
+public class ApplicationClass extends Application {
     public static final String TAG = ApplicationClass.class
             .getSimpleName();
     private static final Interceptor REWRITE_CACHE_CONTROL_INTERCEPTOR = new Interceptor() {
