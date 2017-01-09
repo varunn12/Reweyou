@@ -1,6 +1,7 @@
 package in.reweyou.reweyou.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -111,16 +112,7 @@ public class InviteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             pic = (ImageView) itemView.findViewById(R.id.pic);
             container = (RelativeLayout) itemView.findViewById(R.id.container);
 
-            container.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    /*Intent i = new Intent(context, UserChat.class);
-                    // i.putExtra(ADD_CHAT_MESSAGE_CHATROOM_ID, ((UserChatThreadModel) list.get(getAdapterPosition())).getChatroom_id());
-                    i.putExtra(ADD_CHAT_MESSAGE_SENDER_NUMBER, ((ContactListModel) list.get(getAdapterPosition())).getNumber());
-                    i.putExtra(ADD_CHAT_MESSAGE_SENDER_NAME, ((ContactListModel) list.get(getAdapterPosition())).getName());
-                    context.startActivity(i);*/
-                }
-            });
+
         }
     }
 
@@ -140,11 +132,18 @@ public class InviteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    /*Intent i = new Intent(context, UserChat.class);
-                    // i.putExtra(ADD_CHAT_MESSAGE_CHATROOM_ID, ((UserChatThreadModel) list.get(getAdapterPosition())).getChatroom_id());
-                    i.putExtra(ADD_CHAT_MESSAGE_SENDER_NUMBER, ((ContactListModel) list.get(getAdapterPosition())).getNumber());
-                    i.putExtra(ADD_CHAT_MESSAGE_SENDER_NAME, ((ContactListModel) list.get(getAdapterPosition())).getName());
-                    context.startActivity(i);*/
+                    try {
+                        Intent i = new Intent(Intent.ACTION_SEND);
+                        i.setType("text/plain");
+                        i.putExtra(Intent.EXTRA_SUBJECT, "Reweyou");
+                        String sAux = session.getUsername() + " has invite you to join Reweyou.\n\n";
+                        sAux = sAux + "Download app: https://play.google.com/store/apps/details?id=in.reweyou.reweyou";
+                        i.putExtra(Intent.EXTRA_TEXT, sAux);
+                        context.startActivity(Intent.createChooser(i, "choose one"));
+                    } catch (Exception e) {
+                        //e.toString();
+                        e.printStackTrace();
+                    }
                 }
             });
         }

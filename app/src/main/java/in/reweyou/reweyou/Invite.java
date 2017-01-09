@@ -1,9 +1,17 @@
 package in.reweyou.reweyou;
 
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,9 +38,13 @@ import in.reweyou.reweyou.model.ContactListModel;
 public class Invite extends AppCompatActivity {
 
     private static final String TAG = Invite.class.getSimpleName();
+    private static final String PACKAGE_URL_SCHEME = "package:";
+    private final int PERMISSION_REQUEST_CODE = 6;
+    private final String[] PERMISSIONS_CONTACT_READ = new String[]{android.Manifest.permission.READ_CONTACTS};
     private ArrayList<ContactListModel> contactList = new ArrayList<>();
     private UserSessionManager session;
     private RecyclerView recyclerView;
+    private FetchContacts fetchContacts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,10 +67,82 @@ public class Invite extends AppCompatActivity {
 
         recyclerView = (RecyclerView) findViewById(R.id.rv);
         recyclerView.setLayoutManager(new LinearLayoutManager(Invite.this));
+        if (!hasPermissions(this, PERMISSIONS_CONTACT_READ)) {
+            ActivityCompat.requestPermissions(this, PERMISSIONS_CONTACT_READ, PERMISSION_REQUEST_CODE);
+        } else {
+            permissionGranted();
+        }
 
-        FetchContacts fetchContacts = new FetchContacts();
+    }
+
+    private void showPermissionRequiredDialog(final String permission) {
+        AlertDialogBox alertDialogBox = new AlertDialogBox(Invite.this, "Permission Required", getResources().getString(R.string.permission_required_contacts), "grant", null) {
+            @Override
+            public void onNegativeButtonClick(DialogInterface dialog) {
+                // dialog.dismiss();
+                //registerUser();
+                // permissionGranted();
+            }
+
+            @Override
+            public void onPositiveButtonClick(DialogInterface dialog) {
+                dialog.dismiss();
+                String[] p = {permission};
+                ActivityCompat.requestPermissions(Invite.this, p, PERMISSION_REQUEST_CODE);
+
+            }
+        };
+        alertDialogBox.setCancellable(false);
+        alertDialogBox.show();
+    }
+
+    private void showPermissionDeniedDialog() {
+        AlertDialogBox alertDialogBox = new AlertDialogBox(Invite.this, "Permission Denied", getResources().getString(R.string.permission_denied_contacts), "settings", null) {
+            @Override
+            public void onNegativeButtonClick(DialogInterface dialog) {
+
+            }
+
+            @Override
+            public void onPositiveButtonClick(DialogInterface dialog) {
+                dialog.dismiss();
+                startAppSettings();
+
+            }
+        };
+        alertDialogBox.setCancellable(false);
+        alertDialogBox.show();
+    }
+
+    private void startAppSettings() {
+        Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        intent.setData(Uri.parse(PACKAGE_URL_SCHEME + getPackageName()));
+        startActivity(intent);
+    }
+
+    private void permissionGranted() {
+        fetchContacts = new FetchContacts();
         fetchContacts.execute();
     }
+
+    private boolean hasPermissions(Context context, String... permissions) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (fetchContacts != null)
+            fetchContacts.cancel(true);
+        super.onDestroy();
+    }
+
 
     public void getContactsfromDevice() {
         Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
@@ -119,21 +203,19 @@ public class Invite extends AppCompatActivity {
                                     for (int j = 0; j < contactList.size(); j++) {
                                         if (contactList.get(j).getNumber().equals(jsonObject_contact.getString(key))) {
                                             matchContactList.add(contactList.get(j));
-
                                             break;
-                                        }
-                                        if (j == contactList.size() - 1) {
-                                            nonmatchContactList.add(contactList.get(j));
                                         }
                                     }
                                 }
 
+                                contactList.removeAll(matchContactList);
+                                Log.d(TAG, "onResponse: smatfh" + matchContactList.size() + nonmatchContactList.size());
+
+                                InviteAdapter inviteAdapter = new InviteAdapter(Invite.this, matchContactList, contactList, session);
+                                recyclerView.setAdapter(inviteAdapter);
                             }
 
-                            Log.d(TAG, "onResponse: smatfh" + matchContactList + nonmatchContactList);
 
-                            InviteAdapter inviteAdapter = new InviteAdapter(Invite.this, matchContactList, nonmatchContactList, session);
-                            recyclerView.setAdapter(inviteAdapter);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -149,6 +231,35 @@ public class Invite extends AppCompatActivity {
                     }
                 });
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        overridePendingTransition(0, 0);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE: {
+
+                String permission = permissions[0];
+                if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                    // user rejected the permission
+
+                    boolean showRationale = ActivityCompat.shouldShowRequestPermissionRationale(Invite.this, permission);
+                    if (!showRationale) {
+                        showPermissionDeniedDialog();
+                    } else
+                        showPermissionRequiredDialog(permission);
+                } else if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // registerUser();
+                    permissionGranted();
+                }
+                break;
+            }
+        }
     }
 
     private class FetchContacts extends AsyncTask<Void, Void, Integer> {
