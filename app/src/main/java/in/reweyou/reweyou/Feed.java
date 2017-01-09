@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -33,11 +34,13 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -121,6 +124,7 @@ public class Feed extends AppCompatActivity {
             }
         }
     };
+    private android.app.AlertDialog alertDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,6 +151,11 @@ public class Feed extends AppCompatActivity {
             viewPager.setAdapter(pagerAdapter);
             viewPager.setCurrentItem(1);
             makeNotificationsRequest();
+
+
+            if (!session.getFirstLoad1())
+                showwhatsnewdialog();
+
         }
 
 
@@ -168,6 +177,34 @@ public class Feed extends AppCompatActivity {
             }
         };
 
+    }
+
+    private void showwhatsnewdialog() {
+        LayoutInflater li = LayoutInflater.from(Feed.this);
+        View confirmDialog = li.inflate(R.layout.dialog_whatsnew, null);
+
+        //  TextView editNum = (TextView) confirmDialog.findViewById(R.id.editNumber);
+        //final EditText otpField = (EditText) confirmDialog.findViewById(R.id.editTextOtp);
+        Button confirm = (Button) confirmDialog.findViewById(R.id.buttonConfirm);
+
+
+        //Creating an alertdialog builder
+        android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(Feed.this);
+        alert.setView(confirmDialog);
+
+        //Creating an alert dialog
+        alertDialog = alert.create();
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        alertDialog.setCancelable(false);
+        //Displaying the alert dialog
+        alertDialog.show();
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                session.setFirstLoad1();
+                alertDialog.dismiss();
+            }
+        });
     }
 
     @Override
@@ -713,10 +750,10 @@ public class Feed extends AppCompatActivity {
                         startActivity(reports);
                         overridePendingTransition(0, 0);
                         break;
-                    case R.id.notifications:
+                    case R.id.invite:
                         drawerLayout.closeDrawers();
-                        Intent notif = new Intent(Feed.this, Notifications.class);
-                        startActivityForResult(notif, REQ_CODE_NOTI_COUNT);
+                        Intent inv = new Intent(Feed.this, Invite.class);
+                        startActivity(inv);
                         overridePendingTransition(0, 0);
                         break;
                     case R.id.New:
@@ -725,17 +762,7 @@ public class Feed extends AppCompatActivity {
                         startActivity(New);
                         overridePendingTransition(0, 0);
                         break;
-                    case R.id.contacts:
-                        drawerLayout.closeDrawers();
-                        Intent s = new Intent(Feed.this, Contacts.class);
-                        startActivity(s);
-                        overridePendingTransition(0, 0);
-                        break;
-                    case R.id.logout:
-                        drawerLayout.closeDrawers();
-                        alertMessage();
-                        overridePendingTransition(0, 0);
-                        break;
+
                     case R.id.leaderboard:
                         drawerLayout.closeDrawers();
                         Intent leader = new Intent(Feed.this, Leaderboard.class);

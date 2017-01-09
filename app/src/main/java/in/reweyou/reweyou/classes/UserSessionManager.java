@@ -270,4 +270,13 @@ public class UserSessionManager {
     public boolean getFirstLoad() {
         return pref.getBoolean(FIRST_LOAD_TUT, false);
     }
+
+    public void setFirstLoad1() {
+        editor.putBoolean("aaas", true);
+        editor.commit();
+    }
+
+    public boolean getFirstLoad1() {
+        return pref.getBoolean("aaas", false);
+    }
 }
