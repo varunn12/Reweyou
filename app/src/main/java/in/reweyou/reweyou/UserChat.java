@@ -414,6 +414,8 @@ public class UserChat extends AppCompatActivity {
         hashMap.put("s_name", session.getUsername());
         hashMap.put("r_name", othername);
         hashMap.put("message", message);
+        hashMap.put("token", session.getKeyAuthToken());
+        hashMap.put("deviceid", session.getDeviceid());
         if (Constants.suggestpostid != null)
             hashMap.put("postid", Constants.suggestpostid);
 
