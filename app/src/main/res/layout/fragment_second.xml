@@ -25,4 +25,18 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true" />
 
+    <TextView
+        android:id="@+id/sizenullview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:paddingBottom="64dp"
+        android:paddingLeft="48dp"
+        android:paddingRight="48dp"
+        android:paddingTop="16dp"
+        android:text="You are currently not reading anyone. Tap to start reading a reporter"
+        android:textColor="#9c9c9c"
+        android:textSize="16dp" />
+
 </RelativeLayout>

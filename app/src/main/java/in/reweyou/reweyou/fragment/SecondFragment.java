@@ -2,6 +2,7 @@ package in.reweyou.reweyou.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -44,6 +46,7 @@ import java.util.List;
 import java.util.Map;
 
 import in.reweyou.reweyou.FragmentCommunicator;
+import in.reweyou.reweyou.Leaderboard;
 import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.UserProfile;
 import in.reweyou.reweyou.adapter.FeedAdapter;
@@ -54,6 +57,7 @@ import in.reweyou.reweyou.customView.PreCachingLayoutManager;
 import in.reweyou.reweyou.model.FeedModel;
 import in.reweyou.reweyou.utils.Constants;
 
+import static in.reweyou.reweyou.utils.Constants.POSITION_FEED_TAB_3;
 import static in.reweyou.reweyou.utils.Constants.POSITION_SINGLE_POST;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_LOCATION;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_NEW_POST;
@@ -84,6 +88,7 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
     private HashMap<String, String> bodyHashMap;
     private HashMap<String, String> data;
     private SwipeRefreshLayout swipe;
+    private TextView emptyview;
 
     public SecondFragment() {
     }
@@ -130,7 +135,15 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
 
         number = session.getMobileNumber();
 
-
+        emptyview = (TextView) layout.findViewById(R.id.sizenullview);
+        emptyview.setVisibility(View.GONE);
+        emptyview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isAdded())
+                    mContext.startActivity(new Intent(mContext, Leaderboard.class));
+            }
+        });
         //Progress bar
         progressBar = (ProgressBar) layout.findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.GONE);
@@ -282,6 +295,7 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
         data = getBodyHashMap();
 
         try {
+
             JSONArray jsonArray = new JSONArray(agetDataa(position));
             Type listType = new TypeToken<List<FeedModel>>() {
             }.getType();
@@ -301,17 +315,29 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
                         @Override
                         public void onResponse(JSONArray response) {
                             swipe.setEnabled(true);
-                            savedata(response.toString(), position);
-                            try {
-                                Type listType = new TypeToken<List<FeedModel>>() {
-                                }.getType();
-                                List<FeedModel> myModelList = gson.fromJson(response.toString(), listType);
-                                onfetchResponse(myModelList, false);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                if (isAdded())
-                                    Toast.makeText(mContext, "couldn't connect", Toast.LENGTH_SHORT).show();
+                            Log.d(TAG, "onResponse: lentttt" + response.length());
+                            if (response.length() > 0) {
+                                emptyview.setVisibility(View.GONE);
+                                savedata(response.toString(), position);
+                                try {
+                                    Type listType = new TypeToken<List<FeedModel>>() {
+                                    }.getType();
+                                    List<FeedModel> myModelList = gson.fromJson(response.toString(), listType);
+                                    onfetchResponse(myModelList, false);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    if (isAdded())
+                                        Toast.makeText(mContext, "couldn't connect", Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
+                                Log.d(TAG, "onResponse: Reachhhh");
+                                swipe.setEnabled(true);
+                                savedata(null, position);
+                                if (position == POSITION_FEED_TAB_3) {
+                                    emptyview.setVisibility(View.VISIBLE);
+                                }
                             }
+
                         }
 
                         @Override
@@ -429,6 +455,7 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
     public void onRefresh() {
 
         //  Messages2();
+
 
         if (isAdded()) {
             formattedDate = dfs.format(Calendar.getInstance().getTime());
