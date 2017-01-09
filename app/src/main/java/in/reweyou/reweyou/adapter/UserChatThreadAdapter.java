@@ -3,6 +3,7 @@ package in.reweyou.reweyou.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,14 +39,26 @@ public class UserChatThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private final int VIEWTYPE_ACTIVE_CHATS = 6;
     private final int VIEWTYPE_CHAT_THREAD = 2;
     private final int VIEWTYPE_CONTACT_GROUP = 4;
-    private final int LIST_CHAT_THREAD_LIST_SIZE;
+    private final int VIEWTYPE_EMPTY_THREADS = 8;
+    private int LIST_CHAT_THREAD_LIST_SIZE;
+    private boolean emptychats;
     private List<Object> list = new ArrayList<>();
     private Context context;
 
     public UserChatThreadAdapter(Contacts contacts, List<UserChatThreadModel> chatThreadList, List<ContactListModel> matchContactList, UserSessionManager session) {
         list.add(VIEWTYPE_ACTIVE_CHATS);
         LIST_CHAT_THREAD_LIST_SIZE = chatThreadList.size() + 1;
+
+
         list.addAll(chatThreadList);
+
+        Log.w(TAG, "UserChatThreadAdapter: size" + chatThreadList.size());
+        if (chatThreadList.size() == 0) {
+            list.add(VIEWTYPE_EMPTY_THREADS);
+            LIST_CHAT_THREAD_LIST_SIZE = chatThreadList.size() + 2;
+
+            emptychats = true;
+        }
         list.add(VIEWTYPE_SEPARATOR);
         list.addAll(matchContactList);
 
@@ -66,6 +79,8 @@ public class UserChatThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             return new UserChatThreadAdapter.ViewHolderContact(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_contacts_groups, parent, false));
         else if (viewType == VIEWTYPE_ACTIVE_CHATS)
             return new ViewHolderSeparator(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_contact_active_chat_separator, parent, false));
+        else if (viewType == VIEWTYPE_EMPTY_THREADS)
+            return new ViewHolderSeparator(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_contacts_active_chats_empty_separator, parent, false));
         else return null;
 
     }
@@ -98,16 +113,20 @@ public class UserChatThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public int getItemViewType(int position) {
-        if (position == 0)
-            return VIEWTYPE_ACTIVE_CHATS;
-        else if (position < LIST_CHAT_THREAD_LIST_SIZE)
-            return VIEWTYPE_CHAT_THREAD;
-        else if (position == LIST_CHAT_THREAD_LIST_SIZE)
-            return VIEWTYPE_SEPARATOR;
-        else if (position > LIST_CHAT_THREAD_LIST_SIZE)
-            return VIEWTYPE_CONTACT_GROUP;
-        else
-            return super.getItemViewType(position);
+        if (position == 1 && emptychats) {
+            return VIEWTYPE_EMPTY_THREADS;
+        } else {
+            if (position == 0)
+                return VIEWTYPE_ACTIVE_CHATS;
+            else if (position < LIST_CHAT_THREAD_LIST_SIZE)
+                return VIEWTYPE_CHAT_THREAD;
+            else if (position == LIST_CHAT_THREAD_LIST_SIZE)
+                return VIEWTYPE_SEPARATOR;
+            else if (position > LIST_CHAT_THREAD_LIST_SIZE)
+                return VIEWTYPE_CONTACT_GROUP;
+            else
+                return super.getItemViewType(position);
+        }
     }
 
     private class ViewHolderActiveChat extends RecyclerView.ViewHolder {
