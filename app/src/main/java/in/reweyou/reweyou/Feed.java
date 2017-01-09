@@ -845,7 +845,7 @@ public class Feed extends AppCompatActivity {
         public Fragment getItem(int position) {
             SecondFragment fragment = new SecondFragment();
             Bundle bundle = new Bundle();
-            if (position == 0) {
+            if (position == 2) {
                 bundle.putInt("position", Constants.POSITION_FEED_TAB_MY_CITY);
                 bundle.putString("place", session.getLoginLocation());
             } else if (position == 1)
