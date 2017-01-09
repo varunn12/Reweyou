@@ -401,7 +401,23 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
         if (editlocation.getText().toString().trim().length() > 0) {
             place = editlocation.getText().toString();
             address = place;
-            permissionGranted();
+            if (validateFields()) {
+
+                switch (viewType) {
+                    case PREVIEW_IMAGE:
+                        compressSelectedImage();
+                        break;
+                    case PREVIEW_VIDEO:
+                        compressVideo();
+                        break;
+                    case PREVIEW_GIF:
+                        compressGif();
+                        break;
+                    default:
+                        uploadFile(PREVIEW_TEXT, null);
+                }
+
+            }
         } else {
             if (!hasPermissions(this, PERMISSIONS_LOCATION)) {
                 ActivityCompat.requestPermissions(this, PERMISSIONS_LOCATION, PERMISSION_ALL);
