@@ -37,6 +37,7 @@
 
     <string-array name="brew_array">
         <item>Select Category</item>
+        <item>Local Report</item>
         <item>Issues</item>
         <item>National</item>
         <item>International</item>
