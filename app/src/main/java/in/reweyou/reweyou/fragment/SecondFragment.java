@@ -186,8 +186,9 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
                                     new Handler().postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
-
-                                            makeLoadMoreRequest();
+                                            if (adapter != null)
+                                                if (adapter.getItemCount() > 10)
+                                                    makeLoadMoreRequest();
                                         }
                                     }, 1000);
 
@@ -214,7 +215,11 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
                                     JSONArray parentArray = null;
                                     try {
                                         parentArray = new JSONArray(response);
-                                        adapter.remove();
+                                        try {
+                                            adapter.remove();
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
 
                                         Log.d("lenght", String.valueOf(parentArray.length()));
                                         for (int i = 0; i < parentArray.length(); i++) {
@@ -438,6 +443,8 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
                     @Override
                     public void onResponse(JSONArray response) {
 
+                        emptyview.setVisibility(View.GONE);
+                        noissues.setVisibility(View.GONE);
                         swipe.setRefreshing(false);
                         savedata(response.toString(), position);
                         try {
