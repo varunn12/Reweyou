@@ -129,7 +129,8 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.button:
-                reading(i);
+                if (dataloaded)
+                    reading(i);
                 break;
 
         }
@@ -340,7 +341,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
             //need to set data to the list
         }
     }
-
 
 
 }
