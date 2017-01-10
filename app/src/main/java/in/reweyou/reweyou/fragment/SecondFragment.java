@@ -58,6 +58,7 @@ import in.reweyou.reweyou.model.FeedModel;
 import in.reweyou.reweyou.utils.Constants;
 
 import static in.reweyou.reweyou.utils.Constants.POSITION_FEED_TAB_3;
+import static in.reweyou.reweyou.utils.Constants.POSITION_FEED_TAB_MY_CITY;
 import static in.reweyou.reweyou.utils.Constants.POSITION_SINGLE_POST;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_LOCATION;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_NEW_POST;
@@ -89,6 +90,7 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
     private HashMap<String, String> data;
     private SwipeRefreshLayout swipe;
     private TextView emptyview;
+    private TextView noissues;
 
     public SecondFragment() {
     }
@@ -137,6 +139,11 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
 
         emptyview = (TextView) layout.findViewById(R.id.sizenullview);
         emptyview.setVisibility(View.GONE);
+
+        noissues = (TextView) layout.findViewById(R.id.noissues);
+        noissues.setVisibility(View.GONE);
+
+
         emptyview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -296,7 +303,10 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
 
         try {
 
+            Log.d(TAG, "makeRequest: jjj" + agetDataa(position));
             JSONArray jsonArray = new JSONArray(agetDataa(position));
+            if (jsonArray.length() == 0 && position == POSITION_FEED_TAB_MY_CITY)
+                noissues.setVisibility(View.VISIBLE);
             Type listType = new TypeToken<List<FeedModel>>() {
             }.getType();
             List<FeedModel> myModelList = gson.fromJson(jsonArray.toString(), listType);
@@ -306,6 +316,7 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
         } catch (Exception e) {
             swipe.setEnabled(true);
             e.printStackTrace();
+            Log.d(TAG, "makeRequest: url" + getUrl());
             AndroidNetworking.post(getUrl())
                     .addBodyParameter(data)
                     .setTag("test")
@@ -318,6 +329,7 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
                             Log.d(TAG, "onResponse: lentttt" + response.length());
                             if (response.length() > 0) {
                                 emptyview.setVisibility(View.GONE);
+                                noissues.setVisibility(View.GONE);
                                 savedata(response.toString(), position);
                                 try {
                                     Type listType = new TypeToken<List<FeedModel>>() {
@@ -335,7 +347,7 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
                                 savedata(null, position);
                                 if (position == POSITION_FEED_TAB_3) {
                                     emptyview.setVisibility(View.VISIBLE);
-                                }
+                                } else onfetchResponse(new ArrayList<FeedModel>(), false);
                             }
 
                         }
@@ -381,8 +393,8 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
 
 
         }
-
-        lastPostid = feedModels.get(feedModels.size() - 1).getPostId();
+        if (feedModels.size() > 0)
+            lastPostid = feedModels.get(feedModels.size() - 1).getPostId();
 
         progressBar.setVisibility(View.GONE);
 
@@ -515,6 +527,7 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
 
     public void onLocationSet(String location) {
         this.placename = location;
+
         makeRequest();
     }
 

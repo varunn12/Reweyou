@@ -39,4 +39,18 @@
         android:textColor="#9c9c9c"
         android:textSize="16dp" />
 
+    <TextView
+        android:id="@+id/noissues"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:paddingBottom="64dp"
+        android:paddingLeft="48dp"
+        android:paddingRight="48dp"
+        android:paddingTop="16dp"
+        android:text="No reports have been reported yet from your city\n\nBe the first one to do that"
+        android:textColor="#9c9c9c"
+        android:textSize="16dp" />
+
 </RelativeLayout>

@@ -886,6 +886,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         super.onViewRecycled(holder);
     }
 
+
     private class BaseViewHolder extends RecyclerView.ViewHolder {
         protected ImageView profilepic, overflow, sendmessage;
         protected TextView headline, upvote, head;
