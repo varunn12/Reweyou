@@ -210,6 +210,15 @@ public class UserSessionManager {
         editor.commit();
     }
 
+    public void saveData(String data, int position) {
+        editor.putString("feed" + position, data);
+        editor.commit();
+    }
+
+    public String getData(int position) {
+        return pref.getString("feed" + position, null);
+    }
+
     public void setAuthToken(String token) {
         editor.putString(KEY_AUTH_TOKEN, token);
         editor.commit();
@@ -260,5 +269,14 @@ public class UserSessionManager {
 
     public boolean getFirstLoad() {
         return pref.getBoolean(FIRST_LOAD_TUT, false);
+    }
+
+    public void setFirstLoad1() {
+        editor.putBoolean("aaas", true);
+        editor.commit();
+    }
+
+    public boolean getFirstLoad1() {
+        return pref.getBoolean("aaas", false);
     }
 }

@@ -64,6 +64,8 @@ import in.reweyou.reweyou.fcm.MyFirebaseInstanceIDService;
 import static in.reweyou.reweyou.utils.Constants.URL_VERIFY_OTP;
 
 public class Signup extends AppCompatActivity implements View.OnClickListener {
+
+
     public static final String KEY_USERNAME = "username";
     public static final String KEY_NUMBER = "number";
     public static final String KEY_LOCATION = "location";
@@ -303,7 +305,8 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
 
         // Starting TokenTest
         Intent i = new Intent(this, WelcomeActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
         startActivity(i);
         finish(); // Call once you redirect to another activity
     }

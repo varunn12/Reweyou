@@ -2,13 +2,20 @@ package in.reweyou.reweyou;
 
 import android.app.Application;
 import android.support.v7.app.AppCompatDelegate;
+import android.util.Log;
 
+import com.androidnetworking.AndroidNetworking;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.StandardExceptionParser;
 import com.google.android.gms.analytics.Tracker;
 
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
 import in.reweyou.reweyou.classes.AnalyticsTracker;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
 
 /**
  * Created by Reweyou on 2/25/2016.
@@ -16,6 +23,16 @@ import in.reweyou.reweyou.classes.AnalyticsTracker;
 public class ApplicationClass extends Application {
     public static final String TAG = ApplicationClass.class
             .getSimpleName();
+    private static final Interceptor REWRITE_CACHE_CONTROL_INTERCEPTOR = new Interceptor() {
+        @Override
+        public okhttp3.Response intercept(Interceptor.Chain chain) throws IOException {
+            okhttp3.Response originalResponse = chain.proceed(chain.request());
+            Log.d(TAG, "intercept: " + originalResponse);
+            return originalResponse.newBuilder()
+                    .header("Cache-Control", "max-age=" + 86400 * 30 + ",max-stale=" + 86400 * 30)
+                    .build();
+        }
+    };
     private static ApplicationClass mInstance;
 
     static {
@@ -34,8 +51,24 @@ public class ApplicationClass extends Application {
         AnalyticsTracker.initialize(this);
         AnalyticsTracker.getInstance().get(AnalyticsTracker.Target.APP);
 
-    }
+       /* if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return;
+        }
+        LeakCanary.install(this);
+        // Normal app init code...*/
 
+        final OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
+                .connectTimeout(5, TimeUnit.SECONDS)
+                .readTimeout(15, TimeUnit.SECONDS)
+                .writeTimeout(15, TimeUnit.SECONDS)
+                .build();
+
+        AndroidNetworking.initialize(getApplicationContext(), okHttpClient);
+
+
+    }
 
     public synchronized Tracker getGoogleAnalyticsTracker() {
         AnalyticsTracker analyticsTrackers = AnalyticsTracker.getInstance();

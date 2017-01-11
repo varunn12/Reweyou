@@ -3,36 +3,21 @@
     android:layout_height="match_parent"
     android:background="#eeeeee">
 
-    <TextView
-        android:id="@+id/no"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="@color/red"
-        android:gravity="center"
-        android:text="no internet connectivity"
-        android:textColor="#fff"
-        android:visibility="gone" />
-
-
-    <in.reweyou.reweyou.customView.swipeRefresh.PullRefreshLayout
-        android:id="@+id/swipeRefreshLayout"
+        android:layout_height="wrap_content">
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/no"
-
-        >
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:clipToPadding="false"
-            android:fadeScrollbars="true"
-            android:paddingBottom="4dp"
-            android:paddingTop="4dp"
-            android:scrollbars="vertical" />
-    </in.reweyou.reweyou.customView.swipeRefresh.PullRefreshLayout>
+        android:clipToPadding="false"
+        android:fadeScrollbars="true"
+        android:paddingBottom="4dp"
+        android:paddingTop="4dp"
+        android:scrollbars="vertical" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <ProgressBar
         android:id="@+id/progress_bar"
@@ -40,42 +25,32 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="32dp"
-        android:orientation="vertical"
-        android:visibility="gone">
+    <TextView
+        android:id="@+id/sizenullview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:paddingBottom="64dp"
+        android:paddingLeft="48dp"
+        android:paddingRight="48dp"
+        android:paddingTop="16dp"
+        android:text="You are currently not reading anyone. Tap to start reading a reporter"
+        android:textColor="#9c9c9c"
+        android:textSize="16dp" />
 
-        <RelativeLayout
-            android:id="@+id/rlv1"
-            android:layout_width="180dp"
-            android:layout_height="28dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="32dp"
-            android:background="@drawable/tut_noti_rectangle"
-            android:elevation="4dp">
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="swipe down to refresh"
-                android:textColor="#fff" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-
-            android:layout_below="@+id/rlv1"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/tut_noti_triangle"
-            android:elevation="4dp"
-            android:rotation="180" />
-    </LinearLayout>
+    <TextView
+        android:id="@+id/noissues"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:paddingBottom="64dp"
+        android:paddingLeft="48dp"
+        android:paddingRight="48dp"
+        android:paddingTop="16dp"
+        android:text="No reports have been reported yet from your city\n\nBe the first one to do that"
+        android:textColor="#9c9c9c"
+        android:textSize="16dp" />
 
 </RelativeLayout>

@@ -3,7 +3,7 @@
 # in C:\Users\Reweyou\AppData\Local\Android\sdk/tools/proguard/proguard-android.txt
 # You can edit the include path and order by changing the proguardFiles
 # directive in build.gradle.
-#
+#                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
 # For more details, see
 #   http://developer.android.com/guide/developing/tools/proguard.html
 
@@ -28,3 +28,4 @@
 -keep class android.support.v7.widget.SearchView { *; }
 
 -dontwarn io.nlopez.**
+-dontwarn okio.**

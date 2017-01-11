@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,6 +23,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -32,11 +34,13 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -104,7 +108,23 @@ public class Feed extends AppCompatActivity {
     private BroadcastReceiver netChangeReceiver;
     private IntentFilter netChangeIntentFilter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
     private FirebaseAnalytics mFirebaseAnalytics;
+    private BroadcastReceiver addnotireceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try {
 
+                if (session.getDeviceid() != null) {
+                    makeNotificationsRequest();
+                }
+
+                Log.w(TAG, "onReceive: feed noti change request called");
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
+    private android.app.AlertDialog alertDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,6 +151,11 @@ public class Feed extends AppCompatActivity {
             viewPager.setAdapter(pagerAdapter);
             viewPager.setCurrentItem(1);
             makeNotificationsRequest();
+
+
+            if (!session.getFirstLoad1())
+                showwhatsnewdialog();
+
         }
 
 
@@ -154,10 +179,41 @@ public class Feed extends AppCompatActivity {
 
     }
 
+    private void showwhatsnewdialog() {
+        LayoutInflater li = LayoutInflater.from(Feed.this);
+        View confirmDialog = li.inflate(R.layout.dialog_whatsnew, null);
+
+        //  TextView editNum = (TextView) confirmDialog.findViewById(R.id.editNumber);
+        //final EditText otpField = (EditText) confirmDialog.findViewById(R.id.editTextOtp);
+        Button confirm = (Button) confirmDialog.findViewById(R.id.buttonConfirm);
+
+
+        //Creating an alertdialog builder
+        android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(Feed.this);
+        alert.setView(confirmDialog);
+
+        //Creating an alert dialog
+        alertDialog = alert.create();
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        alertDialog.setCancelable(false);
+        //Displaying the alert dialog
+        alertDialog.show();
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                session.setFirstLoad1();
+                alertDialog.dismiss();
+            }
+        });
+    }
 
     @Override
     protected void onStart() {
         super.onStart();
+        if (session.getDeviceid() != null) {
+            makeNotificationsRequest();
+        }
+        LocalBroadcastManager.getInstance(this).registerReceiver(addnotireceiver, new IntentFilter(Constants.SEND_NOTI_CHANGE_REQUEST));
         registerNetChangeReceiver();
     }
 
@@ -168,9 +224,10 @@ public class Feed extends AppCompatActivity {
     @Override
     protected void onStop() {
         unregisterReceiver(netChangeReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(addnotireceiver);
+
         super.onStop();
     }
-
 
     private void initViews() {
         initToolbar();
@@ -368,8 +425,6 @@ public class Feed extends AppCompatActivity {
         if (reqCode == REQ_CODE_PROFILE && resCode == RESULT_OK) {
             //called when profilepicture is updated by user
             Glide.with(Feed.this).load(session.getProfilePicture()).error(R.drawable.download).into(image);
-        } else if (reqCode == REQ_CODE_NOTI_COUNT && resCode == RESULT_OK) {
-            makeNotificationsRequest();
         } else {
             int dataType = new HandleActivityResult().handleResult(reqCode, resCode, data);
             switch (dataType) {
@@ -429,6 +484,7 @@ public class Feed extends AppCompatActivity {
                 if (!query.isEmpty()) {
                     Intent i = new Intent(Feed.this, SearchResultsActivity.class);
                     i.putExtra("query", query);
+                    i.putExtra("position", 12);
                     startActivity(i);
                 }
 
@@ -472,6 +528,11 @@ public class Feed extends AppCompatActivity {
         switch (item.getItemId()) {
 
             case R.id.action_search:
+                return true;
+            case R.id.action_message:
+                Intent s = new Intent(Feed.this, Contacts.class);
+                startActivity(s);
+                overridePendingTransition(0, 0);
                 return true;
 
             default:
@@ -520,9 +581,10 @@ public class Feed extends AppCompatActivity {
         if (doubleBackToExitPressedOnce) {
             finish();
         }
+        if (!doubleBackToExitPressedOnce)
+            Toast.makeText(this, "Press again to exit.", Toast.LENGTH_SHORT).show();
 
         this.doubleBackToExitPressedOnce = true;
-        Toast.makeText(this, "Press again to exit.", Toast.LENGTH_SHORT).show();
 
         new Handler().postDelayed(new Runnable() {
 
@@ -688,10 +750,10 @@ public class Feed extends AppCompatActivity {
                         startActivity(reports);
                         overridePendingTransition(0, 0);
                         break;
-                    case R.id.notifications:
+                    case R.id.invite:
                         drawerLayout.closeDrawers();
-                        Intent notif = new Intent(Feed.this, Notifications.class);
-                        startActivityForResult(notif, REQ_CODE_NOTI_COUNT);
+                        Intent inv = new Intent(Feed.this, Invite.class);
+                        startActivity(inv);
                         overridePendingTransition(0, 0);
                         break;
                     case R.id.New:
@@ -700,21 +762,24 @@ public class Feed extends AppCompatActivity {
                         startActivity(New);
                         overridePendingTransition(0, 0);
                         break;
-                    case R.id.logout:
-                        drawerLayout.closeDrawers();
-                        alertMessage();
-                        overridePendingTransition(0, 0);
-                        break;
+
                     case R.id.leaderboard:
                         drawerLayout.closeDrawers();
                         Intent leader = new Intent(Feed.this, Leaderboard.class);
                         startActivity(leader);
                         overridePendingTransition(0, 0);
                         break;
+                   /* case R.id.invite:
+                        drawerLayout.closeDrawers();
+                        Intent i = new Intent(Feed.this, Invite.class);
+                        startActivity(i);
+                        overridePendingTransition(0, 0);
+                        break;*/
                     case R.id.nav_rate:
                         drawerLayout.closeDrawers();
                         openplaystore();
                         break;
+
                 }
                 return true;
             }
@@ -780,7 +845,7 @@ public class Feed extends AppCompatActivity {
         public Fragment getItem(int position) {
             SecondFragment fragment = new SecondFragment();
             Bundle bundle = new Bundle();
-            if (position == 0) {
+            if (position == 2) {
                 bundle.putInt("position", Constants.POSITION_FEED_TAB_MY_CITY);
                 bundle.putString("place", session.getLoginLocation());
             } else if (position == 1)

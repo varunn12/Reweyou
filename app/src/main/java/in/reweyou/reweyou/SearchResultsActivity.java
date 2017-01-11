@@ -21,6 +21,7 @@ public class SearchResultsActivity extends AppCompatActivity {
     private String query;
     private Toolbar toolbar;
     private UserSessionManager sessionManager;
+    private int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +53,9 @@ public class SearchResultsActivity extends AppCompatActivity {
 
         if (intent.hasExtra("query"))
             query = intent.getStringExtra("query");
+        if (intent.hasExtra("position"))
+            position = intent.getIntExtra("position", -1);
+
 
 
     }
@@ -63,7 +67,7 @@ public class SearchResultsActivity extends AppCompatActivity {
         SecondFragment frag = new SecondFragment();
         Bundle bundle = new Bundle();
 
-        bundle.putInt("position", 12);
+        bundle.putInt("position", position);
         bundle.putString("query", query);
 
 

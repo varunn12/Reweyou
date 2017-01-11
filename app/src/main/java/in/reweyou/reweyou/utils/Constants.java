@@ -1,5 +1,8 @@
 package in.reweyou.reweyou.utils;
 
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 /**
  * Created by master on 1/11/16.
  */
@@ -69,9 +72,23 @@ public class Constants {
 
     public static final int POSITION_FEED_TAB_MAIN_FEED = 20;
     public static final int POSITION_FEED_TAB_2 = 21;
-    public static final int POSITION_FEED_TAB_3 = 2;
+    public static final int POSITION_FEED_TAB_3 = 0;
     public static final int POSITION_FEED_TAB_MY_CITY = 10;
     public static final int POSITION_SEARCH_TAB = 12;
     public static final int POSITION_SINGLE_POST = 15;
     public static final int POSITION_CATEGORY_TAG = 19;
+
+    public static final String ADD_CHAT_MESSAGE_EVENT = "acm";
+    public static final String ADD_CHAT_MESSAGE_CHATROOM_ID = "aa";
+    public static final String ADD_CHAT_MESSAGE_SENDER_NAME = "aswsz";
+    public static final String ADD_CHAT_MESSAGE_SENDER_NUMBER = "adwqdc";
+    public static final String ADD_CHAT_MESSAGE_MESSAGE = "da";
+    public static final String ADD_CHAT_MESSAGE_TIMESTAMP = "dc";
+
+
+    public static final SimpleDateFormat dfs = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss a", Locale.ENGLISH);
+    public static final String URL_MY_REPORTS = "https://www.reweyou.in/reweyou/myreports.php";
+    public static final String SEND_NOTI_CHANGE_REQUEST = "abx";
+
+    public static String suggestpostid;
 }

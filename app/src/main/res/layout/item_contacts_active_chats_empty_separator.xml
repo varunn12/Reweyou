@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="48dp">
+
+
+    <TextView
+        android:id="@+id/lastmessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/Who"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="16dp"
+        android:layout_toRightOf="@+id/pic"
+        android:ellipsize="end"
+
+
+        android:text="No active chats yet. Start conversation with a contact below."
+        android:textColor="#9c9c9c"
+        android:textSize="14sp"
+
+        />
+
+
+</RelativeLayout>

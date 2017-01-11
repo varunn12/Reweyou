@@ -36,6 +36,8 @@ public class SinglePostActivity extends AppCompatActivity {
     private Toolbar mToolbar;
     private TabLayout tabLayout;
     private String query;
+    private boolean fromChatActivity;
+    private boolean fromnotiActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +47,8 @@ public class SinglePostActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         Bundle bundle = getIntent().getExtras();
         query = bundle.getString("postid");
+        fromChatActivity = bundle.getBoolean("fromchat", false);
+        fromnotiActivity = bundle.getBoolean("fromnoti", false);
 
         initToolbar();
         initViewPagerAndTabs();
@@ -62,7 +66,7 @@ public class SinglePostActivity extends AppCompatActivity {
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                onBackPressed();
             }
         });
     }
@@ -222,9 +226,14 @@ public class SinglePostActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Intent i = new Intent(SinglePostActivity.this, Feed.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-        startActivity(i);
+        if (fromChatActivity || fromnotiActivity) {
+
+        } else {
+            Intent i = new Intent(SinglePostActivity.this, Feed.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(i);
+        }
+
 
         finish();
     }

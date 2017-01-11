@@ -2,15 +2,12 @@ package in.reweyou.reweyou;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -28,7 +25,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
-import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,17 +43,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import in.reweyou.reweyou.adapter.FeedAdapter;
 import in.reweyou.reweyou.classes.ConnectionDetector;
-import in.reweyou.reweyou.classes.DividerItemDecoration;
 import in.reweyou.reweyou.classes.RequestHandler;
 import in.reweyou.reweyou.classes.UserSessionManager;
-import in.reweyou.reweyou.model.FeedModel;
 
 import static in.reweyou.reweyou.utils.Constants.USER_PROFILE_URL_FOLLOW;
 import static in.reweyou.reweyou.utils.Constants.USER_PROFILE_URL_VERIFY_FOLLOW;
 
 public class UserProfile extends AppCompatActivity implements View.OnClickListener {
+    public static String userprofilenumber;
     Boolean isInternetPresent = false;
     ConnectionDetector cd;
     UserSessionManager session;
@@ -70,46 +64,26 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     private Button button;
     private ProgressBar progressBar;
     private RecyclerView recyclerView;
-
+    private TextView viewreport;
+    private boolean dataloaded;
+    private String name;
+    private String usernumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
         setContentView(R.layout.activity_user_profile);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
 
 
-        initCollapsingToolbar();
-        Intent in = getIntent();
+        //initCollapsingToolbar();
         Bundle bundle = getIntent().getExtras();
         i = bundle.getString("myData");
         cd = new ConnectionDetector(UserProfile.this);
         session = new UserSessionManager(getApplicationContext());
-        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
-        progressBar.setVisibility(View.VISIBLE);
-        isInternetPresent = cd.isConnectingToInternet();
 
-       /* noInternet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(isInternetPresent) {
-                    progressBar.setVisibility(View.VISIBLE);
-                    new JSONTask().execute(i);
-                    new JSONTasks().execute(tag, i);
-                    button(i);
-                }
-            }
-        });*/
+        viewreport = (TextView) findViewById(R.id.viewreport);
         Name = (TextView) findViewById(R.id.Name);
         Reports = (TextView) findViewById(R.id.Reports);
         Info = (TextView) findViewById(R.id.Info);
@@ -128,24 +102,26 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         button = (Button) findViewById(R.id.button);
         profilepic = (ImageView) findViewById(R.id.profilepic);
 
-
-        button.setVisibility(View.GONE);
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecoration(ContextCompat.getDrawable(this, R.drawable.line));
-        recyclerView.addItemDecoration(dividerItemDecoration);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-
         //Progress bar
-        tag = "Random";
         button.setOnClickListener(this);
-        if (isInternetPresent) {
-            new JSONTask().execute(i);
-            new JSONTasks().execute(tag, i);
-            button(i);
-        } else {
-            Toast.makeText(this, "You are not connected to Internet", Toast.LENGTH_LONG).show();
-        }
+
+        new JSONTask().execute(i);
+        // new JSONTasks().execute(tag, i);
+        button(i);
+
+        viewreport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (dataloaded) {
+                    Intent i = new Intent(UserProfile.this, SearchResultsActivity.class);
+                    i.putExtra("position", 29);
+                    userprofilenumber = usernumber;
+                    i.putExtra("query", name);
+                    startActivity(i);
+                }
+            }
+        });
+
 
     }
 
@@ -153,8 +129,8 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.button:
-                final int status = (Integer) button.getTag();
-                reading(i);
+                if (dataloaded)
+                    reading(i);
                 break;
 
         }
@@ -260,38 +236,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         requestQueue.add(stringRequest);
     }
 
-    /* Initializing collapsing toolbar
-    * Will show and hide the toolbar title on scroll
-    */
-    private void initCollapsingToolbar() {
-        final CollapsingToolbarLayout collapsingToolbar =
-                (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        collapsingToolbar.setTitle(" ");
-        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
-        appBarLayout.setExpanded(true);
-
-        // hiding & showing the title when toolbar expanded & collapsed
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            boolean isShow = false;
-            int scrollRange = -1;
-
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.getTotalScrollRange();
-                }
-                if (scrollRange + verticalOffset == 0) {
-                    collapsingToolbar.setTitle(getString(R.string.app_name));
-
-
-                    isShow = true;
-                } else if (isShow) {
-                    collapsingToolbar.setTitle(" ");
-                    isShow = false;
-                }
-            }
-        });
-    }
 
     public class JSONTask extends AsyncTask<String, String, List<String>> {
 
@@ -336,6 +280,8 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 for (int i = 0; i < parentArray.length(); i++) {
                     JSONObject finalObject = parentArray.getJSONObject(i);
                     profilelist.add(finalObject.getString("name"));
+                    name = finalObject.getString("name");
+                    usernumber = finalObject.getString("number");
                     profilelist.add(finalObject.getString("total_reviews"));
                     profilelist.add(finalObject.getString("profilepic"));
                     profilelist.add(finalObject.getString("info"));
@@ -343,6 +289,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                     profilelist.add(finalObject.getString("readers"));
                 }
 
+                dataloaded = true;
                 return profilelist;
 
                 //return buffer.toString();
@@ -370,20 +317,24 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         @Override
         protected void onPostExecute(List<String> result) {
             super.onPostExecute(result);
-            if (result != null) {
-                if (!result.isEmpty()) {
-                    Name.setText(result.get(0));
-                    Reports.setText(result.get(1));
-                    Info.setText(result.get(3));
-                    // imageLoader.displayImage(result.get(2), profilepic, option);
-                    Glide.with(getApplicationContext()).load(result.get(2)).error(R.drawable.download).into(profilepic);
-                    user = result.get(4);
-                    Readers.setText(result.get(5));
+            try {
+                if (result != null) {
+                    if (!result.isEmpty()) {
+                        Name.setText(result.get(0));
+                        Reports.setText(result.get(1));
+                        Info.setText(result.get(3));
+
+                        Glide.with(UserProfile.this).load(result.get(2)).dontAnimate().error(R.drawable.download).into(profilepic);
+                        user = result.get(4);
+                        Readers.setText(result.get(5));
+                    }
+
+                } else {
+                    Toast.makeText(getApplicationContext(), "Couldn't fetch data", Toast.LENGTH_LONG).show();
+
                 }
-
-            } else {
-                Toast.makeText(getApplicationContext(), "Couldn't fetch data", Toast.LENGTH_LONG).show();
-
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
             //    progressBar.setVisibility(View.GONE);
@@ -391,89 +342,5 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         }
     }
 
-    public class JSONTasks extends AsyncTask<String, String, List<Object>> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            //setProgressBarIndeterminateVisibility(true);
-        }
-
-        @Override
-        protected List<Object> doInBackground(String... params) {
-            HttpURLConnection connection = null;
-            BufferedReader reader = null;
-            RequestHandler rh = new RequestHandler();
-            HashMap<String, String> data = new HashMap<String, String>();
-            data.put("tag", params[0]);
-            data.put("number", params[1]);
-            //  tag="All";
-            try {
-                URL url = new URL("https://www.reweyou.in/reweyou/myreports.php");
-                connection = (HttpURLConnection) url.openConnection();
-
-                connection.setDoOutput(true);
-                connection.setRequestMethod("POST");
-
-
-                OutputStreamWriter wr = new OutputStreamWriter(connection.getOutputStream());
-                wr.write(rh.getPostDataString(data));
-                wr.flush();
-
-                InputStream stream = connection.getInputStream();
-                reader = new BufferedReader(new InputStreamReader(stream));
-                StringBuffer buffer = new StringBuffer();
-
-                String line = "";
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line);
-                }
-                String finalJson = buffer.toString();
-
-                Log.d("final", finalJson);
-                JSONArray parentArray = new JSONArray(finalJson);
-                length = parentArray.length();
-                List<Object> messagelist = new ArrayList<>();
-
-                Gson gson = new Gson();
-                for (int i = 0; i < parentArray.length(); i++) {
-                    JSONObject finalObject = parentArray.getJSONObject(i);
-                    FeedModel feedModel = gson.fromJson(finalObject.toString(), FeedModel.class);
-                    messagelist.add(feedModel);
-                }
-
-                return messagelist;
-                //return buffer.toString();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } finally {
-                if (connection != null) {
-                    connection.disconnect();
-                }
-                try {
-                    if (reader != null) {
-                        reader.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(List<Object> result) {
-            super.onPostExecute(result);
-            progressBar.setVisibility(View.GONE);
-            FeedAdapter adapter = new FeedAdapter(UserProfile.this, result, null);
-            // total.setText("You have reported "+ String.valueOf(length)+ " stories.");
-            recyclerView.setAdapter(adapter);
-            //need to set data to the list
-        }
-    }
 
 }

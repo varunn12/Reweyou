@@ -141,6 +141,37 @@
                         android:textCursorDrawable="@drawable/color_cursor"
                         android:textSize="14dp" />
 
+
+                    <View
+                        android:layout_width="250dp"
+                        android:layout_height="0.7dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginRight="12dp"
+                        android:layout_marginTop="4dp"
+                        android:background="@color/greylight" />
+
+                    <EditText
+                        android:id="@+id/editlocation"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@null"
+                        android:drawableLeft="@drawable/ic_location_on_black_24px_layer3"
+                        android:drawablePadding="16dp"
+                        android:hint="report location (optional)"
+                        android:inputType="textMultiLine"
+                        android:minLines="1"
+                        android:paddingBottom="8dp"
+                        android:paddingTop="8dp"
+                        android:textColorHint="#9e9e9e"
+                        android:textCursorDrawable="@drawable/color_cursor"
+                        android:textSize="14dp" />
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="0.7dp"
@@ -163,7 +194,7 @@
 
                         <EditText
                             android:id="@+id/Who"
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:background="@null"

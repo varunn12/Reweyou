@@ -1,36 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="none">
+    <item android:title="General">
 
-        <item
-            android:id="@+id/myreports"
-            android:icon="@drawable/ic_assignment_black_24px"
-            android:title="Feed Settings" />
-        <item
-            android:id="@+id/notifications"
-            android:icon="@drawable/ic_notifications_black_24px"
-            android:title="Notifications" />
-        <item
-            android:id="@+id/leaderboard"
-            android:icon="@drawable/cup"
-            android:title="Top Reporters" />
-        <item
-            android:id="@+id/New"
-            android:icon="@drawable/ic_new_releases_black_24px"
-            android:title="What's New?" />
-        <item
-            android:id="@+id/logout"
-            android:icon="@drawable/ic_delete_black_24px"
-            android:title="Logout" />
-    </group>
+        <menu>
+
+            <item
+                android:id="@+id/myreports"
+                android:icon="@drawable/ic_assignment_black_24px"
+                android:title="Feed Settings" />
+
+            <item
+                android:id="@+id/leaderboard"
+                android:icon="@drawable/cup"
+                android:title="Top Reporters" />
+
+        </menu>
+    </item>
+
+    <item android:title="Invite">
+
+        <menu>
+            <item
+                android:id="@+id/invite"
+                android:icon="@drawable/ic_person_primary_24px"
+                android:title="Invite" />
+
+        </menu>
+    </item>
 
     <item android:title="Other">
+
         <menu>
+            <item
+                android:id="@+id/New"
+                android:icon="@drawable/ic_new_releases_black_24px"
+                android:title="What's New?" />
             <item
                 android:id="@+id/nav_rate"
                 android:icon="@drawable/ic_star_rate_black_24px"
                 android:title="Rate us" />
+            <!-- <item
+                 android:id="@+id/invite"
+                 android:icon="@drawable/ic_stay_current_portrait_black_24px"
+                 android:title="Invite?" />-->
+
         </menu>
     </item>
 

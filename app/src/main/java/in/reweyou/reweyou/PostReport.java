@@ -38,6 +38,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -133,6 +134,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
     private Uri selectedImageUri;
     private ImageView previewThumbnailView;
     private RelativeLayout hangingNoti;
+    private TextView editlocation;
 
     public static boolean isLocationEnabled(Context context) {
         int locationMode = 0;
@@ -296,6 +298,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
         logoContainer = (LinearLayout) findViewById(R.id.logo);
         bottomContainer = (LinearLayout) findViewById(R.id.l1);
         bottomline = findViewById(R.id.line);
+        editlocation = (TextView) findViewById(R.id.editlocation);
 
         //preview layout views
         previewImageView = (ImageView) findViewById(R.id.ImageShow);
@@ -394,10 +397,33 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
     }
 
     private void onbutoon() {
-        if (!hasPermissions(this, PERMISSIONS_LOCATION)) {
-            ActivityCompat.requestPermissions(this, PERMISSIONS_LOCATION, PERMISSION_ALL);
-        } else
-            permissionGranted();
+
+        if (editlocation.getText().toString().trim().length() > 0) {
+            place = editlocation.getText().toString();
+            address = place;
+            if (validateFields()) {
+
+                switch (viewType) {
+                    case PREVIEW_IMAGE:
+                        compressSelectedImage();
+                        break;
+                    case PREVIEW_VIDEO:
+                        compressVideo();
+                        break;
+                    case PREVIEW_GIF:
+                        compressGif();
+                        break;
+                    default:
+                        uploadFile(PREVIEW_TEXT, null);
+                }
+
+            }
+        } else {
+            if (!hasPermissions(this, PERMISSIONS_LOCATION)) {
+                ActivityCompat.requestPermissions(this, PERMISSIONS_LOCATION, PERMISSION_ALL);
+            } else
+                permissionGranted();
+        }
     }
 
     private boolean hasPermissions(Context context, String... permissions) {
