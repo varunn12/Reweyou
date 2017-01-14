@@ -12,5 +12,6 @@
     <dimen name="nav_header_vertical_spacing">16dp</dimen>
     <dimen name="nav_header_height">160dp</dimen>
     <dimen name="radius">110dp</dimen>
+    <dimen name="feed_menu_icon">24dp</dimen>
 
 </resources>

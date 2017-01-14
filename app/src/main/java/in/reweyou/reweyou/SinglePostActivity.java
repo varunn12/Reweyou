@@ -21,10 +21,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import in.reweyou.reweyou.fragment.BaseFragment;
 import in.reweyou.reweyou.fragment.CommentsFragment;
-import in.reweyou.reweyou.fragment.SecondFragment;
 
 import static in.reweyou.reweyou.classes.UploadOptions.PERMISSION_ALL_IMAGE;
+import static in.reweyou.reweyou.fragment.BaseFragment.TAG_FRAGMENT_CATEGORY;
+import static in.reweyou.reweyou.fragment.BaseFragment.TAG_SINGLE_POST_ID;
+import static in.reweyou.reweyou.utils.ReportLoadingConstant.FRAGMENT_CATEGORY_SINGLE_POST;
 
 public class SinglePostActivity extends AppCompatActivity {
 
@@ -250,10 +253,10 @@ public class SinglePostActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    SecondFragment fragment2 = new SecondFragment();
+                    BaseFragment fragment2 = new BaseFragment();
                     Bundle bundle2 = new Bundle();
-                    bundle2.putString("query", query);
-                    bundle2.putInt("position", 15);
+                    bundle2.putInt(TAG_FRAGMENT_CATEGORY, FRAGMENT_CATEGORY_SINGLE_POST);
+                    //bundle2.putString(TAG_SINGLE_POST_ID, query);
                     fragment2.setArguments(bundle2);
                     Log.d("getItem", "" + position);
                     return fragment2;

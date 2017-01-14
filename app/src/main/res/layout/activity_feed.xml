@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-
-    tools:openDrawer="left">
+   >
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -32,18 +31,104 @@
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
+                    android:layout_height="56dp"
                     android:background="?attr/colorPrimary"
-                    android:elevation="2dp"
-                    app:layout_scrollFlags="scroll|snap|enterAlways"
+                    app:layout_scrollFlags="scroll|enterAlways"
 
                     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                    app:theme="@style/MyThemeOverlay.ActionBar" />
+                    app:theme="@style/MyThemeOverlay.ActionBar">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <ImageView
+                            android:id="@+id/sssss"
+                            android:layout_width="28dp"
+                            android:layout_height="match_parent"
+                            app:srcCompat="@drawable/ic_menu_black_24px" />
+
+                        <TextView
+                            android:id="@+id/title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="12dp"
+                            android:layout_toRightOf="@+id/sssss"
+                            android:text="Reweyou"
+                            android:gravity="top"
+                            android:textColor="#fff"
+                            android:layout_marginTop="7dp"
+                            android:textSize="20dp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/title"
+                            android:layout_marginLeft="12dp"
+                            android:layout_toRightOf="@+id/sssss"
+                            android:text="Empowering Citizen Journalism"
+                            android:alpha="0.87"
+                            android:textColor="#fff"
+                            android:textSize="11dp"
+                            android:textStyle="normal" />
+
+                        <RelativeLayout
+                            android:id="@+id/ss"
+                            android:layout_width="40dp"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="8dp">
+
+                            <!-- Menu Item Image -->
+                            <ImageView
+                                android:id="@+id/action_menu_not"
+
+                                android:layout_width="32dp"
+                                android:layout_height="48dp"
+                                android:layout_centerInParent="true"
+                                android:layout_centerVertical="true"
+                                android:clickable="true"
+                                android:padding="5dp"
+                                app:srcCompat="@drawable/ic_notifications_white_24px" />
+
+                            <!-- Badge Count -->
+                            <TextView
+
+                                android:id="@+id/actionbar_notifcation_textview"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_alignParentRight="true"
+                                android:layout_marginRight="2dp"
+                                android:layout_marginTop="8dp"
+
+                                android:background="@drawable/solid_circle_red"
+                                android:gravity="center"
+                                android:text="0"
+                                android:textColor="#fff"
+                                android:textSize="11dp"
+                                android:textStyle="bold"
+                                android:visibility="invisible" />
+
+                        </RelativeLayout>
+
+                        <ImageView
+                            android:id="@+id/action_menu_inbox"
+                            android:layout_width="48dp"
+                            android:layout_height="match_parent"
+                            android:layout_toLeftOf="@+id/ss"
+                            android:padding="13dp"
+                            app:srcCompat="@drawable/ic_close_envelope_white" />
+
+                    </RelativeLayout>
+
+                </android.support.v7.widget.Toolbar>
 
                 <android.support.design.widget.TabLayout
                     android:id="@+id/tabLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="44dp"
+                    android:layout_height="40dp"
                     android:background="#ffffff"
                     app:tabIndicatorColor="@color/colorPrimary"
                     app:tabIndicatorHeight="3dp"

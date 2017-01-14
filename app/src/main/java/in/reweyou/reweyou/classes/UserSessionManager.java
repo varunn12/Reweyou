@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,6 +15,7 @@ import java.util.List;
 import java.util.Set;
 
 import in.reweyou.reweyou.Signup;
+import in.reweyou.reweyou.model.FeedModel;
 
 /**
  * Created by Reweyou on 12/17/2015.
@@ -35,6 +38,7 @@ public class UserSessionManager {
     private static final String IS_USER_LOGIN = "IsUserLoggedIn";
     private static final String KEY_AUTH_TOKEN = "authtoken";
     private static final String KEY_DEVICE_ID = "deviceid";
+    private static final String TAG = UserSessionManager.class.getName();
     // Shared Preferences reference
     SharedPreferences pref;
     // Editor reference for Shared preferences
@@ -278,5 +282,14 @@ public class UserSessionManager {
 
     public boolean getFirstLoad1() {
         return pref.getBoolean("aaas", false);
+    }
+
+    public void saveNewsReportsinCache(List<FeedModel> list) {
+        Gson gson = new Gson();
+        for (int i = 0; i < list.size(); i++) {
+            Log.d(TAG, "saveNewsReportsinCache: listsize " + list.size());
+            editor.putString("newsReport" + i, gson.toJson(list.get(i)));
+        }
+        editor.apply();
     }
 }

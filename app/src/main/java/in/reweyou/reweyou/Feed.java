@@ -1,6 +1,5 @@
 package in.reweyou.reweyou;
 
-import android.app.SearchManager;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -9,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,27 +24,21 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -73,6 +67,7 @@ import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.HandleActivityResult;
 import in.reweyou.reweyou.classes.UploadOptions;
 import in.reweyou.reweyou.classes.UserSessionManager;
+import in.reweyou.reweyou.fragment.BaseFragment;
 import in.reweyou.reweyou.fragment.SecondFragment;
 import in.reweyou.reweyou.utils.Constants;
 
@@ -82,7 +77,11 @@ import static in.reweyou.reweyou.classes.UploadOptions.PERMISSION_ALL_IMAGE;
 import static in.reweyou.reweyou.classes.UploadOptions.PERMISSION_ALL_SHARE;
 import static in.reweyou.reweyou.classes.UploadOptions.PERMISSION_ALL_VIDEO;
 import static in.reweyou.reweyou.classes.UploadOptions.PERMISSION_ALL_VIDEO_CAPTURE;
+import static in.reweyou.reweyou.fragment.BaseFragment.TAG_FRAGMENT_CATEGORY;
 import static in.reweyou.reweyou.utils.Constants.AUTH_ERROR;
+import static in.reweyou.reweyou.utils.ReportLoadingConstant.FRAGMENT_CATEGORY_CITY;
+import static in.reweyou.reweyou.utils.ReportLoadingConstant.FRAGMENT_CATEGORY_NEWS;
+import static in.reweyou.reweyou.utils.ReportLoadingConstant.FRAGMENT_CATEGORY_READING;
 
 public class Feed extends AppCompatActivity {
     public static final int REQ_CODE_NOTI_COUNT = 45;
@@ -169,8 +168,11 @@ public class Feed extends AppCompatActivity {
                             if (page != null) {
                                 Log.d(TAG, "onReceive: onRefresh of fragment " + viewPager.getCurrentItem() + " is called");
 
-
-                                ((SecondFragment) page).onNetChange();
+                                try {
+                                    ((SecondFragment) page).onNetChange();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
                     }
@@ -233,7 +235,7 @@ public class Feed extends AppCompatActivity {
         initToolbar();
         initFAB();
         initViewPagerAndTabs();
-        initNavigationDrawer();
+        // initNavigationDrawer();
     }
 
     private void initFAB() {
@@ -339,6 +341,35 @@ public class Feed extends AppCompatActivity {
     private void initToolbar() {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
+
+        TextView mTitle = (TextView) mToolbar.findViewById(R.id.title);
+        Typeface face = Typeface.createFromAsset(getAssets(),
+                "fonts/Pacifico.ttf");
+       /* mTitle.setTypeface(face);*/
+
+        ImageView inbox = (ImageView) mToolbar.findViewById(R.id.action_menu_inbox);
+        inbox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent s = new Intent(Feed.this, Contacts.class);
+                startActivity(s);
+                overridePendingTransition(0, 0);
+            }
+        });
+
+        ImageView noti = (ImageView) mToolbar.findViewById(R.id.action_menu_not);
+        noti.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent notifications = new Intent(Feed.this, Notifications.class);
+                startActivity(notifications);
+                overridePendingTransition(0, 0);
+            }
+        });
+
+        tv = (TextView) mToolbar.findViewById(R.id.actionbar_notifcation_textview);
+
+
     }
 
     private void initViewPagerAndTabs() {
@@ -356,7 +387,7 @@ public class Feed extends AppCompatActivity {
                 Fragment page = pagerAdapter.getRegisteredFragment(viewPager.getCurrentItem());
                 if (page != null) {
                     Log.d(TAG, "onPageChange: loadFeeds() of fragment " + viewPager.getCurrentItem() + " is called");
-                    ((SecondFragment) page).loadFeeds();
+                    ((BaseFragment) page).loadfeeds();
                 }
 
                 ApplicationClass.getInstance().trackEvent("FEED_TAB", String.valueOf(position), "current selected tab");
@@ -385,8 +416,10 @@ public class Feed extends AppCompatActivity {
                                 if (response.equals(AUTH_ERROR)) {
                                     session.logoutUser();
 
-                                } else
-                                    setnotificationNumber(Integer.parseInt(response));
+                                } else {
+
+                                }
+                                setnotificationNumber(Integer.parseInt(response));
                             }
                         }
                     }
@@ -451,7 +484,7 @@ public class Feed extends AppCompatActivity {
     }
 
 
-    @Override
+   /* @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.menu_feed, menu);
 
@@ -538,7 +571,7 @@ public class Feed extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
+    }*/
 
     protected void sendEmail() {
         Log.i("Send email", "");
@@ -843,7 +876,7 @@ public class Feed extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            SecondFragment fragment = new SecondFragment();
+            /*SecondFragment fragment = new SecondFragment();
             Bundle bundle = new Bundle();
             if (position == 2) {
                 bundle.putInt("position", Constants.POSITION_FEED_TAB_MY_CITY);
@@ -851,6 +884,21 @@ public class Feed extends AppCompatActivity {
             } else if (position == 1)
                 bundle.putInt("position", Constants.POSITION_FEED_TAB_MAIN_FEED);
             else bundle.putInt("position", position);
+
+*/
+            BaseFragment fragment = new BaseFragment();
+            Bundle bundle = new Bundle();
+            switch (position) {
+                case 0:
+                    bundle.putInt(TAG_FRAGMENT_CATEGORY, FRAGMENT_CATEGORY_READING);
+                    break;
+                case 1:
+                    bundle.putInt(TAG_FRAGMENT_CATEGORY, FRAGMENT_CATEGORY_NEWS);
+                    break;
+                case 2:
+                    bundle.putInt(TAG_FRAGMENT_CATEGORY, FRAGMENT_CATEGORY_CITY);
+                    break;
+            }
 
 
             fragment.setArguments(bundle);

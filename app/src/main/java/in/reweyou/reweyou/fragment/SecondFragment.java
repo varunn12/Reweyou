@@ -137,11 +137,11 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
 
         number = session.getMobileNumber();
 
-        emptyview = (TextView) layout.findViewById(R.id.sizenullview);
+       /* emptyview = (TextView) layout.findViewById(R.id.sizenullview);
         emptyview.setVisibility(View.GONE);
 
         noissues = (TextView) layout.findViewById(R.id.noissues);
-        noissues.setVisibility(View.GONE);
+        noissues.setVisibility(View.GONE);*/
 
 
         emptyview.setOnClickListener(new View.OnClickListener() {
@@ -443,6 +443,7 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
                     @Override
                     public void onResponse(JSONArray response) {
 
+                        Log.d(TAG, "onResponse: ewkhdbwhjdbvwhdbkj");
                         emptyview.setVisibility(View.GONE);
                         noissues.setVisibility(View.GONE);
                         swipe.setRefreshing(false);
@@ -452,6 +453,17 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
                             }.getType();
 
                             List<FeedModel> myModelList = gson.fromJson(response.toString(), listType);
+
+
+                       //     FeedModel1.deleteAll(FeedModel1.class);
+
+/*
+                            List<FeedModel1> myModelList1 = gson.fromJson(response.toString(), listType);
+*/
+
+
+
+
                             onfetchResponse(myModelList, true);
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -500,7 +512,7 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
     public String getUrl() {
         switch (position) {
             case Constants.POSITION_FEED_TAB_MAIN_FEED:
-                return Constants.FEED_URL;
+                return Constants.NEWS_FEED_URL;
             case Constants.POSITION_FEED_TAB_2:
                 return Constants.TRENDING_URL;
             case Constants.POSITION_FEED_TAB_3:

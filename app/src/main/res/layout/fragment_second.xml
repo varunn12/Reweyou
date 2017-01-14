@@ -12,45 +12,17 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/no"
-        android:clipToPadding="false"
         android:fadeScrollbars="true"
-        android:paddingBottom="4dp"
-        android:paddingTop="4dp"
+android:clipToPadding="false"
+        android:paddingTop="10dp"
         android:scrollbars="vertical" />
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <ProgressBar
         android:id="@+id/progress_bar"
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true" />
-
-    <TextView
-        android:id="@+id/sizenullview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:gravity="center"
-        android:paddingBottom="64dp"
-        android:paddingLeft="48dp"
-        android:paddingRight="48dp"
-        android:paddingTop="16dp"
-        android:text="You are currently not reading anyone. Tap to start reading a reporter"
-        android:textColor="#9c9c9c"
-        android:textSize="16dp" />
-
-    <TextView
-        android:id="@+id/noissues"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:gravity="center"
-        android:paddingBottom="64dp"
-        android:paddingLeft="48dp"
-        android:paddingRight="48dp"
-        android:paddingTop="16dp"
-        android:text="No reports have been reported yet from your city\n\nBe the first one to do that"
-        android:textColor="#9c9c9c"
-        android:textSize="16dp" />
 
 </RelativeLayout>

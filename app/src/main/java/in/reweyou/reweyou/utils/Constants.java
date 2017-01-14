@@ -13,7 +13,7 @@ public class Constants {
 
     public static final String EDIT_URL = "https://www.reweyou.in/reweyou/editheadline_new.php";
 
-    public static final String FEED_URL = "https://www.reweyou.in/reweyou/testfeed.php";
+    public static final String NEWS_FEED_URL = "https://www.reweyou.in/reweyou/testfeed.php";
     public static final String TRENDING_URL = "https://www.reweyou.in/reweyou/trending.php";
     public static final String READING_URL = "https://www.reweyou.in/reweyou/readingfeed.php";
     public static final String MY_CITY_URL = "https://www.reweyou.in/reweyou/report_cityfeed.php";
@@ -42,6 +42,8 @@ public class Constants {
     public static final int VIEW_TYPE_LOADING = 8;
     public static final int VIEW_TYPE_NEW_POST = 9;
     public static final int VIEW_TYPE_LOCATION = 11;
+    public static final int VIEW_TYPE_CITY_NO_REPORTS_YET= 12;
+    public static final int VIEW_TYPE_READING_NO_READERS= 13;
 
 
     public static final String POST_REPORT_KEY_ADDRESS = "address";

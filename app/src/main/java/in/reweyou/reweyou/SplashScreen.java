@@ -15,16 +15,12 @@ public class SplashScreen extends AppCompatActivity {
     private static final String TAG = "SplashScreen";
     SharedPreferences sharedPreferences;
     UserSessionManager session;
-    AppLocationService appLocationService;
-    Location location;
-    Uri uri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sharedPreferences = getSharedPreferences("ShaPreferences", Context.MODE_PRIVATE);
         session = new UserSessionManager(SplashScreen.this);
-        appLocationService = new AppLocationService(SplashScreen.this);
 
         SharedPreferences.Editor editor = sharedPreferences.edit();
         boolean firstTime = sharedPreferences.getBoolean("first", true);
