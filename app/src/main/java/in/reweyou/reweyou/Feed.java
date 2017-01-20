@@ -1,5 +1,7 @@
 package in.reweyou.reweyou;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -26,12 +28,12 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -124,6 +126,9 @@ public class Feed extends AppCompatActivity {
         }
     };
     private android.app.AlertDialog alertDialog;
+    private ValueAnimator valueAnimator;
+    private boolean animRunning;
+    private ValueAnimator valueAnimator1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -235,7 +240,7 @@ public class Feed extends AppCompatActivity {
         initToolbar();
         initFAB();
         initViewPagerAndTabs();
-        // initNavigationDrawer();
+        initNavigationDrawer();
     }
 
     private void initFAB() {
@@ -370,12 +375,21 @@ public class Feed extends AppCompatActivity {
         tv = (TextView) mToolbar.findViewById(R.id.actionbar_notifcation_textview);
 
 
+        mToolbar.findViewById(R.id.sssss).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.openDrawer(Gravity.START);
+            }
+        });
     }
 
     private void initViewPagerAndTabs() {
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         viewPager.setOffscreenPageLimit(2);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            public boolean pagechanged;
+            public int mPosition = -1;
+
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -384,20 +398,28 @@ public class Feed extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
 
-                Fragment page = pagerAdapter.getRegisteredFragment(viewPager.getCurrentItem());
-                if (page != null) {
-                    Log.d(TAG, "onPageChange: loadFeeds() of fragment " + viewPager.getCurrentItem() + " is called");
-                    ((BaseFragment) page).loadfeeds();
-                }
-
-                ApplicationClass.getInstance().trackEvent("FEED_TAB", String.valueOf(position), "current selected tab");
-
+                mPosition = position;
+                pagechanged = true;
+                Log.d(TAG, "onPageSelected: called");
 
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
+                if (state == ViewPager.SCROLL_STATE_IDLE) {
+                    Log.d(TAG, "onPageScrollStateChanged: " + state);
+                    if (pagechanged) {
+                        pagechanged = false;
+                        Fragment page = pagerAdapter.getRegisteredFragment(viewPager.getCurrentItem());
+                        if (page != null) {
+                            Log.d(TAG, "onPageChange: loadFeeds() of fragment " + viewPager.getCurrentItem() + " is called");
+                            ((BaseFragment) page).loadfeeds();
+                        }
 
+                        ApplicationClass.getInstance().trackEvent("FEED_TAB", String.valueOf(mPosition), "current selected tab");
+                    }
+
+                }
             }
         });
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
@@ -832,7 +854,7 @@ public class Feed extends AppCompatActivity {
         Glide.with(Feed.this).load(session.getProfilePicture()).error(R.drawable.download).into(image);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
 
-        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, mToolbar, R.string.drawer_open, R.string.drawer_close) {
+      /*  ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, mToolbar, R.string.drawer_open, R.string.drawer_close) {
 
             @Override
             public void onDrawerClosed(View v) {
@@ -845,7 +867,7 @@ public class Feed extends AppCompatActivity {
             }
         };
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
-        actionBarDrawerToggle.syncState();
+        actionBarDrawerToggle.syncState();*/
     }
 
     private void openplaystore() {
@@ -862,6 +884,62 @@ public class Feed extends AppCompatActivity {
             startActivity(new Intent(Intent.ACTION_VIEW,
                     Uri.parse("http://play.google.com/store/apps/details?id=" + Feed.this.getPackageName())));
         }
+    }
+
+    public void elevatetab() {
+        if (!animRunning) {
+            valueAnimator = ValueAnimator.ofFloat(4, 12);
+            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    float value = (float) animation.getAnimatedValue();
+                    tabLayout.setElevation(value);
+                }
+            });
+            valueAnimator.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    animRunning = true;
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
+            valueAnimator.setDuration(300);
+            valueAnimator.start();
+        }
+
+    }
+
+    public void deelevatetab() {
+        animRunning = false;
+
+        if (valueAnimator != null)
+            valueAnimator.cancel();
+
+        valueAnimator1 = ValueAnimator.ofFloat(12, 4);
+        valueAnimator1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float value = (float) animation.getAnimatedValue();
+                tabLayout.setElevation(value);
+            }
+        });
+
+        valueAnimator1.setDuration(300);
+        valueAnimator1.start();
+
     }
 
 

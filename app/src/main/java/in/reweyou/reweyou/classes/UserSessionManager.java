@@ -9,6 +9,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -30,6 +31,7 @@ public class UserSessionManager {
     public static final String KEY_LOCATION = "location";
     public static final String KEY_MOBILE_NUMBER = "mobilenumber";
     public static final String KEY_LOGIN_LOCATION = "loginlocation";
+    public static final String KEY_CUSTOM_LOCATION = "customlocation";
     public static final String KEY_CATEGORY = "category";
     public static final String KEY_LOGIN_FULLNAME = "fullname";
     // Sharedpref file name
@@ -45,8 +47,12 @@ public class UserSessionManager {
     SharedPreferences.Editor editor;
     // Context
     Context _context;
+    List<String> list = new ArrayList<>(Arrays.asList("Mumbai", "Dhanbad", "Chennai"));
+    List<String> list1 = new ArrayList<>(Arrays.asList("New Delhi", "Dhanbad", "Lucknow"));
+    List<String> list2 = new ArrayList<>(Arrays.asList("New Delhi", "Chennai", "Lucknow"));
     // Shared pref mode
     int PRIVATE_MODE = 0;
+    private Gson gson = new Gson();
     private List<String> likesList;
     private String FIRST_LOAD_TUT = "firsttimeload";
 
@@ -56,6 +62,7 @@ public class UserSessionManager {
         this._context = context;
         pref = _context.getSharedPreferences(PREFER_NAME, PRIVATE_MODE);
         editor = pref.edit();
+
     }
 
     public static String getKeyLocation() {
@@ -109,7 +116,7 @@ public class UserSessionManager {
     }
 
     public String getLoginLocation() {
-        return pref.getString(KEY_LOGIN_LOCATION, "Unknown");
+        return pref.getString(KEY_LOGIN_LOCATION, "New Delhi");
     }
 
     public void setLoginLocation(String location) {
@@ -285,11 +292,62 @@ public class UserSessionManager {
     }
 
     public void saveNewsReportsinCache(List<FeedModel> list) {
-        Gson gson = new Gson();
         for (int i = 0; i < list.size(); i++) {
-            Log.d(TAG, "saveNewsReportsinCache: listsize " + list.size());
             editor.putString("newsReport" + i, gson.toJson(list.get(i)));
         }
+        editor.apply();
+    }
+
+    public List<FeedModel> getSaveNewsReportsinCache() {
+        List<FeedModel> list = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            list.add(gson.fromJson(pref.getString("newsReport" + i, null), FeedModel.class));
+        }
+        return list;
+    }
+
+    public String getCustomLocation() {
+        return pref.getString(KEY_CUSTOM_LOCATION, getLoginLocation());
+    }
+
+
+    public String getCustomLocation1() {
+        return pref.getString(KEY_CUSTOM_LOCATION + "1", getclocation("New Delhi"));
+    }
+
+    public String getCustomLocation2() {
+        return pref.getString(KEY_CUSTOM_LOCATION + "2", getclocation("Mumbai"));
+    }
+
+    public String getCustomLocation3() {
+        return pref.getString(KEY_CUSTOM_LOCATION + "3", getclocation("Dhanbad"));
+    }
+
+
+    private String getclocation(String l) {
+        if (l.equals(getCustomLocation()))
+            return "Chennai";
+        else return l;
+    }
+
+
+    public void saveCustomLocation(String s) {
+        editor.putString(KEY_CUSTOM_LOCATION, s);
+        editor.apply();
+    }
+
+    public void saveCustomsubLocation1(String s) {
+        editor.putString(KEY_CUSTOM_LOCATION + "1", s);
+        editor.apply();
+    }
+
+    public void saveCustomsubLocation2(String s) {
+        editor.putString(KEY_CUSTOM_LOCATION + "2", s);
+        editor.apply();
+    }
+
+    public void saveCustomsubLocation3(String s) {
+        editor.putString(KEY_CUSTOM_LOCATION + "3", s);
         editor.apply();
     }
 }

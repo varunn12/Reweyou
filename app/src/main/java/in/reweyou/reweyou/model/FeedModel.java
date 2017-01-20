@@ -1,20 +1,19 @@
 package in.reweyou.reweyou.model;
 
-import android.text.format.DateUtils;
+import android.util.Log;
 
-import java.text.ParseException;
-import java.util.Date;
-
-import static android.text.format.DateUtils.getRelativeTimeSpanString;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_IMAGE;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_VIDEO;
-import static in.reweyou.reweyou.utils.Constants.dfs;
 
 /**
  * Created by Reweyou on 10/5/2015.
  */
 
 public class FeedModel {
+
+
+    int MODEL_VIEW_TYPE = -1;
+
 
     private String name;
     private String number;
@@ -37,6 +36,9 @@ public class FeedModel {
     private String from;
     private String gif;
     private boolean liked = false;
+
+    public FeedModel() {
+    }
 
     public String getName() {
         return name;
@@ -76,21 +78,7 @@ public class FeedModel {
     }
 
     public String getDate() {
-        if (date != null && !date.isEmpty()) {
-
-            date = date.replaceAll("\\.", "");
-
-            Date dates = null;
-            try {
-                dates = dfs.parse(date);
-                long epochs = dates.getTime();
-                CharSequence timePassedString = getRelativeTimeSpanString(epochs, System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS);
-                return (String) timePassedString;
-            } catch (ParseException e) {
-                e.printStackTrace();
-                return null;
-            }
-        } else return null;
+        return date;
 
     }
 
@@ -189,14 +177,24 @@ public class FeedModel {
     }
 
 
-    public int getViewType() {
+    public void setViewType() {
+        Log.d("abc", "setViewType: esljfhwlgnlnlgnwgnnnnnnnnnnngvjewnv");
         if (getImage().isEmpty() && getVideo().isEmpty() && getGif().isEmpty()) {
-            return VIEW_TYPE_IMAGE;
+            MODEL_VIEW_TYPE = VIEW_TYPE_IMAGE;
         } else if (!getVideo().isEmpty()) {
-            return VIEW_TYPE_VIDEO;
-        } else return VIEW_TYPE_IMAGE;
+            MODEL_VIEW_TYPE = VIEW_TYPE_VIDEO;
+        } else MODEL_VIEW_TYPE = VIEW_TYPE_IMAGE;
+
+        Log.d("sb", "setViewType: " + MODEL_VIEW_TYPE);
     }
 
+    public int getViewType() {
+        return MODEL_VIEW_TYPE;
+    }
+
+    public void setType(int viewtype) {
+        this.MODEL_VIEW_TYPE = viewtype;
+    }
 
     public boolean isLiked() {
         return liked;

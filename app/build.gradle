@@ -66,6 +66,8 @@ dependencies {
     compile 'com.amitshekhar.android:android-networking:0.3.0'
     testCompile 'junit:junit:4.12'
 
+    compile 'jp.wasabeef:recyclerview-animators:2.2.5'
+
 
 }
 

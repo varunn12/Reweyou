@@ -7,12 +7,13 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Toast;
 
 import com.androidnetworking.AndroidNetworking;
@@ -23,10 +24,13 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import in.reweyou.reweyou.Feed;
 import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.adapter.FeedAdapter1;
 import in.reweyou.reweyou.classes.UserSessionManager;
@@ -35,6 +39,13 @@ import in.reweyou.reweyou.customView.PreCachingLayoutManager;
 import in.reweyou.reweyou.model.FeedModel;
 import in.reweyou.reweyou.utils.Constants;
 
+import static android.text.format.DateUtils.getRelativeTimeSpanString;
+import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_CITY_NO_REPORTS_YET;
+import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_LOADING;
+import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_LOCATION;
+import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_NEW_POST;
+import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_READING_NO_READERS;
+import static in.reweyou.reweyou.utils.Constants.dfs;
 import static in.reweyou.reweyou.utils.ReportLoadingConstant.FRAGMENT_CATEGORY_CITY;
 import static in.reweyou.reweyou.utils.ReportLoadingConstant.FRAGMENT_CATEGORY_MY_PROFILE;
 import static in.reweyou.reweyou.utils.ReportLoadingConstant.FRAGMENT_CATEGORY_NEWS;
@@ -44,12 +55,12 @@ import static in.reweyou.reweyou.utils.ReportLoadingConstant.FRAGMENT_CATEGORY_S
 import static in.reweyou.reweyou.utils.ReportLoadingConstant.FRAGMENT_CATEGORY_SINGLE_POST;
 import static in.reweyou.reweyou.utils.ReportLoadingConstant.FRAGMENT_CATEGORY_TAG;
 import static in.reweyou.reweyou.utils.ReportLoadingConstant.REQUEST_PARAMS_CITY;
+import static in.reweyou.reweyou.utils.ReportLoadingConstant.REQUEST_PARAMS_LAST_POSTID;
 import static in.reweyou.reweyou.utils.ReportLoadingConstant.REQUEST_PARAMS_NUMBER;
 import static in.reweyou.reweyou.utils.ReportLoadingConstant.REQUEST_PARAMS_SINGLE_POST;
 import static in.reweyou.reweyou.utils.ReportLoadingConstant.REQUEST_PARAMS_TAG;
 import static in.reweyou.reweyou.utils.ReportLoadingConstant.fragmentCategoryList;
 import static in.reweyou.reweyou.utils.ReportLoadingConstant.fragmentListLoadOnStart;
-import static in.reweyou.reweyou.utils.ReportLoadingConstant.fragmentListWithBoxAtTop;
 import static in.reweyou.reweyou.utils.ReportLoadingConstant.fragmentListWithCache;
 
 /**
@@ -60,11 +71,10 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
 
     public static final String TAG_FRAGMENT_CATEGORY = "default";
-    private static final String TAG = BaseFragment.class.getSimpleName();
     public static final java.lang.String TAG_SINGLE_POST_ID = "singlepostid";
-
+    private static final String TAG = BaseFragment.class.getSimpleName();
+    private static final int SCROLL_DIRECTION_UP = -1;
     private int FRAGMENT_CATEGORY = -1;
-
     private Activity mContext;
     private SwipeRefreshLayout swipe;
     private RecyclerView recyclerView;
@@ -72,7 +82,6 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     private String singlepostid;
     private String reporterNumber;
-    private String selectedcity = "lucknow";
     private String selectedtag;
 
     private Gson gson = new Gson();
@@ -83,12 +92,17 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private FeedAdapter1 feedAdapter1;
     private boolean dataLoaded;
     private List<String> likeslist;
+    private boolean cacheLoad;
+    private String minPostid;
+    private boolean loading = true;
+    private String currentLocation;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         getIntentExtras();
+
 
 
     }
@@ -112,12 +126,107 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private void initCategorySpecificViews(View layout) {
         swipe = (SwipeRefreshLayout) layout.findViewById(R.id.swipe);
         swipe.setOnRefreshListener(this);
+        swipe.setProgressViewOffset(false, 0, 110);
+
 
         recyclerView = (RecyclerView) layout.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new PreCachingLayoutManager(mContext));
         VerticalSpaceItemDecorator verticalSpaceItemDecorator = new VerticalSpaceItemDecorator(12);
         recyclerView.addItemDecoration(verticalSpaceItemDecorator);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        final int initialTopPosition = recyclerView.getTop();
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            final PreCachingLayoutManager layoutManager = (PreCachingLayoutManager) recyclerView.getLayoutManager();
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                {
+
+
+                    if (recyclerView.getChildAt(0).getTop() < initialTopPosition) {
+                        ((Feed) mContext).elevatetab();
+                    } else {
+                        ((Feed) mContext).deelevatetab();
+
+                    }
+
+                    if (dy > 0 && feedAdapter1.getItemCount() > 9) {
+                        int visibleItemCount = layoutManager.getChildCount();
+                        int totalItemCount = layoutManager.getItemCount();
+                        int pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
+
+                        if (!cacheLoad)
+                            if (loading) {
+                                if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                                    loading = false;
+                                    FeedModel feedModel = new FeedModel();
+                                    feedModel.setType(VIEW_TYPE_LOADING);
+                                    feedAdapter1.add6(feedModel);
+                                    new Handler().post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            makeLoadMoreRequest();
+                                        }
+                                    });
+
+                                }
+                            }
+                    }
+                }
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (newState == 0)
+                    ((Feed) mContext).deelevatetab();
+
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
+
+
+    }
+
+    private void makeLoadMoreRequest() {
+
+        HashMap<String, String> hashmap = getBodyHashMap();
+        hashmap.put(REQUEST_PARAMS_LAST_POSTID, minPostid);
+        AndroidNetworking.post(getUrl())
+                .addBodyParameter(hashmap)
+                .setTag("report")
+                .setPriority(Priority.IMMEDIATE)
+                .build()
+                .getAsParsed(new TypeToken<List<FeedModel>>() {
+                }, new ParsedRequestListener<List<FeedModel>>() {
+                    @Override
+                    public void onResponse(List<FeedModel> list) {
+                        feedAdapter1.removeLoading();
+
+                        if (!isResponseEmpty(list)) {
+                            Log.d(TAG, "onLoadMoreResponse: response is not empty");
+                            for (FeedModel feedModel : list) {
+                                if (likeslist.contains(feedModel.getPostId())) {
+                                    feedModel.setLiked(true);
+                                }
+                                feedModel.setViewType();
+                                feedModel.setDate(getFormattedDate(feedModel.getDate()));
+
+                                feedAdapter1.add6(feedModel);
+
+                            }
+                            minPostid = list.get(list.size() - 1).getPostId();
+
+                        }
+                        loading = true;
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        feedAdapter1.removeLoading();
+                        loading = true;
+                        Log.w(TAG, "onLoadMoreError: " + anError.getErrorDetail());
+                    }
+                });
     }
 
     private void initCommonViews(View layout) {
@@ -174,6 +283,8 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Override
     public void onRefresh() {
 
+        swipe.setRefreshing(true);
+        loadReportsfromServer();
     }
 
 
@@ -182,10 +293,22 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         super.onActivityCreated(savedInstanceState);
         if (isAdded()) {
             sessionManager = new UserSessionManager(mContext);
+
+            currentLocation = sessionManager.getCustomLocation();
             likeslist = sessionManager.getLikesList();
 
-            feedAdapter1 = new FeedAdapter1(mContext, reportsList, FRAGMENT_CATEGORY, sessionManager);
+            feedAdapter1 = new FeedAdapter1(mContext, FRAGMENT_CATEGORY, sessionManager, this);
+
+            FeedModel feedModel = new FeedModel();
+            if (FRAGMENT_CATEGORY == FRAGMENT_CATEGORY_CITY) {
+                feedModel.setType(VIEW_TYPE_LOCATION);
+                feedAdapter1.add5(feedModel);
+            } else if (FRAGMENT_CATEGORY == FRAGMENT_CATEGORY_NEWS) {
+                feedModel.setType(VIEW_TYPE_NEW_POST);
+                feedAdapter1.add5(feedModel);
+            }
             recyclerView.setAdapter(feedAdapter1);
+
             if (fragmentListLoadOnStart.contains(FRAGMENT_CATEGORY)) {
                 loadReports();
             }
@@ -193,36 +316,49 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     private void loadReports() {
-        //loadReportsfromCache();
-        loadReportsfromServer();
+        loadReportsfromCache();
+        //loadReportsfromServer();
     }
 
     private void loadReportsfromCache() {
-        if (getfeedfromCache(FRAGMENT_CATEGORY) == null)
-            loadReportsfromServer();
-        else parseCacheString(getfeedfromCache(FRAGMENT_CATEGORY));
+        if (fragmentListWithCache.contains(FRAGMENT_CATEGORY) && FRAGMENT_CATEGORY == FRAGMENT_CATEGORY_NEWS) {
+            List<FeedModel> list = sessionManager.getSaveNewsReportsinCache();
+            if (isAdded()) {
+                if (!isResponseEmpty(list)) {
+                    cacheLoad = true;
+                    Log.d(TAG, "onResponse: response is not empty");
+                    for (FeedModel feedModel : list) {
+                        if (likeslist.contains(feedModel.getPostId())) {
+                            feedModel.setLiked(true);
+                            feedModel.setViewType();
+                            feedModel.setDate(getFormattedDate(feedModel.getDate()));
+                        }
+                        feedAdapter1.add6(feedModel);
+                    }
+
+
+                    recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                        @Override
+                        public void onGlobalLayout() {
+                            recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                            Log.d(TAG, "onGlobalLayout: called");
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    loadReportsfromServer();
+
+                                }
+                            }, 800);
+                        }
+                    });
+                } else throw new NullPointerException("saved feedlist from cache is empty");
+            }
+        } else loadReportsfromServer();
     }
 
-    private void parseCacheString(String s) {
-
-        reportsList = gson.fromJson(s, listType);
-
-        if (fragmentListWithBoxAtTop.contains(FRAGMENT_CATEGORY)) {
-
-        } else {
-
-        }
-
-    }
 
     private void loadReportsfromServer() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                swipe.setRefreshing(true);
-
-            }
-        }, 700);
+        swipe.setRefreshing(true);
         Log.d(TAG, "loadReportsfromServer: called");
         AndroidNetworking.post(getUrl())
                 .addBodyParameter(getBodyHashMap())
@@ -234,50 +370,68 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
                     @Override
                     public void onResponse(List<FeedModel> list) {
-                        dataLoaded = true;
-                        if (isAdded()) {
-                            if (!isResponseEmpty(list)) {
-                                Log.d(TAG, "onResponse: response is not empty");
-                                for (FeedModel feedModel : list) {
-                                    if (likeslist.contains(feedModel.getPostId())) {
-                                        feedModel.setLiked(true);
-                                    }
-                                    feedAdapter1.add(feedModel);
+
+
+                        feedAdapter1.clearlist();
+                        if (!isResponseEmpty(list)) {
+                            cacheLoad = false;
+                            Log.d(TAG, "onResponse: response is not empty");
+                            for (FeedModel feedModel : list) {
+                                if (likeslist.contains(feedModel.getPostId())) {
+                                    feedModel.setLiked(true);
 
                                 }
-                                if (fragmentListWithCache.contains(FRAGMENT_CATEGORY))
-                                    saveResponseToCache(list);
-                            } else {
-                                Log.w(TAG, "onResponse: list is empty");
-                                if (FRAGMENT_CATEGORY == FRAGMENT_CATEGORY_CITY)
-                                    feedAdapter1.addnoreports(FRAGMENT_CATEGORY_CITY);
-                                else if (FRAGMENT_CATEGORY == FRAGMENT_CATEGORY_READING)
-                                    feedAdapter1.addnoreports(FRAGMENT_CATEGORY_READING);
+                                feedModel.setViewType();
+                                feedModel.setDate(getFormattedDate(feedModel.getDate()));
+                                feedAdapter1.add1(feedModel);
+
                             }
 
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    swipe.setRefreshing(false);
+                            feedAdapter1.add2();
+                            dataLoaded = true;
+                            minPostid = list.get(list.size() - 1).getPostId();
+                            if (fragmentListWithCache.contains(FRAGMENT_CATEGORY))
+                                saveResponseToCache(list);
+                        } else {
+                            Log.w(TAG, "onResponse: list is empty");
+                            FeedModel feedModel = new FeedModel();
+                            dataLoaded = true;
 
-                                }
-                            }, 2000);
-
+                            if (FRAGMENT_CATEGORY == FRAGMENT_CATEGORY_CITY) {
+                                feedModel.setType(VIEW_TYPE_CITY_NO_REPORTS_YET);
+                                feedAdapter1.add1(feedModel);
+                            } else if (FRAGMENT_CATEGORY == FRAGMENT_CATEGORY_READING) {
+                                feedModel.setType(VIEW_TYPE_READING_NO_READERS);
+                                feedAdapter1.add1(feedModel);
+                            }
+                            feedAdapter1.add2();
                         }
-                    }
 
-                    @Override
-                    public void onError(final ANError anError) {
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 swipe.setRefreshing(false);
-                                if (isAdded()&&!anError.getErrorDetail().equals("requestCancelled"))
+
+                            }
+                        }, 1200);
+
+
+                    }
+
+                    @Override
+                    public void onError(final ANError anError) {
+                        Log.e(TAG, "run: error: " + anError.getErrorDetail());
+
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                swipe.setRefreshing(false);
+                                if (isAdded() && !anError.getErrorDetail().equals("requestCancelled"))
                                     Toast.makeText(mContext, "Couldn't connect", Toast.LENGTH_SHORT).show();
 
 
                             }
-                        }, 2000);
+                        }, 1200);
 
 
                     }
@@ -285,9 +439,7 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     private void saveResponseToCache(List<FeedModel> list) {
-        switch (FRAGMENT_CATEGORY)
-
-        {
+        switch (FRAGMENT_CATEGORY) {
             case FRAGMENT_CATEGORY_NEWS:
                 sessionManager.saveNewsReportsinCache(list);
                 return;
@@ -306,9 +458,7 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     private boolean isResponseEmpty(List<FeedModel> list) {
-        if (list.size() == 0) {
-            return true;
-        } else return false;
+        return list.size() == 0;
 
     }
 
@@ -356,7 +506,7 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 data.put(REQUEST_PARAMS_NUMBER, reporterNumber);
                 break;
             case FRAGMENT_CATEGORY_CITY:
-                data.put(REQUEST_PARAMS_CITY, selectedcity);
+                data.put(REQUEST_PARAMS_CITY, currentLocation);
                 break;
             case FRAGMENT_CATEGORY_TAG:
                 data.put(REQUEST_PARAMS_TAG, selectedtag);
@@ -368,6 +518,7 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 throw new IllegalArgumentException("no request params available for this fragment category");
         }
 
+
         return data;
     }
 
@@ -378,4 +529,26 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
 
+    public String getFormattedDate(String date) {
+        if (date != null && !date.isEmpty()) {
+
+            date = date.replaceAll("\\.", "");
+
+            Date dates = null;
+            try {
+                dates = dfs.parse(date);
+                long epochs = dates.getTime();
+                CharSequence timePassedString = getRelativeTimeSpanString(epochs, System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS);
+                return (String) timePassedString;
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return "";
+            }
+        } else return "";
+    }
+
+    public void onLocationSet(String s) {
+        this.currentLocation = s;
+        loadReportsfromServer();
+    }
 }

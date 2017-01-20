@@ -24,6 +24,7 @@ public class ReportLoadingConstant {
     public static final String REQUEST_PARAMS_SINGLE_POST = "query";
     public static final String REQUEST_PARAMS_CITY = "location";
     public static final String REQUEST_PARAMS_TAG = "category";
+    public static final String REQUEST_PARAMS_LAST_POSTID = "postid";
 
     public static ArrayList<Integer> fragmentCategoryList = new ArrayList<>(Arrays.asList(
             FRAGMENT_CATEGORY_NEWS,

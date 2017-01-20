@@ -12,17 +12,17 @@
     <color name="colorPrimary">#05A8AA</color>
     <color name="colorPrimary1">#1005A8AA</color>
     <color name="colorPrimary2">#1205A8AA</color>
-
+    <color name="colorPrimary3">#2405A8AA</color>
+    <color name="rank">#05A8AA</color>
     <color name="colorPrimaryDark">#048C8E</color>
     <color name="colorAccent">#05A8AA</color>
-    <color name="rank">#CC04A0A3</color>
     <color name="feedbackground">#f4f4f4</color>
     <color name="grey">#dbdbdb</color>
     <color name="red">#f44336</color>
 
     <color name="divider">#BDBDBD</color>
     <color name="greylight">#25000000</color>
-    <color name="main">#75000000</color>
+    <color name="main">#757575</color>
     <color name="navyblue">#3949AB</color>
     -
 </resources>

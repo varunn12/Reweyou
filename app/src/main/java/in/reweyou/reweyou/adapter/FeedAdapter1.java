@@ -10,7 +10,9 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,10 +23,10 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TimingLogger;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,13 +74,12 @@ import in.reweyou.reweyou.UserProfile;
 import in.reweyou.reweyou.VideoDisplay;
 import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.CustomTabActivityHelper;
-import in.reweyou.reweyou.classes.CustomTabsOnClickListener;
 import in.reweyou.reweyou.classes.UploadOptions;
 import in.reweyou.reweyou.classes.UserSessionManager;
-import in.reweyou.reweyou.classes.Util;
-import in.reweyou.reweyou.fragment.SecondFragment;
+import in.reweyou.reweyou.fragment.BaseFragment;
 import in.reweyou.reweyou.model.FeedModel;
 import in.reweyou.reweyou.utils.Constants;
+import in.reweyou.reweyou.utils.ReportLoadingConstant;
 
 import static in.reweyou.reweyou.utils.Constants.EDIT_URL;
 import static in.reweyou.reweyou.utils.Constants.URL_LIKE;
@@ -89,10 +90,6 @@ import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_LOCATION;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_NEW_POST;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_READING_NO_READERS;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_VIDEO;
-import static in.reweyou.reweyou.utils.ReportLoadingConstant.FRAGMENT_CATEGORY_CITY;
-import static in.reweyou.reweyou.utils.ReportLoadingConstant.FRAGMENT_CATEGORY_NEWS;
-import static in.reweyou.reweyou.utils.ReportLoadingConstant.FRAGMENT_CATEGORY_READING;
-import static in.reweyou.reweyou.utils.ReportLoadingConstant.fragmentListWithBoxAtTop;
 
 
 public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -115,7 +112,9 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private final int REBIND_TIME = 13;
     private final int REBIND_TAG = 13;
     private final int fragmentCategory;
-    private final ArrayList<Integer> topboxlist;
+    private final Rect bounds;
+    private final Paint paint;
+    private final BaseFragment fragment;
 
    /* private final int REBIND_HEADLINE = 13;
     private final int REBIND_DESCRIPTION = 13;
@@ -133,7 +132,6 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     Uri uri;
     private UploadOptions uploadOption;
     private int qu_position = -3;
-    private SecondFragment fragment;
     private String placename;
     private List<FeedModel> messagelist;
     private Context mContext;
@@ -143,21 +141,17 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private String number;
     private String username;
     private boolean fragmentWithBox;
+    private int numOfTopboxes = 0;
 
-    public FeedAdapter1(Activity mContext, List<FeedModel> reportsList, int fragmentCategory, UserSessionManager sessionManager) {
+    public FeedAdapter1(Activity mContext, int fragmentCategory, UserSessionManager sessionManager, BaseFragment baseFragment) {
         this.mContext = mContext;
-        this.messagelist = reportsList;
         this.fragmentCategory = fragmentCategory;
+        this.messagelist = new ArrayList<>();
         this.session = sessionManager;
-
-        topboxlist = new ArrayList<>();
-        if (fragmentListWithBoxAtTop.contains(fragmentCategory)) {
-            fragmentWithBox = true;
-            if (fragmentCategory == FRAGMENT_CATEGORY_CITY)
-                topboxlist.add(FRAGMENT_CATEGORY_CITY);
-            else if (fragmentCategory == FRAGMENT_CATEGORY_NEWS)
-                topboxlist.add(FRAGMENT_CATEGORY_NEWS);
-        }
+        this.fragment = baseFragment;
+        bounds = new Rect();
+        paint = new Paint();
+        paint.setTextSize(28);
 
     }
 
@@ -215,8 +209,8 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 return new CityNoReportsviewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_feed_adapter_city_no_reports_yet, viewGroup, false));
             case VIEW_TYPE_READING_NO_READERS:
                 return new ReadingNoReadersViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_feed_adapter_reading_no_readers, viewGroup, false));
-
             default:
+                Log.d(TAG, "onCreateViewHolder: wekfdwenklfwenfewnjfdnwelfcnwencl'wencwqj998weuf8qe8f23");
                 return null;
 
         }
@@ -224,6 +218,7 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder2, final int position) {
+        Log.d("aaa", "onBindViewHolder: called" + position);
         switch (viewHolder2.getItemViewType()) {
             case VIEW_TYPE_LOADING:
                 break;
@@ -235,7 +230,6 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
                     }
                 });
-                //  bindVideo(position, viewHolder2);
                 break;
             case VIEW_TYPE_IMAGE:
                 new Handler().post(new Runnable() {
@@ -247,7 +241,7 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 });
                 break;
             case VIEW_TYPE_LOCATION:
-                bindLocation(position, viewHolder2);
+                //bindLocation(position, viewHolder2);
                 break;
             case VIEW_TYPE_NEW_POST:
                 break;
@@ -264,56 +258,54 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder mHolder, int position, List<Object> payloads) {
-
         if (mHolder instanceof BaseViewHolder) {
             BaseViewHolder holder = (BaseViewHolder) mHolder;
             if (payloads.isEmpty())
                 super.onBindViewHolder(holder, position, payloads);
             else if (payloads.contains(REBIND_TIME)) {
                 Log.d(TAG, "onBindViewHolder: REBIND_TIME called");
-                setDate(holder, getPosition(position));
             } else if (payloads.contains(prelike)) {
                 Log.d("reach", prelike);
 
                 holder.upicon.setImageResource(R.drawable.ic_thumb_up_primary_16px);
                 holder.upvote.setTextColor(mContext.getResources().getColor(R.color.rank));
-                if (Integer.parseInt(messagelist.get(getPosition(position)).getReviews()) == 0)
-                    holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(getPosition(position)).getReviews()) + 1) + " like");
+                if (Integer.parseInt(messagelist.get(position).getReviews()) == 0)
+                    holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews()) + 1) + " like");
                 else
-                    holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(getPosition(position)).getReviews()) + 1) + " likes");
+                    holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews()) + 1) + " likes");
 
                 holder.reviews.setTypeface(Typeface.DEFAULT_BOLD);
                 holder.reviews.setTextColor(mContext.getResources().getColor(R.color.rank));
-                Log.d("likes", String.valueOf(Integer.parseInt(messagelist.get(getPosition(position)).getReviews()) + 1));
+                Log.d("likes", String.valueOf(Integer.parseInt(messagelist.get(position).getReviews()) + 1));
             } else if (payloads.contains(errorliking)) {
                 Log.d("reach", errorliking);
 
                 holder.upicon.setImageResource(R.drawable.ic_thumb_up_black_16px);
                 holder.upvote.setTextColor(mContext.getResources().getColor(R.color.likeText));
-                if (Integer.parseInt(messagelist.get(getPosition(position)).getReviews()) == 0) {
+                if (Integer.parseInt(messagelist.get(position).getReviews()) == 0) {
                     holder.reviews.setTypeface(Typeface.DEFAULT);
                     holder.reviews.setTextColor(mContext.getResources().getColor(R.color.main));
-                    holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(getPosition(position)).getReviews())) + " like");
+                    holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews())) + " like");
 
-                } else if (Integer.parseInt(messagelist.get(getPosition(position)).getReviews()) == 1)
-                    holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(getPosition(position)).getReviews())) + " like");
+                } else if (Integer.parseInt(messagelist.get(position).getReviews()) == 1)
+                    holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews())) + " like");
                 else
-                    holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(getPosition(position)).getReviews())) + " likes");
+                    holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews())) + " likes");
 
             } else if (payloads.contains(preunlike)) {
                 Log.d("reach", preunlike);
                 holder.upicon.setImageResource(R.drawable.ic_thumb_up_black_16px);
                 holder.upvote.setTextColor(mContext.getResources().getColor(R.color.likeText));
-                if (Integer.parseInt(messagelist.get(getPosition(position)).getReviews()) == 2) {
-                    holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(getPosition(position)).getReviews()) - 1) + " like");
+                if (Integer.parseInt(messagelist.get(position).getReviews()) == 2) {
+                    holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews()) - 1) + " like");
 
-                } else if (Integer.parseInt(messagelist.get(getPosition(position)).getReviews()) == 1) {
+                } else if (Integer.parseInt(messagelist.get(position).getReviews()) == 1) {
                     holder.reviews.setTypeface(Typeface.DEFAULT);
                     holder.reviews.setTextColor(mContext.getResources().getColor(R.color.main));
-                    holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(getPosition(position)).getReviews()) - 1) + " like");
+                    holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews()) - 1) + " like");
 
                 } else
-                    holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(getPosition(position)).getReviews()) - 1) + " likes");
+                    holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews()) - 1) + " likes");
             } else if (payloads.contains(errorunliking)) {
                 Log.d("reach", errorunliking);
 
@@ -321,7 +313,7 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 holder.upvote.setTextColor(mContext.getResources().getColor(R.color.rank));
                 holder.reviews.setTypeface(Typeface.DEFAULT_BOLD);
                 holder.reviews.setTextColor(mContext.getResources().getColor(R.color.rank));
-                holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(getPosition(position)).getReviews())) + " likes");
+                holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews())) + " likes");
             }
         } else super.onBindViewHolder(mHolder, position, payloads);
 
@@ -329,93 +321,72 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public int getItemViewType(int position) {
-        Log.d(TAG, "getItemViewType: reached " + position);
-        if (position == 0 && isfragmentWithBox()) {
-            switch (fragmentCategory) {
-                case FRAGMENT_CATEGORY_NEWS:
-                    return VIEW_TYPE_NEW_POST;
-                case FRAGMENT_CATEGORY_CITY:
-                    return VIEW_TYPE_LOCATION;
-
-                default:
-                    throw new IllegalArgumentException("invalid fragment category with box at the top");
-            }
-        } else if (position == 0 && topboxlist.size() == 1) {
-
-            if (fragmentCategory == FRAGMENT_CATEGORY_READING)
-                return VIEW_TYPE_READING_NO_READERS;
-            else throw new IllegalArgumentException("fragment category not supported");
-        } else if (position == 1 && topboxlist.size() > 1) {
-            switch (fragmentCategory) {
-                case FRAGMENT_CATEGORY_CITY:
-                    return VIEW_TYPE_CITY_NO_REPORTS_YET;
-                case FRAGMENT_CATEGORY_READING:
-                    return VIEW_TYPE_READING_NO_READERS;
-                default:
-                    throw new NullPointerException("topboxlist second item not set for this fragment");
-            }
-
-        } else {
-
-            switch (messagelist.get(getPosition(position)).getViewType()) {
-                case VIEW_TYPE_IMAGE:
-                    Log.d(TAG, "getItemViewType: reached image");
-                    return VIEW_TYPE_IMAGE;
-                case VIEW_TYPE_VIDEO:
-                    return VIEW_TYPE_VIDEO;
-                default:
-                    return super.getItemViewType(position);
-
-            }
-        }
+        return messagelist.get(position).getViewType();
     }
-
 
     @Override
     public int getItemCount() {
-        Log.d(TAG, "getItemCount: called");
-        if (fragmentWithBox)
-            return topboxlist.size() + messagelist.size();
-        else return topboxlist.size() + messagelist.size();
+        return messagelist.size();
     }
 
     private void bindImageOrGif(final int position, RecyclerView.ViewHolder viewHolder2) {
         final ImageViewHolder viewHolder = (ImageViewHolder) viewHolder2;
-        if (messagelist.get(getPosition(position)).getHeadline() != null) {
-            Spannable spannable = new SpannableString(messagelist.get(getPosition(position)).getHeadline());
+        TimingLogger timings = new TimingLogger("abc", "methodA");
+
+      /*  if (messagelist.get(position).getHeadline() != null) {
+            Spannable spannable = new SpannableString(messagelist.get(position).getHeadline());
             Util.linkifyUrl(spannable, new CustomTabsOnClickListener(activity, mCustomTabActivityHelper));
             setDescription(viewHolder, position, spannable);
 
+        }*/
+
+        if (messagelist.get(position).getHeadline() != null) {
+            if (messagelist.get(position).getHeadline().isEmpty())
+                viewHolder.headline.setVisibility(View.GONE);
+            else {
+                viewHolder.headline.setVisibility(View.VISIBLE);
+                viewHolder.headline.setText(messagelist.get(position).getHeadline());
+
+            }
         }
+
+
+        timings.addSplit("work A");
+
         setEditButton(viewHolder, position);
+        timings.addSplit("work 2");
+
         setHeadline(viewHolder, position);
+        timings.addSplit("work 3");
 
 
         setDate(viewHolder, position);
+        timings.addSplit("work 4");
+
 
         setReporterProfilePic(viewHolder, position);
 
+        timings.addSplit("work 5");
 
         setFeedLocation(viewHolder, position);
+        timings.addSplit("work 6");
 
         setReporterName(viewHolder, position);
+        timings.addSplit("work 7");
 
         setReactions(viewHolder, position);
-
-        setReactionsNumber(viewHolder, position);
+        timings.addSplit("work 8");
 
         setLikesNumber(viewHolder, position);
+        timings.addSplit("work 10");
 
         setLikedStatus(viewHolder, position);
+        timings.addSplit("work 11");
 
         setFeedCategory(viewHolder, position);
+        timings.dumpToLog();
 
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                setFeedImage(viewHolder, position);
-            }
-        });
+        setFeedImage(viewHolder, position);
 
 
     }
@@ -423,12 +394,14 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     private void bindVideo(final int position, RecyclerView.ViewHolder viewHolder2) {
         final VideoViewHolder viewHolder = (VideoViewHolder) viewHolder2;
+        if (messagelist.get(position).getHeadline() != null) {
+            if (messagelist.get(position).getHeadline().isEmpty())
+                viewHolder.headline.setVisibility(View.GONE);
+            else {
+                viewHolder.headline.setVisibility(View.VISIBLE);
+                viewHolder.headline.setText(messagelist.get(position).getHeadline());
 
-        if (messagelist.get(getPosition(position)).getHeadline() != null) {
-            Spannable spannable = new SpannableString(messagelist.get(getPosition(position)).getHeadline());
-            Util.linkifyUrl(spannable, new CustomTabsOnClickListener(activity, mCustomTabActivityHelper));
-            setDescription(viewHolder, position, spannable);
-
+            }
         }
 
         setEditButton(viewHolder, position);
@@ -450,7 +423,6 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         setReactions(viewHolder, position);
 
-        setReactionsNumber(viewHolder, position);
 
         setLikesNumber(viewHolder, position);
 
@@ -460,52 +432,52 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     private void setEditButton(BaseViewHolder viewHolder, int position) {
-        if (session.getMobileNumber().equals(messagelist.get(getPosition(position)).getNumber())) {
+        if (session.getMobileNumber().equals(messagelist.get(position).getNumber())) {
             viewHolder.menuEdit.setVisibility(View.VISIBLE);
-        } else viewHolder.menuEdit.setVisibility(View.GONE);
+        } else viewHolder.menuEdit.setVisibility(View.INVISIBLE);
 
     }
 
     private void setNumOfViews(VideoViewHolder viewHolder, int position) {
-        if (messagelist.get(getPosition(position)).getPostviews().equals("0")) {
+        if (messagelist.get(position).getPostviews().equals("0")) {
             viewHolder.views.setVisibility(View.GONE);
-        } else if (messagelist.get(getPosition(position)).getPostviews().equals("1")) {
+        } else if (messagelist.get(position).getPostviews().equals("1")) {
             viewHolder.views.setVisibility(View.VISIBLE);
-            viewHolder.views.setText(messagelist.get(getPosition(position)).getPostviews() + " view");
+            viewHolder.views.setText(messagelist.get(position).getPostviews() + " view");
         } else {
             viewHolder.views.setVisibility(View.VISIBLE);
-            viewHolder.views.setText(messagelist.get(getPosition(position)).getPostviews() + " views");
+            viewHolder.views.setText(messagelist.get(position).getPostviews() + " views");
         }
     }
 
     private void setLikedStatus(BaseViewHolder viewHolder, int position) {
 
-        if (messagelist.get(getPosition(position)).isLiked()) {
-            viewHolder.upicon.setImageResource(R.drawable.ic_thumb_up_primary_16px);
+        if (messagelist.get(position).isLiked()) {
+            viewHolder.upicon.setColorFilter(ContextCompat.getColor(mContext, R.color.rank));
             viewHolder.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.rank));
 
         } else {
-            viewHolder.upicon.setImageResource(R.drawable.ic_thumb_up_black_16px);
+            viewHolder.upicon.setColorFilter(ContextCompat.getColor(mContext, R.color.main));
             viewHolder.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.main));
         }
     }
 
     private void setFeedCategory(BaseViewHolder viewHolder, int position) {
-        viewHolder.source.setText('#' + messagelist.get(getPosition(position)).getCategory());
+        viewHolder.source.setText('#' + messagelist.get(position).getCategory());
 
     }
 
     private void setLikesNumber(BaseViewHolder viewHolder, int position) {
-        if (messagelist.get(getPosition(position)).getReviews().equals("0")) {
+        if (messagelist.get(position).getReviews().equals("0")) {
             viewHolder.reviews.setText("0 like");
             viewHolder.reviews.setTypeface(Typeface.DEFAULT);
             viewHolder.reviews.setTextColor(mContext.getResources().getColor(R.color.main));
-        } else if (messagelist.get(getPosition(position)).getReviews().equals("1")) {
+        } else if (messagelist.get(position).getReviews().equals("1")) {
             viewHolder.reviews.setText("1 like");
             viewHolder.reviews.setTypeface(Typeface.DEFAULT_BOLD);
             viewHolder.reviews.setTextColor(mContext.getResources().getColor(R.color.rank));
         } else {
-            viewHolder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(getPosition(position)).getReviews())) + " likes");
+            viewHolder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews())) + " likes");
             viewHolder.reviews.setTypeface(Typeface.DEFAULT_BOLD);
 
             viewHolder.reviews.setTextColor(mContext.getResources().getColor(R.color.rank));
@@ -514,55 +486,69 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     private void setReactions(BaseViewHolder viewHolder, int position) {
-        if (messagelist.get(getPosition(position)).getComments() == null || messagelist.get(getPosition(position)).getComments().isEmpty())
+        Log.d(TAG, "setReactions: " + messagelist.get(position).getComments());
+        if (messagelist.get(position).getComments().equals("0")) {
             viewHolder.app.setText("0 Reactions");
-        else {
-            viewHolder.app.setText(messagelist.get(getPosition(position)).getComments() + " Reactions");
-            if (!messagelist.get(getPosition(position)).getComments().equals("0") && messagelist.get(getPosition(position)).getReaction() != null) {
-                viewHolder.rv.setVisibility(View.VISIBLE);
+            viewHolder.name.setText("No Reactions yet");
+            viewHolder.userName.setText("Be the first one to react...");
+        } else {
+            viewHolder.app.setText(messagelist.get(position).getComments() + " Reactions");
+            viewHolder.name.setText(messagelist.get(position).getFrom());
+            viewHolder.userName.setText(messagelist.get(position).getReaction());
 
-                Spannable spannables = new SpannableString(messagelist.get(getPosition(position)).getReaction());
+            /*if (!messagelist.get(position).getComments().equals("0") && messagelist.get(position).getReaction() != null) {
+                //  viewHolder.rv.setVisibility(View.VISIBLE);
+
+                Spannable spannables = new SpannableString(messagelist.get(position).getReaction());
                 Util.linkifyUrl(spannables, new CustomTabsOnClickListener(activity, mCustomTabActivityHelper));
                 viewHolder.userName.setText(spannables);
                 viewHolder.userName.setMovementMethod(LinkMovementMethod.getInstance());
 
-                viewHolder.name.setText(messagelist.get(getPosition(position)).getFrom());
+                viewHolder.name.setText(messagelist.get(position).getFrom());
             } else {
-                viewHolder.rv.setVisibility(View.GONE);
-            }
+                // viewHolder.rv.setVisibility(View.GONE);
+            }*/
         }
 
     }
 
     private void setReporterName(BaseViewHolder viewHolder, int position) {
 
-        viewHolder.from.setText(messagelist.get(getPosition(position)).getName());
+        viewHolder.from.setText(messagelist.get(position).getName());
 
     }
 
     private void setFeedLocation(BaseViewHolder viewHolder, int position) {
-        viewHolder.place.setText(messagelist.get(getPosition(position)).getLocation());
+        viewHolder.place.setText(messagelist.get(position).getLocation());
 
     }
 
     private void setFeedImage(ImageViewHolder viewHolder, int position) {
-        // viewHolder.image.setVisibility(View.VISIBLE);
-        if (messagelist.get(getPosition(position)).getImage().isEmpty()) {
-            if (messagelist.get(getPosition(position)).getGif().isEmpty()) {
+        TimingLogger timings = new TimingLogger("abc", "methodC");
+
+        if (messagelist.get(position).getImage().isEmpty()) {
+            if (messagelist.get(position).getGif().isEmpty()) {
                 viewHolder.image.setVisibility(View.GONE);
             } else {
+                viewHolder.image.setVisibility(View.VISIBLE);
+
                 viewHolder.image.setAdjustViewBounds(false);
-                Glide.with(mContext).load(messagelist.get(getPosition(position)).getGif()).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).error(R.drawable.ic_broken_image_black_48dp).dontAnimate().into(viewHolder.image);
+                Glide.with(mContext).load(messagelist.get(position).getGif()).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).error(R.drawable.ic_broken_image_black_48dp).dontAnimate().into(viewHolder.image);
             }
         } else {
             // viewHolder.image.setAdjustViewBounds(true);
-            Glide.with(mContext).load(messagelist.get(getPosition(position)).getImage()).diskCacheStrategy(DiskCacheStrategy.SOURCE).error(R.drawable.ic_broken_image_black_48dp).dontAnimate().into(viewHolder.image);
+            viewHolder.image.setVisibility(View.VISIBLE);
+
+            timings.addSplit("a");
+            Glide.with(mContext).load(messagelist.get(position).getImage()).diskCacheStrategy(DiskCacheStrategy.SOURCE).error(R.drawable.ic_broken_image_black_48dp).dontAnimate().into(viewHolder.image);
+            timings.addSplit("s");
+            timings.dumpToLog();
         }
     }
 
     private void setFeedVideoThumbnail(final VideoViewHolder viewHolder, int position) {
 
-        if (messagelist.get(getPosition(position)).getImage() == null || messagelist.get(getPosition(position)).getImage().isEmpty()) {
+        if (messagelist.get(position).getImage() == null || messagelist.get(position).getImage().isEmpty()) {
             viewHolder.image.setVisibility(View.GONE);
         } else {
             viewHolder.play.setVisibility(View.VISIBLE);
@@ -570,7 +556,7 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             viewHolder.image.setColorFilter(Color.argb(120, 0, 0, 0)); // black Tint
 
 
-            Glide.with(mContext).load(messagelist.get(getPosition(position)).getImage()).diskCacheStrategy(DiskCacheStrategy.SOURCE).error(R.drawable.ic_broken_image_black_48dp).listener(new RequestListener<String, GlideDrawable>() {
+            Glide.with(mContext).load(messagelist.get(position).getImage()).diskCacheStrategy(DiskCacheStrategy.SOURCE).error(R.drawable.ic_broken_image_black_48dp).listener(new RequestListener<String, GlideDrawable>() {
                 @Override
                 public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
                     viewHolder.play.setVisibility(View.INVISIBLE);
@@ -586,38 +572,18 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
     }
 
-    private void setReactionsNumber(BaseViewHolder viewHolder, int position) {
-        if (messagelist.get(getPosition(position)).getComments() == null || messagelist.get(getPosition(position)).getComments().isEmpty())
-            viewHolder.app.setText("0 Reaction");
-        else {
-            viewHolder.app.setText(messagelist.get(getPosition(position)).getComments() + " Reactions");
-            if (!messagelist.get(getPosition(position)).getComments().equals("0") && messagelist.get(getPosition(position)).getReaction() != null) {
-                viewHolder.rv.setVisibility(View.VISIBLE);
-
-                Spannable spannables = new SpannableString(messagelist.get(getPosition(position)).getReaction());
-                Util.linkifyUrl(spannables, new CustomTabsOnClickListener(activity, mCustomTabActivityHelper));
-                viewHolder.userName.setText(spannables);
-                viewHolder.userName.setMovementMethod(LinkMovementMethod.getInstance());
-
-                viewHolder.name.setText(messagelist.get(getPosition(position)).getFrom());
-            } else {
-                viewHolder.rv.setVisibility(View.GONE);
-            }
-        }
-    }
-
     private void setReporterProfilePic(BaseViewHolder viewHolder, int position) {
-        Glide.with(mContext).load(messagelist.get(getPosition(position)).getProfilepic()).diskCacheStrategy(DiskCacheStrategy.SOURCE).placeholder(R.drawable.download).error(R.drawable.download).fallback(R.drawable.download).dontAnimate().into(viewHolder.profilepic);
+        Glide.with(mContext).load(messagelist.get(position).getProfilepic()).diskCacheStrategy(DiskCacheStrategy.SOURCE).placeholder(R.drawable.download).error(R.drawable.download).dontAnimate().into(viewHolder.profilepic);
 
     }
 
     private void setDate(BaseViewHolder viewHolder, int position) {
-        viewHolder.date.setText(messagelist.get(getPosition(position)).getDate());
+        viewHolder.date.setText(messagelist.get(position).getDate());
     }
 
     private void setDescription(BaseViewHolder viewHolder, int position, Spannable spannable) {
 
-        if (messagelist.get(getPosition(position)).getHeadline() == null || messagelist.get(getPosition(position)).getHeadline().isEmpty())
+        if (messagelist.get(position).getHeadline() == null || messagelist.get(position).getHeadline().isEmpty())
             viewHolder.headline.setVisibility(View.GONE);
         else {
             viewHolder.headline.setVisibility(View.VISIBLE);
@@ -628,11 +594,11 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     private void setHeadline(BaseViewHolder viewHolder, int position) {
-        if (messagelist.get(getPosition(position)).getHead() == null || messagelist.get(getPosition(position)).getHead().isEmpty())
+        if (messagelist.get(position).getHead() == null || messagelist.get(position).getHead().isEmpty())
             viewHolder.head.setVisibility(View.GONE);
         else {
             viewHolder.head.setVisibility(View.VISIBLE);
-            viewHolder.head.setText(messagelist.get(getPosition(position)).getHead());
+            viewHolder.head.setText(messagelist.get(position).getHead());
         }
     }
 
@@ -723,12 +689,12 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         LayoutInflater li = LayoutInflater.from(mContext);
         //Creating a view to get the dialog box
         View confirmDialog = li.inflate(R.layout.dialog_edit, null);
-        postid = messagelist.get(getPosition(position)).getPostId();
+        postid = messagelist.get(position).getPostId();
         //  number=session.getMobileNumber();
         //Initizliaing confirm button fo dialog box and edittext of dialog box
         buttonEdit = (Button) confirmDialog.findViewById(R.id.buttonConfirm);
         editTextHeadline = (EditText) confirmDialog.findViewById(R.id.editTextOtp);
-        editTextHeadline.setText(messagelist.get(getPosition(position)).getHeadline());
+        editTextHeadline.setText(messagelist.get(position).getHeadline());
         editTextHeadline.setSelection(editTextHeadline.getText().length());
 
         //Creating an alertdialog builder
@@ -803,28 +769,29 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
 
-    private void makeRequest(final int adapterPosition, final int screenPosition) {
+    private void makeRequest(final int adapterPosition) {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_LIKE,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        Log.d(TAG, "onResponse: " + response);
                         if (response.equals("like")) {
-                            session.addlike(((FeedModel) messagelist.get(adapterPosition)).getPostId());
-                            ((FeedModel) messagelist.get(adapterPosition)).setLiked(true);
-                            ((FeedModel) messagelist.get(adapterPosition)).setReviews(String.valueOf((Integer.parseInt(((FeedModel) messagelist.get(adapterPosition)).getReviews()) + 1)));
+                            session.addlike(messagelist.get(adapterPosition).getPostId());
+                            messagelist.get(adapterPosition).setLiked(true);
+                            messagelist.get(adapterPosition).setReviews(String.valueOf((Integer.parseInt(messagelist.get(adapterPosition).getReviews()) + 1)));
 
                         } else if (response.equals("unlike")) {
-                            session.removelike(((FeedModel) messagelist.get(adapterPosition)).getPostId());
-                            ((FeedModel) messagelist.get(adapterPosition)).setLiked(false);
-                            ((FeedModel) messagelist.get(adapterPosition)).setReviews(String.valueOf((Integer.parseInt(((FeedModel) messagelist.get(adapterPosition)).getReviews()) - 1)));
+                            session.removelike(messagelist.get(adapterPosition).getPostId());
+                            messagelist.get(adapterPosition).setLiked(false);
+                            messagelist.get(adapterPosition).setReviews(String.valueOf((Integer.parseInt(messagelist.get(adapterPosition).getReviews()) - 1)));
 
 
                         } else if (response.equals("Error")) {
 
-                            if (((FeedModel) messagelist.get(adapterPosition)).isLiked()) {
-                                notifyItemChanged(screenPosition, errorunliking);
+                            if (messagelist.get(adapterPosition).isLiked()) {
+                                notifyItemChanged(adapterPosition, errorunliking);
 
-                            } else notifyItemChanged(screenPosition, errorliking);
+                            } else notifyItemChanged(adapterPosition, errorliking);
 
                             if (cd.isConnectingToInternet()) {
                                 Toast.makeText(mContext, "Couldn't update", Toast.LENGTH_SHORT).show();
@@ -832,10 +799,10 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
                         } else if (response.equals(Constants.AUTH_ERROR)) {
 
-                            if (((FeedModel) messagelist.get(adapterPosition)).isLiked()) {
-                                notifyItemChanged(screenPosition, errorliking);
+                            if (messagelist.get(adapterPosition).isLiked()) {
+                                notifyItemChanged(adapterPosition, errorliking);
 
-                            } else notifyItemChanged(screenPosition, errorunliking);
+                            } else notifyItemChanged(adapterPosition, errorunliking);
 
 
                             if (cd.isConnectingToInternet()) {
@@ -851,7 +818,7 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        if (((FeedModel) messagelist.get(adapterPosition)).isLiked()) {
+                        if (messagelist.get(adapterPosition).isLiked()) {
                             notifyItemChanged(adapterPosition, errorunliking);
 
                         } else notifyItemChanged(adapterPosition, errorliking);
@@ -867,8 +834,8 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> data = new HashMap<>();
-                data.put("from", ((FeedModel) messagelist.get(adapterPosition)).getNumber());
-                data.put("postid", ((FeedModel) messagelist.get(adapterPosition)).getPostId());
+                data.put("from", messagelist.get(adapterPosition).getNumber());
+                data.put("postid", messagelist.get(adapterPosition).getPostId());
                 data.put("number", session.getMobileNumber());
                 data.put("token", session.getKeyAuthToken());
                 data.put("deviceid", session.getDeviceid());
@@ -901,42 +868,45 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         super.onViewRecycled(holder);
     }
 
-    private int getPosition(int position) {
-        if (topboxlist.size() > 0)
-            return position - topboxlist.size();
-        else return position;
-    }
-
-
-    private boolean isfragmentWithBox() {
-        return fragmentWithBox;
-    }
-
     public void clearlist() {
-        if (fragmentWithBox) {
-            if (messagelist.size() > 0)
-                notifyItemRangeRemoved(1, messagelist.size());
-        } else {
-            if (messagelist.size() > 0)
-                notifyItemRangeRemoved(0, messagelist.size());
-        }
-
-        messagelist.clear();
-
+        if (messagelist.size() > 0 && ReportLoadingConstant.fragmentListWithBoxAtTop.contains(fragmentCategory)) {
+            FeedModel feedModel = messagelist.get(0);
+            messagelist.clear();
+            messagelist.add(feedModel);
+        } else messagelist.clear();
     }
 
-    public void add(FeedModel feedModel) {
-        Log.d(TAG, "add: reached");
+    public void add1(FeedModel feedModel) {
         messagelist.add(feedModel);
-        if (fragmentWithBox)
-            new Handler().post(new Runnable() {
-                @Override
-                public void run() {
-                    notifyItemInserted(messagelist.size());
+    }
 
-                }
-            });
-        else new Handler().post(new Runnable() {
+
+    public void add5(FeedModel feedModel) {
+        messagelist.add(feedModel);
+        numOfTopboxes = 1;
+    }
+
+    public void add2() {
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                notifyDataSetChanged();
+            }
+        });
+    }
+
+    public void add3() {
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                notifyDataSetChanged();
+            }
+        });
+    }
+
+    public void add6(FeedModel feedModel) {
+        messagelist.add(feedModel);
+        new Handler().post(new Runnable() {
             @Override
             public void run() {
                 notifyItemInserted(messagelist.size() - 1);
@@ -944,27 +914,21 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         });
     }
 
-    public void addnoreports(int fragmentCategoryCity) {
-        Log.d(TAG, "addnoreports: reached");
-        switch (fragmentCategoryCity) {
-            case FRAGMENT_CATEGORY_CITY:
-                topboxlist.add(VIEW_TYPE_CITY_NO_REPORTS_YET);
-
-                break;
-            case FRAGMENT_CATEGORY_READING:
-                topboxlist.add(VIEW_TYPE_READING_NO_READERS);
-
-                break;
-            default:
-                throw new IllegalArgumentException("No reports card not supported for this fragment category: " + fragmentCategoryCity);
-        }
-        notifyItemInserted(topboxlist.size() - 1);
+    public void removeLoading() {
+        messagelist.remove(messagelist.size() - 1);
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                notifyItemRemoved(messagelist.size());
+            }
+        });
     }
 
 
     private class BaseViewHolder extends RecyclerView.ViewHolder {
         protected ImageView profilepic, overflow, sendmessage;
-        protected TextView headline, upvote, head;
+        protected TextView headline;
+        protected TextView upvote, head;
         protected TextView place;
         protected TextView icon;
         protected ImageView reaction;
@@ -1006,10 +970,11 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             actions = (RelativeLayout) view.findViewById(R.id.actions);
             menuEdit = (ImageView) view.findViewById(R.id.action_edit);
 
+
             sendmessage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Constants.suggestpostid = (((FeedModel) messagelist.get(getAdapterPosition())).getPostId());
+                    Constants.suggestpostid = messagelist.get(getAdapterPosition()).getPostId();
                     Intent i = new Intent(mContext, Contacts.class);
                     mContext.startActivity(i);
                 }
@@ -1019,7 +984,7 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 @Override
                 public void onClick(View view) {
                     try {
-                        if (session.getMobileNumber().equals(((FeedModel) messagelist.get(getAdapterPosition())).getNumber())) {
+                        if (session.getMobileNumber().equals(messagelist.get(getAdapterPosition()).getNumber())) {
                             editHeadline(getAdapterPosition());
                         }
                     } catch (JSONException e) {
@@ -1031,7 +996,7 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 @Override
                 public void onClick(View v) {
                     Intent i = new Intent(mContext, LikesActivity.class);
-                    i.putExtra("postid", ((FeedModel) messagelist.get(getAdapterPosition())).getPostId());
+                    i.putExtra("postid", (messagelist.get((getAdapterPosition()))).getPostId());
                     mContext.startActivity(i);
                     ((Activity) mContext).overridePendingTransition(0, 0);
 
@@ -1040,15 +1005,12 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (((FeedModel) messagelist.get(getAdapterPosition())).isLiked()) {
-                        Log.d("reach here", "here");
+                    if (messagelist.get(getAdapterPosition()).isLiked()) {
                         notifyItemChanged(getAdapterPosition(), preunlike);
-
                     } else {
                         notifyItemChanged(getAdapterPosition(), prelike);
                     }
-                    Log.d(TAG, "onClick: " + FeedAdapter1.this.getPosition(getAdapterPosition()) + getAdapterPosition() + messagelist.get(FeedAdapter1.this.getPosition(getAdapterPosition())).getPostId());
-                    makeRequest(FeedAdapter1.this.getPosition(getAdapterPosition()), getAdapterPosition());
+                    makeRequest(getAdapterPosition());
                 }
             });
 
@@ -1069,7 +1031,7 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     isInternetPresent = cd.isConnectingToInternet();
                     if (isInternetPresent) {
                         Bundle bundle = new Bundle();
-                        bundle.putString("myData", ((FeedModel) messagelist.get(getAdapterPosition())).getNumber());
+                        bundle.putString("myData", messagelist.get(getAdapterPosition()).getNumber());
                         Intent in = new Intent(mContext, UserProfile.class);
                         in.putExtras(bundle);
                         mContext.startActivity(in);
@@ -1085,7 +1047,7 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 public void onClick(View view) {
 
                     Bundle bundle = new Bundle();
-                    bundle.putString("myData", ((FeedModel) messagelist.get(getAdapterPosition())).getNumber());
+                    bundle.putString("myData", messagelist.get(getAdapterPosition()).getNumber());
                     Intent in = new Intent(mContext, UserProfile.class);
                     in.putExtras(bundle);
                     mContext.startActivity(in);
@@ -1101,9 +1063,9 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 public void onClick(View view) {
                     if (qu_position != 15) {
                         Bundle bundle = new Bundle();
-                        bundle.putString("myData", ((FeedModel) messagelist.get(getAdapterPosition())).getPostId());
-                        bundle.putString("headline", ((FeedModel) messagelist.get(getAdapterPosition())).getHeadline());
-                        bundle.putString("image", ((FeedModel) messagelist.get(getAdapterPosition())).getImage());
+                        bundle.putString("myData", messagelist.get(getAdapterPosition()).getPostId());
+                        bundle.putString("headline", messagelist.get(getAdapterPosition()).getHeadline());
+                        bundle.putString("image", messagelist.get(getAdapterPosition()).getImage());
                         Intent in = new Intent(mContext, Comments1.class);
 
                         in.putExtras(bundle);
@@ -1121,7 +1083,7 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 @Override
                 public void onClick(View view) {
                     Intent in = new Intent(mContext, MyCityActivity.class);
-                    in.putExtra("place", ((FeedModel) messagelist.get(getAdapterPosition())).getLocation());
+                    in.putExtra("place", messagelist.get(getAdapterPosition()).getLocation());
                     mContext.startActivity(in);
                     ((Activity) mContext).overridePendingTransition(0, 0);
                 }
@@ -1131,7 +1093,7 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 @Override
                 public void onClick(View view) {
                     try {
-                        if (session.getMobileNumber().equals(((FeedModel) messagelist.get(getAdapterPosition())).getNumber())) {
+                        if (session.getMobileNumber().equals(messagelist.get(getAdapterPosition()).getNumber())) {
                             editHeadline(getAdapterPosition());
                         } else {
 
@@ -1146,7 +1108,7 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 @Override
                 public void onClick(View view) {
                     session = new UserSessionManager(mContext);
-                    session.setCategory(((FeedModel) messagelist.get(getAdapterPosition())).getCategory());
+                    session.setCategory(messagelist.get(getAdapterPosition()).getCategory());
                     Intent in = new Intent(mContext, CategoryActivity.class);
                     mContext.startActivity(in);
                     ((Activity) mContext).overridePendingTransition(0, 0);
@@ -1158,9 +1120,9 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 public void onClick(View view) {
                     if (qu_position != 15) {
                         Bundle bundle = new Bundle();
-                        bundle.putString("myData", ((FeedModel) messagelist.get(getAdapterPosition())).getPostId());
-                        bundle.putString("headline", ((FeedModel) messagelist.get(getAdapterPosition())).getHeadline());
-                        bundle.putString("image", ((FeedModel) messagelist.get(getAdapterPosition())).getImage());
+                        bundle.putString("myData", messagelist.get(getAdapterPosition()).getPostId());
+                        bundle.putString("headline", messagelist.get(getAdapterPosition()).getHeadline());
+                        bundle.putString("image", messagelist.get(getAdapterPosition()).getImage());
                         Intent in = new Intent(mContext, Comments1.class);
                         ((Activity) mContext).overridePendingTransition(0, 0);
 
@@ -1190,11 +1152,11 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (((FeedModel) messagelist.get(getAdapterPosition())).getGif().isEmpty()) {
+                    if (messagelist.get((getAdapterPosition())).getGif().isEmpty()) {
                         Bundle bundle = new Bundle();
-                        bundle.putString("myData", ((FeedModel) messagelist.get(getAdapterPosition())).getImage());
-                        bundle.putString("tag", ((FeedModel) messagelist.get(getAdapterPosition())).getCategory());
-                        bundle.putString("headline", ((FeedModel) messagelist.get(getAdapterPosition())).getHead());
+                        bundle.putString("myData", messagelist.get((getAdapterPosition())).getImage());
+                        bundle.putString("tag", messagelist.get((getAdapterPosition())).getCategory());
+                        bundle.putString("headline", messagelist.get((getAdapterPosition())).getHead());
                         Intent in = new Intent(mContext, FullImage.class);
                         in.putExtras(bundle);
                         mContext.startActivity(in);
@@ -1227,11 +1189,11 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
                     increaseViewsRequest();
                     Intent in = new Intent(mContext, VideoDisplay.class);
-                    in.putExtra("myData", ((FeedModel) messagelist.get(getAdapterPosition())).getVideo());
-                    in.putExtra("tag", ((FeedModel) messagelist.get(getAdapterPosition())).getCategory());
-                    in.putExtra("headline", ((FeedModel) messagelist.get(getAdapterPosition())).getHead());
-                    if (((FeedModel) messagelist.get(getAdapterPosition())).getHeadline() != null)
-                        in.putExtra("description", ((FeedModel) messagelist.get(getAdapterPosition())).getHeadline());
+                    in.putExtra("myData", messagelist.get(getAdapterPosition()).getVideo());
+                    in.putExtra("tag", messagelist.get(getAdapterPosition()).getCategory());
+                    in.putExtra("headline", messagelist.get(getAdapterPosition()).getHead());
+                    if (messagelist.get(getAdapterPosition()).getHeadline() != null)
+                        in.putExtra("description", messagelist.get(getAdapterPosition()).getHeadline());
                     mContext.startActivity(in);
 
                 }
@@ -1261,9 +1223,9 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 @Override
                 protected Map<String, String> getParams() throws AuthFailureError {
                     Map<String, String> map = new HashMap<String, String>();
-                    Log.d("po", ((FeedModel) messagelist.get(getAdapterPosition())).getPostId());
-                    Log.d("powwww", ((FeedModel) messagelist.get(getAdapterPosition())).getPostviews());
-                    map.put("postid", ((FeedModel) messagelist.get(getAdapterPosition())).getPostId());
+                    Log.d("po", messagelist.get(getAdapterPosition()).getPostId());
+                    Log.d("powwww", messagelist.get(getAdapterPosition()).getPostviews());
+                    map.put("postid", messagelist.get(getAdapterPosition()).getPostId());
                     return map;
                 }
             };
@@ -1271,6 +1233,7 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             requestQueue.add(stringRequest);
 
         }
+
     }
 
     private class LoadingViewHolder extends RecyclerView.ViewHolder {
@@ -1281,11 +1244,19 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     private class NewPostViewHolder extends RecyclerView.ViewHolder {
         LinearLayout con;
+        CardView cv;
 
         NewPostViewHolder(View view) {
             super(view);
             con = (LinearLayout) view.findViewById(R.id.newCon);
             ImageView img = (ImageView) view.findViewById(R.id.pic);
+            cv = (CardView) view.findViewById(R.id.cv);
+            ImageView anim = (ImageView) view.findViewById(R.id.animimg);
+            AnimationDrawable ad = (AnimationDrawable) mContext.getResources().getDrawable(R.drawable.animation);
+            anim.setImageDrawable(ad);
+            ad.setOneShot(false);
+            ad.start();
+
             Glide.with(mContext).load(session.getProfilePicture()).error(R.drawable.download).into(img);
             con.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -1298,17 +1269,57 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             new UploadOptions(mContext, view, true);
         }
 
+
     }
 
     private class LocationViewHolder extends RecyclerView.ViewHolder {
         private TextView edit;
         private TextView location;
+        private TextView location1;
+        private TextView location2;
+        private TextView location3;
 
         public LocationViewHolder(View inflate) {
             super(inflate);
 
-           /* edit = (TextView) inflate.findViewById(R.id.edit);
+            edit = (TextView) inflate.findViewById(R.id.edit);
             location = (TextView) inflate.findViewById(R.id.locationText);
+            location.setText(session.getCustomLocation());
+
+            location1 = (TextView) inflate.findViewById(R.id.editText1);
+            location1.setText(session.getCustomLocation1());
+            location2 = (TextView) inflate.findViewById(R.id.editText2);
+            location2.setText(session.getCustomLocation2());
+            location3 = (TextView) inflate.findViewById(R.id.editText3);
+            location3.setText(session.getCustomLocation3());
+
+            location1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    location.setText(session.getCustomLocation1());
+
+                    fragment.onLocationSet(session.getCustomLocation1());
+                }
+            });
+
+            location2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    location.setText(session.getCustomLocation2());
+
+                    fragment.onLocationSet(session.getCustomLocation2());
+                }
+            });
+
+            location3.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    location.setText(session.getCustomLocation3());
+
+                    fragment.onLocationSet(session.getCustomLocation3());
+                }
+            });
+
 
             edit.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -1327,8 +1338,24 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
                     // set values for custom dialog components - text, image and button
                     final EditText editText = (EditText) confirmDialog.findViewById(R.id.editTextLocation);
+                    final EditText editText1 = (EditText) confirmDialog.findViewById(R.id.editTextsubLocation1);
+                    final EditText editText2 = (EditText) confirmDialog.findViewById(R.id.editTextsubLocation2);
+                    final EditText editText3 = (EditText) confirmDialog.findViewById(R.id.editTextsubLocation3);
+
+                    editText.setText(session.getCustomLocation());
+                    editText.setSelection(editText.getText().length());
+
+                    editText1.setText(session.getCustomLocation1());
+                    editText1.setSelection(editText1.getText().length());
+
+                    editText2.setText(session.getCustomLocation2());
+                    editText2.setSelection(editText2.getText().length());
+                    editText3.setText(session.getCustomLocation3());
+                    editText3.setSelection(editText3.getText().length());
+
                     Button button = (Button) confirmDialog.findViewById(R.id.buttonConfirm);
                     alertDialog.show();
+
 
                     button.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -1338,13 +1365,27 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                             if (editText.getText().toString().trim().length() == 0) {
 
                             } else {
+                                String s = editText.getText().toString();
+                                String s1 = editText1.getText().toString();
+                                String s2 = editText2.getText().toString();
+                                String s3 = editText3.getText().toString();
+
                                 fragment.onLocationSet(editText.getText().toString());
+                                location.setText(editText.getText().toString());
+                                location1.setText(editText1.getText().toString());
+                                location2.setText(editText2.getText().toString());
+                                location3.setText(editText3.getText().toString());
+                                session.saveCustomLocation(editText.getText().toString());
+                                session.saveCustomsubLocation1(editText1.getText().toString());
+                                session.saveCustomsubLocation2(editText2.getText().toString());
+                                session.saveCustomsubLocation3(editText3.getText().toString());
+
                             }
                         }
                     });
 
                 }
-            });*/
+            });
         }
 
     }
@@ -1360,4 +1401,6 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             super(inflate);
         }
     }
+
+
 }

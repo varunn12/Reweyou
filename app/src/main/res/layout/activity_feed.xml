@@ -5,8 +5,8 @@
     android:id="@+id/drawer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-   >
+    android:background="#eeeeee"
+    android:fitsSystemWindows="true">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -21,12 +21,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:background="@color/colorPrimary" />
+
             <android.support.design.widget.AppBarLayout
                 android:id="@+id/appBarLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:elevation="2dp"
-                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                app:elevation="0dp">
 
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbar"
@@ -44,20 +49,20 @@
 
                         <ImageView
                             android:id="@+id/sssss"
-                            android:layout_width="28dp"
+                            android:layout_width="40dp"
                             android:layout_height="match_parent"
+                            android:paddingRight="14dp"
                             app:srcCompat="@drawable/ic_menu_black_24px" />
 
                         <TextView
                             android:id="@+id/title"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="12dp"
-                            android:layout_toRightOf="@+id/sssss"
-                            android:text="Reweyou"
-                            android:gravity="top"
-                            android:textColor="#fff"
                             android:layout_marginTop="7dp"
+                            android:layout_toRightOf="@+id/sssss"
+                            android:gravity="top"
+                            android:text="Reweyou"
+                            android:textColor="#fff"
                             android:textSize="20dp"
                             android:textStyle="bold" />
 
@@ -65,10 +70,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/title"
-                            android:layout_marginLeft="12dp"
                             android:layout_toRightOf="@+id/sssss"
-                            android:text="Empowering Citizen Journalism"
                             android:alpha="0.87"
+                            android:text="Empowering Citizen Journalism"
                             android:textColor="#fff"
                             android:textSize="11dp"
                             android:textStyle="normal" />
@@ -125,21 +129,29 @@
 
                 </android.support.v7.widget.Toolbar>
 
-                <android.support.design.widget.TabLayout
-                    android:id="@+id/tabLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:background="#ffffff"
-                    app:tabIndicatorColor="@color/colorPrimary"
-                    app:tabIndicatorHeight="3dp"
-                    app:tabSelectedTextColor="@color/colorPrimary"
-                    app:tabTextColor="#ccc" />
+
             </android.support.design.widget.AppBarLayout>
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/tabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginBottom="4dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/border1"
+                android:elevation="2dp"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                app:tabIndicatorColor="@color/colorPrimary"
+                app:tabIndicatorHeight="0dp"
+                app:tabSelectedTextColor="@color/colorPrimary"
+                app:tabTextColor="#ccc" />
+
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/viewPager"
                 android:layout_width="match_parent"
-
                 android:layout_height="match_parent"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 

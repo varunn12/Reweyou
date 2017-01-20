@@ -2,7 +2,6 @@ package in.reweyou.reweyou.fragment;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -46,7 +45,6 @@ import java.util.List;
 import java.util.Map;
 
 import in.reweyou.reweyou.FragmentCommunicator;
-import in.reweyou.reweyou.Leaderboard;
 import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.UserProfile;
 import in.reweyou.reweyou.adapter.FeedAdapter;
@@ -144,13 +142,6 @@ public class SecondFragment extends Fragment implements FragmentCommunicator {
         noissues.setVisibility(View.GONE);*/
 
 
-        emptyview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isAdded())
-                    mContext.startActivity(new Intent(mContext, Leaderboard.class));
-            }
-        });
         //Progress bar
         progressBar = (ProgressBar) layout.findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.GONE);
