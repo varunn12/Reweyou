@@ -256,7 +256,7 @@ public class SinglePostActivity extends AppCompatActivity {
                     BaseFragment fragment2 = new BaseFragment();
                     Bundle bundle2 = new Bundle();
                     bundle2.putInt(TAG_FRAGMENT_CATEGORY, FRAGMENT_CATEGORY_SINGLE_POST);
-                    //bundle2.putString(TAG_SINGLE_POST_ID, query);
+                    bundle2.putString(TAG_SINGLE_POST_ID, query);
                     fragment2.setArguments(bundle2);
                     Log.d("getItem", "" + position);
                     return fragment2;

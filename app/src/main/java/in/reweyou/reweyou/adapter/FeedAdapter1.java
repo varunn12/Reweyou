@@ -533,14 +533,14 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 viewHolder.image.setVisibility(View.VISIBLE);
 
                 viewHolder.image.setAdjustViewBounds(false);
-                Glide.with(mContext).load(messagelist.get(position).getGif()).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).error(R.drawable.ic_broken_image_black_48dp).dontAnimate().into(viewHolder.image);
+                Glide.with(mContext).load(messagelist.get(position).getGif()).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).error(R.drawable.ic_broken_image_black_48dp).into(viewHolder.image);
             }
         } else {
             // viewHolder.image.setAdjustViewBounds(true);
             viewHolder.image.setVisibility(View.VISIBLE);
 
             timings.addSplit("a");
-            Glide.with(mContext).load(messagelist.get(position).getImage()).diskCacheStrategy(DiskCacheStrategy.SOURCE).error(R.drawable.ic_broken_image_black_48dp).dontAnimate().into(viewHolder.image);
+            Glide.with(mContext).load(messagelist.get(position).getImage()).diskCacheStrategy(DiskCacheStrategy.SOURCE).error(R.drawable.ic_broken_image_black_48dp).into(viewHolder.image);
             timings.addSplit("s");
             timings.dumpToLog();
         }
@@ -568,12 +568,12 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
                     return false;
                 }
-            }).dontAnimate().override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).into(viewHolder.image);
+            }).override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).into(viewHolder.image);
         }
     }
 
     private void setReporterProfilePic(BaseViewHolder viewHolder, int position) {
-        Glide.with(mContext).load(messagelist.get(position).getProfilepic()).diskCacheStrategy(DiskCacheStrategy.SOURCE).placeholder(R.drawable.download).error(R.drawable.download).dontAnimate().into(viewHolder.profilepic);
+        Glide.with(mContext).load(messagelist.get(position).getProfilepic()).diskCacheStrategy(DiskCacheStrategy.SOURCE).placeholder(R.drawable.download).error(R.drawable.download).into(viewHolder.profilepic);
 
     }
 

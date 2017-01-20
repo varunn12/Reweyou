@@ -109,7 +109,11 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View layout = inflater.inflate(R.layout.fragment_second, container, false);
+        View layout;
+        if (mContext instanceof Feed)
+            layout = inflater.inflate(R.layout.fragment_second, container, false);
+        else
+            layout = inflater.inflate(R.layout.fragment_second1, container, false);
 
         initViews(layout);
 
@@ -125,6 +129,7 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private void initCategorySpecificViews(View layout) {
         swipe = (SwipeRefreshLayout) layout.findViewById(R.id.swipe);
         swipe.setOnRefreshListener(this);
+        if (mContext instanceof Feed)
         swipe.setProgressViewOffset(false, 0, 110);
 
 
@@ -141,12 +146,13 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 {
 
+                    if (mContext instanceof Feed) {
+                        if (recyclerView.getChildAt(0).getTop() < initialTopPosition) {
+                            ((Feed) mContext).elevatetab();
+                        } else {
+                            ((Feed) mContext).deelevatetab();
 
-                    if (recyclerView.getChildAt(0).getTop() < initialTopPosition) {
-                        ((Feed) mContext).elevatetab();
-                    } else {
-                        ((Feed) mContext).deelevatetab();
-
+                        }
                     }
 
                     if (dy > 0 && feedAdapter1.getItemCount() > 9) {
@@ -176,8 +182,9 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                if (newState == 0)
-                    ((Feed) mContext).deelevatetab();
+                if (mContext instanceof Feed)
+                    if (newState == 0)
+                        ((Feed) mContext).deelevatetab();
 
                 super.onScrollStateChanged(recyclerView, newState);
             }
