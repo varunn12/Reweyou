@@ -104,7 +104,6 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         getIntentExtras();
 
 
-
     }
 
     @Nullable
@@ -322,36 +321,43 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     private void loadReportsfromCache() {
         if (fragmentListWithCache.contains(FRAGMENT_CATEGORY) && FRAGMENT_CATEGORY == FRAGMENT_CATEGORY_NEWS) {
-            List<FeedModel> list = sessionManager.getSaveNewsReportsinCache();
-            if (isAdded()) {
-                if (!isResponseEmpty(list)) {
-                    cacheLoad = true;
-                    Log.d(TAG, "onResponse: response is not empty");
-                    for (FeedModel feedModel : list) {
-                        if (likeslist.contains(feedModel.getPostId())) {
-                            feedModel.setLiked(true);
-                            feedModel.setViewType();
-                            feedModel.setDate(getFormattedDate(feedModel.getDate()));
+
+            if (!sessionManager.getispresentSaveNewsReportsinCache()) {
+                loadReportsfromServer();
+            } else {
+
+
+                List<FeedModel> list = sessionManager.getSaveNewsReportsinCache();
+                if (isAdded()) {
+                    if (!isResponseEmpty(list)) {
+                        cacheLoad = true;
+                        Log.d(TAG, "onResponse: response is not empty");
+                        for (FeedModel feedModel : list) {
+                            if (likeslist.contains(feedModel.getPostId())) {
+                                feedModel.setLiked(true);
+                                feedModel.setViewType();
+                                feedModel.setDate(getFormattedDate(feedModel.getDate()));
+                            }
+                            feedAdapter1.add6(feedModel);
                         }
-                        feedAdapter1.add6(feedModel);
-                    }
 
 
-                    recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                        @Override
-                        public void onGlobalLayout() {
-                            recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                            Log.d(TAG, "onGlobalLayout: called");
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    loadReportsfromServer();
+                        recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                            @Override
+                            public void onGlobalLayout() {
+                                recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                                Log.d(TAG, "onGlobalLayout: called");
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        loadReportsfromServer();
 
-                                }
-                            }, 800);
-                        }
-                    });
-                } else throw new NullPointerException("saved feedlist from cache is empty");
+                                    }
+                                }, 800);
+                            }
+                        });
+                    } else throw new NullPointerException("saved feedlist from cache is empty");
+                }
             }
         } else loadReportsfromServer();
     }

@@ -306,6 +306,10 @@ public class UserSessionManager {
         return list;
     }
 
+    public boolean getispresentSaveNewsReportsinCache() {
+        return pref.getString("newsReport" + 0, null) != null;
+    }
+
     public String getCustomLocation() {
         return pref.getString(KEY_CUSTOM_LOCATION, getLoginLocation());
     }
