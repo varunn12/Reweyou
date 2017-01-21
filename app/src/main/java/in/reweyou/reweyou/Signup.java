@@ -12,11 +12,13 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -26,8 +28,11 @@ import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -141,6 +146,9 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
             dismissotpDialog();
         }
     };
+    private TextView skip;
+    private ImageView logo;
+    private RelativeLayout rl;
 
     private boolean hasPermissions(Context context, String... permissions) {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
@@ -152,6 +160,7 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
         }
         return true;
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -166,9 +175,23 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
         editLocation = (EditText) findViewById(R.id.editLocation);
         buttonRegister = (Button) findViewById(R.id.buttonRegister);
         Read = (TextView) findViewById(R.id.Read);
+        skip = (TextView) findViewById(R.id.skip);
+        rl = (RelativeLayout) findViewById(R.id.rl);
 
+        skip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Signup.this, Feed.class);
+                startActivity(i);
+                finish();
+            }
+        });
+        keyboardListener();
 
+        logo = (ImageView) findViewById(R.id.logo);
         Read.setPaintFlags(Read.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        skip.setPaintFlags(skip.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
         task.execute();
 
         Read.setOnClickListener(this);
@@ -335,6 +358,40 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
             }
         }
     }
+
+    private void keyboardListener() {
+        findViewById(R.id.main_content).getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                Rect r = new Rect();
+                findViewById(R.id.main_content).getWindowVisibleDisplayFrame(r);
+                int heightDiff = findViewById(R.id.main_content).getRootView().getHeight() - (r.bottom - r.top);
+
+                if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
+                    //ok now we know the keyboard is up...
+                    logo.setVisibility(View.GONE);
+                    Read.setVisibility(View.GONE);
+                    rl.setVisibility(View.GONE);
+
+                } else {
+                    //ok now we know the keyboard is down...
+                    logo.setVisibility(View.VISIBLE);
+                    rl.setVisibility(View.VISIBLE);
+
+                    new Handler().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (Read != null) {
+                                Read.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    });
+
+                }
+            }
+        });
+    }
+
 
     public void showSettingsAlert() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(

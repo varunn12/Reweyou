@@ -46,6 +46,7 @@ import java.util.Map;
 import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.RequestHandler;
 import in.reweyou.reweyou.classes.UserSessionManager;
+import in.reweyou.reweyou.customView.CustomSigninDialog;
 
 import static in.reweyou.reweyou.utils.Constants.USER_PROFILE_URL_FOLLOW;
 import static in.reweyou.reweyou.utils.Constants.USER_PROFILE_URL_VERIFY_FOLLOW;
@@ -129,9 +130,15 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.button:
-                if (dataloaded)
-                    reading(i);
-                break;
+
+                if (!session.checkLoginSplash()) {
+                    final CustomSigninDialog customSigninDialog = new CustomSigninDialog(UserProfile.this);
+                    customSigninDialog.show();
+                } else {
+                    if (dataloaded)
+                        reading(i);
+                    break;
+                }
 
         }
     }

@@ -65,6 +65,7 @@ import in.reweyou.reweyou.classes.HandleActivityResult;
 import in.reweyou.reweyou.classes.MyLocation;
 import in.reweyou.reweyou.classes.UploadOptions;
 import in.reweyou.reweyou.classes.UserSessionManager;
+import in.reweyou.reweyou.customView.CustomSigninDialog;
 import in.reweyou.reweyou.utils.Constants;
 
 import static in.reweyou.reweyou.classes.HandleActivityResult.HANDLE_IMAGE;
@@ -169,6 +170,12 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
         uploadOptions.initOptions();
 
         session = new UserSessionManager(this);
+
+        if (!session.checkLoginSplash()) {
+            final CustomSigninDialog customSigninDialog = new CustomSigninDialog(PostReport.this);
+            customSigninDialog.show();
+        }
+
         checker = new PermissionsChecker(this);
         mycity = session.getLoginLocation();
         cd = new ConnectionDetector(PostReport.this);
@@ -398,31 +405,37 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
 
     private void onbutoon() {
 
-        if (editlocation.getText().toString().trim().length() > 0) {
-            place = editlocation.getText().toString();
-            address = place;
-            if (validateFields()) {
 
-                switch (viewType) {
-                    case PREVIEW_IMAGE:
-                        compressSelectedImage();
-                        break;
-                    case PREVIEW_VIDEO:
-                        compressVideo();
-                        break;
-                    case PREVIEW_GIF:
-                        compressGif();
-                        break;
-                    default:
-                        uploadFile(PREVIEW_TEXT, null);
-                }
-
-            }
+        if (!session.checkLoginSplash()) {
+            final CustomSigninDialog customSigninDialog = new CustomSigninDialog(PostReport.this);
+            customSigninDialog.show();
         } else {
-            if (!hasPermissions(this, PERMISSIONS_LOCATION)) {
-                ActivityCompat.requestPermissions(this, PERMISSIONS_LOCATION, PERMISSION_ALL);
-            } else
-                permissionGranted();
+            if (editlocation.getText().toString().trim().length() > 0) {
+                place = editlocation.getText().toString();
+                address = place;
+                if (validateFields()) {
+
+                    switch (viewType) {
+                        case PREVIEW_IMAGE:
+                            compressSelectedImage();
+                            break;
+                        case PREVIEW_VIDEO:
+                            compressVideo();
+                            break;
+                        case PREVIEW_GIF:
+                            compressGif();
+                            break;
+                        default:
+                            uploadFile(PREVIEW_TEXT, null);
+                    }
+
+                }
+            } else {
+                if (!hasPermissions(this, PERMISSIONS_LOCATION)) {
+                    ActivityCompat.requestPermissions(this, PERMISSIONS_LOCATION, PERMISSION_ALL);
+                } else
+                    permissionGranted();
+            }
         }
     }
 

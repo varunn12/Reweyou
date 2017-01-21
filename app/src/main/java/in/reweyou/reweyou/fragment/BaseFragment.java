@@ -130,7 +130,7 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         swipe = (SwipeRefreshLayout) layout.findViewById(R.id.swipe);
         swipe.setOnRefreshListener(this);
         if (mContext instanceof Feed)
-        swipe.setProgressViewOffset(false, 0, 110);
+            swipe.setProgressViewOffset(false, 0, 110);
 
 
         recyclerView = (RecyclerView) layout.findViewById(R.id.recycler_view);

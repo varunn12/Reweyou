@@ -26,6 +26,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
@@ -33,7 +34,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.SparseArray;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -69,6 +69,7 @@ import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.HandleActivityResult;
 import in.reweyou.reweyou.classes.UploadOptions;
 import in.reweyou.reweyou.classes.UserSessionManager;
+import in.reweyou.reweyou.customView.CustomSigninDialog;
 import in.reweyou.reweyou.fragment.BaseFragment;
 import in.reweyou.reweyou.fragment.SecondFragment;
 import in.reweyou.reweyou.utils.Constants;
@@ -129,6 +130,9 @@ public class Feed extends AppCompatActivity {
     private ValueAnimator valueAnimator;
     private boolean animRunning;
     private ValueAnimator valueAnimator1;
+    private android.app.AlertDialog alertDialog1;
+    private CustomSigninDialog customSigninDialog;
+    private TextView signinbutton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,7 +141,7 @@ public class Feed extends AppCompatActivity {
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
-        session = new UserSessionManager(getApplicationContext());
+        session = new UserSessionManager(this);
         cd = new ConnectionDetector(Feed.this);
         checker = new PermissionsChecker(this);
 
@@ -148,13 +152,14 @@ public class Feed extends AppCompatActivity {
 
         //device id must be null for the users using old version of app
 
-        if (session.getDeviceid() == null) {
+        if (session.getDeviceid() == null && session.checkLoginSplash()) {
             checkforolduserstatus();
         } else {                              //for new users we didnt need this check
             pagerAdapter = new PagerAdapter(getSupportFragmentManager());
             viewPager.setAdapter(pagerAdapter);
             viewPager.setCurrentItem(1);
-            makeNotificationsRequest();
+            if (session.checkLoginSplash())
+                makeNotificationsRequest();
 
 
             if (!session.getFirstLoad1())
@@ -241,6 +246,35 @@ public class Feed extends AppCompatActivity {
         initFAB();
         initViewPagerAndTabs();
         initNavigationDrawer();
+        initSigninDialog();
+    }
+
+    private void initSigninDialog() {
+       /* LayoutInflater li = LayoutInflater.from(Feed.this);
+        //Creating a view to get the dialog box
+        View confirmDialog = li.inflate(R.layout.dialog_signin, null);
+        final android.app.AlertDialog.Builder dialog = new android.app.AlertDialog.Builder(Feed.this);
+        // Include dialog.xml file
+        dialog.setView(confirmDialog);
+        alertDialog1 = dialog.create();
+
+        // Set dialog title
+        alertDialog1.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        alertDialog1.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        Button button = (Button) confirmDialog.findViewById(R.id.buttonConfirm);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog1.dismiss();
+                startActivity(new Intent(Feed.this, Signup.class));
+            }
+        });*/
+
+        customSigninDialog = new CustomSigninDialog(this);
+
+
     }
 
     private void initFAB() {
@@ -356,9 +390,11 @@ public class Feed extends AppCompatActivity {
         inbox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent s = new Intent(Feed.this, Contacts.class);
-                startActivity(s);
-                overridePendingTransition(0, 0);
+                if (session.checkLoginSplash()) {
+                    Intent s = new Intent(Feed.this, Contacts.class);
+                    startActivity(s);
+                    overridePendingTransition(0, 0);
+                } else showSignupDialog();
             }
         });
 
@@ -366,9 +402,11 @@ public class Feed extends AppCompatActivity {
         noti.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent notifications = new Intent(Feed.this, Notifications.class);
-                startActivity(notifications);
-                overridePendingTransition(0, 0);
+                if (session.checkLoginSplash()) {
+                    Intent notifications = new Intent(Feed.this, Notifications.class);
+                    startActivity(notifications);
+                    overridePendingTransition(0, 0);
+                } else showSignupDialog();
             }
         });
 
@@ -378,9 +416,13 @@ public class Feed extends AppCompatActivity {
         mToolbar.findViewById(R.id.sssss).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                drawerLayout.openDrawer(Gravity.START);
+                drawerLayout.openDrawer(GravityCompat.START);
             }
         });
+    }
+
+    private void showSignupDialog() {
+        customSigninDialog.show();
     }
 
     private void initViewPagerAndTabs() {
@@ -842,18 +884,33 @@ public class Feed extends AppCompatActivity {
         View header = navigationView.getHeaderView(0);
         TextView tv_name = (TextView) header.findViewById(R.id.tv_name);
         image = (ImageView) header.findViewById(R.id.image);
+        signinbutton = (TextView) header.findViewById(R.id.signin);
         ImageView profileSetting = (ImageView) header.findViewById(R.id.profile_settings);
-        profileSetting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent profile = new Intent(Feed.this, MyProfile.class);
-                startActivityForResult(profile, REQ_CODE_PROFILE);
-            }
-        });
-        tv_name.setText(session.getUsername());
-        Glide.with(Feed.this).load(session.getProfilePicture()).error(R.drawable.download).into(image);
+
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
 
+
+        if (session.checkLoginSplash()) {
+            signinbutton.setVisibility(View.GONE);
+
+            profileSetting.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent profile = new Intent(Feed.this, MyProfile.class);
+                    startActivityForResult(profile, REQ_CODE_PROFILE);
+                }
+            });
+            tv_name.setText(session.getUsername());
+            Glide.with(Feed.this).load(session.getProfilePicture()).error(R.drawable.download).into(image);
+        } else {
+            signinbutton.setVisibility(View.VISIBLE);
+            signinbutton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(Feed.this, Signup.class));
+                }
+            });
+        }
       /*  ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, mToolbar, R.string.drawer_open, R.string.drawer_close) {
 
             @Override

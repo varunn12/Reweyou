@@ -974,9 +974,14 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             sendmessage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Constants.suggestpostid = messagelist.get(getAdapterPosition()).getPostId();
-                    Intent i = new Intent(mContext, Contacts.class);
-                    mContext.startActivity(i);
+
+                    if (session.checkLoginSplash()) {
+                        Constants.suggestpostid = messagelist.get(getAdapterPosition()).getPostId();
+                        Intent i = new Intent(mContext, Contacts.class);
+                        mContext.startActivity(i);
+                    } else
+                        Toast.makeText(mContext, "Sign in to share this post", Toast.LENGTH_SHORT).show();
+
                 }
             });
 
@@ -1005,12 +1010,16 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (messagelist.get(getAdapterPosition()).isLiked()) {
-                        notifyItemChanged(getAdapterPosition(), preunlike);
-                    } else {
-                        notifyItemChanged(getAdapterPosition(), prelike);
-                    }
-                    makeRequest(getAdapterPosition());
+
+                    if (session.checkLoginSplash()) {
+                        if (messagelist.get(getAdapterPosition()).isLiked()) {
+                            notifyItemChanged(getAdapterPosition(), preunlike);
+                        } else {
+                            notifyItemChanged(getAdapterPosition(), prelike);
+                        }
+                        makeRequest(getAdapterPosition());
+                    } else
+                        Toast.makeText(mContext, "Sign in to like this post", Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -1019,7 +1028,7 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 @Override
                 public void onClick(View view) {
 
-                    if (uploadOption.showShareOptions()) {
+                    if (new UploadOptions((Activity) mContext).showShareOptions()) {
                         takeScreenshot(cv);
                     }
                 }
@@ -1334,6 +1343,7 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
                     // Set dialog title
                     alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    alertDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
 
                     // set values for custom dialog components - text, image and button

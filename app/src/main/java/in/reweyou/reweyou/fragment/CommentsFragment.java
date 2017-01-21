@@ -68,6 +68,7 @@ import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.SinglePostActivity;
 import in.reweyou.reweyou.adapter.CommentsAdapter;
 import in.reweyou.reweyou.classes.UserSessionManager;
+import in.reweyou.reweyou.customView.CustomSigninDialog;
 import in.reweyou.reweyou.customView.swipeRefresh.PullRefreshLayout;
 import in.reweyou.reweyou.model.CommentsModel;
 import in.reweyou.reweyou.utils.Constants;
@@ -167,13 +168,20 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
 
             }
         });
+
+        final CustomSigninDialog customSigninDialog = new CustomSigninDialog(mContext);
         sendButton = (ImageView) layout.findViewById(R.id.btn_send);
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (selectedImagePath == null)
-                    makeRequest(null);
-                else uploadSelectedImage();
+
+                if (session.checkLoginSplash()) {
+                    if (selectedImagePath == null)
+                        makeRequest(null);
+                    else uploadSelectedImage();
+                } else {
+                    customSigninDialog.show();
+                }
             }
         });
         imagebutton = (ImageView) layout.findViewById(R.id.btn_image);

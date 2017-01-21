@@ -149,7 +149,7 @@ public class UserSessionManager {
 
     public boolean checkLoginSplash() {
         // Check login status
-        return !this.isUserLoggedIn();
+        return this.isUserLoggedIn();
     }
 
     /**

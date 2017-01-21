@@ -136,8 +136,11 @@ public class InviteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         Intent i = new Intent(Intent.ACTION_SEND);
                         i.setType("text/plain");
                         i.putExtra(Intent.EXTRA_SUBJECT, "Reweyou");
-                        String sAux = session.getUsername() + " has invite you to join Reweyou.\n\n";
-                        sAux = sAux + "Download app: https://play.google.com/store/apps/details?id=in.reweyou.reweyou";
+                        String sAux = "";
+                        if (session.checkLoginSplash())
+                            sAux = session.getUsername() + " has invite you to join Reweyou.\n\n";
+                        else
+                            sAux = sAux + "Download app: https://play.google.com/store/apps/details?id=in.reweyou.reweyou";
                         i.putExtra(Intent.EXTRA_TEXT, sAux);
                         context.startActivity(Intent.createChooser(i, "choose one"));
                     } catch (Exception e) {
