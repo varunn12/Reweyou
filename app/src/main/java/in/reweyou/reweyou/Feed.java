@@ -134,6 +134,10 @@ public class Feed extends AppCompatActivity {
     private CustomSigninDialog customSigninDialog;
     private TextView signinbutton;
 
+    public static float pxFromDp(final Context context, final float dp) {
+        return dp * context.getResources().getDisplayMetrics().density;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -468,7 +472,6 @@ public class Feed extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
     }
 
-
     private void makeNotificationsRequest() {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.MY_TOTAL_NOTIFICATIONS_URL,
                 new Response.Listener<String>() {
@@ -514,37 +517,6 @@ public class Feed extends AppCompatActivity {
         requestQueue.add(stringRequest);
 
 
-    }
-
-    @Override
-    protected void onActivityResult(int reqCode, int resCode, Intent data) {
-
-        if (reqCode == REQ_CODE_PROFILE && resCode == RESULT_OK) {
-            //called when profilepicture is updated by user
-            Glide.with(Feed.this).load(session.getProfilePicture()).error(R.drawable.download).into(image);
-        } else {
-            int dataType = new HandleActivityResult().handleResult(reqCode, resCode, data);
-            switch (dataType) {
-                case HANDLE_IMAGE:
-                    Uri uri = data.getData();
-                    if (uri != null) {
-                        Intent i = new Intent(this, PostReport.class);
-                        i.putExtra("dataImage", uri.toString());
-                        startActivity(i);
-                    } else Log.w("uri", "null");
-
-
-                    break;
-                case HANDLE_VIDEO:
-                    Uri uri2 = data.getData();
-                    if (uri2 != null) {
-                        Intent i2 = new Intent(this, PostReport.class);
-                        i2.putExtra("dataVideo", uri2.toString());
-                        startActivity(i2);
-                    } else Log.w("uri", "null");
-
-            }
-        }
     }
 
 
@@ -637,6 +609,37 @@ public class Feed extends AppCompatActivity {
         }
     }*/
 
+    @Override
+    protected void onActivityResult(int reqCode, int resCode, Intent data) {
+
+        if (reqCode == REQ_CODE_PROFILE && resCode == RESULT_OK) {
+            //called when profilepicture is updated by user
+            Glide.with(Feed.this).load(session.getProfilePicture()).error(R.drawable.download).into(image);
+        } else {
+            int dataType = new HandleActivityResult().handleResult(reqCode, resCode, data);
+            switch (dataType) {
+                case HANDLE_IMAGE:
+                    Uri uri = data.getData();
+                    if (uri != null) {
+                        Intent i = new Intent(this, PostReport.class);
+                        i.putExtra("dataImage", uri.toString());
+                        startActivity(i);
+                    } else Log.w("uri", "null");
+
+
+                    break;
+                case HANDLE_VIDEO:
+                    Uri uri2 = data.getData();
+                    if (uri2 != null) {
+                        Intent i2 = new Intent(this, PostReport.class);
+                        i2.putExtra("dataVideo", uri2.toString());
+                        startActivity(i2);
+                    } else Log.w("uri", "null");
+
+            }
+        }
+    }
+
     protected void sendEmail() {
         Log.i("Send email", "");
         String[] TO = {"support@reweyou.in"};
@@ -657,7 +660,6 @@ public class Feed extends AppCompatActivity {
             Toast.makeText(Feed.this, "There is no email client installed.", Toast.LENGTH_SHORT).show();
         }
     }
-
 
     private void setnotificationNumber(int i) {
         if (tv != null) {
@@ -945,7 +947,7 @@ public class Feed extends AppCompatActivity {
 
     public void elevatetab() {
         if (!animRunning) {
-            valueAnimator = ValueAnimator.ofFloat(4, 12);
+            valueAnimator = ValueAnimator.ofFloat(pxFromDp(this, 4), pxFromDp(this, 12));
             valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
@@ -985,7 +987,7 @@ public class Feed extends AppCompatActivity {
         if (valueAnimator != null)
             valueAnimator.cancel();
 
-        valueAnimator1 = ValueAnimator.ofFloat(12, 4);
+        valueAnimator1 = ValueAnimator.ofFloat(pxFromDp(this, 12), pxFromDp(this, 4));
         valueAnimator1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {

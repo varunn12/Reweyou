@@ -2,6 +2,7 @@ package in.reweyou.reweyou.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -146,14 +147,18 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 {
 
-                    if (mContext instanceof Feed) {
-                        if (recyclerView.getChildAt(0).getTop() < initialTopPosition) {
-                            ((Feed) mContext).elevatetab();
-                        } else {
-                            ((Feed) mContext).deelevatetab();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        // Call some material design APIs here
+                        if (mContext instanceof Feed) {
+                            if (recyclerView.getChildAt(0).getTop() < initialTopPosition) {
+                                ((Feed) mContext).elevatetab();
+                            } else {
+                                ((Feed) mContext).deelevatetab();
 
+                            }
                         }
                     }
+
 
                     if (dy > 0 && feedAdapter1.getItemCount() > 9) {
                         int visibleItemCount = layoutManager.getChildCount();

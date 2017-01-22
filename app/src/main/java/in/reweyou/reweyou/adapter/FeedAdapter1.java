@@ -1,6 +1,7 @@
 package in.reweyou.reweyou.adapter;
 
 
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -30,6 +31,7 @@ import android.util.TimingLogger;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -56,6 +58,7 @@ import org.json.JSONException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -100,6 +103,7 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private final String prelike = "prelike";
     private final String errorunliking = "errorunliking";
     private final String errorliking = "errorliking";
+    private final String daynightanim = "dayanim";
 
     private final int PRE_UNLIKE = 1;
     private final int PRE_LIKE = 2;
@@ -169,6 +173,10 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         return bmp;
     }
 
+    public static float pxFromDp(final Context context, final float dp) {
+        return dp * context.getResources().getDisplayMetrics().density;
+    }
+
     private void initTimer() {
         final CountDownTimer countDownTimer = new CountDownTimer(30000, 1000) {
 
@@ -188,7 +196,6 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private void updateReportTime() {
         notifyItemRangeChanged(0, messagelist.size(), REBIND_TIME);
     }
-
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
@@ -241,7 +248,7 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 });
                 break;
             case VIEW_TYPE_LOCATION:
-                //bindLocation(position, viewHolder2);
+                //  bindLocation(position, viewHolder2);
                 break;
             case VIEW_TYPE_NEW_POST:
                 break;
@@ -249,11 +256,7 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     private void bindLocation(int position, RecyclerView.ViewHolder viewHolder2) {
-        Log.d("locaton", "here");
         LocationViewHolder locationViewHolder = (LocationViewHolder) viewHolder2;
-        if (placename != null)
-            locationViewHolder.location.setText(placename);
-
     }
 
     @Override
@@ -314,6 +317,12 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 holder.reviews.setTypeface(Typeface.DEFAULT_BOLD);
                 holder.reviews.setTextColor(mContext.getResources().getColor(R.color.rank));
                 holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews())) + " likes");
+            }
+        } else if (mHolder instanceof LocationViewHolder) {
+            if (payloads.isEmpty())
+                super.onBindViewHolder(mHolder, position, payloads);
+            else if (payloads.contains(daynightanim)) {
+                rundaynightanim((LocationViewHolder) mHolder);
             }
         } else super.onBindViewHolder(mHolder, position, payloads);
 
@@ -390,7 +399,6 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
 
     }
-
 
     private void bindVideo(final int position, RecyclerView.ViewHolder viewHolder2) {
         final VideoViewHolder viewHolder = (VideoViewHolder) viewHolder2;
@@ -488,10 +496,14 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private void setReactions(BaseViewHolder viewHolder, int position) {
         Log.d(TAG, "setReactions: " + messagelist.get(position).getComments());
         if (messagelist.get(position).getComments().equals("0")) {
-            viewHolder.app.setText("0 Reactions");
+          /*  viewHolder.app.setText("0 Reactions");
             viewHolder.name.setText("No Reactions yet");
-            viewHolder.userName.setText("Be the first one to react...");
+            viewHolder.userName.setText("Be the first one to react...");*/
+            viewHolder.rv.setVisibility(View.GONE);
+
         } else {
+            viewHolder.rv.setVisibility(View.VISIBLE);
+
             viewHolder.app.setText(messagelist.get(position).getComments() + " Reactions");
             viewHolder.name.setText(messagelist.get(position).getFrom());
             viewHolder.userName.setText(messagelist.get(position).getReaction());
@@ -601,7 +613,6 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             viewHolder.head.setText(messagelist.get(position).getHead());
         }
     }
-
 
     public void remove() {
         messagelist.remove(messagelist.size() - 1);
@@ -768,7 +779,6 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         });
     }
 
-
     private void makeRequest(final int adapterPosition) {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_LIKE,
                 new Response.Listener<String>() {
@@ -850,7 +860,7 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public void onViewRecycled(RecyclerView.ViewHolder holder) {
-        // Log.d("onViewRecycled", "called");
+        Log.d("onViewRecycled", "called");
         if (holder != null) {
             if (holder instanceof BaseViewHolder) {
                 BaseViewHolder baseViewHolder = (BaseViewHolder) holder;
@@ -874,12 +884,14 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             messagelist.clear();
             messagelist.add(feedModel);
         } else messagelist.clear();
+
+        if (fragmentCategory == ReportLoadingConstant.FRAGMENT_CATEGORY_CITY)
+            notifyItemChanged(0, daynightanim);
     }
 
     public void add1(FeedModel feedModel) {
         messagelist.add(feedModel);
     }
-
 
     public void add5(FeedModel feedModel) {
         messagelist.add(feedModel);
@@ -924,6 +936,27 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         });
     }
 
+    private void rundaynightanim(final LocationViewHolder viewHolder2) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                ValueAnimator valueAnimator1 = ValueAnimator.ofFloat(pxFromDp(mContext, 0), pxFromDp(mContext, 54));
+                valueAnimator1.setInterpolator(new DecelerateInterpolator());
+                valueAnimator1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        float value = (float) animation.getAnimatedValue();
+                        viewHolder2.daynight.setAlpha((float) ((value / pxFromDp(mContext, 8)) * 0.24));
+                        viewHolder2.daynight.setTranslationY(-value);
+                    }
+                });
+
+                valueAnimator1.setDuration(1500);
+                valueAnimator1.start();
+
+            }
+        }, 800);
+    }
 
     private class BaseViewHolder extends RecyclerView.ViewHolder {
         protected ImageView profilepic, overflow, sendmessage;
@@ -1282,6 +1315,7 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     private class LocationViewHolder extends RecyclerView.ViewHolder {
+        private ImageView daynight;
         private TextView edit;
         private TextView location;
         private TextView location1;
@@ -1291,9 +1325,19 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         public LocationViewHolder(View inflate) {
             super(inflate);
 
+            daynight = (ImageView) inflate.findViewById(R.id.daynight);
             edit = (TextView) inflate.findViewById(R.id.edit);
             location = (TextView) inflate.findViewById(R.id.locationText);
             location.setText(session.getCustomLocation());
+
+            Boolean isNight;
+            Calendar cal = Calendar.getInstance();
+            int hour = cal.get(Calendar.HOUR_OF_DAY);
+            isNight = hour < 6 || hour > 18;
+            if (isNight) {
+                daynight.setImageResource(R.drawable.ic_camera_night_mode);
+            } else daynight.setImageResource(R.drawable.ic_sunny);
+
 
             location1 = (TextView) inflate.findViewById(R.id.editText1);
             location1.setText(session.getCustomLocation1());
