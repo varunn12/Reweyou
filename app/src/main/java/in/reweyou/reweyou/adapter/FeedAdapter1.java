@@ -1338,6 +1338,29 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 daynight.setImageResource(R.drawable.ic_camera_night_mode);
             } else daynight.setImageResource(R.drawable.ic_sunny);
 
+            daynight.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            ValueAnimator valueAnimator1 = ValueAnimator.ofFloat(0, 360 * 3);
+                            valueAnimator1.setInterpolator(new DecelerateInterpolator());
+                            valueAnimator1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                                @Override
+                                public void onAnimationUpdate(ValueAnimator animation) {
+                                    float value = (float) animation.getAnimatedValue();
+                                    daynight.setRotation(value);
+                                }
+                            });
+
+                            valueAnimator1.setDuration(1000);
+                            valueAnimator1.start();
+
+                        }
+                    }, 100);
+                }
+            });
 
             location1 = (TextView) inflate.findViewById(R.id.editText1);
             location1.setText(session.getCustomLocation1());

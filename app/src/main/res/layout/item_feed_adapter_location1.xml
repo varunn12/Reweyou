@@ -18,8 +18,8 @@
 
     <ImageView
         android:id="@+id/daynight"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_gravity="end"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="84dp"
