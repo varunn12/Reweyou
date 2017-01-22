@@ -270,8 +270,10 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             } else if (payloads.contains(prelike)) {
                 Log.d("reach", prelike);
 
-                holder.upicon.setImageResource(R.drawable.ic_thumb_up_primary_16px);
-                holder.upvote.setTextColor(mContext.getResources().getColor(R.color.rank));
+
+                holder.upicon.setColorFilter(ContextCompat.getColor(mContext, R.color.rank));
+                holder.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.rank));
+
                 if (Integer.parseInt(messagelist.get(position).getReviews()) == 0)
                     holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews()) + 1) + " like");
                 else
@@ -283,8 +285,11 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             } else if (payloads.contains(errorliking)) {
                 Log.d("reach", errorliking);
 
-                holder.upicon.setImageResource(R.drawable.ic_thumb_up_black_16px);
-                holder.upvote.setTextColor(mContext.getResources().getColor(R.color.likeText));
+
+                holder.upicon.setColorFilter(ContextCompat.getColor(mContext, R.color.main));
+                holder.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.main));
+
+
                 if (Integer.parseInt(messagelist.get(position).getReviews()) == 0) {
                     holder.reviews.setTypeface(Typeface.DEFAULT);
                     holder.reviews.setTextColor(mContext.getResources().getColor(R.color.main));
@@ -297,8 +302,10 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
             } else if (payloads.contains(preunlike)) {
                 Log.d("reach", preunlike);
-                holder.upicon.setImageResource(R.drawable.ic_thumb_up_black_16px);
-                holder.upvote.setTextColor(mContext.getResources().getColor(R.color.likeText));
+
+                holder.upicon.setColorFilter(ContextCompat.getColor(mContext, R.color.main));
+                holder.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.main));
+
                 if (Integer.parseInt(messagelist.get(position).getReviews()) == 2) {
                     holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews()) - 1) + " like");
 
@@ -312,8 +319,10 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             } else if (payloads.contains(errorunliking)) {
                 Log.d("reach", errorunliking);
 
-                holder.upicon.setImageResource(R.drawable.ic_thumb_up_primary_16px);
-                holder.upvote.setTextColor(mContext.getResources().getColor(R.color.rank));
+
+                holder.upicon.setColorFilter(ContextCompat.getColor(mContext, R.color.rank));
+                holder.upvote.setTextColor(ContextCompat.getColor(mContext, R.color.rank));
+
                 holder.reviews.setTypeface(Typeface.DEFAULT_BOLD);
                 holder.reviews.setTextColor(mContext.getResources().getColor(R.color.rank));
                 holder.reviews.setText(String.valueOf(Integer.parseInt(messagelist.get(position).getReviews())) + " likes");
@@ -496,9 +505,9 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private void setReactions(BaseViewHolder viewHolder, int position) {
         Log.d(TAG, "setReactions: " + messagelist.get(position).getComments());
         if (messagelist.get(position).getComments().equals("0")) {
-          /*  viewHolder.app.setText("0 Reactions");
+            viewHolder.app.setText("0 Reactions");
             viewHolder.name.setText("No Reactions yet");
-            viewHolder.userName.setText("Be the first one to react...");*/
+            viewHolder.userName.setText("Be the first one to react...");
             viewHolder.rv.setVisibility(View.GONE);
 
         } else {

@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import in.reweyou.reweyou.Signup;
 import in.reweyou.reweyou.model.FeedModel;
@@ -257,16 +258,30 @@ public class UserSessionManager {
     }
 
     public void addlike(String id) {
-        Set<String> set = new HashSet<String>(pref.getStringSet("likesList", new HashSet<String>()));
+        Set<String> set = new TreeSet<String>(pref.getStringSet("likesList", new TreeSet<String>()));
         set.add(id);
         Log.d("add set", String.valueOf(set));
+
+        if (set.size() > 70) {
+            Log.w(TAG, "addlike: wejcbwekjcjkqwbcjwebcjkwb");
+            List<String> list22 = new ArrayList<>();
+            list22.addAll(set);
+            int size = list22.size();
+            for (int i = 0; i < size - 50; i++) {
+                list22.remove(0);
+            }
+            set = new HashSet<>(list22);
+        }
+
+
         editor.putStringSet("likesList", set);
         editor.apply();
+
 
     }
 
     public void removelike(String id) {
-        Set<String> set = new HashSet<String>(pref.getStringSet("likesList", new HashSet<String>()));
+        Set<String> set = new TreeSet<String>(pref.getStringSet("likesList", new TreeSet<String>()));
         set.remove(id);
         Log.d("remove set", String.valueOf(set));
         editor.putStringSet("likesList", set);

@@ -295,6 +295,8 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     public void onRefresh() {
 
         swipe.setRefreshing(true);
+        likeslist = sessionManager.getLikesList();
+
         loadReportsfromServer();
     }
 
@@ -347,12 +349,13 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                         for (FeedModel feedModel : list) {
                             if (likeslist.contains(feedModel.getPostId())) {
                                 feedModel.setLiked(true);
-                                feedModel.setViewType();
-                                feedModel.setDate(getFormattedDate(feedModel.getDate()));
+                                Log.d(TAG, "loadReportsfromCache: reached");
+
                             }
+                            feedModel.setViewType();
+                            feedModel.setDate(getFormattedDate(feedModel.getDate()));
                             feedAdapter1.add6(feedModel);
                         }
-
 
                         recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                             @Override
