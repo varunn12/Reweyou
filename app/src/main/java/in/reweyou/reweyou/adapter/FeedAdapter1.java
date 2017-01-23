@@ -159,7 +159,6 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     }
 
-
     private static Bitmap drawToBitmap(Context context, final int layoutResId, final int width, final int height) {
 
         final LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -175,6 +174,11 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     public static float pxFromDp(final Context context, final float dp) {
         return dp * context.getResources().getDisplayMetrics().density;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 
     private void initTimer() {
@@ -594,7 +598,7 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     private void setReporterProfilePic(BaseViewHolder viewHolder, int position) {
-        Glide.with(mContext).load(messagelist.get(position).getProfilepic()).diskCacheStrategy(DiskCacheStrategy.SOURCE).placeholder(R.drawable.download).error(R.drawable.download).into(viewHolder.profilepic);
+        Glide.with(mContext).load(messagelist.get(position).getProfilepic()).diskCacheStrategy(DiskCacheStrategy.SOURCE).error(R.drawable.download).into(viewHolder.profilepic);
 
     }
 
@@ -889,17 +893,24 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     public void clearlist() {
         if (messagelist.size() > 0 && ReportLoadingConstant.fragmentListWithBoxAtTop.contains(fragmentCategory)) {
+            Log.d("mmm", "clearlist: ");
             FeedModel feedModel = messagelist.get(0);
             messagelist.clear();
             messagelist.add(feedModel);
         } else messagelist.clear();
 
         if (fragmentCategory == ReportLoadingConstant.FRAGMENT_CATEGORY_CITY)
-            notifyItemChanged(0, daynightanim);
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    notifyItemChanged(0, daynightanim);
+                }
+            });
     }
 
     public void add1(FeedModel feedModel) {
         messagelist.add(feedModel);
+
     }
 
     public void add5(FeedModel feedModel) {
@@ -916,33 +927,19 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         });
     }
 
-    public void add3() {
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                notifyDataSetChanged();
-            }
-        });
-    }
 
     public void add6(FeedModel feedModel) {
         messagelist.add(feedModel);
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                notifyItemInserted(messagelist.size() - 1);
-            }
-        });
+
+        notifyItemInserted(messagelist.size() - 1);
+
     }
 
     public void removeLoading() {
         messagelist.remove(messagelist.size() - 1);
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                notifyItemRemoved(messagelist.size());
-            }
-        });
+
+        notifyItemRemoved(messagelist.size());
+
     }
 
     private void rundaynightanim(final LocationViewHolder viewHolder2) {
@@ -960,7 +957,7 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     }
                 });
 
-                valueAnimator1.setDuration(1500);
+                valueAnimator1.setDuration(1200);
                 valueAnimator1.start();
 
             }

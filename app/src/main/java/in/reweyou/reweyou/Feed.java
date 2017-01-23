@@ -947,7 +947,7 @@ public class Feed extends AppCompatActivity {
 
     public void elevatetab() {
         if (!animRunning) {
-            valueAnimator = ValueAnimator.ofFloat(pxFromDp(this, 4), pxFromDp(this, 12));
+            valueAnimator = ValueAnimator.ofFloat(pxFromDp(this, 1), pxFromDp(this, 6));
             valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
@@ -987,7 +987,7 @@ public class Feed extends AppCompatActivity {
         if (valueAnimator != null)
             valueAnimator.cancel();
 
-        valueAnimator1 = ValueAnimator.ofFloat(pxFromDp(this, 12), pxFromDp(this, 4));
+        valueAnimator1 = ValueAnimator.ofFloat(pxFromDp(this, 6), pxFromDp(this, 1));
         valueAnimator1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {

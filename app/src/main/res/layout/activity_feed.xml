@@ -133,6 +133,13 @@
 
             </android.support.design.widget.AppBarLayout>
 
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/viewPager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
             <android.support.design.widget.TabLayout
                 android:id="@+id/tabLayout"
                 android:layout_width="match_parent"
@@ -148,14 +155,6 @@
                 app:tabIndicatorHeight="0dp"
                 app:tabSelectedTextColor="@color/colorPrimary"
                 app:tabTextColor="#ccc" />
-
-
-            <android.support.v4.view.ViewPager
-                android:id="@+id/viewPager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
             <ProgressBar
                 android:id="@+id/pd"
                 android:layout_width="wrap_content"

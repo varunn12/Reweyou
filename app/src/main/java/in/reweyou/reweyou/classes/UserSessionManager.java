@@ -3,7 +3,6 @@ package in.reweyou.reweyou.classes;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -260,10 +259,9 @@ public class UserSessionManager {
     public void addlike(String id) {
         Set<String> set = new TreeSet<String>(pref.getStringSet("likesList", new TreeSet<String>()));
         set.add(id);
-        Log.d("add set", String.valueOf(set));
+        // Log.d("add set", String.valueOf(set));
 
         if (set.size() > 70) {
-            Log.w(TAG, "addlike: wejcbwekjcjkqwbcjwebcjkwb");
             List<String> list22 = new ArrayList<>();
             list22.addAll(set);
             int size = list22.size();
@@ -283,7 +281,7 @@ public class UserSessionManager {
     public void removelike(String id) {
         Set<String> set = new TreeSet<String>(pref.getStringSet("likesList", new TreeSet<String>()));
         set.remove(id);
-        Log.d("remove set", String.valueOf(set));
+        // Log.d("remove set", String.valueOf(set));
         editor.putStringSet("likesList", set);
         editor.apply();
     }

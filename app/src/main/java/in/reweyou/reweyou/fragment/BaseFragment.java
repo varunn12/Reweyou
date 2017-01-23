@@ -133,11 +133,11 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         if (mContext instanceof Feed)
             swipe.setProgressViewOffset(false, 0, 110);
 
-
         recyclerView = (RecyclerView) layout.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new PreCachingLayoutManager(mContext));
         VerticalSpaceItemDecorator verticalSpaceItemDecorator = new VerticalSpaceItemDecorator(12);
         recyclerView.addItemDecoration(verticalSpaceItemDecorator);
+
         final int initialTopPosition = recyclerView.getTop();
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -187,9 +187,12 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                if (mContext instanceof Feed)
-                    if (newState == 0)
-                        ((Feed) mContext).deelevatetab();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+                    if (mContext instanceof Feed)
+                        if (newState == 0)
+                            ((Feed) mContext).deelevatetab();
+                }
 
                 super.onScrollStateChanged(recyclerView, newState);
             }
@@ -222,9 +225,11 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                                 feedModel.setViewType();
                                 feedModel.setDate(getFormattedDate(feedModel.getDate()));
 
-                                feedAdapter1.add6(feedModel);
+                                feedAdapter1.add1(feedModel);
 
                             }
+
+                            feedAdapter1.add2();
                             minPostid = list.get(list.size() - 1).getPostId();
 
                         }
@@ -311,7 +316,7 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             likeslist = sessionManager.getLikesList();
 
             feedAdapter1 = new FeedAdapter1(mContext, FRAGMENT_CATEGORY, sessionManager, this);
-
+            feedAdapter1.setHasStableIds(true);
             FeedModel feedModel = new FeedModel();
             if (FRAGMENT_CATEGORY == FRAGMENT_CATEGORY_CITY) {
                 feedModel.setType(VIEW_TYPE_LOCATION);
