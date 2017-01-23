@@ -899,13 +899,13 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             messagelist.add(feedModel);
         } else messagelist.clear();
 
-        if (fragmentCategory == ReportLoadingConstant.FRAGMENT_CATEGORY_CITY)
+       /* if (fragmentCategory == ReportLoadingConstant.FRAGMENT_CATEGORY_CITY)
             new Handler().post(new Runnable() {
                 @Override
                 public void run() {
                     notifyItemChanged(0, daynightanim);
                 }
-            });
+            });*/
     }
 
     public void add1(FeedModel feedModel) {
@@ -923,6 +923,19 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             @Override
             public void run() {
                 notifyDataSetChanged();
+            }
+        });
+
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                if (fragmentCategory == ReportLoadingConstant.FRAGMENT_CATEGORY_CITY)
+                    new Handler().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            notifyItemChanged(0, daynightanim);
+                        }
+                    });
             }
         });
     }
@@ -952,8 +965,9 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     @Override
                     public void onAnimationUpdate(ValueAnimator animation) {
                         float value = (float) animation.getAnimatedValue();
-                        viewHolder2.daynight.setAlpha((float) ((value / pxFromDp(mContext, 8)) * 0.24));
+                        viewHolder2.daynight.setAlpha((value / pxFromDp(mContext, 54)));
                         viewHolder2.daynight.setTranslationY(-value);
+
                     }
                 });
 
@@ -961,7 +975,7 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 valueAnimator1.start();
 
             }
-        }, 800);
+        }, 1200);
     }
 
     private class BaseViewHolder extends RecyclerView.ViewHolder {
