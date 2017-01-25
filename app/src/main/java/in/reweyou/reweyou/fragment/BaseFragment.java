@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidnetworking.AndroidNetworking;
@@ -62,6 +64,7 @@ import static in.reweyou.reweyou.utils.ReportLoadingConstant.REQUEST_PARAMS_SING
 import static in.reweyou.reweyou.utils.ReportLoadingConstant.REQUEST_PARAMS_TAG;
 import static in.reweyou.reweyou.utils.ReportLoadingConstant.fragmentCategoryList;
 import static in.reweyou.reweyou.utils.ReportLoadingConstant.fragmentListLoadOnStart;
+import static in.reweyou.reweyou.utils.ReportLoadingConstant.fragmentListWithBoxAtTop;
 import static in.reweyou.reweyou.utils.ReportLoadingConstant.fragmentListWithCache;
 
 /**
@@ -97,6 +100,10 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private String minPostid;
     private boolean loading = true;
     private String currentLocation;
+    private String maxpostid;
+    private CountDownTimer countDownTimer;
+    private TextView newReports;
+    private int temp;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -118,6 +125,15 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         initViews(layout);
 
+       /* new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(FRAGMENT_CATEGORY==FRAGMENT_CATEGORY_NEWS)
+                loadReportsfromServerrefresh();
+            }
+        },10000);*/
+
+
         return layout;
 
     }
@@ -128,24 +144,52 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     private void initCategorySpecificViews(View layout) {
+
+        newReports = (TextView) layout.findViewById(R.id.newreports);
+        newReports.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        recyclerView.smoothScrollToPosition(0);
+
+                    }
+                });
+                newReports.setVisibility(View.GONE);
+
+            }
+        });
         swipe = (SwipeRefreshLayout) layout.findViewById(R.id.swipe);
         swipe.setOnRefreshListener(this);
         if (mContext instanceof Feed)
             swipe.setProgressViewOffset(false, 0, 110);
 
         recyclerView = (RecyclerView) layout.findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new PreCachingLayoutManager(mContext));
+        PreCachingLayoutManager preCachingLayoutManager = new PreCachingLayoutManager(mContext);
+
+        recyclerView.setLayoutManager(preCachingLayoutManager);
         VerticalSpaceItemDecorator verticalSpaceItemDecorator = new VerticalSpaceItemDecorator(12);
         recyclerView.addItemDecoration(verticalSpaceItemDecorator);
 
         final int initialTopPosition = recyclerView.getTop();
-
+       /* RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
+        if (animator instanceof DefaultItemAnimator) {
+            ((DefaultItemAnimator) animator).setSupportsChangeAnimations(false);
+        }*/
+        recyclerView.setItemAnimator(null);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             final PreCachingLayoutManager layoutManager = (PreCachingLayoutManager) recyclerView.getLayoutManager();
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 {
+                    if (fragmentListWithBoxAtTop.contains(FRAGMENT_CATEGORY)) {
+
+                        if (((PreCachingLayoutManager) recyclerView.getLayoutManager()).findFirstVisibleItemPosition() == temp)
+                            newReports.setVisibility(View.GONE);
+                    } else if (((PreCachingLayoutManager) recyclerView.getLayoutManager()).findFirstVisibleItemPosition() == temp - 1)
+                        newReports.setVisibility(View.GONE);
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         // Call some material design APIs here
@@ -298,7 +342,8 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     @Override
     public void onRefresh() {
-
+        countDownTimer.cancel();
+        countDownTimer = null;
         swipe.setRefreshing(true);
         likeslist = sessionManager.getLikesList();
 
@@ -316,7 +361,7 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             likeslist = sessionManager.getLikesList();
 
             feedAdapter1 = new FeedAdapter1(mContext, FRAGMENT_CATEGORY, sessionManager, this);
-            feedAdapter1.setHasStableIds(true);
+
             FeedModel feedModel = new FeedModel();
             if (FRAGMENT_CATEGORY == FRAGMENT_CATEGORY_CITY) {
                 feedModel.setType(VIEW_TYPE_LOCATION);
@@ -357,10 +402,14 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                                 Log.d(TAG, "loadReportsfromCache: reached");
 
                             }
+
                             feedModel.setViewType();
                             feedModel.setDate(getFormattedDate(feedModel.getDate()));
                             feedAdapter1.add6(feedModel);
                         }
+
+                        maxpostid = list.get(0).getPostId();
+
 
                         recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                             @Override
@@ -405,7 +454,6 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                             for (FeedModel feedModel : list) {
                                 if (likeslist.contains(feedModel.getPostId())) {
                                     feedModel.setLiked(true);
-
                                 }
                                 feedModel.setViewType();
                                 feedModel.setDate(getFormattedDate(feedModel.getDate()));
@@ -413,11 +461,16 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
                             }
 
-                            feedAdapter1.add2();
+                            feedAdapter1.add11();
                             dataLoaded = true;
                             minPostid = list.get(list.size() - 1).getPostId();
-                            if (fragmentListWithCache.contains(FRAGMENT_CATEGORY))
-                                saveResponseToCache(list);
+                            maxpostid = list.get(0).getPostId();
+
+                            initTimer();
+                           /*if (fragmentListWithCache.contains(FRAGMENT_CATEGORY))
+                                saveResponseToCache(list);*/
+
+
                         } else {
                             Log.w(TAG, "onResponse: list is empty");
                             FeedModel feedModel = new FeedModel();
@@ -464,6 +517,23 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 });
     }
 
+    private void initTimer() {
+        countDownTimer = new CountDownTimer(30000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+            }
+
+
+            public void onFinish() {
+                start();
+                loadReportsfromServerrefresh();
+            }
+
+        };
+
+        countDownTimer.start();
+    }
+
     private void saveResponseToCache(List<FeedModel> list) {
         switch (FRAGMENT_CATEGORY) {
             case FRAGMENT_CATEGORY_NEWS:
@@ -479,10 +549,6 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     }
 
-    private void clearList() {
-        feedAdapter1.clearlist();
-    }
-
     private boolean isResponseEmpty(List<FeedModel> list) {
         return list.size() == 0;
 
@@ -496,6 +562,94 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
        /* if (position != POSITION_SINGLE_POST)
             session.saveData(feedModels, position);*/
     }
+
+
+    private void loadReportsfromServerrefresh() {
+        Log.d(TAG, "loadReportsfromServerrefresh: called");
+        AndroidNetworking.post(getUrl())
+                .addBodyParameter(getBodyHashMap())
+                .setTag("report")
+                .setPriority(Priority.IMMEDIATE)
+                .build()
+                .getAsParsed(new TypeToken<List<FeedModel>>() {
+                }, new ParsedRequestListener<List<FeedModel>>() {
+
+                    @Override
+                    public void onResponse(List<FeedModel> list) {
+
+
+                        // feedAdapter1.clearlist();
+                        if (!isResponseEmpty(list)) {
+                            Log.d(TAG, "onResponserefresh: response is not empty");
+
+                            temp = 0;
+
+                            for (int i = list.size() - 1; i >= 0; i--) {
+                                if (Integer.parseInt(list.get(i).getPostId()) > Integer.parseInt(maxpostid)) {
+                                    temp++;
+
+
+                                    FeedModel feedModel = list.get(i);
+
+                                    if (likeslist.contains(feedModel.getPostId())) {
+                                        feedModel.setLiked(true);
+                                    }
+                                    feedModel.setViewType();
+                                    feedModel.setDate(getFormattedDate(feedModel.getDate()));
+                                    feedAdapter1.add14(feedModel);
+
+                                }
+                            }
+
+                            if (temp > 0) {
+                                if (temp > 1)
+                                    newReports.setText("" + temp + " New Reports");
+                                else newReports.setText("" + temp + " New Report");
+
+
+                                newReports.setVisibility(View.VISIBLE);
+                                feedAdapter1.add15(temp);
+/*
+                                Toast.makeText(mContext, "reports refreshed", Toast.LENGTH_SHORT).show();
+*/
+                                maxpostid = list.get(0).getPostId();
+
+                            }
+
+                            dataLoaded = true;
+
+/*
+                            Toast.makeText(mContext, "reports refreshed called", Toast.LENGTH_SHORT).show();
+*/
+                           /* minPostid = list.get(list.size() - 1).getPostId();
+                            if (fragmentListWithCache.contains(FRAGMENT_CATEGORY))
+                                saveResponseToCache(list);*/
+                        } /*else {
+                            Log.w(TAG, "onResponse: list is empty");
+                            FeedModel feedModel = new FeedModel();
+                            dataLoaded = true;
+
+                            if (FRAGMENT_CATEGORY == FRAGMENT_CATEGORY_CITY) {
+                                feedModel.setType(VIEW_TYPE_CITY_NO_REPORTS_YET);
+                                feedAdapter1.add1(feedModel);
+                            } else if (FRAGMENT_CATEGORY == FRAGMENT_CATEGORY_READING) {
+                                feedModel.setType(VIEW_TYPE_READING_NO_READERS);
+                                feedAdapter1.add1(feedModel);
+                            }
+                            feedAdapter1.add2();
+                        }*/
+
+
+                    }
+
+                    @Override
+                    public void onError(final ANError anError) {
+                        Log.e(TAG, "run: error: " + anError.getErrorDetail());
+
+                    }
+                });
+    }
+
 
     private String getUrl() {
         switch (FRAGMENT_CATEGORY) {

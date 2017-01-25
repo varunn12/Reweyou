@@ -947,7 +947,7 @@ public class Feed extends AppCompatActivity {
 
     public void elevatetab() {
         if (!animRunning) {
-            valueAnimator = ValueAnimator.ofFloat(pxFromDp(this, 1), pxFromDp(this, 6));
+            valueAnimator = ValueAnimator.ofFloat(pxFromDp(this, 1), pxFromDp(this, 7));
             valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
@@ -987,17 +987,19 @@ public class Feed extends AppCompatActivity {
         if (valueAnimator != null)
             valueAnimator.cancel();
 
-        valueAnimator1 = ValueAnimator.ofFloat(pxFromDp(this, 6), pxFromDp(this, 1));
-        valueAnimator1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float value = (float) animation.getAnimatedValue();
-                tabLayout.setElevation(value);
-            }
-        });
+        if (tabLayout.getElevation() == pxFromDp(this, 7)) {
+            valueAnimator1 = ValueAnimator.ofFloat(pxFromDp(this, 7), pxFromDp(this, 1));
+            valueAnimator1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    float value = (float) animation.getAnimatedValue();
+                    tabLayout.setElevation(value);
+                }
+            });
 
-        valueAnimator1.setDuration(300);
-        valueAnimator1.start();
+            valueAnimator1.setDuration(300);
+            valueAnimator1.start();
+        }
 
     }
 

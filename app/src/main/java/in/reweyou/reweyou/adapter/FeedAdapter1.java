@@ -176,9 +176,15 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         return dp * context.getResources().getDisplayMetrics().density;
     }
 
-    @Override
+   /* @Override
     public long getItemId(int position) {
         return position;
+    }
+*/
+
+    @Override
+    public long getItemId(int position) {
+        return super.getItemId(position);
     }
 
     private void initTimer() {
@@ -913,9 +919,38 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     }
 
+    public void add9(FeedModel feedModel) {
+        messagelist.add(0, feedModel);
+
+    }
+
     public void add5(FeedModel feedModel) {
         messagelist.add(feedModel);
         numOfTopboxes = 1;
+    }
+
+    public void add11() {
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                if (ReportLoadingConstant.fragmentListWithBoxAtTop.contains(fragmentCategory))
+                    notifyItemRangeChanged(1, messagelist.size() - 1);
+                else notifyItemRangeChanged(0, messagelist.size());
+            }
+        });
+
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                if (fragmentCategory == ReportLoadingConstant.FRAGMENT_CATEGORY_CITY)
+                    new Handler().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            notifyItemChanged(0, daynightanim);
+                        }
+                    });
+            }
+        });
     }
 
     public void add2() {
@@ -941,10 +976,28 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
 
+    public void add10() {
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                notifyItemRangeInserted(0, 10);
+
+            }
+        });
+
+    }
+
     public void add6(FeedModel feedModel) {
         messagelist.add(feedModel);
 
-        notifyItemInserted(messagelist.size() - 1);
+        new Handler().post(new Runnable() {
+
+            @Override
+            public void run() {
+                notifyItemInserted(messagelist.size() - 1);
+
+            }
+        });
 
     }
 
@@ -976,6 +1029,25 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
             }
         }, 1200);
+    }
+
+    public void add14(FeedModel feedModel) {
+        if (ReportLoadingConstant.fragmentListWithBoxAtTop.contains(fragmentCategory)) {
+            messagelist.add(1, feedModel);
+
+        } else messagelist.add(0, feedModel);
+    }
+
+    public void add15(final int temp) {
+        Log.d(TAG, "add15: called");
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                if (ReportLoadingConstant.fragmentListWithBoxAtTop.contains(fragmentCategory)) {
+                    notifyItemRangeInserted(1, temp);
+                } else notifyItemRangeChanged(0, temp);
+            }
+        });
     }
 
     private class BaseViewHolder extends RecyclerView.ViewHolder {

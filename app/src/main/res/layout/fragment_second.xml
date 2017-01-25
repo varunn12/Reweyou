@@ -18,11 +18,21 @@
         android:scrollbars="vertical" />
     </android.support.v4.widget.SwipeRefreshLayout>
 
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+    <TextView
+        android:id="@+id/newreports"
+        android:layout_width="108dp"
+        android:layout_height="32dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="58dp"
+        android:background="@drawable/background_new_reports"
+        android:elevation="2dp"
+        android:gravity="center"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="2 new reports"
+        android:textColor="#fff"
+        android:textSize="12dp"
+        android:textStyle="bold"
         android:visibility="gone" />
 
 </RelativeLayout>
