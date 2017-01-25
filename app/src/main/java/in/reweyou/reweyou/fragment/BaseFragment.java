@@ -606,8 +606,12 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                                     newReports.setText("" + temp + " New Reports");
                                 else newReports.setText("" + temp + " New Report");
 
+                                if (fragmentListWithBoxAtTop.contains(FRAGMENT_CATEGORY)) {
+                                    if (((PreCachingLayoutManager) recyclerView.getLayoutManager()).findFirstVisibleItemPosition() > 0)
+                                        newReports.setVisibility(View.VISIBLE);
 
-                                newReports.setVisibility(View.VISIBLE);
+
+                                }
                                 feedAdapter1.add15(temp);
 /*
                                 Toast.makeText(mContext, "reports refreshed", Toast.LENGTH_SHORT).show();
