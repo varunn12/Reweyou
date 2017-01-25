@@ -1,12 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <item
 
-    <item android:drawable="@color/colorPrimary" />
+        android:drawable="@color/white" />
+
     <item>
+
         <bitmap
             android:gravity="center"
-            android:src="@drawable/logo_plain"/>
+
+            android:src="@drawable/ic_abc" />
+    </item>
+
+    <item>
+        <bitmap
+            android:alpha="0.24"
+            android:gravity="bottom"
+            android:src="@drawable/c1" />
     </item>
 
 </layer-list>

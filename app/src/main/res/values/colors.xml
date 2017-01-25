@@ -24,5 +24,6 @@
     <color name="greylight">#25000000</color>
     <color name="main">#757575</color>
     <color name="navyblue">#3949AB</color>
+    <color name="white">#fff</color>
     -
 </resources>

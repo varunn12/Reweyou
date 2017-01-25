@@ -474,8 +474,8 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                             maxpostid = list.get(0).getPostId();
 
                             initTimer();
-                           /*if (fragmentListWithCache.contains(FRAGMENT_CATEGORY))
-                                saveResponseToCache(list);*/
+                            if (fragmentListWithCache.contains(FRAGMENT_CATEGORY))
+                                saveResponseToCache(list);
 
 
                         } else {
