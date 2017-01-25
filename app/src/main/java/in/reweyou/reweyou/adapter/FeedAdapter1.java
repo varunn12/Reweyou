@@ -1003,9 +1003,6 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     public void removeLoading() {
         messagelist.remove(messagelist.size() - 1);
-
-        notifyItemRemoved(messagelist.size());
-
     }
 
     private void rundaynightanim(final LocationViewHolder viewHolder2) {
@@ -1049,6 +1046,19 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             }
         });
     }
+
+    public void removeLoading1() {
+        messagelist.remove(messagelist.size() - 1);
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                notifyItemRemoved(messagelist.size());
+
+            }
+        });
+
+    }
+
 
     private class BaseViewHolder extends RecyclerView.ViewHolder {
         protected ImageView profilepic, overflow, sendmessage;

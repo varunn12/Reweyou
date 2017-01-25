@@ -258,9 +258,10 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 }, new ParsedRequestListener<List<FeedModel>>() {
                     @Override
                     public void onResponse(List<FeedModel> list) {
-                        feedAdapter1.removeLoading();
 
                         if (!isResponseEmpty(list)) {
+                            feedAdapter1.removeLoading();
+
                             Log.d(TAG, "onLoadMoreResponse: response is not empty");
                             for (FeedModel feedModel : list) {
                                 if (likeslist.contains(feedModel.getPostId())) {
@@ -272,17 +273,21 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                                 feedAdapter1.add1(feedModel);
 
                             }
-
                             feedAdapter1.add2();
                             minPostid = list.get(list.size() - 1).getPostId();
 
-                        }
+                        } else feedAdapter1.removeLoading1();
+
                         loading = true;
                     }
 
                     @Override
                     public void onError(ANError anError) {
-                        feedAdapter1.removeLoading();
+                        try {
+                            feedAdapter1.removeLoading1();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         loading = true;
                         Log.w(TAG, "onLoadMoreError: " + anError.getErrorDetail());
                     }
@@ -342,8 +347,10 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     @Override
     public void onRefresh() {
-        countDownTimer.cancel();
-        countDownTimer = null;
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+            countDownTimer = null;
+        }
         swipe.setRefreshing(true);
         likeslist = sessionManager.getLikesList();
 
