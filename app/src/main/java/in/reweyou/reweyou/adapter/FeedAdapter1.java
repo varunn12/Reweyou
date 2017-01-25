@@ -184,7 +184,8 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public long getItemId(int position) {
-        return super.getItemId(position);
+        Log.d(TAG, "getItemId: " + messagelist.get(position).getPostId());
+        return Long.parseLong(messagelist.get(position).getPostId());
     }
 
     private void initTimer() {

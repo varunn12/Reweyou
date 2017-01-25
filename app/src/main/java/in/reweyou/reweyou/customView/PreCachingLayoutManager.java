@@ -21,7 +21,7 @@ public class PreCachingLayoutManager extends LinearLayoutManager {
         super(context);
         this.context = context;
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        this.DEFAULT_EXTRA_LAYOUT_SPACE = (int) (1.2 * displayMetrics.heightPixels);
+        this.DEFAULT_EXTRA_LAYOUT_SPACE = (int) (1.5 * displayMetrics.heightPixels);
     }
 
     public PreCachingLayoutManager(Context context, int extraLayoutSpace) {

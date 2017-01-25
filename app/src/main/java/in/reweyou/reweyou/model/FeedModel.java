@@ -2,6 +2,8 @@ package in.reweyou.reweyou.model;
 
 import android.util.Log;
 
+import java.util.Date;
+
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_IMAGE;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_VIDEO;
 
@@ -30,7 +32,7 @@ public class FeedModel {
     private String category;
     private String reviews;
     private String postviews;
-    private String postid;
+    private String postid = String.valueOf(new Date().getTime());
     private String comments;
     private String reaction;
     private String from;

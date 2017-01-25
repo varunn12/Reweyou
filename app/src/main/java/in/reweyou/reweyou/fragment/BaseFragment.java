@@ -368,7 +368,7 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             likeslist = sessionManager.getLikesList();
 
             feedAdapter1 = new FeedAdapter1(mContext, FRAGMENT_CATEGORY, sessionManager, this);
-
+            feedAdapter1.setHasStableIds(true);
             FeedModel feedModel = new FeedModel();
             if (FRAGMENT_CATEGORY == FRAGMENT_CATEGORY_CITY) {
                 feedModel.setType(VIEW_TYPE_LOCATION);
