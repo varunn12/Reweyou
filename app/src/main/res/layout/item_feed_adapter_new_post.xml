@@ -88,7 +88,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:background="?attr/selectableItemBackgroundBorderless"
+                android:background="@drawable/ripple_effect3"
                 android:padding="11dp"
                 card_view:srcCompat="@drawable/ic_photo_camera_black_24px" />
 
@@ -102,7 +102,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:background="?attr/selectableItemBackgroundBorderless"
+                android:background="@drawable/ripple_effect3"
                 android:padding="10dp"
 
                 card_view:srcCompat="@drawable/ic_videocam_black_24px" />
@@ -116,8 +116,9 @@
                 android:id="@+id/btn_gif"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
                 android:layout_gravity="center"
+
+                android:background="@drawable/ripple_effect3"
                 android:padding="4dp"
                 card_view:srcCompat="@drawable/ic_gif_black_36px" />
 

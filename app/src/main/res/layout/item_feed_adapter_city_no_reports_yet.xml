@@ -43,14 +43,17 @@
             android:text="Oops! There are no reports from your city yet. Be the first one to report."
             android:textColor="#000000" />
 
-        <Button
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_gravity="end"
             android:layout_marginBottom="4dp"
-            android:layout_marginRight="16dp"
             android:alpha=".87"
-            android:background="@null"
+            android:background="@drawable/ripple_effect3"
+            android:gravity="center"
+
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
             android:text="START REPORTING"
             android:textColor="#F57C00" />
 

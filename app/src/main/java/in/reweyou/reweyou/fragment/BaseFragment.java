@@ -145,6 +145,7 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     private void initCategorySpecificViews(View layout) {
 
+        if (mContext instanceof Feed) {
         newReports = (TextView) layout.findViewById(R.id.newreports);
         newReports.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -160,6 +161,7 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
             }
         });
+        }
         swipe = (SwipeRefreshLayout) layout.findViewById(R.id.swipe);
         swipe.setOnRefreshListener(this);
         if (mContext instanceof Feed)

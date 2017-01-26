@@ -4,6 +4,8 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="56dp"
+    android:background="@drawable/ripple_effect3"
+
     android:orientation="horizontal">
 
     <in.reweyou.reweyou.customView.CircularImageView

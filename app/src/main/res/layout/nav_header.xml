@@ -53,9 +53,11 @@
         android:id="@+id/profile_settings"
         android:layout_width="40dp"
         android:layout_height="40dp"
+
         android:layout_alignParentRight="true"
         android:layout_marginRight="4dp"
         android:layout_marginTop="4dp"
+        android:background="@drawable/ripple_effect_white"
         android:padding="2dp"
         android:scaleType="centerInside"
         app:srcCompat="@drawable/ic_settings_white_18px" />

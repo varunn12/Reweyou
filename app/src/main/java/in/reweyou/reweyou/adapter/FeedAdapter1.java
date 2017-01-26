@@ -64,12 +64,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import in.reweyou.reweyou.CategoryActivity;
 import in.reweyou.reweyou.Comments1;
 import in.reweyou.reweyou.Contacts;
 import in.reweyou.reweyou.FullImage;
 import in.reweyou.reweyou.LikesActivity;
-import in.reweyou.reweyou.MyCityActivity;
 import in.reweyou.reweyou.PostReport;
 import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.SinglePostActivity;
@@ -1106,7 +1104,6 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             actions = (RelativeLayout) view.findViewById(R.id.actions);
             menuEdit = (ImageView) view.findViewById(R.id.action_edit);
 
-
             sendmessage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -1223,18 +1220,30 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     }
                 }
             });
-
-            actions.setOnClickListener(new View.OnClickListener() {
+            rv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent in = new Intent(mContext, MyCityActivity.class);
-                    in.putExtra("place", messagelist.get(getAdapterPosition()).getLocation());
-                    mContext.startActivity(in);
-                    ((Activity) mContext).overridePendingTransition(0, 0);
+                    if (qu_position != 15) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("myData", messagelist.get(getAdapterPosition()).getPostId());
+                        bundle.putString("headline", messagelist.get(getAdapterPosition()).getHeadline());
+                        bundle.putString("image", messagelist.get(getAdapterPosition()).getImage());
+                        Intent in = new Intent(mContext, Comments1.class);
+
+                        in.putExtras(bundle);
+                        mContext.startActivity(in);
+
+                        ((Activity) mContext).overridePendingTransition(0, 0);
+                    } else {
+                        ((SinglePostActivity) mContext).changetab();
+
+                    }
                 }
             });
 
-            headline.setOnClickListener(new View.OnClickListener() {
+
+
+           /* headline.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     try {
@@ -1248,8 +1257,8 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     }
 
                 }
-            });
-            source.setOnClickListener(new View.OnClickListener() {
+            });*/
+            /*source.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     session = new UserSessionManager(mContext);
@@ -1260,28 +1269,7 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
                 }
             });
-            rv.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (qu_position != 15) {
-                        Bundle bundle = new Bundle();
-                        bundle.putString("myData", messagelist.get(getAdapterPosition()).getPostId());
-                        bundle.putString("headline", messagelist.get(getAdapterPosition()).getHeadline());
-                        bundle.putString("image", messagelist.get(getAdapterPosition()).getImage());
-                        Intent in = new Intent(mContext, Comments1.class);
-                        ((Activity) mContext).overridePendingTransition(0, 0);
-
-                        in.putExtras(bundle);
-                        mContext.startActivity(in);
-                        ((Activity) mContext).overridePendingTransition(0, 0);
-
-                    } else {
-                        ((SinglePostActivity) mContext).changetab();
-
-                    }
-                }
-            });
-
+*/
 
         }
     }
