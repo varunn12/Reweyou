@@ -12,6 +12,10 @@
         "source": "/home/master/.android/build-cache/3750f18d9840bcca827b9ea0bf417283a9d6d0d5/output/res/color/abc_tint_btn_checkable.xml"
     },
     {
+        "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/release/color/abc_background_cache_hint_selector_material_light.xml",
+        "source": "/home/master/.android/build-cache/3750f18d9840bcca827b9ea0bf417283a9d6d0d5/output/res/color/abc_background_cache_hint_selector_material_light.xml"
+    },
+    {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/release/color/abc_primary_text_material_dark.xml",
         "source": "/home/master/.android/build-cache/3750f18d9840bcca827b9ea0bf417283a9d6d0d5/output/res/color/abc_primary_text_material_dark.xml"
     },
@@ -58,6 +62,10 @@
     {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/release/color/abc_btn_colored_borderless_text_material.xml",
         "source": "/home/master/.android/build-cache/3750f18d9840bcca827b9ea0bf417283a9d6d0d5/output/res/color/abc_btn_colored_borderless_text_material.xml"
+    },
+    {
+        "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/release/color/abc_background_cache_hint_selector_material_dark.xml",
+        "source": "/home/master/.android/build-cache/3750f18d9840bcca827b9ea0bf417283a9d6d0d5/output/res/color/abc_background_cache_hint_selector_material_dark.xml"
     },
     {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/release/color/switch_thumb_material_dark.xml",

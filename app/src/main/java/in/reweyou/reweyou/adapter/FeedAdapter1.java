@@ -1399,7 +1399,7 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
             });
 
-            new UploadOptions(mContext, view, true);
+            // new UploadOptions(mContext, view, true);
         }
 
 

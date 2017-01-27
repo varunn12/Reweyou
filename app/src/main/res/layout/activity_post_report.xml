@@ -373,12 +373,12 @@
 
             <ImageView
                 android:id="@+id/btn_camera"
-                android:layout_width="wrap_content"
+                android:layout_width="48dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-
                 android:background="@drawable/ripple_effect3"
                 android:padding="8dp"
+                android:scaleType="center"
                 app:srcCompat="@drawable/ic_photo_camera_black_24px" />
 
             <Space
@@ -388,11 +388,13 @@
 
             <ImageView
                 android:id="@+id/btn_video"
-                android:layout_width="wrap_content"
+                android:layout_width="48dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
+
                 android:background="@drawable/ripple_effect3"
                 android:padding="8dp"
+                android:scaleType="center"
                 app:srcCompat="@drawable/ic_videocam_black_24px" />
 
             <Space
@@ -402,10 +404,12 @@
 
             <ImageView
                 android:id="@+id/btn_gif"
-                android:layout_width="wrap_content"
+                android:layout_width="48dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:background="@drawable/ripple_effect3"
+
+                android:scaleType="center"
                 app:srcCompat="@drawable/ic_gif_black_36px" />
 
             <Space
