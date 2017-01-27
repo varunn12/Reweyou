@@ -170,7 +170,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
         isInternetPresent = cd.isConnectingToInternet();
         if (isInternetPresent) {
             new JSONTask().execute(i);
-            new JSONTasks().execute(tag, i);
+            // new JSONTasks().execute(tag, i);
         } else {
             Toast.makeText(this, "You are not connected to Internet", Toast.LENGTH_LONG).show();
         }
