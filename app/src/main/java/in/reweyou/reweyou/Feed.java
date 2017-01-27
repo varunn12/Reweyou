@@ -57,6 +57,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import org.json.JSONArray;
@@ -903,7 +904,7 @@ public class Feed extends AppCompatActivity {
                 }
             });
             tv_name.setText(session.getUsername());
-            Glide.with(Feed.this).load(session.getProfilePicture()).error(R.drawable.download).into(image);
+            Glide.with(Feed.this).load(session.getProfilePicture()).diskCacheStrategy(DiskCacheStrategy.SOURCE).error(R.drawable.download).into(image);
         } else {
             signinbutton.setVisibility(View.VISIBLE);
             signinbutton.setOnClickListener(new View.OnClickListener() {
@@ -935,7 +936,7 @@ public class Feed extends AppCompatActivity {
         // To count with Play market backstack, After pressing back button,
         // to taken back to our application, we need to add following flags to intent.
         goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
-                Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
+
                 Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
         try {
             startActivity(goToMarket);

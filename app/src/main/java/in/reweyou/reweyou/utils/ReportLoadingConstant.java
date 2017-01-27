@@ -32,12 +32,14 @@ public class ReportLoadingConstant {
             FRAGMENT_CATEGORY_READING,
             FRAGMENT_CATEGORY_SINGLE_POST,
             FRAGMENT_CATEGORY_SEARCH,
+            FRAGMENT_CATEGORY_REPORTER_PROFILE,
             FRAGMENT_CATEGORY_TAG));
 
     public static ArrayList<Integer> fragmentListLoadOnStart = new ArrayList<>(Arrays.asList(
             FRAGMENT_CATEGORY_NEWS,
             FRAGMENT_CATEGORY_SINGLE_POST,
             FRAGMENT_CATEGORY_SEARCH,
+            FRAGMENT_CATEGORY_REPORTER_PROFILE,
             FRAGMENT_CATEGORY_TAG));
 
     public static ArrayList<Integer> fragmentListWithBoxAtTop = new ArrayList<>(Arrays.asList(

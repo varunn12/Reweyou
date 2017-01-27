@@ -4,7 +4,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="56dp"
-    android:background="@drawable/ripple_effect3"
+    android:background="@drawable/ripple_effect4"
 
     android:orientation="horizontal">
 

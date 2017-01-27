@@ -12,16 +12,16 @@ import android.view.View;
 import java.util.List;
 
 import in.reweyou.reweyou.classes.UserSessionManager;
-import in.reweyou.reweyou.fragment.SecondFragment;
+import in.reweyou.reweyou.fragment.BaseFragment;
 import in.reweyou.reweyou.model.FeedModel;
+import in.reweyou.reweyou.utils.ReportLoadingConstant;
 
 public class SearchResultsActivity extends AppCompatActivity {
-    private RecyclerView recyclerView;
-    private List<FeedModel> messagelist;
+
     private String query;
     private Toolbar toolbar;
     private UserSessionManager sessionManager;
-    private int position;
+    private String number;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,14 +48,12 @@ public class SearchResultsActivity extends AppCompatActivity {
     }
 
 
-
     private void handleIntent(Intent intent) {
 
         if (intent.hasExtra("query"))
             query = intent.getStringExtra("query");
-        if (intent.hasExtra("position"))
-            position = intent.getIntExtra("position", -1);
-
+        if (intent.hasExtra("number"))
+            number = intent.getStringExtra("number");
 
 
     }
@@ -64,11 +62,11 @@ public class SearchResultsActivity extends AppCompatActivity {
     private void setdata() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        SecondFragment frag = new SecondFragment();
+        BaseFragment frag = new BaseFragment();
         Bundle bundle = new Bundle();
 
-        bundle.putInt("position", position);
-        bundle.putString("query", query);
+        bundle.putInt(BaseFragment.TAG_FRAGMENT_CATEGORY, ReportLoadingConstant.FRAGMENT_CATEGORY_REPORTER_PROFILE);
+        bundle.putString(BaseFragment.TAG_REPORTER_NUMBER, number);
 
 
         frag.setArguments(bundle);

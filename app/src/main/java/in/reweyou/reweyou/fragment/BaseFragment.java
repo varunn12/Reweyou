@@ -76,6 +76,7 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     public static final String TAG_FRAGMENT_CATEGORY = "default";
     public static final java.lang.String TAG_SINGLE_POST_ID = "singlepostid";
+    public static final java.lang.String TAG_REPORTER_NUMBER = "reporternumber";
     private static final String TAG = BaseFragment.class.getSimpleName();
     private static final int SCROLL_DIRECTION_UP = -1;
     private int FRAGMENT_CATEGORY = -1;
@@ -316,6 +317,18 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         String singlepostid = getArguments().getString(TAG_SINGLE_POST_ID, null);
         validateSinglePostId(singlepostid);
+
+        String reporternumber=getArguments().getString(TAG_REPORTER_NUMBER,null);
+        validateReporterNumber(reporternumber);
+
+    }
+
+    private void validateReporterNumber(String reporternumber) {
+        if (FRAGMENT_CATEGORY == FRAGMENT_CATEGORY_REPORTER_PROFILE) {
+            if (reporternumber == null)
+                throw new NullPointerException("reporter number cannot be null");
+            else this.reporterNumber = reporternumber;
+        }
     }
 
     private void validateSinglePostId(String singlepostid) {
@@ -680,6 +693,8 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 return Constants.CATEGORY_FEED_URL;
             case FRAGMENT_CATEGORY_MY_PROFILE:
                 return Constants.URL_MY_REPORTS;
+            case FRAGMENT_CATEGORY_REPORTER_PROFILE:
+                return Constants.URL_MY_REPORTS;
             default:
                 throw new IllegalArgumentException("No url for the requested fragment category");
         }
@@ -696,6 +711,7 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 data.put(REQUEST_PARAMS_SINGLE_POST, singlepostid);
                 break;
             case FRAGMENT_CATEGORY_REPORTER_PROFILE:
+                Log.d(TAG, "getBodyHashMap: number"+reporterNumber);
                 data.put(REQUEST_PARAMS_NUMBER, reporterNumber);
                 break;
             case FRAGMENT_CATEGORY_CITY:

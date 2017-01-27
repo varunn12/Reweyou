@@ -25,6 +25,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -102,14 +103,14 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
         button = (Button) findViewById(R.id.button);
         profilepic = (ImageView) findViewById(R.id.profilepic);
-
+button.setVisibility(View.INVISIBLE);
         //Progress bar
         button.setOnClickListener(this);
 
         new JSONTask().execute(i);
         // new JSONTasks().execute(tag, i);
         button(i);
-
+        viewreport.setVisibility(View.INVISIBLE);
         viewreport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,6 +119,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                     i.putExtra("position", 29);
                     userprofilenumber = usernumber;
                     i.putExtra("query", name);
+                    i.putExtra("number", usernumber);
                     startActivity(i);
                 }
             }
@@ -151,6 +153,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
             @Override
             public void onResponse(String response) {
+
                 //if the server response is success
                 if (response.equalsIgnoreCase("success")) {
                     //dismissing the progressbar
@@ -327,11 +330,12 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
             try {
                 if (result != null) {
                     if (!result.isEmpty()) {
+                        viewreport.setVisibility(View.VISIBLE);
                         Name.setText(result.get(0));
                         Reports.setText(result.get(1));
                         Info.setText(result.get(3));
 
-                        Glide.with(UserProfile.this).load(result.get(2)).dontAnimate().error(R.drawable.download).into(profilepic);
+                        Glide.with(UserProfile.this).load(result.get(2)).diskCacheStrategy(DiskCacheStrategy.SOURCE).error(R.drawable.download).into(profilepic);
                         user = result.get(4);
                         Readers.setText(result.get(5));
                     }

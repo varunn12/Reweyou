@@ -1142,6 +1142,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                 break;
         }
 */
+
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
