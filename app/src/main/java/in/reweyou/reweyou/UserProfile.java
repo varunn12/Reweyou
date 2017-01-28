@@ -103,7 +103,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
         button = (Button) findViewById(R.id.button);
         profilepic = (ImageView) findViewById(R.id.profilepic);
-button.setVisibility(View.INVISIBLE);
+        button.setVisibility(View.INVISIBLE);
         //Progress bar
         button.setOnClickListener(this);
 
@@ -246,6 +246,12 @@ button.setVisibility(View.INVISIBLE);
         requestQueue.add(stringRequest);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        supportFinishAfterTransition();
+
+    }
 
     public class JSONTask extends AsyncTask<String, String, List<String>> {
 
@@ -352,6 +358,4 @@ button.setVisibility(View.INVISIBLE);
             //need to set data to the list
         }
     }
-
-
 }

@@ -166,7 +166,9 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         layout.layout(0, 0, layout.getMeasuredWidth(), layout.getMeasuredHeight());
         final Bitmap bmp = Bitmap.createBitmap(layout.getMeasuredWidth(), layout.getMeasuredHeight(), Bitmap.Config.ARGB_4444);
         final Canvas canvas = new Canvas(bmp);
-        canvas.drawBitmap(layout.getDrawingCache(), 0, 0, new Paint());
+        Paint p = new Paint();
+        p.setColor(Color.WHITE);
+        canvas.drawBitmap(layout.getDrawingCache(), 0, 0, p);
         return bmp;
     }
 
@@ -676,21 +678,22 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     private Bitmap loadBitmapFromView(View v) {
-        Bitmap b = Bitmap.createBitmap(v.getWidth(), v.getHeight(), Bitmap.Config.ARGB_4444);
+        Bitmap b = Bitmap.createBitmap(v.getWidth(), (int) (v.getHeight() - pxFromDp(mContext, 6)), Bitmap.Config.ARGB_4444);
         Canvas c = new Canvas(b);
         v.draw(c);
 
         final DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
-        final Bitmap b2 = drawToBitmap(mContext, R.layout.share_reweyou_tag, metrics.widthPixels, metrics.heightPixels);
+        final Bitmap b2 = drawToBitmap(mContext, R.layout.share_reweyou_tag, v.getWidth(), metrics.heightPixels);
         return combineImages(b, b2);
     }
+
 
     private Bitmap combineImages(Bitmap c, Bitmap s) {
         Bitmap cs = null;
 
         int width, height = 0;
 
-        width = s.getWidth();
+        width = c.getWidth();
         height = c.getHeight() + s.getHeight();
         Log.d("width", "" + c.getWidth() + "     " + s.getWidth());
         Log.d("height", "" + c.getHeight() + "     " + s.getHeight());
@@ -1170,18 +1173,14 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             profilepic.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    isInternetPresent = cd.isConnectingToInternet();
-                    if (isInternetPresent) {
-                        Bundle bundle = new Bundle();
+
+                    Bundle bundle = new Bundle();
                         bundle.putString("myData", messagelist.get(getAdapterPosition()).getNumber());
                         Intent in = new Intent(mContext, UserProfile.class);
                         in.putExtras(bundle);
                         mContext.startActivity(in);
                         ((Activity) mContext).overridePendingTransition(0, 0);
 
-                    } else {
-                        Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_SHORT).show();
-                    }
                 }
             });
             from.setOnClickListener(new View.OnClickListener() {

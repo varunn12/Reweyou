@@ -29,10 +29,13 @@
 
                 android:id="@+id/profilepic"
                 android:layout_width="32dp"
+
                 android:layout_height="32dp"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"
+                android:transitionName="profile"
+                card_view:myborderColor="@color/transparent"
                 card_view:myborderWidth="0dp" />
 
             <TextView
