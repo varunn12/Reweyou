@@ -1,0 +1,66 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:background="@drawable/button_background2"
+    android:orientation="vertical"
+    android:paddingBottom="16dp"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
+    android:paddingTop="8dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="8dp"
+        android:alpha="0.87"
+        android:background="@color/transparent"
+        android:gravity="center_vertical"
+        android:paddingLeft="20dp"
+        android:text="Insert LINK"
+        android:textAllCaps="true"
+        android:textColor="#000000"
+        android:textSize="12dp"
+        android:textStyle="bold" />
+
+
+    <EditText
+        android:id="@+id/editTextlink"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="16dp"
+
+        android:layout_marginRight="16dp"
+        android:background="@color/transparent"
+
+        android:drawableLeft="@drawable/ic_fileattach_layer1"
+        android:drawablePadding="6dp"
+        android:inputType="textNoSuggestions|textCapWords"
+        android:lines="1"
+        android:maxLines="1"
+        android:textColor="#212121"
+        android:textSize="16sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.7dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@color/greylight" />
+
+
+    <Button
+        android:id="@+id/buttonConfirm"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/button_background_rectangular"
+        android:text="OK"
+        android:textColor="@color/colorPrimaryDark" />
+
+</LinearLayout>

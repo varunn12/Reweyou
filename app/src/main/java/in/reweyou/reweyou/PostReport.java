@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -26,14 +27,18 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -55,6 +60,9 @@ import com.kbeanie.multipicker.api.callbacks.VideoPickerCallback;
 import com.kbeanie.multipicker.api.entity.ChosenImage;
 import com.kbeanie.multipicker.api.entity.ChosenVideo;
 import com.kbeanie.multipicker.utils.IntentUtils;
+import com.leocardz.link.preview.library.LinkPreviewCallback;
+import com.leocardz.link.preview.library.SourceContent;
+import com.leocardz.link.preview.library.TextCrawler;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -144,6 +152,39 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
     private TextView editlocation;
     private ImagePicker imagePicker;
     private VideoPicker videoPicker;
+    private ProgressDialog progressDialog;
+    private TextCrawler textCrawler;
+    private LinkPreviewCallback callback = new LinkPreviewCallback() {
+
+
+        @Override
+        public void onPre() {
+
+        }
+
+        @Override
+        public void onPos(final SourceContent preview, boolean isNull) {
+            progressDialog.dismiss();
+            if (!isNull) {
+                Log.d("aaaa", "onDataReady: " + preview.getTitle() + "   " + preview.getDescription() + "   ");
+
+                if (preview.getTitle() != null) {
+                    headline.setText(preview.getTitle());
+                }
+                if (preview.getDescription() != null) {
+                    description.setText(preview.getDescription());
+                }
+                if (preview.getImages() != null) {
+                    if (preview.getImages().size() > 0)
+                        if (preview.getImages().get(0) != null)
+                            handleImage(preview.getImages().get(0));
+                }
+
+            } else
+                Toast.makeText(PostReport.this, "please recheck the URL", Toast.LENGTH_SHORT).show();
+        }
+
+    };
 
     public static boolean isLocationEnabled(Context context) {
         int locationMode = 0;
@@ -169,6 +210,10 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_report);
+
+
+        textCrawler = new TextCrawler();
+
 
         initToolbar();
 
@@ -197,6 +242,12 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                 if (isStoragePermissionGranted()) {
                     showPickImage();
                 }
+            }
+        });
+        findViewById(R.id.link).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showLinkDialog();
             }
         });
 
@@ -398,7 +449,6 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
         }
     }
 
-
     private void setClickListeners() {
         previewImageCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -576,7 +626,6 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
         }
     }
 
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         Log.d(TAG, "onRequestPermissionsResult: " + requestCode);
@@ -639,7 +688,6 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
 
         }
     }
-
 
     private void permissionGranted() {
 
@@ -755,7 +803,6 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
 
     }
 
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -790,7 +837,6 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
         alertDialogBox.setCancellable(true);
         alertDialogBox.show();
     }
-
 
     private void showPermissionDeniedDialog() {
         AlertDialogBox alertDialogBox = new AlertDialogBox(PostReport.this, "Permission Denied", getResources().getString(R.string.permission_denied_location), "settings", "okay") {
@@ -874,7 +920,6 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                 );
 
     }
-
 
     @Override
     protected void onResume() {
@@ -1219,7 +1264,6 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
         return strAdd;
     }
 
-
     public boolean isStoragePermissionGranted() {
         if (Build.VERSION.SDK_INT >= 23) {
             if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -1311,7 +1355,6 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
         return true;
     }
 
-
     @Override
     public void onImagesChosen(List<ChosenImage> list) {
         onImageChoosenbyUser(list);
@@ -1327,6 +1370,55 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
     public void onVideosChosen(List<ChosenVideo> list) {
         onVideoChoosenByUser(list);
 
+    }
+
+    public void showLinkDialog() {
+
+        progressDialog = new ProgressDialog(PostReport.this);
+        progressDialog.setMessage("Please Wait");
+        progressDialog.setCancelable(false);
+        LayoutInflater li = LayoutInflater.from(PostReport.this);
+        //Creating a view to get the dialog box
+        View confirmDialog = li.inflate(R.layout.dialog_insert_link, null);
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(PostReport.this);
+        // Include dialog.xml file
+        dialog.setView(confirmDialog);
+        final AlertDialog alertDialog = dialog.create();
+
+        // Set dialog title
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        alertDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+
+        Button button = (Button) confirmDialog.findViewById(R.id.buttonConfirm);
+        final EditText linkbox = (EditText) confirmDialog.findViewById(R.id.editTextlink);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideKeyboard(linkbox);
+                alertDialog.dismiss();
+                if (linkbox.getText().toString().trim().length() > 0) {
+                    new Handler().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            progressDialog.show();
+                        }
+                    });
+
+                    textCrawler.makePreview(callback, linkbox.getText().toString());
+                }
+            }
+        });
+        alertDialog.show();
+
+
+    }
+
+    public void hideKeyboard(EditText linkbox) {
+        if (linkbox != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(linkbox.getWindowToken(), 0);
+        }
     }
 }
 

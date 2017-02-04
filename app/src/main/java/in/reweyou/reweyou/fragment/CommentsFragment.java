@@ -49,6 +49,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -94,7 +95,7 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
     private String name;
     private String number;
     private String result;
-    private String i;
+    private String mPostId;
     private LinearLayout EmptyCommentsContaier;
     private EditText editText;
     private ImageView sendButton;
@@ -201,8 +202,8 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
         //   swipeLayout.setEnabled(false);
 
         if (getArguments() != null) {
-            i = getArguments().getString("myData");
-            getCommentsRequest(i);
+            mPostId = getArguments().getString("myData");
+            getCommentsRequest(mPostId);
         }
 
         return layout;
@@ -215,7 +216,7 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
 
 
     public void onRefresh() {
-        getCommentsRequest(i);
+        getCommentsRequest(mPostId);
     }
 
     @Override
@@ -268,6 +269,9 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
                         if (response != null) {
                             if (response.trim().equals("Successfully Uploaded")) {
                                 onRefresh();
+
+                                FirebaseMessaging.getInstance().subscribeToTopic(mPostId);
+
                                 editText.setText("");
                                 selectedImagePath = null;
 
@@ -305,7 +309,7 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
                 param.put(KEY_TEXT, text);
                 param.put(KEY_NUMBER, number);
                 param.put(KEY_NAME, name);
-                param.put(KEY_ID, i);
+                param.put(KEY_ID, mPostId);
                 param.put("token", session.getKeyAuthToken());
                 param.put("deviceid", session.getDeviceid());
                 if (encodedImage != null)
@@ -323,7 +327,7 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
 
 
     public void setData(String i) {
-        this.i = i;
+        this.mPostId = i;
 
         getCommentsRequest(i);
 
@@ -458,7 +462,7 @@ public class CommentsFragment extends Fragment implements View.OnClickListener, 
         Snackbar.make(((Activity) mContext).findViewById(R.id.main_content), s, Snackbar.LENGTH_INDEFINITE).setAction("RETRY", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getCommentsRequest(i);
+                getCommentsRequest(mPostId);
             }
         }).show();
     }

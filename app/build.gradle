@@ -31,7 +31,9 @@ repositories
                         url "https://jitpack.io"
                     }
             maven { url 'https://dl.bintray.com/drummer-aidan/maven' }
+            jcenter()
 
+            maven { url 'https://github.com/leonardocardoso/mvn-repo/raw/master/maven-deploy' }
         }
 
 dependencies {
@@ -70,6 +72,8 @@ dependencies {
 
     compile 'com.kbeanie:multipicker:1.1.31@aar'
 
+    compile 'org.jsoup:jsoup:1.8.3' // required
+    compile 'com.leocardz:link-preview:1.2.2@aar'
     testCompile 'junit:junit:4.12'
 }
 
