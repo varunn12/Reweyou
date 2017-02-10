@@ -51,11 +51,11 @@
             android:layout_marginBottom="4dp"
             android:alpha=".87"
             android:gravity="center"
-
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:text="START REPORTING"
-            android:textColor="#F57C00" />
+            android:textColor="#F57C00"
+            android:textStyle="bold" />
 
 
     </LinearLayout>
