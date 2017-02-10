@@ -48,6 +48,7 @@ import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_LOADING;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_LOCATION;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_NEW_POST;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_READING_NO_READERS;
+import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_READING_NO_REPORTS_YET_FROM_USER;
 import static in.reweyou.reweyou.utils.Constants.dfs;
 import static in.reweyou.reweyou.utils.ReportLoadingConstant.FRAGMENT_CATEGORY_CITY;
 import static in.reweyou.reweyou.utils.ReportLoadingConstant.FRAGMENT_CATEGORY_MY_PROFILE;
@@ -166,13 +167,13 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         swipe = (SwipeRefreshLayout) layout.findViewById(R.id.swipe);
         swipe.setOnRefreshListener(this);
         if (mContext instanceof Feed)
-            swipe.setProgressViewOffset(false, 0, 110);
+            swipe.setProgressViewOffset(false, 0, (int) pxFromDp(mContext, 55));
 
         recyclerView = (RecyclerView) layout.findViewById(R.id.recycler_view);
         PreCachingLayoutManager preCachingLayoutManager = new PreCachingLayoutManager(mContext);
 
         recyclerView.setLayoutManager(preCachingLayoutManager);
-        VerticalSpaceItemDecorator verticalSpaceItemDecorator = new VerticalSpaceItemDecorator(12);
+        VerticalSpaceItemDecorator verticalSpaceItemDecorator = new VerticalSpaceItemDecorator((int) pxFromDp(mContext, 6));
         recyclerView.addItemDecoration(verticalSpaceItemDecorator);
 
         final int initialTopPosition = recyclerView.getTop();
@@ -504,6 +505,9 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                             } else if (FRAGMENT_CATEGORY == FRAGMENT_CATEGORY_READING) {
                                 feedModel.setType(VIEW_TYPE_READING_NO_READERS);
                                 feedAdapter1.add1(feedModel);
+                            } else if (FRAGMENT_CATEGORY == FRAGMENT_CATEGORY_REPORTER_PROFILE || FRAGMENT_CATEGORY == FRAGMENT_CATEGORY_MY_PROFILE) {
+                                feedModel.setType(VIEW_TYPE_READING_NO_REPORTS_YET_FROM_USER);
+                                feedAdapter1.add1(feedModel);
                             }
                             feedAdapter1.add2();
                         }
@@ -759,5 +763,9 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     public void onLocationSet(String s) {
         this.currentLocation = s;
         loadReportsfromServer();
+    }
+
+    public float pxFromDp(final Context context, final float dp) {
+        return dp * context.getResources().getDisplayMetrics().density;
     }
 }

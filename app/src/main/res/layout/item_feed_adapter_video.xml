@@ -197,11 +197,13 @@
             <TextView
                 android:id="@+id/place"
 
-                android:layout_width="wrap_content"
+                android:layout_width="130dp"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="18dp"
-                android:gravity="center"
-                android:text="posted by"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:lines="1"
+                android:text="location"
                 android:textColor="@color/main"
                 android:textSize="12sp" />
 
@@ -314,9 +316,9 @@
             android:id="@+id/rv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:foreground="@drawable/ripple_effect1"
-
             android:background="#06000000"
+
+            android:foreground="@drawable/ripple_effect1"
             android:paddingBottom="8dp"
             android:paddingTop="8dp">
 
@@ -338,7 +340,9 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/name"
                 android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
                 android:autoLink="web"
+
                 android:text="Be the first one to react..."
                 android:textColor="#616161"
                 android:textSize="13sp" />

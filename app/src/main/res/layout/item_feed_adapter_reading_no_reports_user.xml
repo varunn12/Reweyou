@@ -28,7 +28,7 @@
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:paddingTop="20dp"
-                android:text="No Readers"
+                android:text="No Reports"
 
                 android:textColor="#000000"
                 android:textSize="18dp" />
@@ -41,18 +41,19 @@
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:paddingTop="8dp"
-                android:text="Currently you are not reading any reporter. Read someone to read his reports."            android:textColor="#000000" />
+                android:text="You have not reported anything yet."
+                android:textColor="#000000" />
 
             <Button
                 android:id="@+id/start"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_gravity="end"
+
                 android:layout_marginBottom="4dp"
                 android:layout_marginRight="16dp"
                 android:alpha=".87"
-                android:background="@null"
-                android:text="ADD REPORTER"
+                android:text="START REPORTING"
 
                 android:textColor="#F57C00" />
 

@@ -67,6 +67,7 @@ import java.util.Map;
 import in.reweyou.reweyou.Comments1;
 import in.reweyou.reweyou.Contacts;
 import in.reweyou.reweyou.FullImage;
+import in.reweyou.reweyou.Leaderboard;
 import in.reweyou.reweyou.LikesActivity;
 import in.reweyou.reweyou.PostReport;
 import in.reweyou.reweyou.R;
@@ -90,6 +91,7 @@ import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_LOADING;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_LOCATION;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_NEW_POST;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_READING_NO_READERS;
+import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_READING_NO_REPORTS_YET_FROM_USER;
 import static in.reweyou.reweyou.utils.Constants.VIEW_TYPE_VIDEO;
 
 
@@ -227,6 +229,9 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 return new CityNoReportsviewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_feed_adapter_city_no_reports_yet, viewGroup, false));
             case VIEW_TYPE_READING_NO_READERS:
                 return new ReadingNoReadersViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_feed_adapter_reading_no_readers, viewGroup, false));
+            case VIEW_TYPE_READING_NO_REPORTS_YET_FROM_USER:
+                return new NoReportsUserViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_feed_adapter_reading_no_readers, viewGroup, false));
+
             default:
                 Log.d(TAG, "onCreateViewHolder: wekfdwenklfwenfewnjfdnwelfcnwencl'wencwqj998weuf8qe8f23");
                 return null;
@@ -1175,11 +1180,11 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 public void onClick(View view) {
 
                     Bundle bundle = new Bundle();
-                        bundle.putString("myData", messagelist.get(getAdapterPosition()).getNumber());
-                        Intent in = new Intent(mContext, UserProfile.class);
-                        in.putExtras(bundle);
-                        mContext.startActivity(in);
-                        ((Activity) mContext).overridePendingTransition(0, 0);
+                    bundle.putString("myData", messagelist.get(getAdapterPosition()).getNumber());
+                    Intent in = new Intent(mContext, UserProfile.class);
+                    in.putExtras(bundle);
+                    mContext.startActivity(in);
+                    ((Activity) mContext).overridePendingTransition(0, 0);
 
                 }
             });
@@ -1375,12 +1380,13 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     private class NewPostViewHolder extends RecyclerView.ViewHolder {
-        LinearLayout con;
+        LinearLayout con, l1;
         CardView cv;
 
         NewPostViewHolder(View view) {
             super(view);
             con = (LinearLayout) view.findViewById(R.id.newCon);
+            l1 = (LinearLayout) view.findViewById(R.id.l1);
             ImageView img = (ImageView) view.findViewById(R.id.pic);
             cv = (CardView) view.findViewById(R.id.cv);
             ImageView anim = (ImageView) view.findViewById(R.id.animimg);
@@ -1391,6 +1397,13 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
             Glide.with(mContext).load(session.getProfilePicture()).error(R.drawable.download).into(img);
             con.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent in = new Intent(mContext, PostReport.class);
+                    mContext.startActivity(in);
+                }
+            });
+            l1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent in = new Intent(mContext, PostReport.class);
@@ -1558,15 +1571,51 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     private class CityNoReportsviewHolder extends RecyclerView.ViewHolder {
+        private TextView start;
+
         public CityNoReportsviewHolder(View inflate) {
             super(inflate);
+            start = (TextView) itemView.findViewById(R.id.start);
+            start.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mContext.startActivity(new Intent(mContext, PostReport.class));
+                }
+            });
+        }
+    }
+
+    private class NoReportsUserViewHolder extends RecyclerView.ViewHolder {
+
+        private Button start;
+
+        public NoReportsUserViewHolder(View itemView) {
+            super(itemView);
+            start = (Button) itemView.findViewById(R.id.start);
+            start.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mContext.startActivity(new Intent(mContext, PostReport.class));
+                }
+            });
         }
     }
 
     private class ReadingNoReadersViewHolder extends RecyclerView.ViewHolder {
+        private Button start;
+
         public ReadingNoReadersViewHolder(View inflate) {
             super(inflate);
+            start = (Button) itemView.findViewById(R.id.start);
+            start.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mContext.startActivity(new Intent(mContext, Leaderboard.class));
+                }
+            });
         }
+
+
     }
 
 

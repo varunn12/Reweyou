@@ -8,24 +8,17 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
@@ -36,8 +29,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,7 +43,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -71,21 +61,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import in.reweyou.reweyou.adapter.FeedAdapter;
 import in.reweyou.reweyou.classes.ConnectionDetector;
-import in.reweyou.reweyou.classes.DividerItemDecoration;
 import in.reweyou.reweyou.classes.HandleActivityResult;
 import in.reweyou.reweyou.classes.RequestHandler;
 import in.reweyou.reweyou.classes.UploadOptions;
 import in.reweyou.reweyou.classes.UserSessionManager;
-import in.reweyou.reweyou.model.FeedModel;
 import in.reweyou.reweyou.utils.Constants;
 
 import static in.reweyou.reweyou.classes.HandleActivityResult.HANDLE_IMAGE;
 import static in.reweyou.reweyou.classes.UploadOptions.PERMISSION_ALL_IMAGE;
 import static in.reweyou.reweyou.classes.UploadOptions.PERMISSION_ALL_PROFILE_PIC;
 import static in.reweyou.reweyou.utils.Constants.MY_PROFILE_EDIT_URL;
-import static in.reweyou.reweyou.utils.Constants.MY_PROFILE_URL_FOLLOW;
 
 public class MyProfile extends AppCompatActivity implements View.OnClickListener {
 
@@ -98,16 +84,16 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
     int SELECT_FILE = 1;
     private String i, tag, number, user, result, image, selectedImagePath;
     private TextView Name, Reports, Info, Readers, Location, Mobile;
-    private Bitmap bitmap, Correctbmp;
     private ImageView profilepic;
     private EditText editTextHeadline, editLocation;
     private Button buttonEdit;
     private int length;
     private Button button;
-    private ProgressBar progressBar;
-    private RecyclerView recyclerView;
-    private LinearLayout Empty;
     private UploadOptions uploadOptions;
+    private TextView viewReport;
+    private boolean dataloaded;
+    private String name;
+    private String number1;
 
 
     @Override
@@ -117,7 +103,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Profile");
+        getSupportActionBar().setTitle("My Profile");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -132,8 +118,6 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
         i = session.getMobileNumber();
         cd = new ConnectionDetector(MyProfile.this);
         session = new UserSessionManager(getApplicationContext());
-        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
-        progressBar.setVisibility(View.VISIBLE);
 
         Name = (TextView) findViewById(R.id.Name);
         Reports = (TextView) findViewById(R.id.Reports);
@@ -141,29 +125,27 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
         Readers = (TextView) findViewById(R.id.Readers);
         Location = (TextView) findViewById(R.id.Location);
         Mobile = (TextView) findViewById(R.id.Mobile);
-        Empty = (LinearLayout) findViewById(R.id.empty);
+        viewReport = (TextView) findViewById(R.id.viewreport);
 
+
+        viewReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (dataloaded) {
+                    Intent i = new Intent(MyProfile.this, SearchResultsActivity.class);
+                    i.putExtra("position", 29);
+                    i.putExtra("query", name);
+                    i.putExtra("number", number1
+                    );
+                    startActivity(i);
+                }
+            }
+        });
 
         button = (Button) findViewById(R.id.button);
         profilepic = (ImageView) findViewById(R.id.profilepic);
 
-        String fontPath = "fonts/Roboto-Medium.ttf";
-        String thinpath = "fonts/Roboto-Regular.ttf";
-       /* Typeface font = Typeface.createFromAsset(this.getAssets(), "fontawesome-webfont.ttf");
-        Typeface tf = Typeface.createFromAsset(this.getAssets(), fontPath);
-        Typeface thin = Typeface.createFromAsset(this.getAssets(), thinpath);
-*/
-       /* Name.setTypeface(tf);
-        Reports.setTypeface(thin);
-        Info.setTypeface(thin);
-        Readers.setTypeface(thin);
-        Location.setTypeface(thin);
-        Mobile.setTypeface(thin);*/
 
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecoration(ContextCompat.getDrawable(this, R.drawable.line));
-        recyclerView.addItemDecoration(dividerItemDecoration);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         //Progress bar
         tag = "Random";
@@ -180,8 +162,6 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
         button.setOnClickListener(this);
         Readers.setOnClickListener(this);
         uploadOptions = new UploadOptions(this);
-        initCollapsingToolbar();
-
     }
 
 
@@ -266,159 +246,6 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
         // Adding request to request queue
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(strReq);
-    }
-
-
-    private void reading(final String i) {
-        HashMap<String, String> user = session.getUserDetails();
-        final String number = session.getMobileNumber();
-
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, MY_PROFILE_URL_FOLLOW,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        if (response.trim().equals("success")) {
-                            //button.setText("Reviewed");
-                            button.setBackgroundColor(ContextCompat.getColor(MyProfile.this, R.color.red));
-                            button.setTextColor(ContextCompat.getColor(MyProfile.this, R.color.transparent_bg));
-                            button.setText("Unread");
-                            button.setTag(1);
-                        } else {
-                            Toast.makeText(MyProfile.this, "Try Again", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(MyProfile.this, error.toString(), Toast.LENGTH_LONG).show();
-                    }
-                }) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> map = new HashMap<String, String>();
-                map.put("number", number);
-                map.put("user", i);
-                map.put("unread", "reading");
-                return map;
-            }
-        };
-        RequestQueue requestQueue = Volley.newRequestQueue(MyProfile.this);
-        requestQueue.add(stringRequest);
-    }
-
-    private void read(final String i) {
-        HashMap<String, String> user = session.getUserDetails();
-        number = session.getMobileNumber();
-
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, MY_PROFILE_URL_FOLLOW,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        if (response.trim().equals("success")) {
-                            //button.setText("Reviewed");
-                            button.setBackgroundColor(ContextCompat.getColor(MyProfile.this, R.color.feedbackground));
-                            button.setTextColor(ContextCompat.getColor(MyProfile.this, R.color.black));
-                            button.setText("Read");
-                            button.setTag(0);
-                        } else {
-                            Toast.makeText(MyProfile.this, "Try Again", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(MyProfile.this, error.toString(), Toast.LENGTH_LONG).show();
-                    }
-                }) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> map = new HashMap<String, String>();
-                map.put("number", number);
-                map.put("user", i);
-                return map;
-            }
-        };
-        RequestQueue requestQueue = Volley.newRequestQueue(MyProfile.this);
-        requestQueue.add(stringRequest);
-    }
-
-    /* Initializing collapsing toolbar
-    * Will show and hide the toolbar title on scroll
-    */
-    private void initCollapsingToolbar() {
-        final CollapsingToolbarLayout collapsingToolbar =
-                (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        collapsingToolbar.setTitle(" ");
-        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
-        appBarLayout.setExpanded(true);
-
-        // hiding & showing the title when toolbar expanded & collapsed
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            boolean isShow = false;
-            int scrollRange = -1;
-
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.getTotalScrollRange();
-                }
-                if (scrollRange + verticalOffset == 0) {
-                    collapsingToolbar.setTitle(getString(R.string.app_name));
-
-
-                    isShow = true;
-                } else if (isShow) {
-                    collapsingToolbar.setTitle(" ");
-                    isShow = false;
-                }
-            }
-        });
-    }
-
-    private void setPic(String imagePath, ImageView destination) {
-        int targetW = 200;
-        int targetH = 200;
-        // Get the dimensions of the bitmap
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(imagePath, bmOptions);
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
-
-        // Determine how much to scale down the image
-        int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
-
-        // Decode the image file into a Bitmap sized to fill the View
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = scaleFactor;
-        bmOptions.inPurgeable = true;
-
-        bitmap = BitmapFactory.decodeFile(imagePath, bmOptions);
-        ExifInterface exif = null;
-        try {
-            exif = new ExifInterface(imagePath);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-
-        int angle = 0;
-
-        if (orientation == ExifInterface.ORIENTATION_ROTATE_90) {
-            angle = 90;
-        } else if (orientation == ExifInterface.ORIENTATION_ROTATE_180) {
-            angle = 180;
-        } else if (orientation == ExifInterface.ORIENTATION_ROTATE_270) {
-            angle = 270;
-        }
-
-        Matrix mat = new Matrix();
-        mat.postRotate(angle);
-
-        Correctbmp = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), mat, true);
-        destination.setImageBitmap(Correctbmp);
     }
 
 
@@ -577,7 +404,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
 
                                     if (!headline.isEmpty()) {
                                         Info.setText(headline);
-                                        Info.setTextColor(getResources().getColor(android.R.color.white));
+                                        Info.setTextColor(getResources().getColor(android.R.color.black));
                                     } else {
                                         Info.setText(getResources().getString(R.string.emptyStatus));
                                         Info.setTextColor(getResources().getColor(android.R.color.holo_red_light));
@@ -831,7 +658,9 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
 
             super.onPostExecute(result);
             if (result != null) {
-
+                dataloaded = true;
+                name = result.get(0);
+                number1 = result.get(4);
                 Name.setText(result.get(0));
                 Reports.setText(result.get(1));
                 if (!result.get(3).isEmpty()) {
@@ -865,96 +694,6 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                 Readers.setText(result.get(6));
 
                 //    progressBar.setVisibility(View.GONE);
-                //need to set data to the list
-            }
-        }
-    }
-
-    public class JSONTasks extends AsyncTask<String, String, List<Object>> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            //setProgressBarIndeterminateVisibility(true);
-        }
-
-        @Override
-        protected List<Object> doInBackground(String... params) {
-            HttpURLConnection connection = null;
-            BufferedReader reader = null;
-            RequestHandler rh = new RequestHandler();
-            HashMap<String, String> data = new HashMap<String, String>();
-            data.put("tag", params[0]);
-            data.put("number", params[1]);
-            //  tag="All";
-            try {
-                URL url = new URL("https://www.reweyou.in/reweyou/myreports.php");
-                connection = (HttpURLConnection) url.openConnection();
-
-                connection.setDoOutput(true);
-                connection.setRequestMethod("POST");
-
-
-                OutputStreamWriter wr = new OutputStreamWriter(connection.getOutputStream());
-                wr.write(rh.getPostDataString(data));
-                wr.flush();
-
-                InputStream stream = connection.getInputStream();
-                reader = new BufferedReader(new InputStreamReader(stream));
-                StringBuffer buffer = new StringBuffer();
-
-                String line = "";
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line);
-                }
-                String finalJson = buffer.toString();
-
-                JSONArray parentArray = new JSONArray(finalJson);
-                StringBuffer finalBufferedData = new StringBuffer();
-                length = parentArray.length();
-                List<Object> messagelist = new ArrayList<>();
-
-                Gson gson = new Gson();
-                for (int i = 0; i < parentArray.length(); i++) {
-                    JSONObject finalObject = parentArray.getJSONObject(i);
-                    FeedModel feedModel = gson.fromJson(finalObject.toString(), FeedModel.class);
-                    messagelist.add(feedModel);
-                }
-
-                return messagelist;
-                //return buffer.toString();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } finally {
-                if (connection != null) {
-                    connection.disconnect();
-                }
-                try {
-                    if (reader != null) {
-                        reader.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(List<Object> result) {
-            super.onPostExecute(result);
-            progressBar.setVisibility(View.GONE);
-            if (result != null) {
-                if (result.isEmpty()) {
-                    Empty.setVisibility(View.VISIBLE);
-                }
-                FeedAdapter adapter = new FeedAdapter(MyProfile.this, result, null);
-                // total.setText("You have reported "+ String.valueOf(length)+ " stories.");
-                recyclerView.setAdapter(adapter);
                 //need to set data to the list
             }
         }

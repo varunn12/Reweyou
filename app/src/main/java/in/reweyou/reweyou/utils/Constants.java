@@ -44,6 +44,7 @@ public class Constants {
     public static final int VIEW_TYPE_LOCATION = 11;
     public static final int VIEW_TYPE_CITY_NO_REPORTS_YET= 12;
     public static final int VIEW_TYPE_READING_NO_READERS= 13;
+    public static final int VIEW_TYPE_READING_NO_REPORTS_YET_FROM_USER = 15;
 
 
     public static final String POST_REPORT_KEY_ADDRESS = "address";
