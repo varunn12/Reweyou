@@ -182,6 +182,7 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(Signup.this, Feed.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 startActivity(i);
                 finish();
             }
@@ -359,6 +360,10 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
         }
     }
 
+    public float pxFromDp(final Context context, final float dp) {
+        return dp * context.getResources().getDisplayMetrics().density;
+    }
+
     private void keyboardListener() {
         findViewById(R.id.main_content).getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -367,7 +372,7 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
                 findViewById(R.id.main_content).getWindowVisibleDisplayFrame(r);
                 int heightDiff = findViewById(R.id.main_content).getRootView().getHeight() - (r.bottom - r.top);
 
-                if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
+                if (heightDiff > pxFromDp(Signup.this, 200)) { // if more than 100 pixels, its probably a keyboard...
                     //ok now we know the keyboard is up...
                     logo.setVisibility(View.GONE);
                     Read.setVisibility(View.GONE);

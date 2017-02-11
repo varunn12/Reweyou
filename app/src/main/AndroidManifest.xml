@@ -211,10 +211,14 @@
         <activity
             android:name=".Invite"
             android:label="@string/title_activity_invite"
+
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Raw"
             android:label="@string/title_activity_raw"
+
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
 
         </activity>

@@ -133,7 +133,7 @@ public class NotificationUtils {
             }
         } else {
             showSmallNotification(mBuilder, icon, title, message, timeStamp, resultPendingIntent, alarmSound);
-            playNotificationSound();
+            //playNotificationSound();
         }
     }
 
@@ -148,10 +148,10 @@ public class NotificationUtils {
                 .setAutoCancel(true)
                 .setContentTitle(title)
                 .setContentIntent(resultPendingIntent)
-                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
                 .setWhen(getTimeMilliSec(timeStamp))
-                .setSmallIcon(R.drawable.logo_plain)
+                .setSmallIcon(R.drawable.ic_stat_logo_plain)
                 .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.ic_launcher))
                 .setContentText(message)
                 .build();
@@ -170,10 +170,10 @@ public class NotificationUtils {
                 .setAutoCancel(true)
                 .setContentTitle(title)
                 .setContentIntent(resultPendingIntent)
-                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setStyle(bigPictureStyle)
                 .setWhen(getTimeMilliSec(timeStamp))
-                .setSmallIcon(R.drawable.logo_plain)
+                .setSmallIcon(R.drawable.ic_stat_logo_plain)
                 .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.ic_launcher))
                 .setContentText(message)
                 .build();

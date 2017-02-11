@@ -68,8 +68,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             LocalBroadcastManager.getInstance(this).sendBroadcast(pushNotification);
 
             // play notification sound
-            NotificationUtils notificationUtils = new NotificationUtils(getApplicationContext());
-            notificationUtils.playNotificationSound();
+           /* NotificationUtils notificationUtils = new NotificationUtils(getApplicationContext());
+            notificationUtils.playNotificationSound();*/
         } else {
             // If the app is in background, firebase itself handles the notification
         }
@@ -120,7 +120,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
 
                     NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext())
-                            .setSmallIcon(R.drawable.logo_plain)
+                            .setSmallIcon(R.drawable.ic_stat_logo_plain)
                             .setContentIntent(pendingIntent)
                             .setAutoCancel(true)
                             .setDefaults(NotificationCompat.DEFAULT_VIBRATE)

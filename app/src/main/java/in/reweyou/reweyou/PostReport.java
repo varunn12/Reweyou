@@ -511,6 +511,10 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
 
     }
 
+    public float pxFromDp(final Context context, final float dp) {
+        return dp * context.getResources().getDisplayMetrics().density;
+    }
+
     private void keyboardListener() {
         findViewById(R.id.main_content).getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -519,7 +523,10 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                 findViewById(R.id.main_content).getWindowVisibleDisplayFrame(r);
                 int heightDiff = findViewById(R.id.main_content).getRootView().getHeight() - (r.bottom - r.top);
 
-                if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
+                // int heightDiff = findViewById(R.id.main_content).getRootView().getHeight() - findViewById(R.id.main_content).getHeight();
+
+                //Log.d(TAG, "onGlobalLayout: height"+heightDiff+"   "+findViewById(R.id.main_content).getRootView().getHeight()+    "    "+(r.bottom - r.top));
+                if (heightDiff > pxFromDp(PostReport.this, 200)) { // if more than 100 pixels, its probably a keyboard...
                     //ok now we know the keyboard is up...
                     logoContainer.setVisibility(View.GONE);
                     bottomContainer.setVisibility(View.GONE);
