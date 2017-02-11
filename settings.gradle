@@ -1,1 +1,1 @@
-include ':app', ':videoPreviewLib'
+include ':app', ':videoPreviewLib', ':multipicker'

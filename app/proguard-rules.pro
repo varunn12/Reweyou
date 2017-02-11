@@ -29,3 +29,4 @@
 
 -dontwarn io.nlopez.**
 -dontwarn okio.**
+-dontwarn **

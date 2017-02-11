@@ -70,11 +70,11 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
     compile 'com.amitshekhar.android:android-networking:0.3.0'
 
-    compile 'com.kbeanie:multipicker:1.1.31@aar'
 
     compile 'org.jsoup:jsoup:1.8.3' // required
     compile 'com.leocardz:link-preview:1.2.2@aar'
     testCompile 'junit:junit:4.12'
+    compile project(path: ':multipicker')
 }
 
 apply plugin: 'com.google.gms.google-services'
