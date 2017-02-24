@@ -67,7 +67,6 @@ import java.util.Map;
 import in.reweyou.reweyou.Comments1;
 import in.reweyou.reweyou.Contacts;
 import in.reweyou.reweyou.FullImage;
-import in.reweyou.reweyou.Leaderboard;
 import in.reweyou.reweyou.LikesActivity;
 import in.reweyou.reweyou.PostReport;
 import in.reweyou.reweyou.R;
@@ -174,7 +173,7 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         return bmp;
     }
 
-    public static float pxFromDp(final Context context, final float dp) {
+    public float pxFromDp(final Context context, final float dp) {
         return dp * context.getResources().getDisplayMetrics().density;
     }
 
@@ -186,8 +185,13 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public long getItemId(int position) {
-        Log.d(TAG, "getItemId: " + messagelist.get(position).getPostId());
         return Long.parseLong(messagelist.get(position).getPostId());
+    }
+
+    @Override
+    public boolean onFailedToRecycleView(RecyclerView.ViewHolder holder) {
+        Log.d(TAG, "onFailedToRecycleView: ");
+        return super.onFailedToRecycleView(holder);
     }
 
     private void initTimer() {
@@ -1606,13 +1610,13 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         public ReadingNoReadersViewHolder(View inflate) {
             super(inflate);
-            start = (Button) itemView.findViewById(R.id.start);
+          /*  start = (Button) itemView.findViewById(R.id.start);
             start.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mContext.startActivity(new Intent(mContext, Leaderboard.class));
                 }
-            });
+            });*/
         }
 
 

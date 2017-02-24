@@ -14,7 +14,7 @@
         android:layout_below="@+id/no"
         android:clipToPadding="false"
         android:fadeScrollbars="true"
-        android:paddingTop="58dp"
+        android:paddingTop="108dp"
         android:scrollbars="vertical" />
     </android.support.v4.widget.SwipeRefreshLayout>
 

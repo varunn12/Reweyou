@@ -385,6 +385,7 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
             feedAdapter1 = new FeedAdapter1(mContext, FRAGMENT_CATEGORY, sessionManager, this);
             feedAdapter1.setHasStableIds(true);
+
             FeedModel feedModel = new FeedModel();
             if (FRAGMENT_CATEGORY == FRAGMENT_CATEGORY_CITY) {
                 feedModel.setType(VIEW_TYPE_LOCATION);
@@ -393,6 +394,7 @@ public class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 feedModel.setType(VIEW_TYPE_NEW_POST);
                 feedAdapter1.add5(feedModel);
             }
+            recyclerView.setItemViewCacheSize(3);
             recyclerView.setAdapter(feedAdapter1);
 
             if (fragmentListLoadOnStart.contains(FRAGMENT_CATEGORY)) {

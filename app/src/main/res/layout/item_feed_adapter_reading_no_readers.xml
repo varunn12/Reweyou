@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="2dp"
@@ -11,50 +12,170 @@
         android:id="@+id/cv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+
+        android:layout_marginRight="4dp"
+        android:clickable="true"
+        android:stateListAnimator="@animator/lift_on_touch"
         card_view:cardBackgroundColor="#fff"
         card_view:cardCornerRadius="4dp"
         card_view:cardElevation="1.5dp"
-        card_view:cardUseCompatPadding="true">
+        card_view:cardPreventCornerOverlap="false"
+        card_view:cardUseCompatPadding="true"
+        tools:targetApi="lollipop">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:alpha=".87"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:paddingTop="20dp"
-                android:text="No Readers"
+                android:orientation="horizontal">
 
-                android:textColor="#000000"
-                android:textSize="18dp" />
+                <TextView
+
+                    android:id="@+id/headline"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="8dp"
+                    android:layout_weight="1"
+                    android:alpha=".87"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingTop="20dp"
+                    android:text="Demonetisation: To Defiy or Demonize?"
+
+                    android:textColor="#000000"
+                    android:textSize="18dp" />
+
+
+            </LinearLayout>
+
 
             <TextView
+                android:id="@+id/description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:alpha="0.54"
-                android:paddingBottom="12dp"
+                android:ellipsize="end"
+                android:maxLines="5"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:paddingTop="8dp"
-                android:text="Currently you are not reading any reporter. Read someone to read his reports."            android:textColor="#000000" />
+                android:text="The unprecedented policy decision by the Government to Demonetize the
+economy of the higher denomination currencies (i.e. Rs. 500 and Rs. 1000),
+comprises of three broad aspects. With the objective of cracking down on Black money, counterfeit (fake currency),
+terro"
+                android:textColor="#000000" />
 
-            <Button
-                android:id="@+id/start"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/user"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_weight="1"
+                    android:alpha="0.38"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:lines="1"
+                    android:paddingBottom="4dp"
+                    android:text="ayush P Gupta"
+                    android:textColor="#000"
+                    android:textSize="12dp" />
+
+                <TextView
+                    android:id="@+id/tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="12dp"
+                    android:alpha="0.38"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical|end"
+                    android:lines="1"
+                    android:paddingBottom="4dp"
+                    android:text="#"
+                    android:textColor="#000"
+                    android:textSize="12dp" />
+            </LinearLayout>
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.7dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="4dp"
+                android:alpha=".48"
+                android:background="@color/divider" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:layout_marginBottom="4dp"
+                android:layout_marginBottom="6dp"
                 android:layout_marginRight="16dp"
-                android:alpha=".87"
-                android:background="@null"
-                android:text="ADD REPORTER"
 
-                android:textColor="#F57C00" />
+                >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="16dp"
+                    android:paddingTop="2dp"
+                    card_view:srcCompat="@drawable/ic_star" />
+
+
+                <TextView
+                    android:id="@+id/rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="8dp"
+                    android:gravity="center"
+                    android:paddingLeft="6dp"
+                    android:paddingTop="4dp"
+
+                    android:text="5.0"
+                    android:textColor="#29B6F6"
+                    android:textSize="13dp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:alpha="0.38"
+
+                    android:gravity="center_vertical"
+                    android:paddingTop="4dp"
+                    android:text=""
+                    android:textColor="#000"
+                    android:textSize="13dp" />
+
+                <TextView
+                    android:id="@+id/review"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical|end"
+                    android:paddingTop="4dp"
+                    android:text="12  REVIEWS"
+                    android:textColor="@color/colorPrimaryDark"
+
+                    android:textSize="12dp" />
+
+            </LinearLayout>
 
 
         </LinearLayout>

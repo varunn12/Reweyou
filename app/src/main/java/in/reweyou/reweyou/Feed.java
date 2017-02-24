@@ -31,6 +31,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.SparseArray;
@@ -56,23 +58,31 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.ParsedRequestListener;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import in.reweyou.reweyou.adapter.TagsAdapter;
 import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.HandleActivityResult;
 import in.reweyou.reweyou.classes.UploadOptions;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.customView.CustomSigninDialog;
-import in.reweyou.reweyou.fragment.BaseFragment;
+import in.reweyou.reweyou.fragment.IssueFragment;
 import in.reweyou.reweyou.fragment.SecondFragment;
+import in.reweyou.reweyou.model.TagsModel;
 import in.reweyou.reweyou.utils.Constants;
 
 import static in.reweyou.reweyou.classes.HandleActivityResult.HANDLE_IMAGE;
@@ -81,11 +91,7 @@ import static in.reweyou.reweyou.classes.UploadOptions.PERMISSION_ALL_IMAGE;
 import static in.reweyou.reweyou.classes.UploadOptions.PERMISSION_ALL_SHARE;
 import static in.reweyou.reweyou.classes.UploadOptions.PERMISSION_ALL_VIDEO;
 import static in.reweyou.reweyou.classes.UploadOptions.PERMISSION_ALL_VIDEO_CAPTURE;
-import static in.reweyou.reweyou.fragment.BaseFragment.TAG_FRAGMENT_CATEGORY;
 import static in.reweyou.reweyou.utils.Constants.AUTH_ERROR;
-import static in.reweyou.reweyou.utils.ReportLoadingConstant.FRAGMENT_CATEGORY_CITY;
-import static in.reweyou.reweyou.utils.ReportLoadingConstant.FRAGMENT_CATEGORY_NEWS;
-import static in.reweyou.reweyou.utils.ReportLoadingConstant.FRAGMENT_CATEGORY_READING;
 
 public class Feed extends AppCompatActivity {
     public static final int REQ_CODE_NOTI_COUNT = 45;
@@ -134,6 +140,8 @@ public class Feed extends AppCompatActivity {
     private android.app.AlertDialog alertDialog1;
     private CustomSigninDialog customSigninDialog;
     private TextView signinbutton;
+    private RecyclerView recycelrview;
+    private TagsAdapter tagsAdapter;
 
     public static float pxFromDp(final Context context, final float dp) {
         return dp * context.getResources().getDisplayMetrics().density;
@@ -162,7 +170,7 @@ public class Feed extends AppCompatActivity {
         } else {                              //for new users we didnt need this check
             pagerAdapter = new PagerAdapter(getSupportFragmentManager());
             viewPager.setAdapter(pagerAdapter);
-            viewPager.setCurrentItem(1);
+            viewPager.setCurrentItem(0);
             if (session.checkLoginSplash())
                 makeNotificationsRequest();
 
@@ -252,6 +260,49 @@ public class Feed extends AppCompatActivity {
         initViewPagerAndTabs();
         initNavigationDrawer();
         initSigninDialog();
+
+        recycelrview = (RecyclerView) findViewById(R.id.tagsrecyclerview);
+        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.HORIZONTAL);
+        recycelrview.setLayoutManager(staggeredGridLayoutManager);
+        tagsAdapter = new TagsAdapter(this);
+        recycelrview.setAdapter(tagsAdapter);
+
+        makeTagsRequest();
+    }
+
+    private void makeTagsRequest() {
+        AndroidNetworking.get("https://reweyou.in/reviews/tags.php")
+                .setTag("t")
+                .setPriority(Priority.IMMEDIATE)
+                .build()
+                .getAsParsed(new TypeToken<List<TagsModel>>() {
+                }, new ParsedRequestListener<List<TagsModel>>() {
+
+                    @Override
+                    public void onResponse(List<TagsModel> list) {
+                        Log.d(TAG, "onResponse: tags" + list.get(0).getTags());
+                        tagsAdapter.add(list);
+
+                    }
+
+                    @Override
+                    public void onError(final ANError anError) {
+                        Log.e(TAG, "run: error: " + anError.getErrorDetail());
+
+                        /*new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                swipe.setRefreshing(false);
+                                if (isAdded() && !anError.getErrorDetail().equals("requestCancelled"))
+                                    Toast.makeText(mContext, "Couldn't connect", Toast.LENGTH_SHORT).show();
+
+
+                            }
+                        }, 1200);*/
+
+
+                    }
+                });
     }
 
     private void initSigninDialog() {
@@ -330,7 +381,7 @@ public class Feed extends AppCompatActivity {
                                         tabLayout.setVisibility(View.VISIBLE);
                                         pagerAdapter = new PagerAdapter(getSupportFragmentManager());
                                         viewPager.setAdapter(pagerAdapter);
-                                        viewPager.setCurrentItem(1);
+                                        viewPager.setCurrentItem(0);
                                         if (image != null)
                                             Glide.with(Feed.this).load(session.getProfilePicture()).error(R.drawable.download).into(image);
                                         makeNotificationsRequest();
@@ -433,6 +484,7 @@ public class Feed extends AppCompatActivity {
     private void initViewPagerAndTabs() {
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         viewPager.setOffscreenPageLimit(2);
+/*
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             public boolean pagechanged;
             public int mPosition = -1;
@@ -469,6 +521,7 @@ public class Feed extends AppCompatActivity {
                 }
             }
         });
+*/
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
     }
@@ -1026,22 +1079,7 @@ public class Feed extends AppCompatActivity {
             else bundle.putInt("position", position);
 
 */
-            BaseFragment fragment = new BaseFragment();
-            Bundle bundle = new Bundle();
-            switch (position) {
-                case 0:
-                    bundle.putInt(TAG_FRAGMENT_CATEGORY, FRAGMENT_CATEGORY_READING);
-                    break;
-                case 1:
-                    bundle.putInt(TAG_FRAGMENT_CATEGORY, FRAGMENT_CATEGORY_NEWS);
-                    break;
-                case 2:
-                    bundle.putInt(TAG_FRAGMENT_CATEGORY, FRAGMENT_CATEGORY_CITY);
-                    break;
-            }
-
-
-            fragment.setArguments(bundle);
+            IssueFragment fragment = new IssueFragment();
             return fragment;
         }
 
