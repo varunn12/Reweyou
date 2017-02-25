@@ -23,7 +23,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="160dp"
+                android:layout_height="198dp"
                 android:background="@color/colorPrimary" />
 
             <android.support.design.widget.AppBarLayout
@@ -38,7 +38,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:background="?attr/colorPrimary"
-                    app:layout_scrollFlags="scroll|enterAlways"
 
                     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                     app:theme="@style/MyThemeOverlay.ActionBar">
@@ -138,12 +137,17 @@
 
             </android.support.design.widget.AppBarLayout>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="64dp"
+                android:text="What's trending?"
+                android:textColor="#fff"
 
-            <android.support.v4.view.ViewPager
-                android:id="@+id/viewPager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+                android:textSize="14dp"
+                android:textStyle="bold" />
+
 
             <android.support.design.widget.TabLayout
                 android:id="@+id/tabLayout"
@@ -166,11 +170,17 @@
                 android:id="@+id/tagsrecyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="104dp"
+                android:layout_marginTop="60dp"
                 android:clipToPadding="false"
                 android:paddingLeft="4dp"
                 android:paddingRight="4dp"
-                android:paddingTop="8dp"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"></android.support.v7.widget.RecyclerView>
+                android:paddingTop="32dp" />
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/viewPager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
             <ProgressBar
                 android:id="@+id/pd"

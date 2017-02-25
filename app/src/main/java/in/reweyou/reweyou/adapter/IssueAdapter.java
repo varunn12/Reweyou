@@ -6,7 +6,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,9 +44,12 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         issueViewHolder.headline.setText(messagelist.get(position).getHeadline());
         issueViewHolder.description.setText(messagelist.get(position).getDescription());
         issueViewHolder.rating.setText(messagelist.get(position).getRating());
-        issueViewHolder.review.setText(messagelist.get(position).getReviews() + "  RATING");
+        issueViewHolder.review.setText(messagelist.get(position).getReviews());
         issueViewHolder.user.setText(messagelist.get(position).getCreated_by());
         issueViewHolder.tag.setText("#" + messagelist.get(position).getCategory());
+        if (!messagelist.get(position).getImage().isEmpty()) {
+            Glide.with(mContext).load(messagelist.get(position).getImage()).into(issueViewHolder.imageView);
+        }
     }
 
 
@@ -64,6 +70,7 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private TextView review;
         private TextView user;
         private TextView tag;
+        private ImageView imageView;
 
         private IssueViewHolder(View inflate) {
             super(inflate);
@@ -73,6 +80,7 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             review = (TextView) inflate.findViewById(R.id.review);
             user = (TextView) inflate.findViewById(R.id.user);
             tag = (TextView) inflate.findViewById(R.id.tag);
+            imageView = (ImageView) inflate.findViewById(R.id.image);
 
         }
 
