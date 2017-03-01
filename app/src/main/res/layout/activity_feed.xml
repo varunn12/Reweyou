@@ -38,7 +38,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:background="?attr/colorPrimary"
-
+                    app:layout_scrollFlags="scroll|enterAlways"
                     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                     app:theme="@style/MyThemeOverlay.ActionBar">
 
@@ -134,19 +134,28 @@
 
                 </android.support.v7.widget.Toolbar>
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="8dp"
+                    android:text="What's trending?"
+                    android:textColor="#fff"
 
+                    android:textSize="14dp"
+                    android:textStyle="bold" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/tagsrecyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:layout_marginTop="4dp"
+                    android:clipToPadding="false"
+                    android:paddingBottom="8dp"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
+                    android:paddingTop="4dp" />
             </android.support.design.widget.AppBarLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="64dp"
-                android:text="What's trending?"
-                android:textColor="#fff"
-
-                android:textSize="14dp"
-                android:textStyle="bold" />
 
 
             <android.support.design.widget.TabLayout
@@ -166,15 +175,6 @@
                 app:tabSelectedTextColor="@color/colorPrimary"
                 app:tabTextColor="#ccc" />
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/tagsrecyclerview"
-                android:layout_width="match_parent"
-                android:layout_height="104dp"
-                android:layout_marginTop="60dp"
-                android:clipToPadding="false"
-                android:paddingLeft="4dp"
-                android:paddingRight="4dp"
-                android:paddingTop="32dp" />
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/viewPager"

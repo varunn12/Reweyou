@@ -8,6 +8,7 @@
     android:layout_height="wrap_content"
     android:layout_marginLeft="4dp"
     android:layout_marginRight="4dp"
+
     android:clickable="true"
     android:stateListAnimator="@animator/lift_on_touch"
     card_view:cardBackgroundColor="#fff"
@@ -64,6 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="84dp"
             android:alpha="0.54"
+            android:autoLink="web"
             android:ellipsize="end"
             android:maxLines="5"
             android:paddingLeft="16dp"
@@ -118,7 +120,7 @@ terro"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginTop="4dp"
-            android:alpha=".48"
+            android:alpha=".44"
             android:background="@color/divider" />
 
         <LinearLayout

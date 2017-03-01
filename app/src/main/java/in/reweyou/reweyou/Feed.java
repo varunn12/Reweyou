@@ -142,8 +142,9 @@ public class Feed extends AppCompatActivity {
     private TextView signinbutton;
     private RecyclerView recycelrview;
     private TagsAdapter tagsAdapter;
+    private String currentTab = "All";
 
-    public static float pxFromDp(final Context context, final float dp) {
+    public float pxFromDp(final Context context, final float dp) {
         return dp * context.getResources().getDisplayMetrics().density;
     }
 
@@ -270,17 +271,22 @@ public class Feed extends AppCompatActivity {
         makeTagsRequest();
     }
 
-    private void makeTagsRequest() {
+    public void makeTagsRequest() {
+
         AndroidNetworking.get("https://reweyou.in/reviews/tags.php")
                 .setTag("t")
-                .setPriority(Priority.IMMEDIATE)
+                .setPriority(Priority.HIGH)
                 .build()
                 .getAsParsed(new TypeToken<List<TagsModel>>() {
                 }, new ParsedRequestListener<List<TagsModel>>() {
 
                     @Override
                     public void onResponse(List<TagsModel> list) {
-                        Log.d(TAG, "onResponse: tags" + list.get(0).getTags());
+                        TagsModel tagsModel = new TagsModel();
+                        tagsModel.setId("default");
+                        tagsModel.setTags("All");
+
+                        list.add(0, tagsModel);
                         tagsAdapter.add(list);
 
                     }
@@ -1054,6 +1060,17 @@ public class Feed extends AppCompatActivity {
             valueAnimator1.setDuration(300);
             valueAnimator1.start();
         }
+
+    }
+
+    public String getCurrentTab() {
+        return currentTab;
+    }
+
+    public void makeIssueRequest(String s) {
+        currentTab = s;
+        Fragment page = pagerAdapter.getRegisteredFragment(viewPager.getCurrentItem());
+        ((IssueFragment) page).loadReportsfromServer(currentTab);
 
     }
 

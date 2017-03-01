@@ -11,4 +11,12 @@ public class TagsModel {
     public String getTags() {
         return tags;
     }
+
+    public void setTags(String tags) {
+        this.tags = tags;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 }

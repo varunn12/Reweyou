@@ -11,11 +11,16 @@ public class IssueModel {
     private String created_on;
     private String reviews;
     private String category;
+    private String name;
     private String image;
     private String video;
     private String gif;
     private String rating;
     private String headline;
+
+    public String getName() {
+        return name;
+    }
 
     public String getCategory() {
         return category;
