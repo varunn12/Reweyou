@@ -31,6 +31,7 @@ import java.util.List;
 
 import in.reweyou.reweyou.adapter.ReviewAdapter;
 import in.reweyou.reweyou.classes.UserSessionManager;
+import in.reweyou.reweyou.customView.CustomSigninDialog;
 import in.reweyou.reweyou.customView.PreCachingLayoutManager;
 import in.reweyou.reweyou.model.ReviewModel;
 
@@ -83,7 +84,9 @@ public class ReviewActivity extends AppCompatActivity {
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
+                        if (sessionManager.checkLoginSplash())
                         updateReview();
+                        else showlogindialog();
 
                     }
                 });
@@ -259,5 +262,11 @@ public class ReviewActivity extends AppCompatActivity {
 
     public float pxFromDp(final Context context, final float dp) {
         return dp * context.getResources().getDisplayMetrics().density;
+    }
+
+    private void showlogindialog() {
+        CustomSigninDialog customSigninDialog = new CustomSigninDialog(ReviewActivity.this);
+        customSigninDialog.show();
+
     }
 }
