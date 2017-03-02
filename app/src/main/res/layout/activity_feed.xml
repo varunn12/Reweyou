@@ -74,7 +74,7 @@
                             android:layout_below="@+id/title"
                             android:layout_toRightOf="@+id/sssss"
                             android:alpha="0.87"
-                            android:text="Empowering Citizen Journalism"
+                            android:text="Review Everything"
                             android:textColor="#fff"
                             android:textSize="11dp"
                             android:textStyle="normal" />
