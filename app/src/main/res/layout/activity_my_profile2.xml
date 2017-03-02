@@ -212,7 +212,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:alpha="0.54"
-                            android:text="Reports"
+                            android:text="Reviews"
                             android:textColor="#000"
                             android:textSize="12dp" />
 
@@ -251,7 +251,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:alpha="0.54"
-                            android:text="Readers"
+                            android:text="Topics"
                             android:textColor="#000"
                             android:textSize="12dp" />
 

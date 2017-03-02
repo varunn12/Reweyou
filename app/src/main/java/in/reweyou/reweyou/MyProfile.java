@@ -595,7 +595,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
             data.put("token", session.getKeyAuthToken());
             data.put("deviceid", session.getDeviceid());
             try {
-                URL url = new URL("https://www.reweyou.in/reweyou/user_list.php");
+                URL url = new URL("https://www.reweyou.in/reviews/user_list.php");
                 connection = (HttpURLConnection) url.openConnection();
 
                 connection.setDoOutput(true);
@@ -622,12 +622,12 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                 for (int i = 0; i < parentArray.length(); i++) {
                     JSONObject finalObject = parentArray.getJSONObject(i);
                     profilelist.add(finalObject.getString("name"));
-                    profilelist.add(finalObject.getString("total_reviews"));
+                    profilelist.add(finalObject.getString("reviews"));
                     profilelist.add(finalObject.getString("profilepic"));
                     profilelist.add(finalObject.getString("info"));
                     profilelist.add(finalObject.getString("number"));
                     profilelist.add(finalObject.getString("location"));
-                    profilelist.add(finalObject.getString("readers"));
+                    profilelist.add(finalObject.getString("topics"));
                     //  profilelist.add(finalObject.getString("readers"));
                 }
 
