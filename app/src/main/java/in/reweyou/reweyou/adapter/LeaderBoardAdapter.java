@@ -2,8 +2,6 @@ package in.reweyou.reweyou.adapter;
 
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,7 +15,6 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 
 import in.reweyou.reweyou.R;
-import in.reweyou.reweyou.UserProfile;
 import in.reweyou.reweyou.model.LeaderboardModel;
 
 
@@ -70,7 +67,7 @@ public class LeaderBoardAdapter extends RecyclerView.Adapter<LeaderBoardAdapter.
             this.reviews=(TextView)view.findViewById(R.id.Continue);
             this.image=(ImageView)view.findViewById(R.id.image);
             this.cv = (CardView) view.findViewById(R.id.cv);
-            cv.setOnClickListener(new View.OnClickListener() {
+            /*cv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Bundle bundle = new Bundle();
@@ -79,7 +76,7 @@ public class LeaderBoardAdapter extends RecyclerView.Adapter<LeaderBoardAdapter.
                     in.putExtras(bundle);
                     mContext.startActivity(in);
                 }
-            });
+            });*/
 
 
 

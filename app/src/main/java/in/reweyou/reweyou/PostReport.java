@@ -36,22 +36,28 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.ParsedRequestListener;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
+import com.google.gson.reflect.TypeToken;
 import com.kbeanie.multipicker.api.ImagePicker;
 import com.kbeanie.multipicker.api.Picker;
 import com.kbeanie.multipicker.api.VideoPicker;
@@ -72,6 +78,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -82,6 +89,7 @@ import in.reweyou.reweyou.classes.MyLocation;
 import in.reweyou.reweyou.classes.UploadOptions;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.customView.CustomSigninDialog;
+import in.reweyou.reweyou.model.TagsModel;
 import in.reweyou.reweyou.utils.Constants;
 
 import static in.reweyou.reweyou.utils.Constants.POST_REPORT_KEY_ADDRESS;
@@ -122,13 +130,13 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
     Boolean isInternetPresent = false;
     PermissionsChecker checker;
     private ImageView sendButton;
-    private EditText description, editTag, headline;
+    private EditText description, headline;
+
     private ImageView previewImageView;
     private String place;
     private String address, mycity;
     private String name;
     private String tag, currentSpinnerPositionString;
-    private Spinner staticSpinner;
     private String number;
     private Toolbar toolbar;
     private int position_spinner = -1;
@@ -185,6 +193,10 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
         }
 
     };
+    private AutoCompleteTextView editTag;
+    private CheckBox anonyRadioButton;
+    private ArrayAdapter<String> adapter;
+    private ArrayList<String> list1;
 
     public static boolean isLocationEnabled(Context context) {
         int locationMode = 0;
@@ -211,7 +223,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_report);
 
-
+        getSuggestedTags();
         textCrawler = new TextCrawler();
 
 
@@ -312,6 +324,48 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
 
         }
         showHangingNoti();
+    }
+
+    private void getSuggestedTags() {
+        AndroidNetworking.get("https://reweyou.in/reviews/tagsuggest.php")
+                .setTag("t")
+                .setPriority(Priority.HIGH)
+                .build()
+                .getAsParsed(new TypeToken<List<TagsModel>>() {
+                }, new ParsedRequestListener<List<TagsModel>>() {
+
+                    @Override
+                    public void onResponse(List<TagsModel> list) {
+                        try {
+
+                            for (int i = 0; i < list.size(); i++) {
+                                list1.add(list.get(i).getTags());
+                            }
+
+                            adapter.notifyDataSetChanged();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(final ANError anError) {
+                        Log.e(TAG, "run: error: " + anError.getErrorDetail());
+
+                        /*new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                swipe.setRefreshing(false);
+                                if (isAdded() && !anError.getErrorDetail().equals("requestCancelled"))
+                                    Toast.makeText(mContext, "Couldn't connect", Toast.LENGTH_SHORT).show();
+
+
+                            }
+                        }, 1200);*/
+
+
+                    }
+                });
     }
 
     private void handleMultipleShares(String type) {
@@ -485,8 +539,24 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
 
 
         //activity layout views
+        anonyRadioButton = (CheckBox) findViewById(R.id.anonyradio);
+        anonyRadioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Log.d(TAG, "onCheckedChanged: " + isChecked);
+              /* if (!isChecked)
+                    anonyRadioButton.setChecked(true);
+                else anonyRadioButton.setChecked(false);*/
+            }
+        });
         description = (EditText) findViewById(R.id.Who);
-        editTag = (EditText) findViewById(R.id.tag);
+        editTag = (AutoCompleteTextView) findViewById(R.id.tag);
+        int layoutItemId = android.R.layout.simple_dropdown_item_1line;
+        list1 = new ArrayList<String>();
+        adapter = new ArrayAdapter<String>(PostReport.this, layoutItemId, list1);
+        editTag.setAdapter(adapter);
+
+
         headline = (EditText) findViewById(R.id.head);
         sendButton = (ImageView) findViewById(R.id.btn_send);
         logoContainer = (LinearLayout) findViewById(R.id.logo);
@@ -555,7 +625,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
     }
 
     private void initCategorySpinner() {
-        staticSpinner = (Spinner) findViewById(R.id.static_spinner);
+      /*  staticSpinner = (Spinner) findViewById(R.id.static_spinner);
 
         // Create an ArrayAdapter using the string array and a default spinner
         ArrayAdapter<CharSequence> staticAdapter = ArrayAdapter
@@ -587,7 +657,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                 //Toast.makeText(PostReport.this,"Select a category",Toast.LENGTH_SHORT).show();
                 // TODO Auto-generated method stub
             }
-        });
+        });*/
     }
 
     @Override
@@ -872,14 +942,18 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
     }
 
     private boolean validateFields() {
-        if (staticSpinner.getSelectedItemPosition() == 0) {
+       /* if (staticSpinner.getSelectedItemPosition() == 0) {
             Toast.makeText(PostReport.this, "Select a category", Toast.LENGTH_SHORT).show();
             return false;
-        } else if (editTag.getText().toString().trim().length() == 0) {
+        } else*/
+        if (editTag.getText().toString().trim().length() == 0) {
             Toast.makeText(PostReport.this, "Tag cannot be empty", Toast.LENGTH_SHORT).show();
             return false;
         } else if (description.getText().toString().trim().length() == 0) {
             Toast.makeText(PostReport.this, "Description cannot be empty", Toast.LENGTH_SHORT).show();
+            return false;
+        } else if (headline.getText().toString().trim().length() == 0) {
+            Toast.makeText(PostReport.this, "Headline cannot be empty", Toast.LENGTH_SHORT).show();
             return false;
         } else {
             updateUploadDataFields();
@@ -1057,7 +1131,11 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
         try {
             getUploadFileExtraParams(fileType, params, encodedImage);
             params.add(POST_REPORT_KEY_LOCATION, place.trim());
-            params.add(POST_REPORT_KEY_NAME, name.trim());
+
+            if (anonyRadioButton.isChecked())
+                params.add(POST_REPORT_KEY_NAME, "Anonymous");
+            else
+                params.add(POST_REPORT_KEY_NAME, name.trim());
             params.add(POST_REPORT_KEY_CATEGORY, currentSpinnerPositionString);
             params.add(POST_REPORT_KEY_ADDRESS, address.trim());
             params.add(POST_REPORT_KEY_NUMBER, number.trim());
@@ -1065,10 +1143,11 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
             if (parameterHeadline != null)
                 params.add(POST_REPORT_KEY_HEADLINE, parameterHeadline.trim());
             params.add(POST_REPORT_KEY_DESCRIPTION, parameterDescription.trim());
-            //  params.add("token", session.getKeyAuthToken());
-            params.add("token", "test");
-            // params.add("deviceid", session.getDeviceid());
-            params.add("deviceid", "1234");
+            params.add("token", session.getKeyAuthToken());
+            params.add("deviceid", session.getDeviceid());
+
+            Log.d(TAG, "uploadFile: " + session.getKeyAuthToken());
+            Log.d(TAG, "uploadFile: " + session.getDeviceid());
 
             AsyncHttpClient client = new AsyncHttpClient(true, 80, 443);
 
@@ -1090,7 +1169,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                             openProfile();
                         } else if (result.trim().equals(Constants.AUTH_ERROR)) {
                             Log.d("autherror", "errorauth");
-                            session.logoutUser();
+                            // session.logoutUser();
 
                         }
                     } catch (UnsupportedEncodingException e) {

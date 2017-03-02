@@ -2,6 +2,7 @@ package in.reweyou.reweyou;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,6 +60,13 @@ public class ReviewActivity extends AppCompatActivity {
     private ImageView send;
     private EditText edittext;
     private AVLoadingIndicatorView loadingcircular;
+    private String status;
+    private View divider2;
+    private LinearLayout b1;
+    private TextView ratetext;
+    private LinearLayout c1;
+    private int numrating = 0;
+    private TextView noreviewyet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,10 +78,98 @@ public class ReviewActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+
         loadingcircular = (AVLoadingIndicatorView) findViewById(R.id.avi);
         loadingcircular.show();
         sessionManager = new UserSessionManager(this);
+
+        final ImageView ra1 = (ImageView) findViewById(R.id.ra1);
+        final ImageView ra2 = (ImageView) findViewById(R.id.ra2);
+        final ImageView ra3 = (ImageView) findViewById(R.id.ra3);
+        final ImageView ra4 = (ImageView) findViewById(R.id.ra4);
+        final ImageView ra5 = (ImageView) findViewById(R.id.ra5);
+        ra1.setColorFilter(Color.parseColor("#e0e0e0"));
+        ra2.setColorFilter(Color.parseColor("#e0e0e0"));
+        ra3.setColorFilter(Color.parseColor("#e0e0e0"));
+        ra4.setColorFilter(Color.parseColor("#e0e0e0"));
+        ra5.setColorFilter(Color.parseColor("#e0e0e0"));
+        ra1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ra1.setColorFilter(Color.parseColor("#29B6F6"));
+                ra2.setColorFilter(Color.parseColor("#e0e0e0"));
+                ra3.setColorFilter(Color.parseColor("#e0e0e0"));
+                ra4.setColorFilter(Color.parseColor("#e0e0e0"));
+                ra5.setColorFilter(Color.parseColor("#e0e0e0"));
+
+                numrating = 1;
+
+            }
+        });
+
+        ra2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ra1.setColorFilter(Color.parseColor("#29B6F6"));
+                ra2.setColorFilter(Color.parseColor("#29B6F6"));
+                ra3.setColorFilter(Color.parseColor("#e0e0e0"));
+                ra4.setColorFilter(Color.parseColor("#e0e0e0"));
+                ra5.setColorFilter(Color.parseColor("#e0e0e0"));
+                numrating = 2;
+
+
+            }
+        });
+
+        ra3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ra1.setColorFilter(Color.parseColor("#29B6F6"));
+                ra2.setColorFilter(Color.parseColor("#29B6F6"));
+                ra3.setColorFilter(Color.parseColor("#29B6F6"));
+                ra4.setColorFilter(Color.parseColor("#e0e0e0"));
+                ra5.setColorFilter(Color.parseColor("#e0e0e0"));
+                numrating = 3;
+
+
+            }
+        });
+
+        ra4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ra1.setColorFilter(Color.parseColor("#29B6F6"));
+                ra2.setColorFilter(Color.parseColor("#29B6F6"));
+                ra3.setColorFilter(Color.parseColor("#29B6F6"));
+                ra4.setColorFilter(Color.parseColor("#29B6F6"));
+
+                ra5.setColorFilter(Color.parseColor("#e0e0e0"));
+                numrating = 4;
+
+            }
+        });
+
+        ra5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ra1.setColorFilter(Color.parseColor("#29B6F6"));
+                ra2.setColorFilter(Color.parseColor("#29B6F6"));
+                ra3.setColorFilter(Color.parseColor("#29B6F6"));
+                ra4.setColorFilter(Color.parseColor("#29B6F6"));
+                ra5.setColorFilter(Color.parseColor("#29B6F6"));
+
+                numrating = 5;
+
+            }
+        });
+
+
         tvheadline = (TextView) findViewById(R.id.headline);
+        noreviewyet = (TextView) findViewById(R.id.noreviewyet);
+        ratetext = (TextView) findViewById(R.id.ratetext);
+        c1 = (LinearLayout) findViewById(R.id.c1);
+        b1 = (LinearLayout) findViewById(R.id.b1);
+        divider2 = findViewById(R.id.divider2);
         tvdescription = (TextView) findViewById(R.id.description);
         tvrating = (TextView) findViewById(R.id.rating);
         tvreview = (TextView) findViewById(R.id.review);
@@ -88,9 +185,15 @@ public class ReviewActivity extends AppCompatActivity {
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
-                        if (sessionManager.checkLoginSplash())
-                            updateReview();
-                        else showlogindialog();
+                        if (sessionManager.checkLoginSplash()) {
+                            if (numrating == 0) {
+                                Toast.makeText(ReviewActivity.this, "Please rate the issue", Toast.LENGTH_SHORT).show();
+                            } else if (edittext.getText().toString().trim().length() == 0) {
+                                Toast.makeText(ReviewActivity.this, "Your review cannot be empty", Toast.LENGTH_SHORT).show();
+
+                            } else
+                                updateReview();
+                        } else showlogindialog();
 
                     }
                 });
@@ -122,6 +225,8 @@ public class ReviewActivity extends AppCompatActivity {
             }
         });
 
+        if (!sessionManager.checkLoginSplash())
+            edittext.setHint("Sign in to review...");
 
         if (getIntent() != null) {
             Intent i = getIntent();
@@ -136,6 +241,7 @@ public class ReviewActivity extends AppCompatActivity {
             name = i.getStringExtra("name");
             gifurl = i.getStringExtra("gif");
             topicid = i.getStringExtra("topicid");
+            status = i.getStringExtra("status");
         }
         getSupportActionBar().setTitle(tag);
 
@@ -143,14 +249,14 @@ public class ReviewActivity extends AppCompatActivity {
         tvdescription.setText(description);
         tvrating.setText(rating);
         tvreview.setText(review);
-        tvuser.setText(name);
+        tvuser.setText("By- " + name);
 
         if (!gifurl.isEmpty()) {
             Glide.with(ReviewActivity.this).load(gifurl).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(image);
 
         } else if (!imageurl.isEmpty())
             Glide.with(ReviewActivity.this).load(imageurl).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(image);
-        else image.setClickable(false);
+        else image.setVisibility(View.GONE);
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -194,14 +300,23 @@ public class ReviewActivity extends AppCompatActivity {
                 }
             }
         });
+
+        if (status.equals("true")) {
+            ratetext.setVisibility(View.GONE);
+            b1.setVisibility(View.GONE);
+            c1.setVisibility(View.GONE);
+            divider2.setVisibility(View.GONE);
+        }
     }
 
     private void updateReview() {
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("topicid", topicid);
         hashMap.put("number", sessionManager.getMobileNumber());
-        hashMap.put("rating", "5");
+        hashMap.put("rating", String.valueOf(numrating));
         hashMap.put("description", edittext.getText().toString());
+        hashMap.put("token", sessionManager.getKeyAuthToken());
+        hashMap.put("deviceid", sessionManager.getDeviceid());
         edittext.setText("");
 
         AndroidNetworking.post("https://reweyou.in/reviews/post_reviews.php")
@@ -213,6 +328,7 @@ public class ReviewActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         loadReportsfromServer();
+                        Log.d(TAG, "onResponse: " + response);
 
 
                     }
@@ -230,6 +346,8 @@ public class ReviewActivity extends AppCompatActivity {
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("topicid", topicid);
         hashMap.put("number", sessionManager.getMobileNumber());
+        hashMap.put("token", sessionManager.getKeyAuthToken());
+        hashMap.put("deviceid", sessionManager.getDeviceid());
         AndroidNetworking.post("https://reweyou.in/reviews/reviews.php")
                 .addBodyParameter(hashMap)
                 .setTag("report")
@@ -240,6 +358,9 @@ public class ReviewActivity extends AppCompatActivity {
 
                     @Override
                     public void onResponse(List<ReviewModel> list) {
+                        if (list.size() == 0)
+                            noreviewyet.setVisibility(View.VISIBLE);
+                        else noreviewyet.setVisibility(View.GONE);
                         loadingcircular.hide();
                         adapter.add(list);
                         Log.d(TAG, "onResponse: lis" + list.size());
@@ -275,5 +396,38 @@ public class ReviewActivity extends AppCompatActivity {
         CustomSigninDialog customSigninDialog = new CustomSigninDialog(ReviewActivity.this);
         customSigninDialog.show();
 
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        try {
+
+            if (getIntent() != null) {
+                Intent i = getIntent();
+                headline = i.getStringExtra("headline");
+                description = i.getStringExtra("description");
+                rating = i.getStringExtra("rating");
+                user = i.getStringExtra("user");
+                review = i.getStringExtra("review");
+                tag = i.getStringExtra("tag");
+                imageurl = i.getStringExtra("image");
+                videourl = i.getStringExtra("video");
+                name = i.getStringExtra("name");
+                gifurl = i.getStringExtra("gif");
+                topicid = i.getStringExtra("topicid");
+                status = i.getStringExtra("status");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent i = new Intent(ReviewActivity.this, Feed.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        startActivity(i);
+        finish();
     }
 }

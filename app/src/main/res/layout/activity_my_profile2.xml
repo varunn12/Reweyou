@@ -276,7 +276,7 @@
                     android:gravity="center"
                     android:paddingBottom="8dp"
                     android:paddingTop="8dp"
-                    android:text="VIEW YOUR REPORTS"
+                    android:text="VIEW YOUR ISSUES"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="14dp"
                     android:textStyle="bold" />

@@ -77,8 +77,8 @@ terro"
 
                 <ImageView
                     android:id="@+id/image"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     android:layout_alignParentRight="true"
                     android:layout_below="@+id/description"
                     android:layout_marginBottom="16dp"
@@ -193,42 +193,49 @@ terro"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/ratetext"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="8dp">
+                    android:layout_centerHorizontal="true">
 
                     <ImageView
+                        android:id="@+id/ra1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
+                        android:padding="8dp"
+
                         card_view:srcCompat="@drawable/ic_star" />
 
                     <ImageView
+                        android:id="@+id/ra2"
+
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
+                        android:padding="8dp"
                         card_view:srcCompat="@drawable/ic_star" />
 
                     <ImageView
+                        android:id="@+id/ra3"
+
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
+                        android:padding="8dp"
+
                         card_view:srcCompat="@drawable/ic_star" />
 
                     <ImageView
+                        android:id="@+id/ra4"
+
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
+                        android:padding="8dp"
+
                         card_view:srcCompat="@drawable/ic_star" />
 
                     <ImageView
+                        android:id="@+id/ra5"
+
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
+                        android:padding="8dp"
+
                         card_view:srcCompat="@drawable/ic_star" />
 
                 </LinearLayout>
@@ -241,7 +248,7 @@ terro"
                     android:layout_below="@id/b1"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="12dp"
                     android:background="@drawable/border">
 
                     <EditText
@@ -331,6 +338,21 @@ terro"
                     android:visibility="visible"
                     app:indicatorColor="@color/divider"
                     app:indicatorName="LineSpinFadeLoaderIndicator" />
+
+                <TextView
+                    android:id="@+id/noreviewyet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/r2"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="16dp"
+                    android:alpha="0.34"
+                    android:paddingTop="16dp"
+                    android:text="Be the first one to review"
+                    android:textColor="#000"
+
+                    android:visibility="gone" />
+
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycler_view"
                     android:layout_width="match_parent"

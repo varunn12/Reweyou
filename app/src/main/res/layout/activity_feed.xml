@@ -83,11 +83,11 @@
                             android:id="@+id/ss"
                             android:layout_width="40dp"
                             android:layout_height="match_parent"
-
                             android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
                             android:layout_marginRight="8dp"
-                            android:background="@drawable/ripple_effect_white">
+                            android:background="@drawable/ripple_effect_white"
+                            android:visibility="gone">
 
                             <!-- Menu Item Image -->
                             <ImageView
@@ -125,11 +125,13 @@
                             android:id="@+id/action_menu_inbox"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
+
+                            android:layout_alignParentRight="true"
+
                             android:layout_centerVertical="true"
-                            android:layout_toLeftOf="@+id/ss"
                             android:background="@drawable/ripple_effect_white"
                             android:padding="13dp"
-                            app:srcCompat="@drawable/ic_close_envelope_white" />
+                            app:srcCompat="@drawable/ic_person_primary_24px_white" />
 
                     </RelativeLayout>
 
@@ -138,17 +140,18 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                <TextView
-                    android:id="@+id/aaaa"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="8dp"
-                    android:text="What's trending?"
-                    android:textColor="#fff"
 
-                    android:textSize="14dp"
-                    android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/aaaa"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="8dp"
+                        android:text="What's trending?"
+                        android:textColor="#fff"
+
+                        android:textSize="14dp"
+                        android:textStyle="bold" />
 
                     <com.wang.avi.AVLoadingIndicatorView
                         android:id="@+id/avi"
@@ -161,17 +164,17 @@
                         app:indicatorColor="@color/colorPrimaryDark"
                         app:indicatorName="LineSpinFadeLoaderIndicator" />
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/tagsrecyclerview"
-                    android:layout_width="match_parent"
-                    android:layout_height="80dp"
-                    android:layout_below="@+id/aaaa"
-                    android:layout_marginTop="4dp"
-                    android:clipToPadding="false"
-                    android:paddingBottom="8dp"
-                    android:paddingLeft="4dp"
-                    android:paddingRight="4dp"
-                    android:paddingTop="4dp" />
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/tagsrecyclerview"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:layout_below="@+id/aaaa"
+                        android:layout_marginTop="4dp"
+                        android:clipToPadding="false"
+                        android:paddingBottom="8dp"
+                        android:paddingLeft="4dp"
+                        android:paddingRight="4dp"
+                        android:paddingTop="4dp" />
                 </RelativeLayout>
             </android.support.design.widget.AppBarLayout>
 

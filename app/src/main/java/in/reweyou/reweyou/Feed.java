@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -92,7 +91,6 @@ import static in.reweyou.reweyou.classes.UploadOptions.PERMISSION_ALL_IMAGE;
 import static in.reweyou.reweyou.classes.UploadOptions.PERMISSION_ALL_SHARE;
 import static in.reweyou.reweyou.classes.UploadOptions.PERMISSION_ALL_VIDEO;
 import static in.reweyou.reweyou.classes.UploadOptions.PERMISSION_ALL_VIDEO_CAPTURE;
-import static in.reweyou.reweyou.utils.Constants.AUTH_ERROR;
 
 public class Feed extends AppCompatActivity {
     public static final int REQ_CODE_NOTI_COUNT = 45;
@@ -448,9 +446,9 @@ public class Feed extends AppCompatActivity {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
-        TextView mTitle = (TextView) mToolbar.findViewById(R.id.title);
+       /* TextView mTitle = (TextView) mToolbar.findViewById(R.id.title);
         Typeface face = Typeface.createFromAsset(getAssets(),
-                "fonts/Pacifico.ttf");
+                "fonts/Pacifico.ttf");*/
        /* mTitle.setTypeface(face);*/
 
         ImageView inbox = (ImageView) mToolbar.findViewById(R.id.action_menu_inbox);
@@ -458,13 +456,13 @@ public class Feed extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (session.checkLoginSplash()) {
-                    Intent s = new Intent(Feed.this, Contacts.class);
+                    Intent s = new Intent(Feed.this, MyProfile.class);
                     startActivity(s);
                     overridePendingTransition(0, 0);
                 } else showSignupDialog();
             }
         });
-
+/*
         ImageView noti = (ImageView) mToolbar.findViewById(R.id.action_menu_not);
         noti.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -477,7 +475,7 @@ public class Feed extends AppCompatActivity {
             }
         });
 
-        tv = (TextView) mToolbar.findViewById(R.id.actionbar_notifcation_textview);
+        tv = (TextView) mToolbar.findViewById(R.id.actionbar_notifcation_textview);*/
 
 
         mToolbar.findViewById(R.id.sssss).setOnClickListener(new View.OnClickListener() {
@@ -538,7 +536,7 @@ public class Feed extends AppCompatActivity {
     }
 
     private void makeNotificationsRequest() {
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.MY_TOTAL_NOTIFICATIONS_URL,
+       /* StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.MY_TOTAL_NOTIFICATIONS_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -549,9 +547,9 @@ public class Feed extends AppCompatActivity {
                                     session.logoutUser();
 
                                 } else {
+                                    setnotificationNumber(Integer.parseInt(response));
 
                                 }
-                                setnotificationNumber(Integer.parseInt(response));
                             }
                         }
                     }
@@ -559,13 +557,13 @@ public class Feed extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                       /* if (error instanceof NoConnectionError) {
+                       *//* if (error instanceof NoConnectionError) {
                             showSnackBar1("no internet connectivity");
                         } else if (error instanceof TimeoutError) {
                             showSnackBar1("poor internet connectivity");
                         } else if (error instanceof NetworkError || error instanceof ParseError || error instanceof ServerError) {
                             showSnackBar1("something went wrong");
-                        }*/
+                        }*//*
                     }
                 }) {
             @Override
@@ -580,7 +578,7 @@ public class Feed extends AppCompatActivity {
         };
         RequestQueue requestQueue = Volley.newRequestQueue(Feed.this);
         requestQueue.add(stringRequest);
-
+*/
 
     }
 
@@ -910,29 +908,41 @@ public class Feed extends AppCompatActivity {
                 switch (id) {
                     case R.id.myreports:
                         drawerLayout.closeDrawers();
-                        Intent reports = new Intent(Feed.this, Topic.class);
+                        Intent reports = new Intent(Feed.this, YourReview.class);
                         startActivity(reports);
                         overridePendingTransition(0, 0);
                         break;
+                  /*  case R.id.leaderboard:
+                        drawerLayout.closeDrawers();
+                        if(session.checkLoginSplash())
+                        {
+
+                            Intent profile = new Intent(Feed.this, MyProfile.class);
+                            startActivityForResult(profile, REQ_CODE_PROFILE);
+                        }else {
+                            Toast.makeText(Feed.this,"Sign in to view your profile",Toast.LENGTH_SHORT).show();
+                        }
+                        overridePendingTransition(0, 0);
+                        break;*/
                     case R.id.invite:
                         drawerLayout.closeDrawers();
                         Intent inv = new Intent(Feed.this, Invite.class);
                         startActivity(inv);
                         overridePendingTransition(0, 0);
                         break;
-                    case R.id.New:
+                   /* case R.id.New:
                         drawerLayout.closeDrawers();
                         Intent New = new Intent(Feed.this, WhatsNew.class);
                         startActivity(New);
                         overridePendingTransition(0, 0);
-                        break;
+                        break;*/
 
-                    case R.id.leaderboard:
+                   /* case R.id.leaderboard:
                         drawerLayout.closeDrawers();
                         Intent leader = new Intent(Feed.this, Leaderboard.class);
                         startActivity(leader);
                         overridePendingTransition(0, 0);
-                        break;
+                        break;*/
                    /* case R.id.invite:
                         drawerLayout.closeDrawers();
                         Intent i = new Intent(Feed.this, Invite.class);

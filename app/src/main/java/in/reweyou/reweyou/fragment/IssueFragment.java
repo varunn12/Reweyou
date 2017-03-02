@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidnetworking.AndroidNetworking;
@@ -23,6 +24,7 @@ import com.google.gson.reflect.TypeToken;
 import java.util.HashMap;
 import java.util.List;
 
+import in.reweyou.reweyou.Feed;
 import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.adapter.IssueAdapter;
 import in.reweyou.reweyou.classes.UserSessionManager;
@@ -43,6 +45,7 @@ public class IssueFragment extends Fragment {
     private SwipeRefreshLayout swipe;
     private String currenttag = "All";
     private UserSessionManager userSessionManager;
+    private TextView noissue;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,6 +59,7 @@ public class IssueFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_second, container, false);
         swipe = (SwipeRefreshLayout) layout.findViewById(R.id.swipe);
+        noissue = (TextView) layout.findViewById(R.id.noissue);
 /*
         swipe.setProgressViewOffset(false, 0, (int) pxFromDp(mContext, 55));
 */
@@ -77,12 +81,19 @@ public class IssueFragment extends Fragment {
 
     public void loadReportsfromServer(String requesttag) {
         currenttag = requesttag;
+
         swipe.setRefreshing(true);
         Log.d(TAG, "loadReportsfromServer: " + currenttag);
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("tags", currenttag);
         hashMap.put("number", userSessionManager.getMobileNumber());
-        AndroidNetworking.post("https://reweyou.in/reviews/topics.php")
+        String url;
+        if (mContext instanceof Feed)
+            url = "https://reweyou.in/reviews/topics.php";
+        else
+            url = "https://reweyou.in/reviews/myreviews.php";
+
+        AndroidNetworking.post(url)
                 .addBodyParameter(hashMap)
                 .setTag("report")
                 .setPriority(Priority.IMMEDIATE)
@@ -93,6 +104,9 @@ public class IssueFragment extends Fragment {
                     @Override
                     public void onResponse(List<IssueModel> list) {
                         adapter.add(list);
+                        if (list.size() == 0)
+                            noissue.setVisibility(View.VISIBLE);
+
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {

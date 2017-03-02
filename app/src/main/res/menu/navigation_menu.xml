@@ -8,12 +8,8 @@
             <item
                 android:id="@+id/myreports"
                 android:icon="@drawable/ic_assignment_black_24px"
-                android:title="Feed Settings" />
+                android:title="My Issues" />
 
-            <item
-                android:id="@+id/leaderboard"
-                android:icon="@drawable/cup"
-                android:title="Top Reporters" />
 
         </menu>
     </item>
@@ -32,10 +28,6 @@
     <item android:title="Other">
 
         <menu>
-            <item
-                android:id="@+id/New"
-                android:icon="@drawable/ic_new_releases_black_24px"
-                android:title="What's New?" />
             <item
                 android:id="@+id/nav_rate"
                 android:icon="@drawable/ic_star_rate_black_24px"

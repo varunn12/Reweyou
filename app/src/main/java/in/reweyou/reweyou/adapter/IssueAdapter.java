@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,14 +53,16 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         issueViewHolder.description.setText(messagelist.get(position).getDescription());
         issueViewHolder.rating.setText(messagelist.get(position).getRating());
         issueViewHolder.review.setText(messagelist.get(position).getReviews());
-        issueViewHolder.user.setText(messagelist.get(position).getName());
+        issueViewHolder.user.setText("By- " + messagelist.get(position).getName());
         issueViewHolder.tag.setText("#" + messagelist.get(position).getCategory());
-        issueViewHolder.imageView.setClickable(true);
         if (!messagelist.get(position).getGif().isEmpty())
             Glide.with(mContext).load(messagelist.get(position).getGif()).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(issueViewHolder.imageView);
         else if (!messagelist.get(position).getImage().isEmpty())
             Glide.with(mContext).load(messagelist.get(position).getImage()).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(issueViewHolder.imageView);
-        else issueViewHolder.imageView.setClickable(false);
+        else {
+            issueViewHolder.imageView.setVisibility(View.GONE);
+        }
+
 
     }
 
@@ -112,6 +115,9 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     i.putExtra("video", messagelist.get(getAdapterPosition()).getVideo());
                     i.putExtra("gif", messagelist.get(getAdapterPosition()).getGif());
                     i.putExtra("topicid", messagelist.get(getAdapterPosition()).getTopicid());
+                    Log.d(TAG, "onClick:swsq " + messagelist.get(getAdapterPosition()).getStatus());
+                    Log.d(TAG, "onClick:swsqii" + messagelist.get(getAdapterPosition()).getImage());
+                    i.putExtra("status", messagelist.get(getAdapterPosition()).getStatus());
                     mContext.startActivity(i);
                 }
             });

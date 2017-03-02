@@ -17,9 +17,15 @@ public class IssueModel {
     private String gif;
     private String rating;
     private String headline;
+    private String status;
 
     public String getName() {
         return name;
+    }
+
+    public String getStatus() {
+
+        return status;
     }
 
     public String getCategory() {

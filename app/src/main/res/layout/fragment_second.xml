@@ -35,5 +35,20 @@
         android:textStyle="bold"
         android:visibility="gone" />
 
+    <TextView
+        android:id="@+id/noissue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:alpha="0.34"
+        android:gravity="center"
+        android:lines="2"
+        android:text="You haven't posted any issue yet"
+        android:textColor="#000"
+        android:textSize="20dp"
+        android:visibility="gone" />
+
 
 </RelativeLayout>

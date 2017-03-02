@@ -18,24 +18,26 @@
     card_view:cardUseCompatPadding="true"
     tools:targetApi="lollipop">
 
-    <ImageView
-        android:id="@+id/image"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_gravity="end"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="20dp"
-        android:scaleType="centerCrop" />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="20dp"
+            android:scaleType="centerCrop" />
 
         <LinearLayout
+            android:id="@+id/a"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/image"
             android:orientation="horizontal">
 
             <TextView
@@ -43,7 +45,7 @@
                 android:id="@+id/headline"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="96dp"
+                android:layout_marginRight="8dp"
                 android:layout_weight="1"
 
                 android:alpha=".87"
@@ -63,9 +65,11 @@
             android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="84dp"
+            android:layout_below="@+id/a"
+            android:layout_toLeftOf="@+id/image"
             android:alpha="0.54"
             android:autoLink="web"
+
             android:ellipsize="end"
             android:maxLines="5"
             android:paddingLeft="16dp"
@@ -78,8 +82,10 @@ terro"
             android:textColor="#000000" />
 
         <LinearLayout
+            android:id="@+id/b"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/description">
 
             <TextView
                 android:id="@+id/user"
@@ -115,8 +121,10 @@ terro"
 
 
         <View
+            android:id="@+id/c"
             android:layout_width="match_parent"
             android:layout_height="0.7dp"
+            android:layout_below="@+id/b"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginTop="4dp"
@@ -126,6 +134,7 @@ terro"
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/c"
             android:layout_gravity="end"
             android:layout_marginBottom="6dp"
             android:layout_marginRight="16dp"
@@ -196,7 +205,7 @@ terro"
         </LinearLayout>
 
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </android.support.v7.widget.CardView>
 

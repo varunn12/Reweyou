@@ -132,11 +132,13 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
             @Override
             public void onClick(View v) {
                 if (dataloaded) {
-                    Intent i = new Intent(MyProfile.this, SearchResultsActivity.class);
+                   /* Intent i = new Intent(MyProfile.this, SearchResultsActivity.class);
                     i.putExtra("position", 29);
                     i.putExtra("query", name);
                     i.putExtra("number", number1
                     );
+                    startActivity(i);*/
+                    Intent i = new Intent(MyProfile.this, YourReview.class);
                     startActivity(i);
                 }
             }

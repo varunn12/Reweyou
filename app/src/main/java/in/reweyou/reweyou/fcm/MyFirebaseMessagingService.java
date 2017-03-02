@@ -9,10 +9,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
-import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -21,11 +19,10 @@ import com.google.firebase.messaging.RemoteMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import in.reweyou.reweyou.MyProfile;
+import java.util.Random;
+
 import in.reweyou.reweyou.R;
-import in.reweyou.reweyou.SinglePostActivity;
-import in.reweyou.reweyou.UserChat;
-import in.reweyou.reweyou.utils.Constants;
+import in.reweyou.reweyou.ReviewActivity;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
@@ -88,19 +85,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             String timestamp = data.getString("timestamp");
             JSONObject payload = data.getJSONObject("payload");
 
-            String postid = payload.getString("postid");
+            Log.d(TAG, "handleDataMessage: " + payload.toString());
 
-
-            Log.e(TAG, "title: " + title);
-            Log.e(TAG, "message: " + message);
-            Log.e(TAG, "isBackground: " + isBackground);
-            Log.e(TAG, "payload: " + payload.toString());
-            Log.e(TAG, "imageUrl: " + imageUrl);
-            Log.e(TAG, "timestamp: " + timestamp);
-
-            if (postid.equals(NOTI_TYPE_CHAT)) {
-
-                if (UserChat.userChatActivityOpen && payload.getString("chatroom_id").equals(UserChat.chatroomid)) {
+               /* if (UserChat.userChatActivityOpen && payload.getString("chatroom_id").equals(UserChat.chatroomid)) {
                     Intent intent = new Intent(Constants.ADD_CHAT_MESSAGE_EVENT);
 
                     intent.putExtra(Constants.ADD_CHAT_MESSAGE_SENDER_NUMBER, payload.getString("sender_name"));
@@ -133,8 +120,44 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
                     notificationManager.notify(100, mBuilder.build());
                 }
+*/
+            Intent i = new Intent(this, ReviewActivity.class);
 
-            } else {
+            i.putExtra("headline", payload.getString("headline"));
+            i.putExtra("description", payload.getString("description"));
+            i.putExtra("rating", payload.getString("rating"));
+            i.putExtra("name", payload.getString("user"));
+            i.putExtra("review", payload.getString("reviews"));
+            i.putExtra("tag", payload.getString("tag"));
+            i.putExtra("image", payload.getString("image"));
+            i.putExtra("video", payload.getString("video"));
+            i.putExtra("gif", payload.getString("gif"));
+            i.putExtra("topicid", payload.getString("topicid"));
+
+            if (!payload.has("status"))
+                i.putExtra("status", "true");
+            else
+                i.putExtra("status", payload.getString("status"));
+            Random random = new Random();
+
+            int m = random.nextInt(9999 - 1000) + 1000;
+
+            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext())
+                    .setSmallIcon(R.drawable.ic_stat_logo_plain)
+                    .setContentIntent(pendingIntent)
+                    .setAutoCancel(true)
+                    .setDefaults(NotificationCompat.DEFAULT_VIBRATE)
+
+                    .setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(), R.mipmap.ic_launcher))
+                    .setContentTitle(title)
+                    .setContentText(message);
+
+            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+            notificationManager.notify(m, mBuilder.build());
+             /*else {
                 Intent i = new Intent(Constants.SEND_NOTI_CHANGE_REQUEST);
                 LocalBroadcastManager.getInstance(this).sendBroadcast(i);
 
@@ -155,7 +178,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     }
                 }
 
-            }
+            }*/
         } catch (JSONException e) {
             Log.e(TAG, "Json Exception: " + e.getMessage());
         } catch (Exception e) {

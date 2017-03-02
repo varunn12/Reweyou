@@ -30,3 +30,5 @@
 -dontwarn io.nlopez.**
 -dontwarn okio.**
 -dontwarn **
+-keep class com.wang.avi.** { *; }
+-keep class com.wang.avi.indicators.** { *; }
