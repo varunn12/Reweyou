@@ -104,8 +104,15 @@ public class IssueFragment extends Fragment {
                     @Override
                     public void onResponse(List<IssueModel> list) {
                         adapter.add(list);
-                        if (list.size() == 0)
-                            noissue.setVisibility(View.VISIBLE);
+                        if (list.size() == 0) {
+                            if (mContext instanceof Feed) {
+                                noissue.setVisibility(View.VISIBLE);
+                                noissue.setText("No issues yet");
+                            } else
+                                noissue.setVisibility(View.VISIBLE);
+                        } else {
+                            noissue.setVisibility(View.GONE);
+                        }
 
                         new Handler().postDelayed(new Runnable() {
                             @Override
