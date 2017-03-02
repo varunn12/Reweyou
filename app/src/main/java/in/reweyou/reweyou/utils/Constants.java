@@ -23,7 +23,7 @@ public class Constants {
     public static final String MY_PROFILE_URL_FOLLOW = "https://www.reweyou.in/reweyou/follow_new.php";
     public static final String MY_PROFILE_UPLOAD_URL = "https://www.reweyou.in/reweyou/report_pic.php";
 
-    public static final String MY_PROFILE_EDIT_URL = "https://www.reweyou.in/reweyou/report_profile.php";
+    public static final String MY_PROFILE_EDIT_URL = "https://www.reweyou.in/reviews/report_profile.php";
 
     public static final String USER_PROFILE_URL_VERIFY_FOLLOW = "https://www.reweyou.in/reweyou/verify_follow.php";
     public static final String USER_PROFILE_URL_FOLLOW = "https://www.reweyou.in/reweyou/read_new.php";

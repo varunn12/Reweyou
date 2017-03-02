@@ -55,6 +55,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         IssueViewHolder issueViewHolder = (IssueViewHolder) viewHolder2;
         issueViewHolder.description.setText(messagelist.get(position).getDescription());
         issueViewHolder.user.setText(messagelist.get(position).getName());
+        issueViewHolder.rate.setText(messagelist.get(position).getRating());
         if (messagelist.get(position).getIs_liked().equals("true")) {
             issueViewHolder.like.setImageResource(R.drawable.ic_thumbs_up_red);
             issueViewHolder.likesnumber.setTextColor(Color.RED);
@@ -111,6 +112,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         private TextView description;
         private TextView user;
         private TextView likesnumber;
+        private TextView rate;
         private ImageView like;
         private LinearLayout likebox;
 
@@ -120,6 +122,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             description = (TextView) inflate.findViewById(R.id.description);
             user = (TextView) inflate.findViewById(R.id.user);
             likesnumber = (TextView) inflate.findViewById(R.id.likesnumber);
+            rate = (TextView) inflate.findViewById(R.id.rate);
             like = (ImageView) inflate.findViewById(R.id.like);
             likebox = (LinearLayout) inflate.findViewById(R.id.likesbox);
 

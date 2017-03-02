@@ -313,6 +313,7 @@ public class ReviewActivity extends AppCompatActivity {
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("topicid", topicid);
         hashMap.put("number", sessionManager.getMobileNumber());
+        hashMap.put("name", sessionManager.getUsername());
         hashMap.put("rating", String.valueOf(numrating));
         hashMap.put("description", edittext.getText().toString());
         hashMap.put("token", sessionManager.getKeyAuthToken());
@@ -329,6 +330,14 @@ public class ReviewActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         loadReportsfromServer();
                         Log.d(TAG, "onResponse: " + response);
+                        if (response.equals("reviewed")) {
+
+                            ratetext.setVisibility(View.GONE);
+                            b1.setVisibility(View.GONE);
+                            c1.setVisibility(View.GONE);
+                            divider2.setVisibility(View.GONE);
+                        }
+
 
 
                     }

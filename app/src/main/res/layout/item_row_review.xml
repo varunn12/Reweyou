@@ -14,15 +14,39 @@
         android:id="@+id/user"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="40dp"
         android:alpha="0.87"
         android:ellipsize="end"
         android:lines="1"
-        android:text="Default"
+        android:maxWidth="170dp"
+        android:text="Defualt"
         android:textColor="#000"
         android:textSize="14dp"
 
         android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/img"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="2dp"
+        android:layout_toRightOf="@+id/user"
+        app:srcCompat="@drawable/ic_star" />
+
+    <TextView
+        android:id="@+id/rate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_toRightOf="@+id/img"
+        android:alpha="0.54"
+        android:ellipsize="end"
+        android:lines="1"
+        android:text="5.0"
+        android:textColor="#000"
+        android:textSize="14dp"
+
+        />
 
     <TextView
         android:id="@+id/description"
