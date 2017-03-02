@@ -25,6 +25,7 @@ import com.androidnetworking.interfaces.StringRequestListener;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.gson.reflect.TypeToken;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import java.util.HashMap;
 import java.util.List;
@@ -56,6 +57,7 @@ public class ReviewActivity extends AppCompatActivity {
     private UserSessionManager sessionManager;
     private ImageView send;
     private EditText edittext;
+    private AVLoadingIndicatorView loadingcircular;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +69,8 @@ public class ReviewActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        loadingcircular = (AVLoadingIndicatorView) findViewById(R.id.avi);
+        loadingcircular.show();
         sessionManager = new UserSessionManager(this);
         tvheadline = (TextView) findViewById(R.id.headline);
         tvdescription = (TextView) findViewById(R.id.description);
@@ -85,7 +89,7 @@ public class ReviewActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         if (sessionManager.checkLoginSplash())
-                        updateReview();
+                            updateReview();
                         else showlogindialog();
 
                     }
@@ -144,8 +148,9 @@ public class ReviewActivity extends AppCompatActivity {
         if (!gifurl.isEmpty()) {
             Glide.with(ReviewActivity.this).load(gifurl).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(image);
 
-        } else
+        } else if (!imageurl.isEmpty())
             Glide.with(ReviewActivity.this).load(imageurl).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(image);
+        else image.setClickable(false);
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,7 +161,7 @@ public class ReviewActivity extends AppCompatActivity {
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         PreCachingLayoutManager preCachingLayoutManager = new PreCachingLayoutManager(this);
-
+        recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setLayoutManager(preCachingLayoutManager);
         /*VerticalSpaceItemDecorator verticalSpaceItemDecorator = new VerticalSpaceItemDecorator((int) pxFromDp(this, 6));
         recyclerView.addItemDecoration(verticalSpaceItemDecorator);*/
@@ -235,6 +240,7 @@ public class ReviewActivity extends AppCompatActivity {
 
                     @Override
                     public void onResponse(List<ReviewModel> list) {
+                        loadingcircular.hide();
                         adapter.add(list);
                         Log.d(TAG, "onResponse: lis" + list.size());
 
@@ -242,6 +248,7 @@ public class ReviewActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(final ANError anError) {
+                        loadingcircular.hide();
                         Log.e(TAG, "error: " + anError.getErrorDetail());
 
                         /*new Handler().postDelayed(new Runnable() {

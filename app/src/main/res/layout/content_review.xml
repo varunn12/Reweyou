@@ -312,21 +312,34 @@ terro"
                     android:ellipsize="end"
                     android:gravity="center_vertical"
                     android:lines="1"
-                    android:paddingBottom="4dp"
                     android:text="REVIEWS"
                     android:textColor="#000"
                     android:textSize="12dp"
 
                     android:textStyle="bold" />
 
+                <com.wang.avi.AVLoadingIndicatorView
+                    android:id="@+id/avi"
+                    style="@style/AVLoadingIndicatorView.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/r2"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="16dp"
+                    android:alpha="0.87"
+                    android:paddingTop="16dp"
+                    android:visibility="visible"
+                    app:indicatorColor="@color/divider"
+                    app:indicatorName="LineSpinFadeLoaderIndicator" />
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+
                     android:layout_below="@+id/divider2"
 
                     android:layout_marginBottom="16dp"
-                    android:layout_marginTop="40dp" />
+                    android:layout_marginTop="44dp" />
             </RelativeLayout>
 
 

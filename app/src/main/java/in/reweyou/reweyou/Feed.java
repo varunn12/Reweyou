@@ -66,6 +66,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.reflect.TypeToken;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -143,6 +144,7 @@ public class Feed extends AppCompatActivity {
     private RecyclerView recycelrview;
     private TagsAdapter tagsAdapter;
     private String currentTab = "All";
+    private AVLoadingIndicatorView loadingcircular;
 
     public float pxFromDp(final Context context, final float dp) {
         return dp * context.getResources().getDisplayMetrics().density;
@@ -154,7 +156,8 @@ public class Feed extends AppCompatActivity {
         setContentView(R.layout.activity_feed);
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-
+        loadingcircular = (AVLoadingIndicatorView) findViewById(R.id.avi);
+        loadingcircular.show();
         session = new UserSessionManager(this);
         cd = new ConnectionDetector(Feed.this);
         checker = new PermissionsChecker(this);
@@ -282,6 +285,8 @@ public class Feed extends AppCompatActivity {
 
                     @Override
                     public void onResponse(List<TagsModel> list) {
+
+                        loadingcircular.smoothToHide();
                         TagsModel tagsModel = new TagsModel();
                         tagsModel.setId("default");
                         tagsModel.setTags("All");

@@ -98,7 +98,7 @@ import static in.reweyou.reweyou.utils.Constants.POST_REPORT_KEY_TAG;
 public class PostReport extends AppCompatActivity implements View.OnClickListener, ImagePickerCallback, VideoPickerCallback {
 
 
-    public static final String UPLOAD_URL = "https://www.reweyou.in/reweyou/reporting.php";
+    public static final String UPLOAD_URL = "https://www.reweyou.in/reviews/post_topic.php";
 
     static final String[] PERMISSIONS_LOCATION = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
 
@@ -1056,17 +1056,19 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
         RequestParams params = new RequestParams();
         try {
             getUploadFileExtraParams(fileType, params, encodedImage);
-            params.add(POST_REPORT_KEY_LOCATION, place);
-            params.add(POST_REPORT_KEY_NAME, name);
+            params.add(POST_REPORT_KEY_LOCATION, place.trim());
+            params.add(POST_REPORT_KEY_NAME, name.trim());
             params.add(POST_REPORT_KEY_CATEGORY, currentSpinnerPositionString);
-            params.add(POST_REPORT_KEY_ADDRESS, address);
-            params.add(POST_REPORT_KEY_NUMBER, number);
-            params.add(POST_REPORT_KEY_TAG, parameterEditTag);
+            params.add(POST_REPORT_KEY_ADDRESS, address.trim());
+            params.add(POST_REPORT_KEY_NUMBER, number.trim());
+            params.add(POST_REPORT_KEY_TAG, parameterEditTag.trim());
             if (parameterHeadline != null)
-                params.add(POST_REPORT_KEY_HEADLINE, parameterHeadline);
-            params.add(POST_REPORT_KEY_DESCRIPTION, parameterDescription);
-            params.add("token", session.getKeyAuthToken());
-            params.add("deviceid", session.getDeviceid());
+                params.add(POST_REPORT_KEY_HEADLINE, parameterHeadline.trim());
+            params.add(POST_REPORT_KEY_DESCRIPTION, parameterDescription.trim());
+            //  params.add("token", session.getKeyAuthToken());
+            params.add("token", "test");
+            // params.add("deviceid", session.getDeviceid());
+            params.add("deviceid", "1234");
 
             AsyncHttpClient client = new AsyncHttpClient(true, 80, 443);
 
@@ -1082,6 +1084,8 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                     try {
                         Log.w("reach", "onsuccess1");
                         String result = new String(responseBody, "UTF-8");
+                        Log.w("reach", "onsuccess2" + result);
+
                         if (result.equals("Successfully Uploaded")) {
                             openProfile();
                         } else if (result.trim().equals(Constants.AUTH_ERROR)) {
@@ -1159,7 +1163,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
     private void initToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Upload Report");
+        getSupportActionBar().setTitle("Upload Topic");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 

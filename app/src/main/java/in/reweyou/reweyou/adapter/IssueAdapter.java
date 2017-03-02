@@ -54,11 +54,12 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         issueViewHolder.review.setText(messagelist.get(position).getReviews());
         issueViewHolder.user.setText(messagelist.get(position).getName());
         issueViewHolder.tag.setText("#" + messagelist.get(position).getCategory());
-        if (!messagelist.get(position).getGif().isEmpty()) {
+        issueViewHolder.imageView.setClickable(true);
+        if (!messagelist.get(position).getGif().isEmpty())
             Glide.with(mContext).load(messagelist.get(position).getGif()).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(issueViewHolder.imageView);
-
-        } else
+        else if (!messagelist.get(position).getImage().isEmpty())
             Glide.with(mContext).load(messagelist.get(position).getImage()).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(issueViewHolder.imageView);
+        else issueViewHolder.imageView.setClickable(false);
 
     }
 
