@@ -57,6 +57,7 @@
         android:layout_marginTop="2dp"
         android:alpha="0.54"
         android:autoLink="web"
+        android:linksClickable="true"
         android:paddingBottom="10dp"
         android:text="This is aest"
         android:textColor="#000"

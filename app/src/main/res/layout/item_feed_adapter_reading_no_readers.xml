@@ -69,8 +69,9 @@
             android:layout_toLeftOf="@+id/image"
             android:alpha="0.54"
             android:autoLink="web"
-
             android:ellipsize="end"
+
+            android:linksClickable="true"
             android:maxLines="5"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
