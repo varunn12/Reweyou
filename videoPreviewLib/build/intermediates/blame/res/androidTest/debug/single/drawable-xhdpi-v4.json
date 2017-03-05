@@ -152,12 +152,12 @@
         "source": "/home/master/.android/build-cache/f6dea66343e871eae1711d69217c805ed21be5e8/output/res/drawable-xhdpi-v4/abc_ic_menu_selectall_mtrl_alpha.png"
     },
     {
-        "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/abc_btn_switch_to_on_mtrl_00001.9.png",
-        "source": "/home/master/.android/build-cache/f6dea66343e871eae1711d69217c805ed21be5e8/output/res/drawable-xhdpi-v4/abc_btn_switch_to_on_mtrl_00001.9.png"
-    },
-    {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/abc_list_selector_disabled_holo_light.9.png",
         "source": "/home/master/.android/build-cache/f6dea66343e871eae1711d69217c805ed21be5e8/output/res/drawable-xhdpi-v4/abc_list_selector_disabled_holo_light.9.png"
+    },
+    {
+        "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/abc_btn_switch_to_on_mtrl_00001.9.png",
+        "source": "/home/master/.android/build-cache/f6dea66343e871eae1711d69217c805ed21be5e8/output/res/drawable-xhdpi-v4/abc_btn_switch_to_on_mtrl_00001.9.png"
     },
     {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/abc_spinner_mtrl_am_alpha.9.png",
@@ -192,12 +192,12 @@
         "source": "/home/master/.android/build-cache/f6dea66343e871eae1711d69217c805ed21be5e8/output/res/drawable-xhdpi-v4/abc_cab_background_top_mtrl_alpha.9.png"
     },
     {
-        "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/abc_popup_background_mtrl_mult.9.png",
-        "source": "/home/master/.android/build-cache/f6dea66343e871eae1711d69217c805ed21be5e8/output/res/drawable-xhdpi-v4/abc_popup_background_mtrl_mult.9.png"
-    },
-    {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/abc_ic_star_half_black_16dp.png",
         "source": "/home/master/.android/build-cache/f6dea66343e871eae1711d69217c805ed21be5e8/output/res/drawable-xhdpi-v4/abc_ic_star_half_black_16dp.png"
+    },
+    {
+        "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/abc_popup_background_mtrl_mult.9.png",
+        "source": "/home/master/.android/build-cache/f6dea66343e871eae1711d69217c805ed21be5e8/output/res/drawable-xhdpi-v4/abc_popup_background_mtrl_mult.9.png"
     },
     {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/abc_switch_track_mtrl_alpha.9.png",

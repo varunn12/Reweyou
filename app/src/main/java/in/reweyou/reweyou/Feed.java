@@ -177,9 +177,9 @@ public class Feed extends AppCompatActivity {
                 makeNotificationsRequest();
 
 
-            if (!session.getFirstLoad1())
+           /* if (!session.getFirstLoad1())
                 showwhatsnewdialog();
-
+*/
         }
 
 
@@ -264,6 +264,7 @@ public class Feed extends AppCompatActivity {
         initSigninDialog();
 
         recycelrview = (RecyclerView) findViewById(R.id.tagsrecyclerview);
+
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.HORIZONTAL);
         recycelrview.setLayoutManager(staggeredGridLayoutManager);
         tagsAdapter = new TagsAdapter(this);

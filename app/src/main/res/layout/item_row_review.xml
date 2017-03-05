@@ -55,8 +55,8 @@
         android:layout_below="@+id/user"
         android:layout_marginRight="40dp"
         android:layout_marginTop="2dp"
-
         android:alpha="0.54"
+        android:autoLink="web"
         android:paddingBottom="10dp"
         android:text="This is aest"
         android:textColor="#000"
@@ -68,7 +68,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
         android:paddingBottom="8dp"
         android:paddingLeft="8dp"
         android:paddingTop="8dp">
@@ -94,8 +93,18 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0.7dp"
-        android:layout_below="@id/description"
+        android:layout_below="@id/image"
         android:alpha="0.44"
         android:background="@color/divider" />
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_below="@+id/description"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="12dp"
+        android:layout_marginTop="8dp"
+        android:scaleType="centerCrop" />
 
 </RelativeLayout>

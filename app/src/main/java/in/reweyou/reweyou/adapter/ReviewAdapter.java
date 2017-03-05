@@ -17,6 +17,8 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.StringRequestListener;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,6 +67,14 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
 
         issueViewHolder.likesnumber.setText("(" + messagelist.get(position).getLikes() + ")");
+        if (messagelist.get(position).getImage() != null) {
+            if (!messagelist.get(position).getImage().isEmpty()) {
+                issueViewHolder.image.setVisibility(View.VISIBLE);
+                Glide.with(mContext).load(messagelist.get(position).getImage()).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(issueViewHolder.image);
+            } else
+                issueViewHolder.image.setVisibility(View.GONE);
+        } else
+            issueViewHolder.image.setVisibility(View.GONE);
     }
 
     @Override
@@ -113,7 +123,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         private TextView user;
         private TextView likesnumber;
         private TextView rate;
-        private ImageView like;
+        private ImageView like, image;
         private LinearLayout likebox;
 
 
@@ -124,6 +134,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             likesnumber = (TextView) inflate.findViewById(R.id.likesnumber);
             rate = (TextView) inflate.findViewById(R.id.rate);
             like = (ImageView) inflate.findViewById(R.id.like);
+            image = (ImageView) inflate.findViewById(R.id.image);
             likebox = (LinearLayout) inflate.findViewById(R.id.likesbox);
 
             likebox.setOnClickListener(new View.OnClickListener() {

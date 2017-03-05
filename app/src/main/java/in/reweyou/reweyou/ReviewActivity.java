@@ -1,15 +1,24 @@
 package in.reweyou.reweyou;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -26,7 +35,16 @@ import com.androidnetworking.interfaces.ParsedRequestListener;
 import com.androidnetworking.interfaces.StringRequestListener;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
 import com.google.gson.reflect.TypeToken;
+import com.kbeanie.multipicker.api.ImagePicker;
+import com.kbeanie.multipicker.api.Picker;
+import com.kbeanie.multipicker.api.callbacks.ImagePickerCallback;
+import com.kbeanie.multipicker.api.entity.ChosenImage;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import java.util.HashMap;
@@ -41,6 +59,7 @@ import in.reweyou.reweyou.model.ReviewModel;
 public class ReviewActivity extends AppCompatActivity {
 
     private static final String TAG = ReviewActivity.class.getName();
+    private static final int PERMISSION_STORAGE_REQUEST_CODE = 12;
     private RecyclerView recyclerView;
     private ReviewAdapter adapter;
     private String headline;
@@ -49,7 +68,7 @@ public class ReviewActivity extends AppCompatActivity {
     private String user;
     private String review;
     private String tag;
-    private TextView tvheadline, tvdescription, tvrating, tvreview, tvuser;
+    private TextView tvheadline, tvdescription, tvrating, tvreview, tvuser, remove;
     private ImageView image;
     private String imageurl;
     private String topicid;
@@ -57,7 +76,7 @@ public class ReviewActivity extends AppCompatActivity {
     private String gifurl;
     private String name;
     private UserSessionManager sessionManager;
-    private ImageView send;
+    private ImageView send, reim;
     private EditText edittext;
     private AVLoadingIndicatorView loadingcircular;
     private String status;
@@ -67,6 +86,11 @@ public class ReviewActivity extends AppCompatActivity {
     private LinearLayout c1;
     private int numrating = 0;
     private TextView noreviewyet;
+    private ImageView camera;
+    private ImagePicker imagePicker;
+    private String selectedImageUri;
+    private String encodedImage;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,6 +189,7 @@ public class ReviewActivity extends AppCompatActivity {
 
 
         tvheadline = (TextView) findViewById(R.id.headline);
+        remove = (TextView) findViewById(R.id.remove);
         noreviewyet = (TextView) findViewById(R.id.noreviewyet);
         ratetext = (TextView) findViewById(R.id.ratetext);
         c1 = (LinearLayout) findViewById(R.id.c1);
@@ -175,7 +200,9 @@ public class ReviewActivity extends AppCompatActivity {
         tvreview = (TextView) findViewById(R.id.review);
         tvuser = (TextView) findViewById(R.id.user);
         image = (ImageView) findViewById(R.id.image);
+        reim = (ImageView) findViewById(R.id.reim);
         send = (ImageView) findViewById(R.id.send);
+        camera = (ImageView) findViewById(R.id.btn_image);
         edittext = (EditText) findViewById(R.id.desc);
         send.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -191,8 +218,11 @@ public class ReviewActivity extends AppCompatActivity {
                             } else if (edittext.getText().toString().trim().length() == 0) {
                                 Toast.makeText(ReviewActivity.this, "Your review cannot be empty", Toast.LENGTH_SHORT).show();
 
-                            } else
-                                updateReview();
+                            } else {
+                                if (selectedImageUri != null)
+                                    updateReviewWithImage();
+                                else updateReview();
+                            }
                         } else showlogindialog();
 
                     }
@@ -201,6 +231,23 @@ public class ReviewActivity extends AppCompatActivity {
             }
         });
         send.setClickable(false);
+
+        camera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isStoragePermissionGranted()) {
+                    showPickImage();
+                }
+            }
+        });
+        remove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clearAttachedMediaPaths();
+                reim.setVisibility(View.GONE);
+                remove.setVisibility(View.GONE);
+            }
+        });
         edittext.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -309,7 +356,46 @@ public class ReviewActivity extends AppCompatActivity {
         }
     }
 
+    private void updateReviewWithImage() {
+        progressDialog = new ProgressDialog(ReviewActivity.this);
+        progressDialog.setMessage("Uploading. Please Wait...");
+        progressDialog.show();
+        if (selectedImageUri != null) {
+            Glide
+                    .with(this)
+                    .load(selectedImageUri)
+                    .asBitmap()
+                    .toBytes(Bitmap.CompressFormat.JPEG, 98)
+                    .fitCenter()
+                    .atMost()
+                    .override(800, 800)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
+                    .into(new SimpleTarget<byte[]>() {
+                        @Override
+                        public void onLoadStarted(Drawable ignore) {
+                            // started async load
+                        }
+
+                        @Override
+                        public void onResourceReady(byte[] resource, GlideAnimation<? super byte[]> ignore) {
+                            encodedImage = Base64.encodeToString(resource, Base64.DEFAULT);
+                            updateReview();
+                        }
+
+                        @Override
+                        public void onLoadFailed(Exception ex, Drawable ignore) {
+                            Log.d("ex", ex.getMessage());
+                        }
+                    });
+
+
+        }
+    }
+
     private void updateReview() {
+        send.setClickable(false);
+        remove.setClickable(false);
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("topicid", topicid);
         hashMap.put("number", sessionManager.getMobileNumber());
@@ -318,6 +404,11 @@ public class ReviewActivity extends AppCompatActivity {
         hashMap.put("description", edittext.getText().toString());
         hashMap.put("token", sessionManager.getKeyAuthToken());
         hashMap.put("deviceid", sessionManager.getDeviceid());
+
+        if (encodedImage != null)
+            hashMap.put("image", encodedImage);
+
+
         edittext.setText("");
 
         AndroidNetworking.post("https://reweyou.in/reviews/post_reviews.php")
@@ -328,6 +419,10 @@ public class ReviewActivity extends AppCompatActivity {
                 .getAsString(new StringRequestListener() {
                     @Override
                     public void onResponse(String response) {
+                        if (progressDialog != null)
+                            progressDialog.dismiss();
+
+
                         loadReportsfromServer();
                         Log.d(TAG, "onResponse: " + response);
                         if (response.equals("reviewed")) {
@@ -336,16 +431,23 @@ public class ReviewActivity extends AppCompatActivity {
                             b1.setVisibility(View.GONE);
                             c1.setVisibility(View.GONE);
                             divider2.setVisibility(View.GONE);
+                            clearAttachedMediaPaths();
+                            reim.setVisibility(View.GONE);
+                            remove.setVisibility(View.GONE);
                         }
-
 
 
                     }
 
                     @Override
                     public void onError(ANError anError) {
+                        if (progressDialog != null) progressDialog.dismiss();
+
                         Log.e(TAG, "error: " + anError.getErrorDetail());
                         Toast.makeText(ReviewActivity.this, "Couldn't connect", Toast.LENGTH_SHORT).show();
+                        send.setClickable(true);
+                        remove.setClickable(true);
+
 
                     }
                 });
@@ -439,4 +541,148 @@ public class ReviewActivity extends AppCompatActivity {
         startActivity(i);
         finish();
     }
+
+    public boolean isStoragePermissionGranted() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                Log.v(TAG, "Storage Permission is granted");
+                return true;
+            } else {
+
+                Log.v(TAG, "Storage Permission is revoked");
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_STORAGE_REQUEST_CODE);
+                return false;
+            }
+        } else { //permission is automatically granted on sdk<23 upon installation
+            Log.v(TAG, "Storage Permission is auto granted for sdk<23");
+            return true;
+        }
+    }
+
+    private void showPickImage() {
+        imagePicker = new ImagePicker(ReviewActivity.this);
+        imagePicker.setImagePickerCallback(new ImagePickerCallback() {
+                                               @Override
+                                               public void onImagesChosen(List<ChosenImage> images) {
+
+
+                                                   // Display images
+
+
+                                                   onImageChoosenbyUser(images);
+
+                                               }
+
+                                               @Override
+                                               public void onError(String message) {
+                                                   // Do error handling
+                                                   Log.e(TAG, "onError: " + message);
+                                               }
+                                           }
+        );
+
+        imagePicker.shouldGenerateMetadata(true);
+        imagePicker.shouldGenerateThumbnails(false);
+        imagePicker.pickImage();
+
+    }
+
+    private void onImageChoosenbyUser(List<ChosenImage> images) {
+        if (images != null) {
+
+            try {
+
+                Log.d(TAG, "onImagesChosen: size" + images.size());
+                if (images.size() > 0) {
+                    Log.d(TAG, "onImagesChosen: path" + images.get(0).getOriginalPath() + "  %%%   " + images.get(0).getThumbnailSmallPath());
+
+                    if (images.get(0).getOriginalPath() != null) {
+                        Log.d(TAG, "onImagesChosen: " + images.get(0).getFileExtensionFromMimeTypeWithoutDot());
+                        if (images.get(0).getFileExtensionFromMimeTypeWithoutDot().equals("gif")) {
+                            // handleGif(images.get(0).getOriginalPath());
+                            Toast.makeText(ReviewActivity.this, "Only image can be uploaded", Toast.LENGTH_SHORT).show();
+                        } else {
+                            startImageCropActivity(Uri.parse(images.get(0).getQueryUri()));
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                Toast.makeText(ReviewActivity.this, "Something went wrong. ErrorCode: 19", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void startImageCropActivity(Uri data) {
+        CropImage.activity(data)
+                .setActivityTitle("Crop Image")
+                .setBackgroundColor(Color.parseColor("#90000000"))
+                .setBorderCornerColor(getResources().getColor(R.color.colorPrimaryDark))
+                .setBorderLineColor(getResources().getColor(R.color.colorPrimary))
+                .setGuidelinesColor(getResources().getColor(R.color.divider))
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .start(this);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        Log.d(TAG, "onRequestPermissionsResult: " + requestCode);
+        switch (requestCode) {
+
+            case PERMISSION_STORAGE_REQUEST_CODE:
+
+                if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                    Toast.makeText(this, "Permission denied by user", Toast.LENGTH_SHORT).show();
+
+                } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    showPickImage();
+                }
+
+                break;
+
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        Log.d("reached", "activigty");
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                handleImage(result.getUri().toString());
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+            }
+        }
+
+        if (resultCode == RESULT_OK) {
+            if (requestCode == Picker.PICK_IMAGE_DEVICE) {
+                imagePicker.submit(data);
+            }
+        }
+
+    }
+
+    private void handleImage(String data) {
+        clearAttachedMediaPaths();
+        showPreviewViews();
+        Glide.with(ReviewActivity.this).load(data).override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).into(reim);
+        selectedImageUri = data;
+    }
+
+    private void showPreviewViews() {
+        reim.setVisibility(View.VISIBLE);
+        remove.setVisibility(View.VISIBLE);
+    }
+
+    private void clearAttachedMediaPaths() {
+
+        selectedImageUri = null;
+
+    }
+
+
 }

@@ -241,12 +241,38 @@ terro"
 
                 </LinearLayout>
 
+                <ImageView
+                    android:id="@+id/reim"
+                    android:layout_width="120dp"
+                    android:layout_height="100dp"
+                    android:layout_below="@+id/b1"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="16dp"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/border_primary"
+                    android:padding="4dp"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone" />
 
+                <TextView
+                    android:id="@+id/remove"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/reim"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="8dp"
+                    android:text="REMOVE"
+                    android:textAllCaps="true"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="12dp"
+
+                    android:textStyle="bold"
+                    android:visibility="gone" />
                 <LinearLayout
                     android:id="@+id/c1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/b1"
+                    android:layout_below="@id/remove"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
                     android:layout_marginTop="12dp"
@@ -273,13 +299,12 @@ terro"
                         android:id="@+id/btn_image"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:layout_gravity="bottom"
-                        android:layout_marginBottom="4dp"
-
+                        android:layout_gravity="center"
                         android:alpha="0.87"
+
                         android:padding="9dp"
                         android:scaleType="centerInside"
-                        android:visibility="gone"
+                        android:visibility="visible"
                         app:srcCompat="@drawable/ic_photo_camera_black_24px"
 
                         />
@@ -294,6 +319,7 @@ terro"
                         android:padding="2dp"
                         card_view:srcCompat="@drawable/button_send_disable" />
                 </LinearLayout>
+
 
                 <View
                     android:id="@+id/divider2"

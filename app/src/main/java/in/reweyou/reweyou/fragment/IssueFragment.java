@@ -72,13 +72,16 @@ public class IssueFragment extends Fragment {
 
         recyclerView = (RecyclerView) layout.findViewById(R.id.recycler_view);
         PreCachingLayoutManager preCachingLayoutManager = new PreCachingLayoutManager(mContext);
-
         recyclerView.setLayoutManager(preCachingLayoutManager);
+
         VerticalSpaceItemDecorator verticalSpaceItemDecorator = new VerticalSpaceItemDecorator((int) pxFromDp(mContext, 6));
         recyclerView.addItemDecoration(verticalSpaceItemDecorator);
         return layout;
     }
 
+    public void loadreportsafteredit() {
+        loadReportsfromServer(currenttag);
+    }
     public void loadReportsfromServer(String requesttag) {
         currenttag = requesttag;
 
@@ -166,7 +169,7 @@ public class IssueFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (isAdded()) {
-            adapter = new IssueAdapter(mContext);
+            adapter = new IssueAdapter(mContext, IssueFragment.this);
             recyclerView.setAdapter(adapter);
             loadReportsfromServer(currenttag);
         }
