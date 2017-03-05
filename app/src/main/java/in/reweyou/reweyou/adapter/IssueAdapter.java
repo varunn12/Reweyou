@@ -3,12 +3,19 @@ package in.reweyou.reweyou.adapter;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,7 +33,10 @@ import com.androidnetworking.interfaces.StringRequestListener;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -48,6 +58,7 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private final IssueFragment fragment;
 
     private List<IssueModel> messagelist;
+    private Uri uri;
 
 
     public IssueAdapter(Activity mContext, IssueFragment issueFragment) {
@@ -82,7 +93,7 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         if (session.getMobileNumber().equals(messagelist.get(position).getCreated_by())) {
             issueViewHolder.editpost.setVisibility(View.VISIBLE);
-        } else issueViewHolder.editpost.setVisibility(View.INVISIBLE);
+        } else issueViewHolder.editpost.setVisibility(View.GONE);
 
 
     }
@@ -225,13 +236,14 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     private class IssueViewHolder extends RecyclerView.ViewHolder {
+        private ImageView share;
         private TextView headline;
         private TextView description;
         private TextView rating;
         private TextView review;
         private TextView user;
         private TextView tag;
-        private TextView editpost;
+        private ImageView editpost;
         private ImageView imageView;
         private CardView cv;
 
@@ -240,7 +252,8 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             headline = (TextView) inflate.findViewById(R.id.headline);
             description = (TextView) inflate.findViewById(R.id.description);
             rating = (TextView) inflate.findViewById(R.id.rating);
-            editpost = (TextView) inflate.findViewById(R.id.editpost);
+            editpost = (ImageView) inflate.findViewById(R.id.editpost);
+            share = (ImageView) inflate.findViewById(R.id.sharepost);
             review = (TextView) inflate.findViewById(R.id.review);
             user = (TextView) inflate.findViewById(R.id.user);
             tag = (TextView) inflate.findViewById(R.id.tag);
@@ -253,6 +266,20 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     editHeadline(getAdapterPosition());
                 }
             });
+
+            share.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        takeScreenshot(cv);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+
             cv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -304,5 +331,95 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     }
 
+    private void takeScreenshot(CardView cv) {
+        Date now = new Date();
+        android.text.format.DateFormat.format("yyyy-MM-dd_hh:mm:ss", now);
+
+        try {
+
+            File mediaStorageDir = new File(Environment.getExternalStorageDirectory(), "Pictures/Reweyou/Screenshot");
+
+            if (!mediaStorageDir.exists()) {
+                if (!mediaStorageDir.mkdirs()) {
+                    Log.d("Reweyou", "failed to create directory");
+                }
+            }
+
+            String mPath = mediaStorageDir.toString() + "/" + now + ".jpg";
+            File imageFile = new File(mPath);
+            uri = Uri.fromFile(imageFile);
+            FileOutputStream outputStream = new FileOutputStream(imageFile);
+            int quality = 90;
+            cv.setDrawingCacheEnabled(true);
+            cv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
+            loadBitmapFromView(cv).compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
+            outputStream.flush();
+            outputStream.close();
+
+            ShareIntent();
+
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public float pxFromDp(final Context context, final float dp) {
+        return dp * context.getResources().getDisplayMetrics().density;
+    }
+
+    private Bitmap loadBitmapFromView(View v) {
+        Bitmap b = Bitmap.createBitmap(v.getWidth(), (int) (v.getHeight() - pxFromDp(mContext, 6)), Bitmap.Config.ARGB_4444);
+        Canvas c = new Canvas(b);
+        v.draw(c);
+
+        final DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
+        final Bitmap b2 = drawToBitmap(mContext, R.layout.share_reweyou_tag, v.getWidth(), metrics.heightPixels);
+        return combineImages(b, b2);
+    }
+
+
+    private Bitmap combineImages(Bitmap c, Bitmap s) {
+        Bitmap cs = null;
+
+        int width, height = 0;
+
+        width = c.getWidth();
+        height = c.getHeight() + s.getHeight();
+        Log.d("width", "" + c.getWidth() + "     " + s.getWidth());
+        Log.d("height", "" + c.getHeight() + "     " + s.getHeight());
+        cs = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+
+        Canvas comboImage = new Canvas(cs);
+
+        comboImage.drawBitmap(c, 0f, 0f, null);
+        comboImage.drawBitmap(s, 0f, c.getHeight(), null);
+        return cs;
+    }
+
+    private void ShareIntent() {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.putExtra(Intent.EXTRA_TEXT, "Download Reweyou App to read and report. https://goo.gl/o5Kyqc");
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_STREAM, uri);
+        intent.setType("image/jpeg");
+        //intent.setPackage("com.whatsapp");
+        mContext.startActivity(Intent.createChooser(intent, "Share image using"));
+    }
+
+    private static Bitmap drawToBitmap(Context context, final int layoutResId, final int width, final int height) {
+
+        final LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View layout = inflater.inflate(layoutResId, null);
+        layout.setDrawingCacheEnabled(true);
+        layout.measure(View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.AT_MOST));
+        layout.layout(0, 0, layout.getMeasuredWidth(), layout.getMeasuredHeight());
+        final Bitmap bmp = Bitmap.createBitmap(layout.getMeasuredWidth(), layout.getMeasuredHeight(), Bitmap.Config.ARGB_4444);
+        final Canvas canvas = new Canvas(bmp);
+        Paint p = new Paint();
+        p.setColor(Color.WHITE);
+        canvas.drawBitmap(layout.getDrawingCache(), 0, 0, p);
+        return bmp;
+    }
 
 }

@@ -181,6 +181,7 @@ public class FeedAdapter1 extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public long getItemId(int position) {
         return position;
     }
+    }
 */
 
     @Override

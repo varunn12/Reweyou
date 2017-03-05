@@ -165,21 +165,56 @@ terro"
                 android:textColor="#29B6F6"
                 android:textSize="16dp" />
 
-            <TextView
-                android:id="@+id/editpost"
+            <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="40dp"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:alpha="0.54"
 
-                android:gravity="center"
-                android:paddingTop="4dp"
-                android:text="EDIT POST"
+                android:layout_weight="1">
 
-                android:textColor="#000"
-                android:textSize="12dp"
-                android:textStyle="bold" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:paddingTop="4dp">
+
+                    <ImageView
+                        android:id="@+id/editpost"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="8dp"
+                        android:background="@drawable/ripple_effect3"
+                        android:gravity="center"
+                        android:padding="8dp"
+                        android:paddingTop="4dp"
+                        android:text="EDIT POST"
+                        android:textColor="#000"
+                        android:textSize="12dp"
+                        android:textStyle="bold"
+                        android:visibility="visible"
+                        card_view:srcCompat="@drawable/ic_edit" />
+
+                    <ImageView
+                        android:id="@+id/sharepost"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/ripple_effect3"
+                        android:gravity="center"
+                        android:padding="8dp"
+
+
+                        android:paddingTop="4dp"
+                        android:text="EDIT POST"
+                        android:textColor="#000"
+
+                        android:textSize="12dp"
+                        android:textStyle="bold"
+                        card_view:srcCompat="@drawable/ic_share" />
+                </LinearLayout>
+
+            </RelativeLayout>
+
 
             <TextView
                 android:id="@+id/review"
