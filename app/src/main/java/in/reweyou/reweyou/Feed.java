@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
@@ -77,7 +78,6 @@ import java.util.Map;
 import in.reweyou.reweyou.adapter.TagsAdapter;
 import in.reweyou.reweyou.classes.ConnectionDetector;
 import in.reweyou.reweyou.classes.HandleActivityResult;
-import in.reweyou.reweyou.classes.UploadOptions;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.customView.CustomSigninDialog;
 import in.reweyou.reweyou.fragment.IssueFragment;
@@ -87,23 +87,20 @@ import in.reweyou.reweyou.utils.Constants;
 
 import static in.reweyou.reweyou.classes.HandleActivityResult.HANDLE_IMAGE;
 import static in.reweyou.reweyou.classes.HandleActivityResult.HANDLE_VIDEO;
-import static in.reweyou.reweyou.classes.UploadOptions.PERMISSION_ALL_IMAGE;
-import static in.reweyou.reweyou.classes.UploadOptions.PERMISSION_ALL_SHARE;
-import static in.reweyou.reweyou.classes.UploadOptions.PERMISSION_ALL_VIDEO;
-import static in.reweyou.reweyou.classes.UploadOptions.PERMISSION_ALL_VIDEO_CAPTURE;
 
 public class Feed extends AppCompatActivity {
     public static final int REQ_CODE_NOTI_COUNT = 45;
     private static final String PACKAGE_URL_SCHEME = "package:";
     private static final String TAG = Feed.class.getSimpleName();
+    private static final int PERMISSION_STORAGE_REQUEST_CODE = 12;
     private final int REQ_CODE_PROFILE = 56;
-
     UserSessionManager session;
     Uri uri;
     PermissionsChecker checker;
     ConnectionDetector cd;
     boolean doubleBackToExitPressedOnce = false;
     private TabLayout tabLayout;
+
     private DrawerLayout drawerLayout;
 
     private Toolbar mToolbar;
@@ -776,77 +773,17 @@ public class Feed extends AppCompatActivity {
         builder.show();
     }
 
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        Log.d(TAG, "onRequestPermissionsResult: " + requestCode);
         switch (requestCode) {
-            case PERMISSION_ALL_IMAGE:
 
-                String permission = permissions[0];
+            case PERMISSION_STORAGE_REQUEST_CODE:
+
                 if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                    // user rejected the permission
+                    Toast.makeText(this, "Permission denied by user", Toast.LENGTH_SHORT).show();
 
-                    boolean showRationale = ActivityCompat.shouldShowRequestPermissionRationale(Feed.this, permission);
-                    if (!showRationale) {
-                        showPermissionDeniedDialog();
-                    } else
-                        showPermissionRequiredDialog(permission);
-
-
-                } else if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    UploadOptions uploadOptions = new UploadOptions(Feed.this);
-                    uploadOptions.showImageOptions();
-                }
-
-                break;
-            case PERMISSION_ALL_VIDEO_CAPTURE:
-                boolean temp = false;
-                if (grantResults.length > 0) {
-                    for (int i = 0; i < grantResults.length; i++) {
-                        if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
-                            temp = true;
-                            break;
-                        }
-                    }
-                    if (temp)
-                        Toast.makeText(Feed.this, "Please allow all permissions", Toast.LENGTH_SHORT).show();
-                    else {
-                        UploadOptions uploadOptions = new UploadOptions(Feed.this);
-                        uploadOptions.captureVideo();
-
-                    }
-                } else
-                    Toast.makeText(Feed.this, "Please allow all permissions", Toast.LENGTH_SHORT).show();
-                break;
-            case PERMISSION_ALL_VIDEO:
-                String permission2 = permissions[0];
-                if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                    // user rejected the permission
-
-                    boolean showRationale = ActivityCompat.shouldShowRequestPermissionRationale(Feed.this, permission2);
-                    if (!showRationale) {
-                        showPermissionDeniedDialog();
-                    } else
-                        showPermissionRequiredDialog(permission2);
-
-
-                } else if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    UploadOptions uploadOptions = new UploadOptions(Feed.this);
-                    uploadOptions.showVideogallery();
-                }
-                break;
-            case PERMISSION_ALL_SHARE:
-
-                String permission4 = permissions[0];
-                if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                    // user rejected the permission
-
-                    boolean showRationale = ActivityCompat.shouldShowRequestPermissionRationale(Feed.this, permission4);
-                    if (!showRationale) {
-                        showPermissionDeniedDialog();
-                    } else
-                        showPermissionRequiredDialog(permission4);
-
-
-                } else if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                 }
                 break;
@@ -854,43 +791,24 @@ public class Feed extends AppCompatActivity {
         }
     }
 
-    private void showPermissionRequiredDialog(final String permission) {
-        AlertDialogBox alertDialogBox = new AlertDialogBox(Feed.this, "Permission Required", getResources().getString(R.string.permission_required_image), "grant", "deny") {
-            @Override
-            public void onNegativeButtonClick(DialogInterface dialog) {
-                dialog.dismiss();
-            }
+    public boolean isStoragePermissionGranted() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                Log.v(TAG, "Storage Permission is granted");
+                return true;
+            } else {
 
-            @Override
-            public void onPositiveButtonClick(DialogInterface dialog) {
-                dialog.dismiss();
-                String[] p = {permission};
-                ActivityCompat.requestPermissions(Feed.this, p, PERMISSION_ALL_IMAGE);
-
+                Log.v(TAG, "Storage Permission is revoked");
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_STORAGE_REQUEST_CODE);
+                return false;
             }
-        };
-        alertDialogBox.setCancellable(true);
-        alertDialogBox.show();
+        } else { //permission is automatically granted on sdk<23 upon installation
+            Log.v(TAG, "Storage Permission is auto granted for sdk<23");
+            return true;
+        }
     }
 
-    private void showPermissionDeniedDialog() {
-        AlertDialogBox alertDialogBox = new AlertDialogBox(Feed.this, "Permission Denied", getResources().getString(R.string.permission_denied_image), "settings", "okay") {
-            @Override
-            public void onNegativeButtonClick(DialogInterface dialog) {
-                dialog.dismiss();
-
-            }
-
-            @Override
-            public void onPositiveButtonClick(DialogInterface dialog) {
-                dialog.dismiss();
-                startAppSettings();
-
-            }
-        };
-        alertDialogBox.setCancellable(true);
-        alertDialogBox.show();
-    }
 
     private void startAppSettings() {
         Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);

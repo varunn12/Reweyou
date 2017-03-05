@@ -5,14 +5,17 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -53,12 +56,13 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
 
     private static final String TAG = IssueAdapter.class.getSimpleName();
+    private static final int PERMISSION_STORAGE_REQUEST_CODE = 12;
     private final Activity mContext;
     private final UserSessionManager session;
     private final IssueFragment fragment;
-
     private List<IssueModel> messagelist;
     private Uri uri;
+    private int positioon;
 
 
     public IssueAdapter(Activity mContext, IssueFragment issueFragment) {
@@ -66,6 +70,21 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         this.messagelist = new ArrayList<>();
         session = new UserSessionManager(mContext);
         this.fragment = issueFragment;
+    }
+
+    private static Bitmap drawToBitmap(Context context, final int layoutResId, final int width, final int height) {
+
+        final LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View layout = inflater.inflate(layoutResId, null);
+        layout.setDrawingCacheEnabled(true);
+        layout.measure(View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.AT_MOST));
+        layout.layout(0, 0, layout.getMeasuredWidth(), layout.getMeasuredHeight());
+        final Bitmap bmp = Bitmap.createBitmap(layout.getMeasuredWidth(), layout.getMeasuredHeight(), Bitmap.Config.ARGB_4444);
+        final Canvas canvas = new Canvas(bmp);
+        Paint p = new Paint();
+        p.setColor(Color.WHITE);
+        canvas.drawBitmap(layout.getDrawingCache(), 0, 0, p);
+        return bmp;
     }
 
     @Override
@@ -97,7 +116,6 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
 
     }
-
 
     @Override
     public int getItemCount() {
@@ -235,102 +253,6 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     }
 
-    private class IssueViewHolder extends RecyclerView.ViewHolder {
-        private ImageView share;
-        private TextView headline;
-        private TextView description;
-        private TextView rating;
-        private TextView review;
-        private TextView user;
-        private TextView tag;
-        private ImageView editpost;
-        private ImageView imageView;
-        private CardView cv;
-
-        private IssueViewHolder(View inflate) {
-            super(inflate);
-            headline = (TextView) inflate.findViewById(R.id.headline);
-            description = (TextView) inflate.findViewById(R.id.description);
-            rating = (TextView) inflate.findViewById(R.id.rating);
-            editpost = (ImageView) inflate.findViewById(R.id.editpost);
-            share = (ImageView) inflate.findViewById(R.id.sharepost);
-            review = (TextView) inflate.findViewById(R.id.review);
-            user = (TextView) inflate.findViewById(R.id.user);
-            tag = (TextView) inflate.findViewById(R.id.tag);
-            imageView = (ImageView) inflate.findViewById(R.id.image);
-            cv = (CardView) inflate.findViewById(R.id.cv);
-
-            editpost.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    editHeadline(getAdapterPosition());
-                }
-            });
-
-            share.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    try {
-                        takeScreenshot(cv);
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-
-
-            cv.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent i = new Intent(mContext, ReviewActivity.class);
-                    i.putExtra("headline", messagelist.get(getAdapterPosition()).getHeadline());
-                    i.putExtra("description", messagelist.get(getAdapterPosition()).getDescription());
-                    i.putExtra("rating", messagelist.get(getAdapterPosition()).getRating());
-                    i.putExtra("user", messagelist.get(getAdapterPosition()).getCreated_by());
-                    i.putExtra("review", messagelist.get(getAdapterPosition()).getReviews());
-                    i.putExtra("tag", messagelist.get(getAdapterPosition()).getCategory());
-                    i.putExtra("image", messagelist.get(getAdapterPosition()).getImage());
-                    i.putExtra("name", messagelist.get(getAdapterPosition()).getName());
-                    i.putExtra("video", messagelist.get(getAdapterPosition()).getVideo());
-                    i.putExtra("gif", messagelist.get(getAdapterPosition()).getGif());
-                    i.putExtra("topicid", messagelist.get(getAdapterPosition()).getTopicid());
-                    Log.d(TAG, "onClick:swsq " + messagelist.get(getAdapterPosition()).getStatus());
-                    Log.d(TAG, "onClick:swsqii" + messagelist.get(getAdapterPosition()).getImage());
-                    i.putExtra("status", messagelist.get(getAdapterPosition()).getStatus());
-                    mContext.startActivity(i);
-                }
-            });
-
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (!messagelist.get(getAdapterPosition()).getVideo().isEmpty()) {
-                        Intent in = new Intent(mContext, VideoDisplay.class);
-                        in.putExtra("myData", messagelist.get(getAdapterPosition()).getVideo());
-                        in.putExtra("tag", messagelist.get(getAdapterPosition()).getCategory());
-                        in.putExtra("headline", messagelist.get(getAdapterPosition()).getHeadline());
-                        if (messagelist.get(getAdapterPosition()).getHeadline() != null)
-                            in.putExtra("description", messagelist.get(getAdapterPosition()).getHeadline());
-                        mContext.startActivity(in);
-
-                    } else if (!messagelist.get(getAdapterPosition()).getImage().isEmpty()) {
-
-                        Bundle bundle = new Bundle();
-                        bundle.putString("myData", messagelist.get((getAdapterPosition())).getImage());
-                        bundle.putString("tag", messagelist.get((getAdapterPosition())).getCategory());
-                        bundle.putString("headline", messagelist.get((getAdapterPosition())).getHeadline());
-                        Intent in = new Intent(mContext, FullImage.class);
-                        in.putExtras(bundle);
-                        mContext.startActivity(in);
-                    }
-                }
-            });
-        }
-
-
-    }
-
     private void takeScreenshot(CardView cv) {
         Date now = new Date();
         android.text.format.DateFormat.format("yyyy-MM-dd_hh:mm:ss", now);
@@ -407,19 +329,122 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         mContext.startActivity(Intent.createChooser(intent, "Share image using"));
     }
 
-    private static Bitmap drawToBitmap(Context context, final int layoutResId, final int width, final int height) {
+    public boolean isStoragePermissionGranted() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (mContext.checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                Log.v(TAG, "Storage Permission is granted");
+                return true;
+            } else {
 
-        final LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final View layout = inflater.inflate(layoutResId, null);
-        layout.setDrawingCacheEnabled(true);
-        layout.measure(View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.AT_MOST));
-        layout.layout(0, 0, layout.getMeasuredWidth(), layout.getMeasuredHeight());
-        final Bitmap bmp = Bitmap.createBitmap(layout.getMeasuredWidth(), layout.getMeasuredHeight(), Bitmap.Config.ARGB_4444);
-        final Canvas canvas = new Canvas(bmp);
-        Paint p = new Paint();
-        p.setColor(Color.WHITE);
-        canvas.drawBitmap(layout.getDrawingCache(), 0, 0, p);
-        return bmp;
+                Log.v(TAG, "Storage Permission is revoked");
+                ActivityCompat.requestPermissions(mContext, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_STORAGE_REQUEST_CODE);
+                return false;
+            }
+        } else { //permission is automatically granted on sdk<23 upon installation
+            Log.v(TAG, "Storage Permission is auto granted for sdk<23");
+            return true;
+        }
     }
+
+    private class IssueViewHolder extends RecyclerView.ViewHolder {
+        private ImageView share;
+        private TextView headline;
+        private TextView description;
+        private TextView rating;
+        private TextView review;
+        private TextView user;
+        private TextView tag;
+        private ImageView editpost;
+        private ImageView imageView;
+        private CardView cv;
+
+        private IssueViewHolder(View inflate) {
+            super(inflate);
+            headline = (TextView) inflate.findViewById(R.id.headline);
+            description = (TextView) inflate.findViewById(R.id.description);
+            rating = (TextView) inflate.findViewById(R.id.rating);
+            editpost = (ImageView) inflate.findViewById(R.id.editpost);
+            share = (ImageView) inflate.findViewById(R.id.sharepost);
+            review = (TextView) inflate.findViewById(R.id.review);
+            user = (TextView) inflate.findViewById(R.id.user);
+            tag = (TextView) inflate.findViewById(R.id.tag);
+            imageView = (ImageView) inflate.findViewById(R.id.image);
+            cv = (CardView) inflate.findViewById(R.id.cv);
+
+            editpost.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    editHeadline(getAdapterPosition());
+                }
+            });
+
+
+            share.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        if (isStoragePermissionGranted()) {
+                            takeScreenshot(cv);
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+
+            cv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(mContext, ReviewActivity.class);
+                    i.putExtra("headline", messagelist.get(getAdapterPosition()).getHeadline());
+                    i.putExtra("description", messagelist.get(getAdapterPosition()).getDescription());
+                    i.putExtra("rating", messagelist.get(getAdapterPosition()).getRating());
+                    i.putExtra("user", messagelist.get(getAdapterPosition()).getCreated_by());
+                    i.putExtra("review", messagelist.get(getAdapterPosition()).getReviews());
+                    i.putExtra("tag", messagelist.get(getAdapterPosition()).getCategory());
+                    i.putExtra("image", messagelist.get(getAdapterPosition()).getImage());
+                    i.putExtra("name", messagelist.get(getAdapterPosition()).getName());
+                    i.putExtra("video", messagelist.get(getAdapterPosition()).getVideo());
+                    i.putExtra("gif", messagelist.get(getAdapterPosition()).getGif());
+                    i.putExtra("topicid", messagelist.get(getAdapterPosition()).getTopicid());
+                    Log.d(TAG, "onClick:swsq " + messagelist.get(getAdapterPosition()).getStatus());
+                    Log.d(TAG, "onClick:swsqii" + messagelist.get(getAdapterPosition()).getImage());
+                    i.putExtra("status", messagelist.get(getAdapterPosition()).getStatus());
+                    mContext.startActivity(i);
+                }
+            });
+
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!messagelist.get(getAdapterPosition()).getVideo().isEmpty()) {
+                        Intent in = new Intent(mContext, VideoDisplay.class);
+                        in.putExtra("myData", messagelist.get(getAdapterPosition()).getVideo());
+                        in.putExtra("tag", messagelist.get(getAdapterPosition()).getCategory());
+                        in.putExtra("headline", messagelist.get(getAdapterPosition()).getHeadline());
+                        if (messagelist.get(getAdapterPosition()).getHeadline() != null)
+                            in.putExtra("description", messagelist.get(getAdapterPosition()).getHeadline());
+                        mContext.startActivity(in);
+
+                    } else if (!messagelist.get(getAdapterPosition()).getImage().isEmpty()) {
+
+                        Bundle bundle = new Bundle();
+                        bundle.putString("myData", messagelist.get((getAdapterPosition())).getImage());
+                        bundle.putString("tag", messagelist.get((getAdapterPosition())).getCategory());
+                        bundle.putString("headline", messagelist.get((getAdapterPosition())).getHeadline());
+                        Intent in = new Intent(mContext, FullImage.class);
+                        in.putExtras(bundle);
+                        mContext.startActivity(in);
+                    }
+                }
+            });
+        }
+
+
+    }
+
 
 }
