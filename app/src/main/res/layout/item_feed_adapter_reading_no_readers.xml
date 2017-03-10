@@ -70,8 +70,6 @@
             android:alpha="0.54"
             android:autoLink="web"
             android:ellipsize="end"
-
-            android:linksClickable="true"
             android:maxLines="5"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
@@ -106,10 +104,11 @@ terro"
 
             <TextView
                 android:id="@+id/tag"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="12dp"
+                android:layout_weight="1"
                 android:alpha="0.38"
                 android:ellipsize="end"
                 android:gravity="center_vertical|end"
@@ -139,10 +138,10 @@ terro"
             android:layout_gravity="end"
             android:layout_marginBottom="6dp"
             android:layout_marginRight="16dp"
-
             >
 
             <ImageView
+                android:id="@+id/imgStart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"

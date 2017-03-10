@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -102,13 +103,41 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         issueViewHolder.review.setText(messagelist.get(position).getReviews());
         issueViewHolder.user.setText("By- " + messagelist.get(position).getName());
         issueViewHolder.tag.setText("#" + messagelist.get(position).getCategory());
-        if (!messagelist.get(position).getGif().isEmpty())
+
+
+        float rating = Float.parseFloat(messagelist.get(position).getRating());
+        if (rating < 2) {
+            issueViewHolder.rating.setTextColor(ContextCompat.getColor(mContext, R.color.rating1));
+            issueViewHolder.imgStar.setColorFilter(ContextCompat.getColor(mContext, R.color.rating1));
+        } else if (rating >= 2 && rating < 3) {
+            issueViewHolder.rating.setTextColor(ContextCompat.getColor(mContext, R.color.rating2));
+            issueViewHolder.imgStar.setColorFilter(ContextCompat.getColor(mContext, R.color.rating2));
+
+        } else if (rating >= 3 && rating < 4) {
+            issueViewHolder.rating.setTextColor(ContextCompat.getColor(mContext, R.color.rating3));
+            issueViewHolder.imgStar.setColorFilter(ContextCompat.getColor(mContext, R.color.rating3));
+
+        } else if (rating >= 4 && rating < 5) {
+            issueViewHolder.rating.setTextColor(ContextCompat.getColor(mContext, R.color.rating4));
+            issueViewHolder.imgStar.setColorFilter(ContextCompat.getColor(mContext, R.color.rating4));
+
+        } else if (rating == 5) {
+            issueViewHolder.rating.setTextColor(ContextCompat.getColor(mContext, R.color.rating5));
+            issueViewHolder.imgStar.setColorFilter(ContextCompat.getColor(mContext, R.color.rating5));
+
+        }
+
+
+        if (!messagelist.get(position).getGif().isEmpty()) {
+            issueViewHolder.imageView.setVisibility(View.VISIBLE);
             Glide.with(mContext).load(messagelist.get(position).getGif()).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(issueViewHolder.imageView);
-        else if (!messagelist.get(position).getImage().isEmpty())
+        } else if (!messagelist.get(position).getImage().isEmpty()) {
+            issueViewHolder.imageView.setVisibility(View.VISIBLE);
             Glide.with(mContext).load(messagelist.get(position).getImage()).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(issueViewHolder.imageView);
-        else {
+        } else {
             issueViewHolder.imageView.setVisibility(View.GONE);
         }
+
 
         if (session.getMobileNumber().equals(messagelist.get(position).getCreated_by())) {
             issueViewHolder.editpost.setVisibility(View.VISIBLE);
@@ -168,51 +197,6 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     alertDialog.dismiss();
                     final String headline = editTextHeadline.getText().toString().trim();
                     final String des = editTextDes.getText().toString().trim();
-                    Toast.makeText(mContext, "Updating...", Toast.LENGTH_SHORT);
-                    //Creating an string request
-               /* StringRequest stringRequest = new StringRequest(Request.Method.POST, EDIT_URL,
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                //if the server response is success
-                                if (response.equalsIgnoreCase("success")) {
-                                    //dismissing the progressbar
-                                    loading.dismiss();
-
-                                    //Starting a new activity
-                                    if (fragment != null)
-                                        fragment.onRefresh();
-                                } else {
-                                    //Displaying a toast if the otp entered is wrong
-                                    loading.dismiss();
-                                    Toast.makeText(mContext, "Something went wrong!", Toast.LENGTH_LONG).show();
-
-                                }
-                            }
-                        },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                alertDialog.dismiss();
-                                loading.dismiss();
-                                Toast.makeText(mContext, "Try again later", Toast.LENGTH_LONG).show();
-                            }
-                        }) {
-                    @Override
-                    protected Map<String, String> getParams() throws AuthFailureError {
-                        Map<String, String> params = new HashMap<String, String>();
-                        //Adding the parameters otp and username
-                        params.put("postid", postid);
-                        params.put("headline", headline);
-                        params.put("number", session.getMobileNumber());
-                        params.put("token", session.getKeyAuthToken());
-                        params.put("deviceid", session.getDeviceid());
-                        return params;
-                    }
-                };
-                //Adding the request to the queue
-                RequestQueue requestQueue = Volley.newRequestQueue(mContext);
-                requestQueue.add(stringRequest);*/
 
                     Toast.makeText(mContext, "Updating...", Toast.LENGTH_SHORT).show();
 
@@ -355,7 +339,7 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private TextView review;
         private TextView user;
         private TextView tag;
-        private ImageView editpost;
+        private ImageView editpost, imgStar;
         private ImageView imageView;
         private CardView cv;
 
@@ -365,6 +349,7 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             description = (TextView) inflate.findViewById(R.id.description);
             rating = (TextView) inflate.findViewById(R.id.rating);
             editpost = (ImageView) inflate.findViewById(R.id.editpost);
+            imgStar = (ImageView) inflate.findViewById(R.id.imgStart);
             share = (ImageView) inflate.findViewById(R.id.sharepost);
             review = (TextView) inflate.findViewById(R.id.review);
             user = (TextView) inflate.findViewById(R.id.user);

@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -117,10 +118,11 @@ public class ReviewActivity extends AppCompatActivity {
         ra3.setColorFilter(Color.parseColor("#e0e0e0"));
         ra4.setColorFilter(Color.parseColor("#e0e0e0"));
         ra5.setColorFilter(Color.parseColor("#e0e0e0"));
+
         ra1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ra1.setColorFilter(Color.parseColor("#29B6F6"));
+                ra1.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating1));
                 ra2.setColorFilter(Color.parseColor("#e0e0e0"));
                 ra3.setColorFilter(Color.parseColor("#e0e0e0"));
                 ra4.setColorFilter(Color.parseColor("#e0e0e0"));
@@ -134,8 +136,8 @@ public class ReviewActivity extends AppCompatActivity {
         ra2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ra1.setColorFilter(Color.parseColor("#29B6F6"));
-                ra2.setColorFilter(Color.parseColor("#29B6F6"));
+                ra1.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating2));
+                ra2.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating2));
                 ra3.setColorFilter(Color.parseColor("#e0e0e0"));
                 ra4.setColorFilter(Color.parseColor("#e0e0e0"));
                 ra5.setColorFilter(Color.parseColor("#e0e0e0"));
@@ -148,9 +150,10 @@ public class ReviewActivity extends AppCompatActivity {
         ra3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ra1.setColorFilter(Color.parseColor("#29B6F6"));
-                ra2.setColorFilter(Color.parseColor("#29B6F6"));
-                ra3.setColorFilter(Color.parseColor("#29B6F6"));
+                ra1.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating3));
+                ra2.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating3));
+                ra3.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating3));
+
                 ra4.setColorFilter(Color.parseColor("#e0e0e0"));
                 ra5.setColorFilter(Color.parseColor("#e0e0e0"));
                 numrating = 3;
@@ -162,10 +165,11 @@ public class ReviewActivity extends AppCompatActivity {
         ra4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ra1.setColorFilter(Color.parseColor("#29B6F6"));
-                ra2.setColorFilter(Color.parseColor("#29B6F6"));
-                ra3.setColorFilter(Color.parseColor("#29B6F6"));
-                ra4.setColorFilter(Color.parseColor("#29B6F6"));
+                ra1.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating4));
+                ra2.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating4));
+                ra3.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating4));
+                ra4.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating4));
+
 
                 ra5.setColorFilter(Color.parseColor("#e0e0e0"));
                 numrating = 4;
@@ -176,11 +180,13 @@ public class ReviewActivity extends AppCompatActivity {
         ra5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ra1.setColorFilter(Color.parseColor("#29B6F6"));
-                ra2.setColorFilter(Color.parseColor("#29B6F6"));
-                ra3.setColorFilter(Color.parseColor("#29B6F6"));
-                ra4.setColorFilter(Color.parseColor("#29B6F6"));
-                ra5.setColorFilter(Color.parseColor("#29B6F6"));
+                ra1.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating5));
+                ra2.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating5));
+                ra3.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating5));
+                ra4.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating5));
+                ra5.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating5));
+
+
 
                 numrating = 5;
 

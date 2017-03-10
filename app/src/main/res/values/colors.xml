@@ -25,5 +25,13 @@
     <color name="main">#757575</color>
     <color name="navyblue">#3949AB</color>
     <color name="white">#fff</color>
+
+    <color name="rating5">#6200EA</color>
+
+    <color name="rating4">#29B6F6</color>
+
+    <color name="rating3">#FFB300</color>
+    <color name="rating2">#FB8C00</color>
+    <color name="rating1">#F4511E</color>
     -
 </resources>
