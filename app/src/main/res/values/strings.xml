@@ -71,7 +71,7 @@
     <string name="title_activity_invite">Invite</string>
     <string name="permission_required_contacts">Please allow Reweyou to read your contacts in order to share reports with others</string>
     <string name="permission_denied_contacts">To use inbox, allow Reweyou to read your contacts</string>
-    <string name="title_activity_review">ReviewActivity</string>
+    <string name="title_activity_review">Reweyou</string>
     <string name="title_activity_your_review">YourReview</string>
 
 </resources>

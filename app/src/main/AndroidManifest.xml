@@ -33,11 +33,7 @@
             android:name=".SplashScreen"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".Signup"
@@ -47,7 +43,10 @@
             android:name=".Feed"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar.Feed" />
+            android:theme="@style/AppTheme.NoActionBar.Feed">
+
+
+        </activity>
         <activity
             android:name=".PostReport"
             android:screenOrientation="portrait"
@@ -222,11 +221,41 @@
             android:name=".ReviewActivity"
             android:label="@string/title_activity_review"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden">
+
+        </activity>
+
+        <activity
+            android:name=".ReviewActivityQR"
+            android:label="@string/title_activity_review"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="https" />
+                <data android:host="www.reweyou.in" />
+                <data android:pathPrefix="/qr/" />
+
+            </intent-filter>
+
+        </activity>
+
+
         <activity
             android:name=".YourReview"
             android:label="@string/title_activity_your_review"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
     </application>
 
 </manifest>

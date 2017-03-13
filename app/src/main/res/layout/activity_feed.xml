@@ -39,7 +39,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:background="?attr/colorPrimary"
-                    app:layout_scrollFlags="scroll|enterAlways"
+                    app:layout_scrollFlags="scroll"
                     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                     app:theme="@style/MyThemeOverlay.ActionBar">
 
@@ -139,7 +139,9 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+
+                    app:layout_scrollFlags="scroll|enterAlways">
 
                     <TextView
                         android:id="@+id/aaaa"

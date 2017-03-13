@@ -26,19 +26,20 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.ParsedRequestListener;
 import com.androidnetworking.interfaces.StringRequestListener;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.kbeanie.multipicker.api.ImagePicker;
 import com.kbeanie.multipicker.api.Picker;
@@ -48,9 +49,10 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.wang.avi.AVLoadingIndicatorView;
 
-import org.json.JSONException;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 
@@ -58,11 +60,12 @@ import in.reweyou.reweyou.adapter.ReviewAdapter;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.customView.CustomSigninDialog;
 import in.reweyou.reweyou.customView.PreCachingLayoutManager;
+import in.reweyou.reweyou.model.IssueModel;
 import in.reweyou.reweyou.model.ReviewModel;
 
-public class ReviewActivity extends AppCompatActivity {
+public class ReviewActivityQR extends AppCompatActivity {
 
-    private static final String TAG = ReviewActivity.class.getName();
+    private static final String TAG = ReviewActivityQR.class.getName();
     private static final int PERMISSION_STORAGE_REQUEST_CODE = 12;
     private RecyclerView recyclerView;
     private ReviewAdapter adapter;
@@ -95,6 +98,8 @@ public class ReviewActivity extends AppCompatActivity {
     private String selectedImageUri;
     private String encodedImage;
     private ProgressDialog progressDialog;
+    private RelativeLayout rlcont;
+    private AVLoadingIndicatorView loadingcircularinit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,10 +111,18 @@ public class ReviewActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-
         loadingcircular = (AVLoadingIndicatorView) findViewById(R.id.avi);
         loadingcircular.show();
+
         sessionManager = new UserSessionManager(this);
+
+        rlcont = (RelativeLayout) findViewById(R.id.rl);
+        rlcont.setVisibility(View.INVISIBLE);
+
+        loadingcircularinit = (AVLoadingIndicatorView) findViewById(R.id.initpro);
+        loadingcircularinit.setVisibility(View.VISIBLE);
+        loadingcircularinit.show();
+
 
         final ImageView ra1 = (ImageView) findViewById(R.id.ra1);
         final ImageView ra2 = (ImageView) findViewById(R.id.ra2);
@@ -125,7 +138,7 @@ public class ReviewActivity extends AppCompatActivity {
         ra1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ra1.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating1));
+                ra1.setColorFilter(ContextCompat.getColor(ReviewActivityQR.this, R.color.rating1));
                 ra2.setColorFilter(Color.parseColor("#e0e0e0"));
                 ra3.setColorFilter(Color.parseColor("#e0e0e0"));
                 ra4.setColorFilter(Color.parseColor("#e0e0e0"));
@@ -139,8 +152,8 @@ public class ReviewActivity extends AppCompatActivity {
         ra2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ra1.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating2));
-                ra2.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating2));
+                ra1.setColorFilter(ContextCompat.getColor(ReviewActivityQR.this, R.color.rating2));
+                ra2.setColorFilter(ContextCompat.getColor(ReviewActivityQR.this, R.color.rating2));
                 ra3.setColorFilter(Color.parseColor("#e0e0e0"));
                 ra4.setColorFilter(Color.parseColor("#e0e0e0"));
                 ra5.setColorFilter(Color.parseColor("#e0e0e0"));
@@ -153,9 +166,9 @@ public class ReviewActivity extends AppCompatActivity {
         ra3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ra1.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating3));
-                ra2.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating3));
-                ra3.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating3));
+                ra1.setColorFilter(ContextCompat.getColor(ReviewActivityQR.this, R.color.rating3));
+                ra2.setColorFilter(ContextCompat.getColor(ReviewActivityQR.this, R.color.rating3));
+                ra3.setColorFilter(ContextCompat.getColor(ReviewActivityQR.this, R.color.rating3));
 
                 ra4.setColorFilter(Color.parseColor("#e0e0e0"));
                 ra5.setColorFilter(Color.parseColor("#e0e0e0"));
@@ -168,10 +181,10 @@ public class ReviewActivity extends AppCompatActivity {
         ra4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ra1.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating4));
-                ra2.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating4));
-                ra3.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating4));
-                ra4.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating4));
+                ra1.setColorFilter(ContextCompat.getColor(ReviewActivityQR.this, R.color.rating4));
+                ra2.setColorFilter(ContextCompat.getColor(ReviewActivityQR.this, R.color.rating4));
+                ra3.setColorFilter(ContextCompat.getColor(ReviewActivityQR.this, R.color.rating4));
+                ra4.setColorFilter(ContextCompat.getColor(ReviewActivityQR.this, R.color.rating4));
 
 
                 ra5.setColorFilter(Color.parseColor("#e0e0e0"));
@@ -183,12 +196,11 @@ public class ReviewActivity extends AppCompatActivity {
         ra5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ra1.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating5));
-                ra2.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating5));
-                ra3.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating5));
-                ra4.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating5));
-                ra5.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating5));
-
+                ra1.setColorFilter(ContextCompat.getColor(ReviewActivityQR.this, R.color.rating5));
+                ra2.setColorFilter(ContextCompat.getColor(ReviewActivityQR.this, R.color.rating5));
+                ra3.setColorFilter(ContextCompat.getColor(ReviewActivityQR.this, R.color.rating5));
+                ra4.setColorFilter(ContextCompat.getColor(ReviewActivityQR.this, R.color.rating5));
+                ra5.setColorFilter(ContextCompat.getColor(ReviewActivityQR.this, R.color.rating5));
 
 
                 numrating = 5;
@@ -216,16 +228,16 @@ public class ReviewActivity extends AppCompatActivity {
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                InputMethodManager imm = (InputMethodManager) ReviewActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager) ReviewActivityQR.this.getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(edittext.getWindowToken(), 0);
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
                         if (sessionManager.checkLoginSplash()) {
                             if (numrating == 0) {
-                                Toast.makeText(ReviewActivity.this, "Please rate the issue", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ReviewActivityQR.this, "Please rate the issue", Toast.LENGTH_SHORT).show();
                             } else if (edittext.getText().toString().trim().length() == 0) {
-                                Toast.makeText(ReviewActivity.this, "Your review cannot be empty", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ReviewActivityQR.this, "Your review cannot be empty", Toast.LENGTH_SHORT).show();
 
                             } else {
                                 if (selectedImageUri != null)
@@ -284,21 +296,6 @@ public class ReviewActivity extends AppCompatActivity {
         if (!sessionManager.checkLoginSplash())
             edittext.setHint("Sign in to review...");
 
-        if (getIntent() != null) {
-            Intent i = getIntent();
-            headline = i.getStringExtra("headline");
-            description = i.getStringExtra("description");
-            rating = i.getStringExtra("rating");
-            user = i.getStringExtra("user");
-            review = i.getStringExtra("review");
-            tag = i.getStringExtra("tag");
-            imageurl = i.getStringExtra("image");
-            videourl = i.getStringExtra("video");
-            name = i.getStringExtra("name");
-            gifurl = i.getStringExtra("gif");
-            topicid = i.getStringExtra("topicid");
-            status = i.getStringExtra("status");
-        }
 
         String action = getIntent().getAction();
         if (Intent.ACTION_VIEW.equals(action)) {
@@ -307,21 +304,8 @@ public class ReviewActivity extends AppCompatActivity {
                 Log.d(TAG, "onCreate: uri: " + uri);
                 String originalLink = uri.toString();
                 try {
-                    JSONObject jsonObject = new JSONObject(originalLink.replace("https://reweyou.in/qr/", ""));
-                    headline = jsonObject.getString("headline");
-                    description = jsonObject.getString("description");
-                    rating = jsonObject.getString("rating");
-                    user = jsonObject.getString("user");
-                    review = jsonObject.getString("review");
-                    tag = jsonObject.getString("tag");
-                    imageurl = jsonObject.getString("image");
-                    videourl = jsonObject.getString("video");
-                    name = jsonObject.getString("name");
-                    gifurl = jsonObject.getString("gif");
-                    topicid = jsonObject.getString("topicid");
-                    status = jsonObject.getString("status");
-                    Log.d(TAG, "onCreate: json: " + jsonObject);
-                } catch (JSONException e) {
+                    topicid = originalLink.replace("https://www.reweyou.in/qr/postid=", "");
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -329,20 +313,6 @@ public class ReviewActivity extends AppCompatActivity {
             }
         }
 
-        getSupportActionBar().setTitle(tag);
-
-        tvheadline.setText(headline);
-        tvdescription.setText(description);
-        tvrating.setText(rating);
-        tvreview.setText(review);
-        tvuser.setText("By- " + name);
-
-        if (!gifurl.isEmpty()) {
-            Glide.with(ReviewActivity.this).load(gifurl).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(image);
-
-        } else if (!imageurl.isEmpty())
-            Glide.with(ReviewActivity.this).load(imageurl).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(image);
-        else image.setVisibility(View.GONE);
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -365,7 +335,7 @@ public class ReviewActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Context mContext = ReviewActivity.this;
+                Context mContext = ReviewActivityQR.this;
                 if (!videourl.isEmpty()) {
                     Intent in = new Intent(mContext, VideoDisplay.class);
                     in.putExtra("myData", videourl);
@@ -387,16 +357,11 @@ public class ReviewActivity extends AppCompatActivity {
             }
         });
 
-        if (status.equals("true")) {
-            ratetext.setVisibility(View.GONE);
-            b1.setVisibility(View.GONE);
-            c1.setVisibility(View.GONE);
-            divider2.setVisibility(View.GONE);
-        }
+
     }
 
     private void updateReviewWithImage() {
-        progressDialog = new ProgressDialog(ReviewActivity.this);
+        progressDialog = new ProgressDialog(ReviewActivityQR.this);
         progressDialog.setMessage("Uploading. Please Wait...");
         progressDialog.show();
         if (selectedImageUri != null) {
@@ -483,7 +448,7 @@ public class ReviewActivity extends AppCompatActivity {
                         if (progressDialog != null) progressDialog.dismiss();
 
                         Log.e(TAG, "error: " + anError.getErrorDetail());
-                        Toast.makeText(ReviewActivity.this, "Couldn't connect", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ReviewActivityQR.this, "Couldn't connect", Toast.LENGTH_SHORT).show();
                         send.setClickable(true);
                         remove.setClickable(true);
 
@@ -498,41 +463,81 @@ public class ReviewActivity extends AppCompatActivity {
         hashMap.put("number", sessionManager.getMobileNumber());
         hashMap.put("token", sessionManager.getKeyAuthToken());
         hashMap.put("deviceid", sessionManager.getDeviceid());
-        AndroidNetworking.post("https://reweyou.in/reviews/reviews.php")
+        AndroidNetworking.post("https://reweyou.in/reviews/topic_reviews.php")
                 .addBodyParameter(hashMap)
-                .setTag("report")
+                .setTag("report212")
                 .setPriority(Priority.HIGH)
                 .build()
-                .getAsParsed(new TypeToken<List<ReviewModel>>() {
-                }, new ParsedRequestListener<List<ReviewModel>>() {
-
+                .getAsString(new StringRequestListener() {
                     @Override
-                    public void onResponse(List<ReviewModel> list) {
-                        if (list.size() == 0)
-                            noreviewyet.setVisibility(View.VISIBLE);
-                        else noreviewyet.setVisibility(View.GONE);
-                        loadingcircular.hide();
-                        adapter.add(list);
-                        Log.d(TAG, "onResponse: lis" + list.size());
+                    public void onResponse(String response) {
+                        try {
+                            loadingcircularinit.setVisibility(View.GONE);
+                            rlcont.setVisibility(View.VISIBLE);
 
+                            Log.d(TAG, "onResponse: " + response);
+                            JSONObject jsonObject = new JSONObject(response);
+
+                            JSONArray jsonArraytopics = jsonObject.getJSONArray("topics");
+                            JSONArray jsonArrayreviews = jsonObject.getJSONArray("reviews");
+
+                            JSONObject jj1 = jsonArraytopics.getJSONObject(0);
+                            Gson gson = new Gson();
+                            IssueModel issuemodel = gson.fromJson(jj1.toString(), IssueModel.class);
+
+                            headline = issuemodel.getHeadline();
+                            description = issuemodel.getDescription();
+                            rating = issuemodel.getRating();
+                            user = issuemodel.getCreated_by();
+                            review = issuemodel.getReviews();
+                            tag = issuemodel.getCategory();
+                            imageurl = issuemodel.getImage();
+                            videourl = issuemodel.getVideo();
+                            name = issuemodel.getName();
+                            gifurl = issuemodel.getGif();
+                            topicid = issuemodel.getTopicid();
+                            status = issuemodel.getStatus();
+
+                            getSupportActionBar().setTitle(tag);
+
+                            tvheadline.setText(headline);
+                            tvdescription.setText(description);
+                            tvrating.setText(rating);
+                            tvreview.setText(review);
+                            tvuser.setText("By- " + name);
+
+                            if (!gifurl.isEmpty()) {
+                                Glide.with(ReviewActivityQR.this).load(gifurl).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(image);
+
+                            } else if (!imageurl.isEmpty())
+                                Glide.with(ReviewActivityQR.this).load(imageurl).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(image);
+                            else image.setVisibility(View.GONE);
+
+                            if (status.equals("true")) {
+                                ratetext.setVisibility(View.GONE);
+                                b1.setVisibility(View.GONE);
+                                c1.setVisibility(View.GONE);
+                                divider2.setVisibility(View.GONE);
+                            }
+
+                            Type listType = new TypeToken<List<ReviewModel>>() {
+                            }.getType();
+                            List<ReviewModel> listreviews = gson.fromJson(jsonArrayreviews.toString(), listType);
+
+                            if (listreviews.size() == 0)
+                                noreviewyet.setVisibility(View.VISIBLE);
+                            else noreviewyet.setVisibility(View.GONE);
+                            loadingcircular.hide();
+                            adapter.add(listreviews);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
 
                     @Override
-                    public void onError(final ANError anError) {
-                        loadingcircular.hide();
-                        Log.e(TAG, "error: " + anError.getErrorDetail());
-
-                        /*new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                swipe.setRefreshing(false);
-                                if (isAdded() && !anError.getErrorDetail().equals("requestCancelled"))
-                                    Toast.makeText(mContext, "Couldn't connect", Toast.LENGTH_SHORT).show();
-
-
-                            }
-                        }, 1200);*/
-
+                    public void onError(ANError anError) {
+                        Toast.makeText(ReviewActivityQR.this, "Couldn't fetch data", Toast.LENGTH_SHORT).show();
 
                     }
                 });
@@ -543,7 +548,7 @@ public class ReviewActivity extends AppCompatActivity {
     }
 
     private void showlogindialog() {
-        CustomSigninDialog customSigninDialog = new CustomSigninDialog(ReviewActivity.this);
+        CustomSigninDialog customSigninDialog = new CustomSigninDialog(ReviewActivityQR.this);
         customSigninDialog.show();
 
     }
@@ -575,7 +580,7 @@ public class ReviewActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Intent i = new Intent(ReviewActivity.this, Feed.class);
+        Intent i = new Intent(ReviewActivityQR.this, Feed.class);
         i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         startActivity(i);
         finish();
@@ -600,7 +605,7 @@ public class ReviewActivity extends AppCompatActivity {
     }
 
     private void showPickImage() {
-        imagePicker = new ImagePicker(ReviewActivity.this);
+        imagePicker = new ImagePicker(ReviewActivityQR.this);
         imagePicker.setImagePickerCallback(new ImagePickerCallback() {
                                                @Override
                                                public void onImagesChosen(List<ChosenImage> images) {
@@ -640,14 +645,14 @@ public class ReviewActivity extends AppCompatActivity {
                         Log.d(TAG, "onImagesChosen: " + images.get(0).getFileExtensionFromMimeTypeWithoutDot());
                         if (images.get(0).getFileExtensionFromMimeTypeWithoutDot().equals("gif")) {
                             // handleGif(images.get(0).getOriginalPath());
-                            Toast.makeText(ReviewActivity.this, "Only image can be uploaded", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ReviewActivityQR.this, "Only image can be uploaded", Toast.LENGTH_SHORT).show();
                         } else {
                             startImageCropActivity(Uri.parse(images.get(0).getQueryUri()));
                         }
                     }
                 }
             } catch (Exception e) {
-                Toast.makeText(ReviewActivity.this, "Something went wrong. ErrorCode: 19", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ReviewActivityQR.this, "Something went wrong. ErrorCode: 19", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -708,7 +713,7 @@ public class ReviewActivity extends AppCompatActivity {
     private void handleImage(String data) {
         clearAttachedMediaPaths();
         showPreviewViews();
-        Glide.with(ReviewActivity.this).load(data).override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).into(reim);
+        Glide.with(ReviewActivityQR.this).load(data).override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).into(reim);
         selectedImageUri = data;
     }
 
