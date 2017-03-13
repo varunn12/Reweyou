@@ -304,7 +304,8 @@ public class ReviewActivityQR extends AppCompatActivity {
                 Log.d(TAG, "onCreate: uri: " + uri);
                 String originalLink = uri.toString();
                 try {
-                    topicid = originalLink.replace("https://www.reweyou.in/qr/postid=", "");
+                    topicid = originalLink.replace("https://www.reweyou.in/qr/topicid=", "");
+                    Log.d(TAG, "onCreate: " + topicid);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
