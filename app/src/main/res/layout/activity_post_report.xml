@@ -215,6 +215,7 @@
                         android:gravity="center"
                         android:hint="PASSCODE"
                         android:inputType="number"
+                        android:maxLength="4"
                         android:minLines="1"
                         android:padding="8dp"
                         android:paddingTop="8dp"

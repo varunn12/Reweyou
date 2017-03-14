@@ -552,6 +552,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     passcodeeditbox.setVisibility(View.VISIBLE);
+                    Toast.makeText(PostReport.this, "Enter passcode (min 4 digits)", Toast.LENGTH_SHORT).show();
                 } else {
                     passcodeeditbox.setVisibility(View.GONE);
                 }
