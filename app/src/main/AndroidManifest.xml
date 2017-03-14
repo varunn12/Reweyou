@@ -228,6 +228,8 @@
         <activity
             android:name=".ReviewActivity"
             android:label="@string/title_activity_review"
+            android:screenOrientation="portrait"
+
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden">
 
@@ -236,6 +238,8 @@
         <activity
             android:name=".ReviewActivityQR"
             android:label="@string/title_activity_review"
+            android:screenOrientation="portrait"
+
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden">
 
@@ -257,10 +261,16 @@
         <activity
             android:name=".YourReview"
             android:label="@string/title_activity_your_review"
+
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
 
         </activity>
-        <activity android:name="com.gnzlt.AndroidVisionQRReader.QRActivity" />
+        <activity
+            android:name="com.gnzlt.AndroidVisionQRReader.QRActivity"
+            android:screenOrientation="portrait"
+
+            />
 
     </application>
 
