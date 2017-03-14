@@ -54,6 +54,7 @@ public class Constants {
     public static final String POST_REPORT_KEY_LOCATION = "location";
     public static final String POST_REPORT_KEY_HEADLINE = "head";
     public static final String POST_REPORT_KEY_NAME = "name";
+    public static final String POST_REPORT_KEY_PRIVACY = "privacy";
     public static final String POST_REPORT_KEY_NUMBER = "number";
     public static final String POST_REPORT_KEY_DESCRIPTION = "headline";
     public static final String POST_REPORT_KEY_TOKEN = "token";

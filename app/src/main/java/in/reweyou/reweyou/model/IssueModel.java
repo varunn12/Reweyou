@@ -18,6 +18,11 @@ public class IssueModel {
     private String rating;
     private String headline;
     private String status;
+    private String privacy;
+
+    public String getPrivacy() {
+        return privacy;
+    }
 
     public String getName() {
         return name;

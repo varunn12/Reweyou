@@ -136,6 +136,7 @@
                         android:drawablePadding="16dp"
                         android:hint="one line headline"
                         android:inputType="textMultiLine"
+                        android:maxLength="600"
                         android:minLines="1"
                         android:paddingBottom="8dp"
                         android:paddingTop="8dp"
@@ -161,14 +162,14 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_marginLeft="16dp"
                         android:layout_marginRight="16dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="4dp"
                         android:background="@null"
                         android:drawableLeft="@drawable/ic_location_on_black_24px_layer3"
                         android:drawablePadding="16dp"
-                        android:hint="report location (optional)"
+                        android:hint="location (optional)"
                         android:inputType="textMultiLine"
                         android:minLines="1"
-                        android:paddingBottom="8dp"
+                        android:paddingBottom="4dp"
                         android:paddingTop="8dp"
                         android:textColorHint="#9e9e9e"
                         android:textCursorDrawable="@drawable/color_cursor"
@@ -191,6 +192,36 @@
                         android:text="Keep as Anonymous"
                         android:textColor="#757575"
                         android:textSize="14dp" />
+
+                    <CheckBox
+                        android:id="@+id/privacy"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="8dp"
+                        android:text="Private topic"
+                        android:textColor="#757575"
+                        android:textSize="14dp" />
+
+                    <EditText
+                        android:id="@+id/passcodeedit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginTop="4dp"
+                        android:gravity="center"
+                        android:hint="PASSCODE"
+                        android:inputType="number"
+                        android:minLines="1"
+                        android:padding="8dp"
+                        android:paddingTop="8dp"
+                        android:textColorHint="#9e9e9e"
+                        android:textCursorDrawable="@drawable/color_cursor"
+                        android:textSize="20dp"
+                        android:visibility="gone" />
 
                     <View
                         android:layout_width="match_parent"

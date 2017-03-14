@@ -104,7 +104,11 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         issueViewHolder.user.setText("By- " + messagelist.get(position).getName());
         issueViewHolder.tag.setText("#" + messagelist.get(position).getCategory());
 
-
+        if (messagelist.get(position).getPrivacy().equals("Public")) {
+            issueViewHolder.lock.setVisibility(View.INVISIBLE);
+        } else if (messagelist.get(position).getPrivacy().equals("Private")) {
+            issueViewHolder.lock.setVisibility(View.VISIBLE);
+        }
         float rating = Float.parseFloat(messagelist.get(position).getRating());
         if (rating < 2) {
             issueViewHolder.rating.setTextColor(ContextCompat.getColor(mContext, R.color.rating1));
@@ -339,7 +343,7 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private TextView review;
         private TextView user;
         private TextView tag;
-        private ImageView editpost, imgStar;
+        private ImageView editpost, imgStar, lock;
         private ImageView imageView;
         private CardView cv;
 
@@ -349,6 +353,7 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             description = (TextView) inflate.findViewById(R.id.description);
             rating = (TextView) inflate.findViewById(R.id.rating);
             editpost = (ImageView) inflate.findViewById(R.id.editpost);
+            lock = (ImageView) inflate.findViewById(R.id.lock);
             imgStar = (ImageView) inflate.findViewById(R.id.imgStart);
             share = (ImageView) inflate.findViewById(R.id.sharepost);
             review = (TextView) inflate.findViewById(R.id.review);
@@ -395,6 +400,7 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     i.putExtra("video", messagelist.get(getAdapterPosition()).getVideo());
                     i.putExtra("gif", messagelist.get(getAdapterPosition()).getGif());
                     i.putExtra("topicid", messagelist.get(getAdapterPosition()).getTopicid());
+                    i.putExtra("privacy", messagelist.get(getAdapterPosition()).getPrivacy());
                     Log.d(TAG, "onClick:swsq " + messagelist.get(getAdapterPosition()).getStatus());
                     Log.d(TAG, "onClick:swsqii" + messagelist.get(getAdapterPosition()).getImage());
                     i.putExtra("status", messagelist.get(getAdapterPosition()).getStatus());

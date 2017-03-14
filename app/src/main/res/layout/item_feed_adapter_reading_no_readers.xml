@@ -101,6 +101,17 @@ terro"
                 android:textColor="#000"
                 android:textSize="12dp" />
 
+            <ImageView
+                android:id="@+id/lock"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:gravity="center_vertical|end"
+                android:paddingTop="2dp"
+                card_view:srcCompat="@drawable/ic_lock_padlock_symbol_for_protect" />
+
             <TextView
                 android:id="@+id/tag"
                 android:layout_width="0dp"

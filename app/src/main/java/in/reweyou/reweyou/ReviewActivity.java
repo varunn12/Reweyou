@@ -1,11 +1,13 @@
 package in.reweyou.reweyou;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -21,8 +23,10 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -47,9 +51,6 @@ import com.kbeanie.multipicker.api.entity.ChosenImage;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.wang.avi.AVLoadingIndicatorView;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.List;
@@ -95,6 +96,8 @@ public class ReviewActivity extends AppCompatActivity {
     private String selectedImageUri;
     private String encodedImage;
     private ProgressDialog progressDialog;
+    private String privacy;
+    private String passcode = "default";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -190,7 +193,6 @@ public class ReviewActivity extends AppCompatActivity {
                 ra5.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating5));
 
 
-
                 numrating = 5;
 
             }
@@ -218,24 +220,11 @@ public class ReviewActivity extends AppCompatActivity {
             public void onClick(View v) {
                 InputMethodManager imm = (InputMethodManager) ReviewActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(edittext.getWindowToken(), 0);
-                new Handler().post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (sessionManager.checkLoginSplash()) {
-                            if (numrating == 0) {
-                                Toast.makeText(ReviewActivity.this, "Please rate the issue", Toast.LENGTH_SHORT).show();
-                            } else if (edittext.getText().toString().trim().length() == 0) {
-                                Toast.makeText(ReviewActivity.this, "Your review cannot be empty", Toast.LENGTH_SHORT).show();
+                if (privacy.equals("Private"))
+                    showPassCodeDialog();
+                else
+                    uploadReview();
 
-                            } else {
-                                if (selectedImageUri != null)
-                                    updateReviewWithImage();
-                                else updateReview();
-                            }
-                        } else showlogindialog();
-
-                    }
-                });
 
             }
         });
@@ -298,36 +287,9 @@ public class ReviewActivity extends AppCompatActivity {
             gifurl = i.getStringExtra("gif");
             topicid = i.getStringExtra("topicid");
             status = i.getStringExtra("status");
+            privacy = i.getStringExtra("privacy");
         }
 
-        String action = getIntent().getAction();
-        if (Intent.ACTION_VIEW.equals(action)) {
-            Uri uri = getIntent().getData();
-            if (uri != null) {
-                Log.d(TAG, "onCreate: uri: " + uri);
-                String originalLink = uri.toString();
-                try {
-                    JSONObject jsonObject = new JSONObject(originalLink.replace("https://reweyou.in/qr/", ""));
-                    headline = jsonObject.getString("headline");
-                    description = jsonObject.getString("description");
-                    rating = jsonObject.getString("rating");
-                    user = jsonObject.getString("user");
-                    review = jsonObject.getString("review");
-                    tag = jsonObject.getString("tag");
-                    imageurl = jsonObject.getString("image");
-                    videourl = jsonObject.getString("video");
-                    name = jsonObject.getString("name");
-                    gifurl = jsonObject.getString("gif");
-                    topicid = jsonObject.getString("topicid");
-                    status = jsonObject.getString("status");
-                    Log.d(TAG, "onCreate: json: " + jsonObject);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-
-            }
-        }
 
         getSupportActionBar().setTitle(tag);
 
@@ -395,6 +357,27 @@ public class ReviewActivity extends AppCompatActivity {
         }
     }
 
+    private void uploadReview() {
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                if (sessionManager.checkLoginSplash()) {
+                    if (numrating == 0) {
+                        Toast.makeText(ReviewActivity.this, "Please rate the issue", Toast.LENGTH_SHORT).show();
+                    } else if (edittext.getText().toString().trim().length() == 0) {
+                        Toast.makeText(ReviewActivity.this, "Your review cannot be empty", Toast.LENGTH_SHORT).show();
+
+                    } else {
+                        if (selectedImageUri != null)
+                            updateReviewWithImage();
+                        else updateReview();
+                    }
+                } else showlogindialog();
+
+            }
+        });
+    }
+
     private void updateReviewWithImage() {
         progressDialog = new ProgressDialog(ReviewActivity.this);
         progressDialog.setMessage("Uploading. Please Wait...");
@@ -443,12 +426,13 @@ public class ReviewActivity extends AppCompatActivity {
         hashMap.put("description", edittext.getText().toString());
         hashMap.put("token", sessionManager.getKeyAuthToken());
         hashMap.put("deviceid", sessionManager.getDeviceid());
+        hashMap.put("passcode", passcode);
+        hashMap.put("privacy", privacy);
 
         if (encodedImage != null)
             hashMap.put("image", encodedImage);
 
 
-        edittext.setText("");
 
         AndroidNetworking.post("https://reweyou.in/reviews/post_reviews.php")
                 .addBodyParameter(hashMap)
@@ -462,9 +446,10 @@ public class ReviewActivity extends AppCompatActivity {
                             progressDialog.dismiss();
 
 
-                        loadReportsfromServer();
                         Log.d(TAG, "onResponse: " + response);
                         if (response.equals("reviewed")) {
+                            edittext.setText("");
+                            loadReportsfromServer();
 
                             ratetext.setVisibility(View.GONE);
                             b1.setVisibility(View.GONE);
@@ -473,6 +458,8 @@ public class ReviewActivity extends AppCompatActivity {
                             clearAttachedMediaPaths();
                             reim.setVisibility(View.GONE);
                             remove.setVisibility(View.GONE);
+                        } else if (response.equals("Passcode is incorrect")) {
+                            Toast.makeText(ReviewActivity.this, "Passcode is incorrect", Toast.LENGTH_SHORT).show();
                         }
 
 
@@ -723,5 +710,48 @@ public class ReviewActivity extends AppCompatActivity {
 
     }
 
+    private void showPassCodeDialog() {
+        //Creating a LayoutInflater object for the dialog box
+        LayoutInflater li = LayoutInflater.from(ReviewActivity.this);
+        //Creating a view to get the dialog box
+        View confirmDialog = li.inflate(R.layout.dialog_passcode, null);
+        //  number=session.getMobileNumber();
+        //Initizliaing confirm button fo dialog box and edittext of dialog box
+        Button buttonEdit = (Button) confirmDialog.findViewById(R.id.buttonConfirm);
+        final EditText editTextpassCode = (EditText) confirmDialog.findViewById(R.id.passcode);
+
+
+        //Creating an alertdialog builder
+        AlertDialog.Builder alert = new AlertDialog.Builder(ReviewActivity.this);
+
+        //Adding our dialog box to the view of alert dialog
+        alert.setView(confirmDialog);
+
+        //Creating an alert dialog
+        final AlertDialog alertDialog = alert.create();
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        //Displaying the alert dialog
+        alertDialog.show();
+
+        //On the click of the confirm button from alert dialog
+        buttonEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                if (editTextpassCode.getText().toString().trim().length() == 4) {
+                    alertDialog.dismiss();
+                    passcode = editTextpassCode.getText().toString();
+                    uploadReview();
+
+                } else
+                    Toast.makeText(ReviewActivity.this, "Passcode must be of 4 digits", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
 
 }
+

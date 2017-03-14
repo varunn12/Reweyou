@@ -100,6 +100,7 @@ import static in.reweyou.reweyou.utils.Constants.POST_REPORT_KEY_IMAGE;
 import static in.reweyou.reweyou.utils.Constants.POST_REPORT_KEY_LOCATION;
 import static in.reweyou.reweyou.utils.Constants.POST_REPORT_KEY_NAME;
 import static in.reweyou.reweyou.utils.Constants.POST_REPORT_KEY_NUMBER;
+import static in.reweyou.reweyou.utils.Constants.POST_REPORT_KEY_PRIVACY;
 import static in.reweyou.reweyou.utils.Constants.POST_REPORT_KEY_REPORT;
 import static in.reweyou.reweyou.utils.Constants.POST_REPORT_KEY_TAG;
 
@@ -197,6 +198,9 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
     private CheckBox anonyRadioButton;
     private ArrayAdapter<String> adapter;
     private ArrayList<String> list1;
+    private CheckBox pprivacyRadioButton;
+    private EditText passcodeeditbox;
+    private String passcode;
 
     public static boolean isLocationEnabled(Context context) {
         int locationMode = 0;
@@ -540,15 +544,21 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
 
         //activity layout views
         anonyRadioButton = (CheckBox) findViewById(R.id.anonyradio);
-        anonyRadioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+
+        pprivacyRadioButton = (CheckBox) findViewById(R.id.privacy);
+        pprivacyRadioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Log.d(TAG, "onCheckedChanged: " + isChecked);
-              /* if (!isChecked)
-                    anonyRadioButton.setChecked(true);
-                else anonyRadioButton.setChecked(false);*/
+                if (isChecked) {
+                    passcodeeditbox.setVisibility(View.VISIBLE);
+                } else {
+                    passcodeeditbox.setVisibility(View.GONE);
+                }
+
             }
         });
+
         description = (EditText) findViewById(R.id.Who);
         editTag = (AutoCompleteTextView) findViewById(R.id.tag);
         int layoutItemId = android.R.layout.simple_dropdown_item_1line;
@@ -558,6 +568,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
 
 
         headline = (EditText) findViewById(R.id.head);
+        passcodeeditbox = (EditText) findViewById(R.id.passcodeedit);
         sendButton = (ImageView) findViewById(R.id.btn_send);
         logoContainer = (LinearLayout) findViewById(R.id.logo);
         bottomContainer = (LinearLayout) findViewById(R.id.l1);
@@ -955,6 +966,9 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
         } else if (headline.getText().toString().trim().length() == 0) {
             Toast.makeText(PostReport.this, "Headline cannot be empty", Toast.LENGTH_SHORT).show();
             return false;
+        } else if (passcodeeditbox.getText().toString().trim().length() != 4) {
+            Toast.makeText(PostReport.this, "Passcode must be of 4 digits", Toast.LENGTH_SHORT).show();
+            return false;
         } else {
             updateUploadDataFields();
             return true;
@@ -1136,6 +1150,15 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                 params.add(POST_REPORT_KEY_NAME, "Anonymous");
             else
                 params.add(POST_REPORT_KEY_NAME, name.trim());
+
+            if (pprivacyRadioButton.isChecked())
+                params.add(POST_REPORT_KEY_PRIVACY, "Private");
+            else
+                params.add(POST_REPORT_KEY_PRIVACY, "Public");
+
+
+            if (pprivacyRadioButton.isChecked())
+                params.add("passcode", passcodeeditbox.getText().toString());
             params.add(POST_REPORT_KEY_CATEGORY, currentSpinnerPositionString);
             params.add(POST_REPORT_KEY_ADDRESS, address.trim());
             params.add(POST_REPORT_KEY_NUMBER, number.trim());
