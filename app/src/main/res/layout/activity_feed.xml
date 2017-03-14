@@ -133,6 +133,16 @@
                             android:padding="13dp"
                             app:srcCompat="@drawable/ic_person_primary_24px_white" />
 
+                        <ImageView
+                            android:id="@+id/action_qr"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+
+                            android:layout_centerVertical="true"
+                            android:layout_toLeftOf="@+id/action_menu_inbox"
+                            android:background="@drawable/ripple_effect_white"
+                            android:padding="14dp"
+                            app:srcCompat="@drawable/ic_qr_code" />
                     </RelativeLayout>
 
                 </android.support.v7.widget.Toolbar>

@@ -1,0 +1,25 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000"
+    android:keepScreenOn="true"
+    tools:context=".QRActivity">
+
+    <com.gnzlt.AndroidVisionQRReader.camera.CameraSourcePreview
+        android:id="@+id/cameraSourcePreview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="32dp"
+        android:background="#15000000"
+        android:padding="8dp"
+        android:text="Place the QR inside the preview"
+        android:textColor="#fff" />
+</RelativeLayout>

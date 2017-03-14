@@ -312,6 +312,18 @@ public class ReviewActivityQR extends AppCompatActivity {
 
 
             }
+        } else {
+            if (getIntent() != null) {
+                String url = getIntent().getStringExtra("qrdata");
+                try {
+                    topicid = url.replace("https://www.reweyou.in/qr/topicid=", "");
+                    Log.d(TAG, "onCreateintent: " + topicid);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
         }
 
 

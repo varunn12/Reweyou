@@ -9,6 +9,10 @@
                 android:id="@+id/myreports"
                 android:icon="@drawable/ic_assignment_black_24px"
                 android:title="My Issues" />
+            <item
+                android:id="@+id/qrreport"
+                android:icon="@drawable/ic_qr_code_black"
+                android:title="Scan Issue" />
 
 
         </menu>

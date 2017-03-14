@@ -22,6 +22,10 @@
     <!-- Get permission for reliable local dispatching on non-Google Play devices. -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
+    <meta-data
+        android:name="com.google.android.gms.vision.DEPENDENCIES"
+        android:value="barcode" />
+
     <application
         android:name=".ApplicationClass"
         android:allowBackup="true"
@@ -256,6 +260,8 @@
             android:theme="@style/AppTheme.NoActionBar">
 
         </activity>
+        <activity android:name="com.gnzlt.AndroidVisionQRReader.QRActivity" />
+
     </application>
 
 </manifest>

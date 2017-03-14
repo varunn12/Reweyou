@@ -62,7 +62,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/headline"
-                    android:alpha="0.54"
+                    android:autoLink="web"
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
                     android:paddingTop="8dp"
@@ -70,7 +70,7 @@
 economy of the higher denomination currencies (i.e. Rs. 500 and Rs. 1000),
 comprises of three broad aspects. With the objective of cracking down on Black money, counterfeit (fake currency),
 terro"
-                    android:textColor="#000000" />
+                    android:textColor="#9e9e9e" />
 
                 <TextView
                     android:id="@+id/user"

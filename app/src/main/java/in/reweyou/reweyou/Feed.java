@@ -64,6 +64,7 @@ import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.ParsedRequestListener;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.gnzlt.AndroidVisionQRReader.QRActivity;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.reflect.TypeToken;
 import com.wang.avi.AVLoadingIndicatorView;
@@ -81,7 +82,6 @@ import in.reweyou.reweyou.classes.HandleActivityResult;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.customView.CustomSigninDialog;
 import in.reweyou.reweyou.fragment.IssueFragment;
-import in.reweyou.reweyou.fragment.SecondFragment;
 import in.reweyou.reweyou.model.TagsModel;
 import in.reweyou.reweyou.utils.Constants;
 
@@ -93,6 +93,8 @@ public class Feed extends AppCompatActivity {
     private static final String PACKAGE_URL_SCHEME = "package:";
     private static final String TAG = Feed.class.getSimpleName();
     private static final int PERMISSION_STORAGE_REQUEST_CODE = 12;
+    private static final int QR_REQUEST = 63;
+    private static final int CUSTOM_RESULT_SCAN_ERROR = 23;
     private final int REQ_CODE_PROFILE = 56;
     UserSessionManager session;
     Uri uri;
@@ -100,9 +102,7 @@ public class Feed extends AppCompatActivity {
     ConnectionDetector cd;
     boolean doubleBackToExitPressedOnce = false;
     private TabLayout tabLayout;
-
     private DrawerLayout drawerLayout;
-
     private Toolbar mToolbar;
     private FloatingActionButton floatingActionButton;
     private ImageView image;
@@ -110,7 +110,6 @@ public class Feed extends AppCompatActivity {
     private ProgressBar pd;
     private ViewPager viewPager;
     private PagerAdapter pagerAdapter;
-    private BroadcastReceiver netChangeReceiver;
     private IntentFilter netChangeIntentFilter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
     private FirebaseAnalytics mFirebaseAnalytics;
     private BroadcastReceiver addnotireceiver = new BroadcastReceiver() {
@@ -180,7 +179,7 @@ public class Feed extends AppCompatActivity {
         }
 
 
-        netChangeReceiver = new BroadcastReceiver() {
+        /*netChangeReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
                 Log.d(TAG, "onReceive: onNetChange");
                 if (!netChangeReceiver.isInitialStickyBroadcast())
@@ -199,7 +198,7 @@ public class Feed extends AppCompatActivity {
                         }
                     }
             }
-        };
+        };*/
 
     }
 
@@ -238,16 +237,16 @@ public class Feed extends AppCompatActivity {
             makeNotificationsRequest();
         }
         LocalBroadcastManager.getInstance(this).registerReceiver(addnotireceiver, new IntentFilter(Constants.SEND_NOTI_CHANGE_REQUEST));
-        registerNetChangeReceiver();
+        // registerNetChangeReceiver();
     }
 
-    private void registerNetChangeReceiver() {
-        registerReceiver(netChangeReceiver, netChangeIntentFilter);
-    }
-
+    /* private void registerNetChangeReceiver() {
+         registerReceiver(netChangeReceiver, netChangeIntentFilter);
+     }
+ */
     @Override
     protected void onStop() {
-        unregisterReceiver(netChangeReceiver);
+        // unregisterReceiver(netChangeReceiver);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(addnotireceiver);
 
         super.onStop();
@@ -458,6 +457,16 @@ public class Feed extends AppCompatActivity {
                     startActivity(s);
                     overridePendingTransition(0, 0);
                 } else showSignupDialog();
+            }
+        });
+        ImageView qr = (ImageView) mToolbar.findViewById(R.id.action_qr);
+        qr.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent qrScanIntent = new Intent(Feed.this, QRActivity.class);
+                startActivityForResult(qrScanIntent, QR_REQUEST);
+
             }
         });
 /*
@@ -673,6 +682,25 @@ public class Feed extends AppCompatActivity {
     @Override
     protected void onActivityResult(int reqCode, int resCode, Intent data) {
 
+        if (reqCode == QR_REQUEST) {
+            Log.d(TAG, "onActivityResult: " + resCode);
+            if (resCode == RESULT_OK) {
+                String qrData = data.getStringExtra(QRActivity.EXTRA_QR_RESULT);
+                // do something with the QR data String
+                Intent i = new Intent(Feed.this, ReviewActivityQR.class);
+                i.putExtra("qrdata", qrData);
+                startActivity(i);
+
+
+            } else if (resCode == CUSTOM_RESULT_SCAN_ERROR) {
+                Log.d(TAG, "onActivityResult: scanerror");
+                Toast.makeText(Feed.this, "Scan Error. Please try again", Toast.LENGTH_SHORT).show();
+            } else {
+                Log.d(TAG, "onActivityResult: backpress");
+
+            }
+        }
+
         if (reqCode == REQ_CODE_PROFILE && resCode == RESULT_OK) {
             //called when profilepicture is updated by user
             Glide.with(Feed.this).load(session.getProfilePicture()).error(R.drawable.download).into(image);
@@ -848,6 +876,12 @@ public class Feed extends AppCompatActivity {
                         Intent inv = new Intent(Feed.this, Invite.class);
                         startActivity(inv);
                         overridePendingTransition(0, 0);
+                        break;
+
+                    case R.id.qrreport:
+                        drawerLayout.closeDrawers();
+                        Intent qrScanIntent = new Intent(Feed.this, QRActivity.class);
+                        startActivityForResult(qrScanIntent, QR_REQUEST);
                         break;
                    /* case R.id.New:
                         drawerLayout.closeDrawers();

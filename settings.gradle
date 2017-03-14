@@ -1,1 +1,1 @@
-include ':app', ':videoPreviewLib', ':multipicker'
+include ':app', ':videoPreviewLib', ':multipicker', ':AndroidVisionQRReader'
