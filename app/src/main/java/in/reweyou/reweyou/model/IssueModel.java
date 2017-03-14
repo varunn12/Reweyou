@@ -19,6 +19,11 @@ public class IssueModel {
     private String headline;
     private String status;
     private String privacy;
+    private String passcode;
+
+    public String getPasscode() {
+        return passcode;
+    }
 
     public String getPrivacy() {
         return privacy;

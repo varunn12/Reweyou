@@ -460,6 +460,8 @@ public class ReviewActivity extends AppCompatActivity {
                             remove.setVisibility(View.GONE);
                         } else if (response.equals("Passcode is incorrect")) {
                             Toast.makeText(ReviewActivity.this, "Passcode is incorrect", Toast.LENGTH_SHORT).show();
+                            send.setClickable(true);
+                            remove.setClickable(true);
                         }
 
 

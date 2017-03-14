@@ -27,6 +27,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -145,7 +146,15 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         if (session.getMobileNumber().equals(messagelist.get(position).getCreated_by())) {
             issueViewHolder.editpost.setVisibility(View.VISIBLE);
-        } else issueViewHolder.editpost.setVisibility(View.GONE);
+            if (!messagelist.get(position).getPasscode().isEmpty()) {
+                issueViewHolder.codecon.setVisibility(View.VISIBLE);
+                issueViewHolder.code.setText(messagelist.get(position).getPasscode());
+            } else issueViewHolder.codecon.setVisibility(View.GONE);
+
+        } else {
+            issueViewHolder.editpost.setVisibility(View.GONE);
+            issueViewHolder.codecon.setVisibility(View.GONE);
+        }
 
 
     }
@@ -341,17 +350,20 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private TextView description;
         private TextView rating;
         private TextView review;
-        private TextView user;
+        private TextView user, code;
         private TextView tag;
         private ImageView editpost, imgStar, lock;
         private ImageView imageView;
         private CardView cv;
+        private LinearLayout codecon;
 
         private IssueViewHolder(View inflate) {
             super(inflate);
             headline = (TextView) inflate.findViewById(R.id.headline);
             description = (TextView) inflate.findViewById(R.id.description);
             rating = (TextView) inflate.findViewById(R.id.rating);
+            code = (TextView) inflate.findViewById(R.id.code);
+            codecon = (LinearLayout) inflate.findViewById(R.id.codecon);
             editpost = (ImageView) inflate.findViewById(R.id.editpost);
             lock = (ImageView) inflate.findViewById(R.id.lock);
             imgStar = (ImageView) inflate.findViewById(R.id.imgStart);

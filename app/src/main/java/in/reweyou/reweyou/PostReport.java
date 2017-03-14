@@ -967,7 +967,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
         } else if (headline.getText().toString().trim().length() == 0) {
             Toast.makeText(PostReport.this, "Headline cannot be empty", Toast.LENGTH_SHORT).show();
             return false;
-        } else if (passcodeeditbox.getText().toString().trim().length() != 4) {
+        } else if (pprivacyRadioButton.isChecked() && passcodeeditbox.getText().toString().trim().length() != 4) {
             Toast.makeText(PostReport.this, "Passcode must be of 4 digits", Toast.LENGTH_SHORT).show();
             return false;
         } else {

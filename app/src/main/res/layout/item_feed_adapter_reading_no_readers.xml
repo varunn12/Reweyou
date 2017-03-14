@@ -142,6 +142,7 @@ terro"
             android:background="@color/divider" />
 
         <LinearLayout
+            android:id="@+id/aaaadw"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/c"
@@ -249,6 +250,33 @@ terro"
                 android:textColor="#000"
 
                 android:textSize="12dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/codecon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/aaaadw"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="12dp"
+            android:layout_marginTop="4dp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="PASSCODE- " />
+
+            <TextView
+                android:id="@+id/code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0000"
+                android:textColor="#212121"
+                android:textSize="20dp"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
