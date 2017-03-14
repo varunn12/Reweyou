@@ -686,10 +686,15 @@ public class Feed extends AppCompatActivity {
             Log.d(TAG, "onActivityResult: " + resCode);
             if (resCode == RESULT_OK) {
                 String qrData = data.getStringExtra(QRActivity.EXTRA_QR_RESULT);
-                // do something with the QR data String
-                Intent i = new Intent(Feed.this, ReviewActivityQR.class);
-                i.putExtra("qrdata", qrData);
-                startActivity(i);
+                if (qrData.contains("https://www.reweyou.in/qr/")) {
+                    // do something with the QR data String
+                    Intent i = new Intent(Feed.this, ReviewActivityQR.class);
+                    i.putExtra("qrdata", qrData);
+                    startActivity(i);
+                } else {
+                    Toast.makeText(Feed.this, "Invalid QR code", Toast.LENGTH_SHORT).show();
+
+                }
 
 
             } else if (resCode == CUSTOM_RESULT_SCAN_ERROR) {
