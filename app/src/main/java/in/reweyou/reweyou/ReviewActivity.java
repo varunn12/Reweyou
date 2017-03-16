@@ -25,6 +25,8 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -98,6 +100,7 @@ public class ReviewActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private String privacy;
     private String passcode = "default";
+    private LinearLayout uploadingCon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,6 +139,10 @@ public class ReviewActivity extends AppCompatActivity {
 
                 numrating = 1;
 
+                if (edittext.getText().toString().trim().length() != 0)
+                    send.setImageResource(R.drawable.button_send_reviews1);
+
+
             }
         });
 
@@ -149,6 +156,8 @@ public class ReviewActivity extends AppCompatActivity {
                 ra5.setColorFilter(Color.parseColor("#e0e0e0"));
                 numrating = 2;
 
+                if (edittext.getText().toString().trim().length() != 0)
+                    send.setImageResource(R.drawable.button_send_reviews2);
 
             }
         });
@@ -164,7 +173,8 @@ public class ReviewActivity extends AppCompatActivity {
                 ra5.setColorFilter(Color.parseColor("#e0e0e0"));
                 numrating = 3;
 
-
+                if (edittext.getText().toString().trim().length() != 0)
+                    send.setImageResource(R.drawable.button_send_reviews3);
             }
         });
 
@@ -179,6 +189,9 @@ public class ReviewActivity extends AppCompatActivity {
 
                 ra5.setColorFilter(Color.parseColor("#e0e0e0"));
                 numrating = 4;
+
+                if (edittext.getText().toString().trim().length() != 0)
+                    send.setImageResource(R.drawable.button_send_reviews4);
 
             }
         });
@@ -195,6 +208,9 @@ public class ReviewActivity extends AppCompatActivity {
 
                 numrating = 5;
 
+                if (edittext.getText().toString().trim().length() != 0)
+                    send.setImageResource(R.drawable.button_send_reviews5);
+
             }
         });
 
@@ -205,6 +221,7 @@ public class ReviewActivity extends AppCompatActivity {
         ratetext = (TextView) findViewById(R.id.ratetext);
         c1 = (LinearLayout) findViewById(R.id.c1);
         b1 = (LinearLayout) findViewById(R.id.b1);
+        uploadingCon = (LinearLayout) findViewById(R.id.uploading_container);
         divider2 = findViewById(R.id.divider2);
         tvdescription = (TextView) findViewById(R.id.description);
         tvrating = (TextView) findViewById(R.id.rating);
@@ -229,6 +246,7 @@ public class ReviewActivity extends AppCompatActivity {
             }
         });
         send.setClickable(false);
+        send.setTag("0");
 
         camera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -244,23 +262,62 @@ public class ReviewActivity extends AppCompatActivity {
                 clearAttachedMediaPaths();
                 reim.setVisibility(View.GONE);
                 remove.setVisibility(View.GONE);
+                reim.setImageResource(0);
             }
         });
         edittext.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.toString().trim().length() == 0) {
+                    send.setTag("0");
                     send.setClickable(false);
-                    send.setImageResource(R.drawable.button_send_disable);
+                    send.animate().scaleY(0.0f).scaleX(0.0f).setDuration(200).setInterpolator(new AccelerateInterpolator()).withEndAction(new Runnable() {
+                        @Override
+                        public void run() {
+                            send.setImageResource(R.drawable.button_send_disable);
+                            send.animate().scaleX(1.0f).scaleY(1.0f).setInterpolator(new DecelerateInterpolator()).setDuration(300);
+                        }
+                    });
 
-                } else {
+                } else if (s.toString().trim().length() >0) {
+
+
                     send.setClickable(true);
-                    send.setImageResource(R.drawable.button_send_comments);
+
+                    if (!send.getTag().toString().equals("1")) {
+                        send.setTag("1");
+                        send.animate().scaleY(0.0f).scaleX(0.0f).setDuration(200).setInterpolator(new AccelerateInterpolator()).withEndAction(new Runnable() {
+                            @Override
+                            public void run() {
+                                switch (numrating) {
+                                    case 0:
+                                        send.setImageResource(R.drawable.button_send_comments);
+                                        break;
+                                    case 1:
+                                        send.setImageResource(R.drawable.button_send_reviews1);
+                                        break;
+                                    case 2:
+                                        send.setImageResource(R.drawable.button_send_reviews2);
+                                        break;
+                                    case 3:
+                                        send.setImageResource(R.drawable.button_send_reviews3);
+                                        break;
+                                    case 4:
+                                        send.setImageResource(R.drawable.button_send_reviews4);
+                                        break;
+                                    case 5:
+                                        send.setImageResource(R.drawable.button_send_reviews5);
+                                        break;
+                                }
+                                send.animate().scaleX(1.0f).scaleY(1.0f).setInterpolator(new DecelerateInterpolator()).setDuration(300);
+                            }
+                        });
+                    }
+
                 }
             }
 
@@ -379,9 +436,7 @@ public class ReviewActivity extends AppCompatActivity {
     }
 
     private void updateReviewWithImage() {
-        progressDialog = new ProgressDialog(ReviewActivity.this);
-        progressDialog.setMessage("Uploading. Please Wait...");
-        progressDialog.show();
+
         if (selectedImageUri != null) {
             Glide
                     .with(this)
@@ -416,8 +471,22 @@ public class ReviewActivity extends AppCompatActivity {
     }
 
     private void updateReview() {
-        send.setClickable(false);
-        remove.setClickable(false);
+
+
+        b1.setVisibility(View.INVISIBLE);
+        c1.setVisibility(View.INVISIBLE);
+        if (encodedImage != null) {
+            reim.setVisibility(View.INVISIBLE);
+            remove.setVisibility(View.INVISIBLE);
+        }
+
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                uploadingCon.setVisibility(View.VISIBLE);
+            }
+        });
+
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("topicid", topicid);
         hashMap.put("number", sessionManager.getMobileNumber());
@@ -433,7 +502,6 @@ public class ReviewActivity extends AppCompatActivity {
             hashMap.put("image", encodedImage);
 
 
-
         AndroidNetworking.post("https://reweyou.in/reviews/post_reviews.php")
                 .addBodyParameter(hashMap)
                 .setTag("repordt")
@@ -442,26 +510,34 @@ public class ReviewActivity extends AppCompatActivity {
                 .getAsString(new StringRequestListener() {
                     @Override
                     public void onResponse(String response) {
-                        if (progressDialog != null)
-                            progressDialog.dismiss();
-
 
                         Log.d(TAG, "onResponse: " + response);
                         if (response.equals("reviewed")) {
                             edittext.setText("");
                             loadReportsfromServer();
 
+                            clearAttachedMediaPaths();
+
+                            uploadingCon.setVisibility(View.GONE);
+
                             ratetext.setVisibility(View.GONE);
                             b1.setVisibility(View.GONE);
                             c1.setVisibility(View.GONE);
                             divider2.setVisibility(View.GONE);
-                            clearAttachedMediaPaths();
                             reim.setVisibility(View.GONE);
                             remove.setVisibility(View.GONE);
                         } else if (response.equals("Passcode is incorrect")) {
                             Toast.makeText(ReviewActivity.this, "Passcode is incorrect", Toast.LENGTH_SHORT).show();
-                            send.setClickable(true);
-                            remove.setClickable(true);
+                            uploadingCon.setVisibility(View.INVISIBLE);
+
+                            ratetext.setVisibility(View.VISIBLE);
+                            b1.setVisibility(View.VISIBLE);
+                            c1.setVisibility(View.VISIBLE);
+                            divider2.setVisibility(View.VISIBLE);
+                            if (encodedImage != null) {
+                                reim.setVisibility(View.VISIBLE);
+                                remove.setVisibility(View.VISIBLE);
+                            }
                         }
 
 
@@ -469,12 +545,19 @@ public class ReviewActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(ANError anError) {
-                        if (progressDialog != null) progressDialog.dismiss();
+                        uploadingCon.setVisibility(View.INVISIBLE);
+
+                        ratetext.setVisibility(View.VISIBLE);
+                        b1.setVisibility(View.VISIBLE);
+                        c1.setVisibility(View.VISIBLE);
+                        divider2.setVisibility(View.VISIBLE);
+                        if (encodedImage != null) {
+                            reim.setVisibility(View.VISIBLE);
+                            remove.setVisibility(View.VISIBLE);
+                        }
 
                         Log.e(TAG, "error: " + anError.getErrorDetail());
                         Toast.makeText(ReviewActivity.this, "Couldn't connect", Toast.LENGTH_SHORT).show();
-                        send.setClickable(true);
-                        remove.setClickable(true);
 
 
                     }
@@ -709,6 +792,7 @@ public class ReviewActivity extends AppCompatActivity {
     private void clearAttachedMediaPaths() {
 
         selectedImageUri = null;
+        encodedImage=null;
 
     }
 

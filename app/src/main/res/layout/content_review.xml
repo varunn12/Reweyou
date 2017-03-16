@@ -254,6 +254,39 @@ terro"
 
                 </LinearLayout>
 
+                <LinearLayout
+                    android:id="@+id/uploading_container"
+                    android:visibility="invisible"
+                    android:layout_width="wrap_content"
+                    android:layout_below="@+id/ratetext"
+                    android:layout_marginTop="16dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_height="wrap_content">
+
+
+                    <com.wang.avi.AVLoadingIndicatorView
+                        android:id="@+id/uploading_spinner"
+                        style="@style/AVLoadingIndicatorView.Small"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/r2"
+                        android:layout_centerHorizontal="true"
+                        android:alpha="0.87"
+                        android:visibility="visible"
+                        app:indicatorColor="@color/divider"
+                        app:indicatorName="LineSpinFadeLoaderIndicator" />
+                    <TextView
+                        android:id="@+id/uploading_text"
+                        android:layout_width="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_height="wrap_content"
+                        android:text=" Uploading"
+                        android:textColor="#000"
+                        android:alpha=".54"
+                        />
+                </LinearLayout>
+
+
                 <ImageView
                     android:id="@+id/reim"
                     android:layout_width="120dp"
@@ -374,7 +407,7 @@ terro"
                     android:layout_centerHorizontal="true"
                     android:layout_marginBottom="16dp"
                     android:alpha="0.87"
-                    android:paddingTop="16dp"
+                    android:paddingTop="12dp"
                     android:visibility="visible"
                     app:indicatorColor="@color/divider"
                     app:indicatorName="LineSpinFadeLoaderIndicator" />
