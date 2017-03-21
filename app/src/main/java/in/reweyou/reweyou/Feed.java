@@ -240,7 +240,7 @@ public class Feed extends AppCompatActivity {
                                 makeIssueRequest("All");
 
                             }
-                        }, 500);
+                        }, 400);
                     }
 
                     @Override

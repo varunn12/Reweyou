@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -38,6 +39,9 @@ import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.StringRequestListener;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -136,13 +140,36 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         if (!messagelist.get(position).getGif().isEmpty()) {
             issueViewHolder.imageView.setVisibility(View.VISIBLE);
+            issueViewHolder.shine.setVisibility(View.VISIBLE);
             Glide.with(mContext).load(messagelist.get(position).getGif()).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(issueViewHolder.imageView);
         } else if (!messagelist.get(position).getImage().isEmpty()) {
             issueViewHolder.imageView.setVisibility(View.VISIBLE);
-            Glide.with(mContext).load(messagelist.get(position).getImage()).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(issueViewHolder.imageView);
+            issueViewHolder.shine.setVisibility(View.VISIBLE);
+            Glide.with(mContext).load(messagelist.get(position).getImage()).diskCacheStrategy(DiskCacheStrategy.SOURCE).listener(new RequestListener<String, GlideDrawable>() {
+                @Override
+                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                    return false;
+                }
+
+                @Override
+                public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            issueViewHolder.shine.animate().translationX(pxFromDp(mContext, 90)).setDuration(600).setInterpolator(new AccelerateInterpolator());
+                        }
+                    }, 900);
+
+                    return false;
+                }
+            }).into(issueViewHolder.imageView);
         } else {
             issueViewHolder.imageView.setVisibility(View.GONE);
+            issueViewHolder.shine.setVisibility(View.GONE);
         }
+
+
         if (session.getMobileNumber().equals(messagelist.get(position).getCreated_by())) {
             issueViewHolder.editpost.setVisibility(View.VISIBLE);
             if (!messagelist.get(position).getPasscode().isEmpty()) {
@@ -382,7 +409,7 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private TextView user, code;
         private TextView tag;
         private ImageView editpost, imgStar, lock;
-        private ImageView imageView;
+        private ImageView imageView, shine;
         private CardView cv;
         private LinearLayout codecon;
 
@@ -395,6 +422,7 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             codecon = (LinearLayout) inflate.findViewById(R.id.codecon);
             editpost = (ImageView) inflate.findViewById(R.id.editpost);
             lock = (ImageView) inflate.findViewById(R.id.lock);
+            shine = (ImageView) inflate.findViewById(R.id.shine);
             imgStar = (ImageView) inflate.findViewById(R.id.imgStart);
             share = (ImageView) inflate.findViewById(R.id.sharepost);
             review = (TextView) inflate.findViewById(R.id.review);

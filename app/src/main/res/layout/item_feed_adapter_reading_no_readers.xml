@@ -33,6 +33,16 @@
             android:layout_marginTop="20dp"
             android:scaleType="centerCrop" />
 
+        <ImageView
+            android:id="@+id/shine"
+            android:layout_width="30dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="20dp"
+            android:layout_toLeftOf="@+id/image"
+            android:background="@drawable/shine_effect_layer"
+            android:scaleType="centerCrop" />
+
+
         <LinearLayout
             android:id="@+id/a"
             android:layout_width="match_parent"
@@ -148,8 +158,7 @@ terro"
             android:layout_below="@+id/c"
             android:layout_gravity="end"
             android:layout_marginBottom="6dp"
-            android:layout_marginRight="16dp"
-            >
+            android:layout_marginRight="16dp">
 
             <ImageView
                 android:id="@+id/imgStart"

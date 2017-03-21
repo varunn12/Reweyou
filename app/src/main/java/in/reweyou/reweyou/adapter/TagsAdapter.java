@@ -93,7 +93,7 @@ public class TagsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 messagelist.add(tagsModel);
                 notifyItemInserted(messagelist.size() - 1);
             }
-        }, selectPosition * 30);
+        }, selectPosition * 20);
     }
 
     private class TagsViewHolder extends RecyclerView.ViewHolder {
