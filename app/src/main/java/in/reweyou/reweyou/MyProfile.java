@@ -182,13 +182,13 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                     e.printStackTrace();
                 }
                 break;
-            case R.id.Readers:
+           /* case R.id.Readers:
                 Bundle bundle = new Bundle();
                 bundle.putString("myData", user);
                 Intent in = new Intent(this, Readers.class);
                 in.putExtras(bundle);
                 startActivity(in);
-                break;
+                break;*/
         }
     }
 

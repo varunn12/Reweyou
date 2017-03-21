@@ -13,10 +13,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 import in.reweyou.reweyou.Signup;
-import in.reweyou.reweyou.model.FeedModel;
 
 /**
  * Created by Reweyou on 12/17/2015.
@@ -65,18 +63,7 @@ public class UserSessionManager {
 
     }
 
-    public static String getKeyLocation() {
-        return KEY_LOCATION;
-    }
 
-    public String getCategory() {
-        return pref.getString(KEY_CATEGORY, null);
-    }
-
-    public void setCategory(String location) {
-        editor.putString(KEY_CATEGORY, location);
-        editor.commit();
-    }
 
     public String getProfilePicture() {
         return pref.getString(KEY_PIC, null);
@@ -208,27 +195,11 @@ public class UserSessionManager {
     }
 
     // Check for login
-    public boolean isUserLoggedIn() {
+    private boolean isUserLoggedIn() {
         return pref.getBoolean(IS_USER_LOGIN, false);
     }
 
-    public boolean getFromSP(String key) {
-        return pref.getBoolean(key, true);
-    }
 
-    public void saveInSp(String key, boolean value) {
-        editor.putBoolean(key, value);
-        editor.commit();
-    }
-
-    public void saveData(String data, int position) {
-        editor.putString("feed" + position, data);
-        editor.commit();
-    }
-
-    public String getData(int position) {
-        return pref.getString("feed" + position, null);
-    }
 
     public void setAuthToken(String token) {
         editor.putString(KEY_AUTH_TOKEN, token);
@@ -239,16 +210,6 @@ public class UserSessionManager {
         return pref.getString(KEY_AUTH_TOKEN, "default");
     }
 
-    public List<String> getLikesList() {
-
-        List<String> templist = new ArrayList<>();
-        templist.add("1");
-        Set<String> foo = new HashSet<String>(templist);
-
-        List<String> list = new ArrayList<String>(pref.getStringSet("likesList", foo));
-
-        return list;
-    }
 
     public void setLikesList(List<String> likesList) {
         Set<String> list = new HashSet<String>(likesList);
@@ -256,35 +217,7 @@ public class UserSessionManager {
         editor.commit();
     }
 
-    public void addlike(String id) {
-        Set<String> set = new TreeSet<String>(pref.getStringSet("likesList", new TreeSet<String>()));
-        set.add(id);
-        // Log.d("add set", String.valueOf(set));
 
-        if (set.size() > 70) {
-            List<String> list22 = new ArrayList<>();
-            list22.addAll(set);
-            int size = list22.size();
-            for (int i = 0; i < size - 50; i++) {
-                list22.remove(0);
-            }
-            set = new HashSet<>(list22);
-        }
-
-
-        editor.putStringSet("likesList", set);
-        editor.apply();
-
-
-    }
-
-    public void removelike(String id) {
-        Set<String> set = new TreeSet<String>(pref.getStringSet("likesList", new TreeSet<String>()));
-        set.remove(id);
-        // Log.d("remove set", String.valueOf(set));
-        editor.putStringSet("likesList", set);
-        editor.apply();
-    }
 
     public void setFirstLoad() {
         editor.putBoolean(FIRST_LOAD_TUT, true);
@@ -300,71 +233,12 @@ public class UserSessionManager {
         editor.commit();
     }
 
-    public boolean getFirstLoad1() {
-        return pref.getBoolean("aaas", false);
-    }
 
-    public void saveNewsReportsinCache(List<FeedModel> list) {
-        for (int i = 0; i < list.size(); i++) {
-            editor.putString("newsReport" + i, gson.toJson(list.get(i)));
-        }
-        editor.apply();
-    }
-
-    public List<FeedModel> getSaveNewsReportsinCache() {
-        List<FeedModel> list = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            list.add(gson.fromJson(pref.getString("newsReport" + i, null), FeedModel.class));
-        }
-        return list;
-    }
-
-    public boolean getispresentSaveNewsReportsinCache() {
-        return pref.getString("newsReport" + 0, null) != null;
-    }
 
     public String getCustomLocation() {
         return pref.getString(KEY_CUSTOM_LOCATION, getLoginLocation());
     }
 
 
-    public String getCustomLocation1() {
-        return pref.getString(KEY_CUSTOM_LOCATION + "1", getclocation("New Delhi"));
-    }
 
-    public String getCustomLocation2() {
-        return pref.getString(KEY_CUSTOM_LOCATION + "2", getclocation("Mumbai"));
-    }
-
-    public String getCustomLocation3() {
-        return pref.getString(KEY_CUSTOM_LOCATION + "3", getclocation("Dhanbad"));
-    }
-
-
-    private String getclocation(String l) {
-        if (l.equals(getCustomLocation()))
-            return "Chennai";
-        else return l;
-    }
-
-
-    public void saveCustomLocation(String s) {
-        editor.putString(KEY_CUSTOM_LOCATION, s);
-        editor.apply();
-    }
-
-    public void saveCustomsubLocation1(String s) {
-        editor.putString(KEY_CUSTOM_LOCATION + "1", s);
-        editor.apply();
-    }
-
-    public void saveCustomsubLocation2(String s) {
-        editor.putString(KEY_CUSTOM_LOCATION + "2", s);
-        editor.apply();
-    }
-
-    public void saveCustomsubLocation3(String s) {
-        editor.putString(KEY_CUSTOM_LOCATION + "3", s);
-        editor.apply();
-    }
 }

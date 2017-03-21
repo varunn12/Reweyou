@@ -1,38 +1,42 @@
 [
     {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/release/color-v23/abc_tint_switch_thumb.xml",
-        "source": "/home/master/.android/build-cache/f6dea66343e871eae1711d69217c805ed21be5e8/output/res/color-v23/abc_tint_switch_thumb.xml"
+        "source": "/home/master/.android/build-cache/62586ff7837ce3f74156d1b3fe386627efaea2cc/output/res/color-v23/abc_tint_switch_thumb.xml"
     },
     {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/release/color-v23/abc_tint_default.xml",
-        "source": "/home/master/.android/build-cache/f6dea66343e871eae1711d69217c805ed21be5e8/output/res/color-v23/abc_tint_default.xml"
+        "source": "/home/master/.android/build-cache/62586ff7837ce3f74156d1b3fe386627efaea2cc/output/res/color-v23/abc_tint_default.xml"
+    },
+    {
+        "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/release/color-v23/abc_btn_colored_text_material.xml",
+        "source": "/home/master/.android/build-cache/e13d202edce62b277b65438a14e73fa3c79d644d/output/res/color-v23/abc_btn_colored_text_material.xml"
     },
     {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/release/color-v23/abc_tint_btn_checkable.xml",
-        "source": "/home/master/.android/build-cache/f6dea66343e871eae1711d69217c805ed21be5e8/output/res/color-v23/abc_tint_btn_checkable.xml"
+        "source": "/home/master/.android/build-cache/62586ff7837ce3f74156d1b3fe386627efaea2cc/output/res/color-v23/abc_tint_btn_checkable.xml"
     },
     {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/release/color-v23/abc_tint_switch_track.xml",
-        "source": "/home/master/.android/build-cache/f6dea66343e871eae1711d69217c805ed21be5e8/output/res/color-v23/abc_tint_switch_track.xml"
+        "source": "/home/master/.android/build-cache/62586ff7837ce3f74156d1b3fe386627efaea2cc/output/res/color-v23/abc_tint_switch_track.xml"
     },
     {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/release/color-v23/abc_tint_edittext.xml",
-        "source": "/home/master/.android/build-cache/f6dea66343e871eae1711d69217c805ed21be5e8/output/res/color-v23/abc_tint_edittext.xml"
+        "source": "/home/master/.android/build-cache/62586ff7837ce3f74156d1b3fe386627efaea2cc/output/res/color-v23/abc_tint_edittext.xml"
     },
     {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/release/color-v23/abc_color_highlight_material.xml",
-        "source": "/home/master/.android/build-cache/f6dea66343e871eae1711d69217c805ed21be5e8/output/res/color-v23/abc_color_highlight_material.xml"
+        "source": "/home/master/.android/build-cache/62586ff7837ce3f74156d1b3fe386627efaea2cc/output/res/color-v23/abc_color_highlight_material.xml"
     },
     {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/release/color-v23/abc_tint_spinner.xml",
-        "source": "/home/master/.android/build-cache/f6dea66343e871eae1711d69217c805ed21be5e8/output/res/color-v23/abc_tint_spinner.xml"
+        "source": "/home/master/.android/build-cache/62586ff7837ce3f74156d1b3fe386627efaea2cc/output/res/color-v23/abc_tint_spinner.xml"
     },
     {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/release/color-v23/abc_btn_colored_borderless_text_material.xml",
-        "source": "/home/master/.android/build-cache/f6dea66343e871eae1711d69217c805ed21be5e8/output/res/color-v23/abc_btn_colored_borderless_text_material.xml"
+        "source": "/home/master/.android/build-cache/62586ff7837ce3f74156d1b3fe386627efaea2cc/output/res/color-v23/abc_btn_colored_borderless_text_material.xml"
     },
     {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/release/color-v23/abc_tint_seek_thumb.xml",
-        "source": "/home/master/.android/build-cache/f6dea66343e871eae1711d69217c805ed21be5e8/output/res/color-v23/abc_tint_seek_thumb.xml"
+        "source": "/home/master/.android/build-cache/62586ff7837ce3f74156d1b3fe386627efaea2cc/output/res/color-v23/abc_tint_seek_thumb.xml"
     }
 ]

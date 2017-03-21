@@ -1,6 +1,5 @@
 package in.reweyou.reweyou;
 
-import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -15,11 +14,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -46,18 +43,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkError;
-import com.android.volley.NoConnectionError;
-import com.android.volley.ParseError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.ServerError;
-import com.android.volley.TimeoutError;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
@@ -69,12 +54,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.reflect.TypeToken;
 import com.wang.avi.AVLoadingIndicatorView;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import in.reweyou.reweyou.adapter.TagsAdapter;
 import in.reweyou.reweyou.classes.ConnectionDetector;
@@ -84,6 +64,7 @@ import in.reweyou.reweyou.customView.CustomSigninDialog;
 import in.reweyou.reweyou.fragment.IssueFragment;
 import in.reweyou.reweyou.model.TagsModel;
 import in.reweyou.reweyou.utils.Constants;
+import jp.wasabeef.recyclerview.animators.ScaleInAnimator;
 
 import static in.reweyou.reweyou.classes.HandleActivityResult.HANDLE_IMAGE;
 import static in.reweyou.reweyou.classes.HandleActivityResult.HANDLE_VIDEO;
@@ -140,9 +121,6 @@ public class Feed extends AppCompatActivity {
     private String currentTab = "All";
     private AVLoadingIndicatorView loadingcircular;
 
-    public float pxFromDp(final Context context, final float dp) {
-        return dp * context.getResources().getDisplayMetrics().density;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,47 +136,9 @@ public class Feed extends AppCompatActivity {
 
         initViews();
 
-
-        /*method to check for users who were using old versions of the app*/
-
-        //device id must be null for the users using old version of app
-
-        if (session.getDeviceid() == null && session.checkLoginSplash()) {
-            checkforolduserstatus();
-        } else {                              //for new users we didnt need this check
-            pagerAdapter = new PagerAdapter(getSupportFragmentManager());
-            viewPager.setAdapter(pagerAdapter);
-            viewPager.setCurrentItem(0);
-            if (session.checkLoginSplash())
-                makeNotificationsRequest();
-
-
-           /* if (!session.getFirstLoad1())
-                showwhatsnewdialog();
-*/
-        }
-
-
-        /*netChangeReceiver = new BroadcastReceiver() {
-            public void onReceive(Context context, Intent intent) {
-                Log.d(TAG, "onReceive: onNetChange");
-                if (!netChangeReceiver.isInitialStickyBroadcast())
-                    if (viewPager != null) {
-                        if (pagerAdapter != null) {
-                            Fragment page = pagerAdapter.getRegisteredFragment(viewPager.getCurrentItem());
-                            if (page != null) {
-                                Log.d(TAG, "onReceive: onRefresh of fragment " + viewPager.getCurrentItem() + " is called");
-
-                                try {
-                                    ((SecondFragment) page).onNetChange();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                    }
-            }
-        };*/
+        pagerAdapter = new PagerAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(pagerAdapter);
+        viewPager.setCurrentItem(0);
 
     }
 
@@ -260,6 +200,8 @@ public class Feed extends AppCompatActivity {
         initSigninDialog();
 
         recycelrview = (RecyclerView) findViewById(R.id.tagsrecyclerview);
+        recycelrview.setItemAnimator(new ScaleInAnimator());
+
 
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.HORIZONTAL);
         recycelrview.setLayoutManager(staggeredGridLayoutManager);
@@ -273,7 +215,7 @@ public class Feed extends AppCompatActivity {
 
         AndroidNetworking.get("https://reweyou.in/reviews/tags.php")
                 .setTag("t")
-                .setPriority(Priority.HIGH)
+                .setPriority(Priority.IMMEDIATE)
                 .build()
                 .getAsParsed(new TypeToken<List<TagsModel>>() {
                 }, new ParsedRequestListener<List<TagsModel>>() {
@@ -287,8 +229,18 @@ public class Feed extends AppCompatActivity {
                         tagsModel.setTags("All");
 
                         list.add(0, tagsModel);
-                        tagsAdapter.add(list);
+                        //tagsAdapter.add(list);
 
+                        for (int i = 0; i < list.size(); i++)
+                            tagsAdapter.addsingle(list.get(i), i);
+
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                makeIssueRequest("All");
+
+                            }
+                        }, 500);
                     }
 
                     @Override
@@ -349,95 +301,6 @@ public class Feed extends AppCompatActivity {
         });
     }
 
-    private void showProgressBarforOldUserCheck() {
-        pd = (ProgressBar) findViewById(R.id.pd);
-        pd.setVisibility(View.VISIBLE);
-    }
-
-    private void checkforolduserstatus() {
-
-        showProgressBarforOldUserCheck(); //show progress bar when making request to update old user data
-        tabLayout.setVisibility(View.GONE); //hide tabs bar as it empty(no tabs name) because we havent set adapter
-
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.URL_OLD_USER_STATUS,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        pd.setVisibility(View.GONE);
-                        Log.d("responseolduser", response);
-                        if (response != null) {
-                            if (!response.isEmpty()) {
-                                if (response.equals("error")) {
-                                    Log.d("olduser", "error");
-                                } else {
-
-                                    try {
-                                        JSONArray jsonArray = new JSONArray(response);
-                                        String token = (String) jsonArray.get(0);
-                                        String profilepic = (String) jsonArray.get(1);
-
-                                        Log.d("token", token);
-                                        Log.d("profielpic", profilepic);
-
-                                        session.setAuthToken(token);
-                                        session.setDeviceid(Settings.Secure.getString(Feed.this.getContentResolver(), Settings.Secure.ANDROID_ID));
-                                        session.setProfilePicture(profilepic);
-
-
-                                        tabLayout.setVisibility(View.VISIBLE);
-                                        pagerAdapter = new PagerAdapter(getSupportFragmentManager());
-                                        viewPager.setAdapter(pagerAdapter);
-                                        viewPager.setCurrentItem(0);
-                                        if (image != null)
-                                            Glide.with(Feed.this).load(session.getProfilePicture()).error(R.drawable.download).into(image);
-                                        makeNotificationsRequest();
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-
-
-                                }
-                            }
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        pd.setVisibility(View.GONE);
-                        if (error instanceof NoConnectionError) {
-                            showSnackBar("no internet connectivity");
-                        } else if (error instanceof TimeoutError) {
-                            showSnackBar("poor internet connectivity");
-                        } else if (error instanceof NetworkError || error instanceof ParseError || error instanceof ServerError) {
-                            showSnackBar("something went wrong");
-                        }
-
-                    }
-                }) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> map = new HashMap<String, String>();
-                map.put("number", session.getMobileNumber());
-                map.put("deviceid", Settings.Secure.getString(Feed.this.getContentResolver(), Settings.Secure.ANDROID_ID));
-                return map;
-            }
-        };
-        RequestQueue requestQueue = Volley.newRequestQueue(Feed.this);
-        requestQueue.add(stringRequest);
-
-
-    }
-
-    private void showSnackBar(String msg) {
-        Snackbar.make(findViewById(R.id.coordinatorLayout), msg, Snackbar.LENGTH_LONG).setDuration(Snackbar.LENGTH_INDEFINITE)
-                .setAction("RETRY", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        checkforolduserstatus();
-                    }
-                }).show();
-    }
 
     private void initToolbar() {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -978,67 +841,6 @@ public class Feed extends AppCompatActivity {
         }
     }
 
-    public void elevatetab() {
-        if (!animRunning) {
-            valueAnimator = ValueAnimator.ofFloat(pxFromDp(this, 1), pxFromDp(this, 7));
-            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    float value = (float) animation.getAnimatedValue();
-                    tabLayout.setElevation(value);
-                }
-            });
-            valueAnimator.addListener(new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    animRunning = true;
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-                }
-
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-
-                }
-            });
-            valueAnimator.setDuration(300);
-            valueAnimator.start();
-        }
-
-    }
-
-    public void deelevatetab() {
-        animRunning = false;
-
-        if (valueAnimator != null)
-            valueAnimator.cancel();
-
-        if (tabLayout.getElevation() == pxFromDp(this, 7)) {
-            valueAnimator1 = ValueAnimator.ofFloat(pxFromDp(this, 7), pxFromDp(this, 1));
-            valueAnimator1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    float value = (float) animation.getAnimatedValue();
-                    tabLayout.setElevation(value);
-                }
-            });
-
-            valueAnimator1.setDuration(300);
-            valueAnimator1.start();
-        }
-
-    }
-
-    public String getCurrentTab() {
-        return currentTab;
-    }
 
     public void makeIssueRequest(String s) {
         currentTab = s;

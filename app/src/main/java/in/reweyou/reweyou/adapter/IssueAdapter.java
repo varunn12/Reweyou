@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
@@ -97,7 +98,7 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder2, final int position) {
 
-        IssueViewHolder issueViewHolder = (IssueViewHolder) viewHolder2;
+        final IssueViewHolder issueViewHolder = (IssueViewHolder) viewHolder2;
         issueViewHolder.headline.setText(messagelist.get(position).getHeadline());
         issueViewHolder.description.setText(messagelist.get(position).getDescription());
         issueViewHolder.rating.setText(messagelist.get(position).getRating());
@@ -142,8 +143,6 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         } else {
             issueViewHolder.imageView.setVisibility(View.GONE);
         }
-
-
         if (session.getMobileNumber().equals(messagelist.get(position).getCreated_by())) {
             issueViewHolder.editpost.setVisibility(View.VISIBLE);
             if (!messagelist.get(position).getPasscode().isEmpty()) {
@@ -164,10 +163,36 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         return messagelist.size();
     }
 
-    public void add(List<IssueModel> list) {
-        messagelist.clear();
-        messagelist.addAll(list);
-        notifyDataSetChanged();
+    public void add(final List<IssueModel> list) {
+
+        if (messagelist.size() != 0) {
+            messagelist.clear();
+            messagelist.addAll(list);
+            notifyDataSetChanged();
+        } else {
+
+            for (int i = 0; i < list.size(); i++) {
+                final IssueModel issueModel = list.get(i);
+
+                if (i < 4) {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            messagelist.add(issueModel);
+                            notifyItemInserted(messagelist.size() - 1);
+                        }
+                    }, i * 50);
+                } else {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            messagelist.add(issueModel);
+                            notifyItemInserted(messagelist.size() - 1);
+                        }
+                    }, 300);
+                }
+            }
+        }
     }
 
     private void editHeadline(final int position) {
@@ -342,6 +367,10 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             Log.v(TAG, "Storage Permission is auto granted for sdk<23");
             return true;
         }
+    }
+
+    public boolean isDataLoaded() {
+        return messagelist.size() > 0;
     }
 
     private class IssueViewHolder extends RecyclerView.ViewHolder {

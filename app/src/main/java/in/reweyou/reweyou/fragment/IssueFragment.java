@@ -26,11 +26,13 @@ import java.util.List;
 
 import in.reweyou.reweyou.Feed;
 import in.reweyou.reweyou.R;
+import in.reweyou.reweyou.YourReview;
 import in.reweyou.reweyou.adapter.IssueAdapter;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.classes.VerticalSpaceItemDecorator;
 import in.reweyou.reweyou.customView.PreCachingLayoutManager;
 import in.reweyou.reweyou.model.IssueModel;
+import jp.wasabeef.recyclerview.animators.FadeInUpAnimator;
 
 /**
  * Created by master on 24/2/17.
@@ -73,6 +75,7 @@ public class IssueFragment extends Fragment {
         recyclerView = (RecyclerView) layout.findViewById(R.id.recycler_view);
         PreCachingLayoutManager preCachingLayoutManager = new PreCachingLayoutManager(mContext);
         recyclerView.setLayoutManager(preCachingLayoutManager);
+        recyclerView.setItemAnimator(new FadeInUpAnimator());
 
         VerticalSpaceItemDecorator verticalSpaceItemDecorator = new VerticalSpaceItemDecorator((int) pxFromDp(mContext, 6));
         recyclerView.addItemDecoration(verticalSpaceItemDecorator);
@@ -82,6 +85,7 @@ public class IssueFragment extends Fragment {
     public void loadreportsafteredit() {
         loadReportsfromServer(currenttag);
     }
+
     public void loadReportsfromServer(String requesttag) {
         currenttag = requesttag;
 
@@ -99,30 +103,48 @@ public class IssueFragment extends Fragment {
         AndroidNetworking.post(url)
                 .addBodyParameter(hashMap)
                 .setTag("report")
-                .setPriority(Priority.IMMEDIATE)
+                .setPriority(Priority.HIGH)
                 .build()
                 .getAsParsed(new TypeToken<List<IssueModel>>() {
                 }, new ParsedRequestListener<List<IssueModel>>() {
 
                     @Override
-                    public void onResponse(List<IssueModel> list) {
-                        adapter.add(list);
-                        if (list.size() == 0) {
-                            if (mContext instanceof Feed) {
-                                noissue.setVisibility(View.VISIBLE);
-                                noissue.setText("No issues yet");
-                            } else
-                                noissue.setVisibility(View.VISIBLE);
-                        } else {
-                            noissue.setVisibility(View.GONE);
-                        }
+                    public void onResponse(final List<IssueModel> list) {
+
+                        if (adapter.isDataLoaded()) {
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    swipe.setRefreshing(false);
+                                }
+                            }, 800);
+                        } else
+                            swipe.setRefreshing(false);
 
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
+                                adapter.add(list);
+                                if (list.size() == 0) {
+                                    if (mContext instanceof Feed) {
+                                        noissue.setVisibility(View.VISIBLE);
+                                        noissue.setText("No issues yet");
+                                    } else
+                                        noissue.setVisibility(View.VISIBLE);
+                                } else {
+                                    noissue.setVisibility(View.GONE);
+                                }
+                            }
+                        }, 300);
+
+
+
+                       /* new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
                                 swipe.setRefreshing(false);
                             }
-                        }, 1200);
+                        }, 1200);*/
                     }
 
                     @Override
@@ -138,7 +160,7 @@ public class IssueFragment extends Fragment {
 
 
                             }
-                        }, 1200);
+                        }, 600);
 
 
                     }
@@ -171,7 +193,10 @@ public class IssueFragment extends Fragment {
         if (isAdded()) {
             adapter = new IssueAdapter(mContext, IssueFragment.this);
             recyclerView.setAdapter(adapter);
-            loadReportsfromServer(currenttag);
+            swipe.setRefreshing(true);
+            if (mContext instanceof YourReview)
+                loadReportsfromServer(currenttag);
+
         }
     }
 

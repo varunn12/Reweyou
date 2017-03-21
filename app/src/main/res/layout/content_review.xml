@@ -99,7 +99,8 @@ terro"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
                     android:layout_marginTop="8dp"
-                    android:scaleType="centerCrop" />
+                    android:scaleType="centerCrop"
+                    android:transitionName="ta" />
 
                 <TextView
                     android:id="@+id/rating"
@@ -256,12 +257,12 @@ terro"
 
                 <LinearLayout
                     android:id="@+id/uploading_container"
-                    android:visibility="invisible"
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_below="@+id/ratetext"
-                    android:layout_marginTop="16dp"
                     android:layout_centerHorizontal="true"
-                    android:layout_height="wrap_content">
+                    android:layout_marginTop="16dp"
+                    android:visibility="invisible">
 
 
                     <com.wang.avi.AVLoadingIndicatorView
@@ -278,11 +279,11 @@ terro"
                     <TextView
                         android:id="@+id/uploading_text"
                         android:layout_width="wrap_content"
-                        android:layout_gravity="center_vertical"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:alpha=".54"
                         android:text=" Uploading"
                         android:textColor="#000"
-                        android:alpha=".54"
                         />
                 </LinearLayout>
 

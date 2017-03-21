@@ -86,6 +86,16 @@ public class TagsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         notifyDataSetChanged();
     }
 
+    public void addsingle(final TagsModel tagsModel, int selectPosition) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                messagelist.add(tagsModel);
+                notifyItemInserted(messagelist.size() - 1);
+            }
+        }, selectPosition * 30);
+    }
+
     private class TagsViewHolder extends RecyclerView.ViewHolder {
 
         private TextView tag;
