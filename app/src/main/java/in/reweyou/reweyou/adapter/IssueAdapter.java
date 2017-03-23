@@ -79,7 +79,7 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         this.fragment = issueFragment;
     }
 
-    private static Bitmap drawToBitmap(Context context, final int layoutResId, final int width, final int height) {
+    private Bitmap drawToBitmap(Context context, final int layoutResId, final int width, final int height) {
 
         final LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View layout = inflater.inflate(layoutResId, null);
@@ -344,6 +344,7 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         Canvas c = new Canvas(b);
         v.draw(c);
 
+
         final DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
         final Bitmap b2 = drawToBitmap(mContext, R.layout.share_reweyou_tag, v.getWidth(), metrics.heightPixels);
         return combineImages(b, b2);
@@ -357,15 +358,17 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         width = c.getWidth();
         height = c.getHeight() + s.getHeight();
-        Log.d("width", "" + c.getWidth() + "     " + s.getWidth());
-        Log.d("height", "" + c.getHeight() + "     " + s.getHeight());
         cs = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
 
         Canvas comboImage = new Canvas(cs);
 
         comboImage.drawBitmap(c, 0f, 0f, null);
         comboImage.drawBitmap(s, 0f, c.getHeight(), null);
-        return cs;
+
+
+        Bitmap resizedBitmap = Bitmap.createBitmap(cs, (int) pxFromDp(mContext, 4), (int) pxFromDp(mContext, 4), (int) (width - (2 * pxFromDp(mContext, 4))), (int) (height - (2 * pxFromDp(mContext, 4))));
+
+        return resizedBitmap;
     }
 
     private void ShareIntent() {
