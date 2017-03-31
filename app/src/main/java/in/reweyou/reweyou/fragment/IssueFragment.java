@@ -32,6 +32,7 @@ import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.classes.VerticalSpaceItemDecorator;
 import in.reweyou.reweyou.customView.PreCachingLayoutManager;
 import in.reweyou.reweyou.model.IssueModel;
+import in.reweyou.reweyou.utils.Constants;
 import jp.wasabeef.recyclerview.animators.FadeInUpAnimator;
 
 /**
@@ -111,6 +112,7 @@ public class IssueFragment extends Fragment {
                     @Override
                     public void onResponse(final List<IssueModel> list) {
 
+                        Constants.clearreviewedlist();
                         if (adapter.isDataLoaded()) {
                             new Handler().postDelayed(new Runnable() {
                                 @Override

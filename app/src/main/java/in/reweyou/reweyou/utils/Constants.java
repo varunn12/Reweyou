@@ -1,6 +1,7 @@
 package in.reweyou.reweyou.utils;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Locale;
 
 /**
@@ -42,8 +43,8 @@ public class Constants {
     public static final int VIEW_TYPE_LOADING = 8;
     public static final int VIEW_TYPE_NEW_POST = 9;
     public static final int VIEW_TYPE_LOCATION = 11;
-    public static final int VIEW_TYPE_CITY_NO_REPORTS_YET= 12;
-    public static final int VIEW_TYPE_READING_NO_READERS= 13;
+    public static final int VIEW_TYPE_CITY_NO_REPORTS_YET = 12;
+    public static final int VIEW_TYPE_READING_NO_READERS = 13;
     public static final int VIEW_TYPE_READING_NO_REPORTS_YET_FROM_USER = 15;
 
 
@@ -95,4 +96,17 @@ public class Constants {
     public static final String SEND_NOTI_CHANGE_REQUEST = "abx";
 
     public static String suggestpostid;
+    private static ArrayList<String> arrayList = new ArrayList<>();
+
+    public static void addtoreviewlist(String topicid) {
+        arrayList.add(topicid);
+    }
+
+    public static boolean containsreviewid(String topicid) {
+        return arrayList.contains(topicid);
+    }
+
+    public static void clearreviewedlist() {
+        arrayList.clear();
+    }
 }

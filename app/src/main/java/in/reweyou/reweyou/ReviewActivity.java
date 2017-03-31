@@ -62,6 +62,7 @@ import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.customView.CustomSigninDialog;
 import in.reweyou.reweyou.customView.PreCachingLayoutManager;
 import in.reweyou.reweyou.model.ReviewModel;
+import in.reweyou.reweyou.utils.Constants;
 
 public class ReviewActivity extends SlidingActivity {
 
@@ -461,7 +462,7 @@ public class ReviewActivity extends SlidingActivity {
             }
         });
 
-        if (status.equals("true")) {
+        if (status.equals("true") || Constants.containsreviewid(topicid)) {
             ratetext.setVisibility(View.GONE);
             b1.setVisibility(View.GONE);
             c1.setVisibility(View.GONE);
@@ -623,6 +624,9 @@ public class ReviewActivity extends SlidingActivity {
                             divider2.setVisibility(View.GONE);
                             reim.setVisibility(View.GONE);
                             remove.setVisibility(View.GONE);*/
+
+                            Constants.addtoreviewlist(topicid);
+
                         } else if (response.equals("Passcode is incorrect")) {
                             Toast.makeText(ReviewActivity.this, "Passcode is incorrect", Toast.LENGTH_SHORT).show();
                             uploadingCon.setVisibility(View.GONE);
