@@ -2,22 +2,20 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="in.reweyou.reweyou.ReviewActivity"
-    tools:showIn="@layout/activity_review">
+    android:background="@color/transparent">
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+
+        android:background="@color/transparent">
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
+
             android:animateLayoutChanges="true"
             android:background="#fff"
             app:cardCornerRadius="8dp"
@@ -36,11 +34,12 @@
                 app:indicatorName="LineSpinFadeLoaderIndicator" />
 
 
-            <RelativeLayout
+            <LinearLayout
                 android:id="@+id/rl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:animateLayoutChanges="true">
+                android:animateLayoutChanges="true"
+                android:orientation="vertical">
 
                 <TextView
 
@@ -72,111 +71,117 @@ comprises of three broad aspects. With the objective of cracking down on Black m
 terro"
                     android:textColor="#757575" />
 
-                <TextView
-                    android:id="@+id/user"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/description"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="12dp"
-                    android:alpha="0.38"
-                    android:ellipsize="end"
-                    android:gravity="center_vertical"
-                    android:lines="1"
-                    android:paddingBottom="4dp"
-                    android:text="ayush P Gupta"
-                    android:textColor="#000"
-                    android:textSize="12dp" />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/user"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/description"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="12dp"
+                        android:alpha="0.38"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:lines="1"
+                        android:paddingBottom="4dp"
+                        android:text="ayush P Gupta"
+                        android:textColor="#000"
+                        android:textSize="12dp" />
 
 
-                <ImageView
-                    android:id="@+id/image"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_below="@+id/description"
-                    android:layout_marginBottom="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginTop="8dp"
-                    android:scaleType="centerCrop"
-                    android:transitionName="ta" />
+                    <ImageView
+                        android:id="@+id/image"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginTop="8dp"
+                        android:scaleType="centerCrop"
+                        android:transitionName="ta" />
 
-                <TextView
-                    android:id="@+id/rating"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/user"
-                    android:layout_marginLeft="24dp"
-                    android:layout_marginTop="20dp"
-                    android:ellipsize="end"
-                    android:gravity="center_vertical"
-                    android:lines="1"
-                    android:paddingBottom="4dp"
+                    <TextView
+                        android:id="@+id/rating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/user"
+                        android:layout_marginLeft="24dp"
+                        android:layout_marginTop="20dp"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:lines="1"
+                        android:paddingBottom="4dp"
 
-                    android:text="4.72"
-                    android:textColor="#29B6F6"
-                    android:textSize="20dp"
-                    android:textStyle="bold" />
+                        android:text="4.72"
+                        android:textColor="#29B6F6"
+                        android:textSize="20dp"
+                        android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignTop="@+id/rating"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="6dp"
-                    android:layout_toRightOf="@+id/rating"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignTop="@+id/rating"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="6dp"
+                        android:layout_toRightOf="@+id/rating"
 
-                    android:alpha="0.38"
-                    android:ellipsize="end"
-                    android:gravity="center_vertical"
-                    android:lines="1"
-                    android:paddingBottom="4dp"
-                    android:text="RATING"
-                    android:textColor="#000"
-                    android:textSize="12dp" />
+                        android:alpha="0.38"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:lines="1"
+                        android:paddingBottom="4dp"
+                        android:text="RATING"
+                        android:textColor="#000"
+                        android:textSize="12dp" />
 
-                <TextView
-                    android:id="@+id/review"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignRight="@+id/rating"
-                    android:layout_below="@+id/rating"
-                    android:layout_marginLeft="16dp"
-                    android:alpha="0.87"
-                    android:ellipsize="end"
-                    android:gravity="center_vertical"
-                    android:lines="1"
-                    android:paddingBottom="4dp"
+                    <TextView
+                        android:id="@+id/review"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignRight="@+id/rating"
+                        android:layout_below="@+id/rating"
+                        android:layout_marginLeft="16dp"
+                        android:alpha="0.87"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:lines="1"
+                        android:paddingBottom="4dp"
 
-                    android:text="24"
-                    android:textColor="#000"
-                    android:textSize="20dp"
-                    android:textStyle="bold" />
+                        android:text="24"
+                        android:textColor="#000"
+                        android:textSize="20dp"
+                        android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/rating"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="6dp"
-                    android:layout_toRightOf="@id/rating"
-                    android:alpha="0.38"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/rating"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="6dp"
+                        android:layout_toRightOf="@id/rating"
+                        android:alpha="0.38"
 
-                    android:ellipsize="end"
-                    android:gravity="center_vertical"
-                    android:lines="1"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:lines="1"
 
-                    android:paddingBottom="4dp"
-                    android:text="REVIEWS"
-                    android:textColor="#000"
-                    android:textSize="12dp" />
+                        android:paddingBottom="4dp"
+                        android:text="REVIEWS"
+                        android:textColor="#000"
+                        android:textSize="12dp" />
+                </RelativeLayout>
+
 
                 <View
                     android:id="@+id/divider"
                     android:layout_width="match_parent"
                     android:layout_height="0.7dp"
                     android:layout_below="@id/review"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="2dp"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
@@ -188,8 +193,10 @@ terro"
                     android:id="@+id/ratetext"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+
                     android:layout_below="@+id/divider"
                     android:layout_centerHorizontal="true"
+                    android:layout_gravity="center_horizontal"
 
                     android:layout_marginTop="14dp"
                     android:alpha="0.87"
@@ -208,7 +215,9 @@ terro"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/ratetext"
-                    android:layout_centerHorizontal="true">
+
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center_horizontal">
 
                     <ImageView
                         android:id="@+id/ra1"
@@ -259,10 +268,10 @@ terro"
                     android:id="@+id/uploading_container"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/ratetext"
-                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="24dp"
                     android:layout_marginTop="16dp"
-                    android:visibility="invisible">
+                    android:visibility="gone">
 
 
                     <com.wang.avi.AVLoadingIndicatorView
@@ -276,6 +285,7 @@ terro"
                         android:visibility="visible"
                         app:indicatorColor="@color/divider"
                         app:indicatorName="LineSpinFadeLoaderIndicator" />
+
                     <TextView
                         android:id="@+id/uploading_text"
                         android:layout_width="wrap_content"
@@ -283,8 +293,7 @@ terro"
                         android:layout_gravity="center_vertical"
                         android:alpha=".54"
                         android:text=" Uploading"
-                        android:textColor="#000"
-                        />
+                        android:textColor="#000" />
                 </LinearLayout>
 
 
@@ -292,8 +301,8 @@ terro"
                     android:id="@+id/reim"
                     android:layout_width="120dp"
                     android:layout_height="100dp"
-                    android:layout_below="@+id/b1"
-                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center_horizontal"
+
                     android:layout_marginTop="16dp"
                     android:adjustViewBounds="true"
                     android:background="@drawable/border_primary"
@@ -305,8 +314,8 @@ terro"
                     android:id="@+id/remove"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/reim"
-                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center_horizontal"
+
                     android:layout_marginTop="8dp"
                     android:text="REMOVE"
                     android:textAllCaps="true"
@@ -315,11 +324,12 @@ terro"
 
                     android:textStyle="bold"
                     android:visibility="gone" />
+
                 <LinearLayout
                     android:id="@+id/c1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/remove"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
                     android:layout_marginTop="12dp"
@@ -372,7 +382,7 @@ terro"
                     android:id="@+id/divider2"
                     android:layout_width="match_parent"
                     android:layout_height="0.7dp"
-                    android:layout_below="@id/c1"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="2dp"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
@@ -385,8 +395,8 @@ terro"
                     android:id="@+id/r2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/divider2"
-                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center_horizontal"
+
                     android:layout_marginTop="14dp"
 
                     android:alpha="0.87"
@@ -404,9 +414,9 @@ terro"
                     style="@style/AVLoadingIndicatorView.Small"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/r2"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="16dp"
+                    android:layout_gravity="center_horizontal"
+
+                    android:layout_marginBottom="8dp"
                     android:alpha="0.87"
                     android:paddingTop="12dp"
                     android:visibility="visible"
@@ -417,9 +427,9 @@ terro"
                     android:id="@+id/noreviewyet"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/r2"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="16dp"
+                    android:layout_gravity="center_horizontal"
+
+                    android:layout_marginBottom="6dp"
                     android:paddingTop="16dp"
                     android:text="Be the first one to review"
                     android:textColor="#9e9e9e"
@@ -430,12 +440,12 @@ terro"
                     android:id="@+id/recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="4dp"
+                    android:clipToPadding="false"
 
-                    android:layout_below="@+id/divider2"
-
-                    android:layout_marginBottom="16dp"
-                    android:layout_marginTop="44dp" />
-            </RelativeLayout>
+                    android:paddingBottom="16dp" />
+            </LinearLayout>
 
 
         </android.support.v7.widget.CardView>

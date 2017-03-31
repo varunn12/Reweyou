@@ -168,10 +168,11 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ReviewActivity"
+            android:excludeFromRecents="true"
             android:label="@string/title_activity_review"
             android:screenOrientation="portrait"
-
-            android:theme="@style/AppTheme.NoActionBar"
+            android:taskAffinity=""
+            android:theme="@style/Theme.Sliding.Lights"
             android:windowSoftInputMode="stateHidden">
 
         </activity>

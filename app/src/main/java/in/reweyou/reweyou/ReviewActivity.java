@@ -16,9 +16,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
@@ -50,6 +48,7 @@ import com.kbeanie.multipicker.api.ImagePicker;
 import com.kbeanie.multipicker.api.Picker;
 import com.kbeanie.multipicker.api.callbacks.ImagePickerCallback;
 import com.kbeanie.multipicker.api.entity.ChosenImage;
+import com.klinker.android.sliding.SlidingActivity;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.wang.avi.AVLoadingIndicatorView;
@@ -63,7 +62,7 @@ import in.reweyou.reweyou.customView.CustomSigninDialog;
 import in.reweyou.reweyou.customView.PreCachingLayoutManager;
 import in.reweyou.reweyou.model.ReviewModel;
 
-public class ReviewActivity extends AppCompatActivity {
+public class ReviewActivity extends SlidingActivity {
 
     private static final String TAG = ReviewActivity.class.getName();
     private static final int PERMISSION_STORAGE_REQUEST_CODE = 12;
@@ -102,15 +101,13 @@ public class ReviewActivity extends AppCompatActivity {
     private String passcode = "default";
     private LinearLayout uploadingCon;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_review);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+    @Override
+    public void init(Bundle savedInstanceState) {
+        setContent(R.layout.content_review);
+
+        enableFullscreen();
+        disableHeader();
 
 
         loadingcircular = (AVLoadingIndicatorView) findViewById(R.id.avi);
@@ -283,7 +280,7 @@ public class ReviewActivity extends AppCompatActivity {
                         }
                     });
 
-                } else if (s.toString().trim().length() >0) {
+                } else if (s.toString().trim().length() > 0) {
 
 
                     send.setClickable(true);
@@ -363,22 +360,22 @@ public class ReviewActivity extends AppCompatActivity {
             Glide.with(ReviewActivity.this).load(imageurl).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(image);
         else image.setVisibility(View.GONE);
 
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         PreCachingLayoutManager preCachingLayoutManager = new PreCachingLayoutManager(this);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setLayoutManager(preCachingLayoutManager);
-        /*VerticalSpaceItemDecorator verticalSpaceItemDecorator = new VerticalSpaceItemDecorator((int) pxFromDp(this, 6));
-        recyclerView.addItemDecoration(verticalSpaceItemDecorator);*/
+          /*VerticalSpaceItemDecorator verticalSpaceItemDecorator = new VerticalSpaceItemDecorator((int) pxFromDp(this, 6));*/
+        // recyclerView.addItemDecoration(verticalSpaceItemDecorator);*//*
         adapter = new ReviewAdapter(this);
         recyclerView.setAdapter(adapter);
-        loadReportsfromServer();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                loadReportsfromServer();
+            }
+        }, 700);
 
         image.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -414,7 +411,48 @@ public class ReviewActivity extends AppCompatActivity {
         }
     }
 
+
     private void uploadReview() {
+
+/*
+
+        b1.setVisibility(View.GONE);
+        c1.setVisibility(View.GONE);
+        if (encodedImage != null) {
+            reim.setVisibility(View.GONE);
+            remove.setVisibility(View.GONE);
+        }
+
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                uploadingCon.setVisibility(View.VISIBLE);
+            }
+        });
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                edittext.setText("");
+                loadReportsfromServer();
+
+                clearAttachedMediaPaths();
+
+                uploadingCon.setVisibility(View.VISIBLE);
+
+                ratetext.setVisibility(View.VISIBLE);
+                b1.setVisibility(View.VISIBLE);
+                c1.setVisibility(View.VISIBLE);
+                divider2.setVisibility(View.VISIBLE);
+                if (encodedImage != null) {
+                    reim.setVisibility(View.VISIBLE);
+                    remove.setVisibility(View.VISIBLE);
+                }
+            }
+        },6000);
+*/
+
+
         new Handler().post(new Runnable() {
             @Override
             public void run() {
@@ -473,11 +511,11 @@ public class ReviewActivity extends AppCompatActivity {
     private void updateReview() {
 
 
-        b1.setVisibility(View.INVISIBLE);
-        c1.setVisibility(View.INVISIBLE);
+        b1.setVisibility(View.GONE);
+        c1.setVisibility(View.GONE);
         if (encodedImage != null) {
-            reim.setVisibility(View.INVISIBLE);
-            remove.setVisibility(View.INVISIBLE);
+            reim.setVisibility(View.GONE);
+            remove.setVisibility(View.GONE);
         }
 
         new Handler().post(new Runnable() {
@@ -517,18 +555,19 @@ public class ReviewActivity extends AppCompatActivity {
                             loadReportsfromServer();
 
                             clearAttachedMediaPaths();
-
                             uploadingCon.setVisibility(View.GONE);
+/*
+
 
                             ratetext.setVisibility(View.GONE);
                             b1.setVisibility(View.GONE);
                             c1.setVisibility(View.GONE);
                             divider2.setVisibility(View.GONE);
                             reim.setVisibility(View.GONE);
-                            remove.setVisibility(View.GONE);
+                            remove.setVisibility(View.GONE);*/
                         } else if (response.equals("Passcode is incorrect")) {
                             Toast.makeText(ReviewActivity.this, "Passcode is incorrect", Toast.LENGTH_SHORT).show();
-                            uploadingCon.setVisibility(View.INVISIBLE);
+                            uploadingCon.setVisibility(View.GONE);
 
                             ratetext.setVisibility(View.VISIBLE);
                             b1.setVisibility(View.VISIBLE);
@@ -545,16 +584,23 @@ public class ReviewActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(ANError anError) {
-                        uploadingCon.setVisibility(View.INVISIBLE);
 
-                        ratetext.setVisibility(View.VISIBLE);
-                        b1.setVisibility(View.VISIBLE);
-                        c1.setVisibility(View.VISIBLE);
-                        divider2.setVisibility(View.VISIBLE);
-                        if (encodedImage != null) {
-                            reim.setVisibility(View.VISIBLE);
-                            remove.setVisibility(View.VISIBLE);
-                        }
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                uploadingCon.setVisibility(View.GONE);
+
+                                ratetext.setVisibility(View.VISIBLE);
+                                b1.setVisibility(View.VISIBLE);
+                                c1.setVisibility(View.VISIBLE);
+                                divider2.setVisibility(View.VISIBLE);
+                                if (encodedImage != null) {
+                                    reim.setVisibility(View.VISIBLE);
+                                    remove.setVisibility(View.VISIBLE);
+                                }
+                            }
+                        }, 1000);
+
 
                         Log.e(TAG, "error: " + anError.getErrorDetail());
                         Toast.makeText(ReviewActivity.this, "Couldn't connect", Toast.LENGTH_SHORT).show();
@@ -620,37 +666,38 @@ public class ReviewActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-        try {
+    /*  @Override
+      protected void onNewIntent(Intent intent) {
+          try {
 
-            if (getIntent() != null) {
-                Intent i = getIntent();
-                headline = i.getStringExtra("headline");
-                description = i.getStringExtra("description");
-                rating = i.getStringExtra("rating");
-                user = i.getStringExtra("user");
-                review = i.getStringExtra("review");
-                tag = i.getStringExtra("tag");
-                imageurl = i.getStringExtra("image");
-                videourl = i.getStringExtra("video");
-                name = i.getStringExtra("name");
-                gifurl = i.getStringExtra("gif");
-                topicid = i.getStringExtra("topicid");
-                status = i.getStringExtra("status");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+              if (getIntent() != null) {
+                  Intent i = getIntent();
+                  headline = i.getStringExtra("headline");
+                  description = i.getStringExtra("description");
+                  rating = i.getStringExtra("rating");
+                  user = i.getStringExtra("user");
+                  review = i.getStringExtra("review");
+                  tag = i.getStringExtra("tag");
+                  imageurl = i.getStringExtra("image");
+                  videourl = i.getStringExtra("video");
+                  name = i.getStringExtra("name");
+                  gifurl = i.getStringExtra("gif");
+                  topicid = i.getStringExtra("topicid");
+                  status = i.getStringExtra("status");
+              }
+          } catch (Exception e) {
+              e.printStackTrace();
 
-        }
-    }
-
+          }
+      }
+  */
     @Override
     public void onBackPressed() {
-        Intent i = new Intent(ReviewActivity.this, Feed.class);
+        super.onBackPressed();
+       /* Intent i = new Intent(ReviewActivity.this, Feed.class);
         i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         startActivity(i);
-        finish();
+        finish();*/
     }
 
     public boolean isStoragePermissionGranted() {
@@ -671,6 +718,7 @@ public class ReviewActivity extends AppCompatActivity {
         }
     }
 
+    /**/
     private void showPickImage() {
         imagePicker = new ImagePicker(ReviewActivity.this);
         imagePicker.setImagePickerCallback(new ImagePickerCallback() {
@@ -792,7 +840,7 @@ public class ReviewActivity extends AppCompatActivity {
     private void clearAttachedMediaPaths() {
 
         selectedImageUri = null;
-        encodedImage=null;
+        encodedImage = null;
 
     }
 

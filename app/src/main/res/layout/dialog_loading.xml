@@ -1,0 +1,47 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="12dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="12dp">
+
+        <com.wang.avi.AVLoadingIndicatorView
+            android:id="@+id/avi"
+            style="@style/AVLoadingIndicatorView"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:visibility="visible"
+            app:indicatorColor="@color/divider"
+            app:indicatorName="BallSpinFadeLoaderIndicator" />
+
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+
+            android:layout_centerVertical="true"
+            android:alpha="0.87"
+            android:padding="16dp"
+            android:src="@drawable/logo_plain"
+            android:tint="@color/colorPrimary" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="24dp"
+            android:layout_toRightOf="@+id/avi"
+            android:alpha="0.87"
+            android:text="Uploading! Please wait..."
+            android:textColor="#000"
+            android:textSize="16dp" />
+    </RelativeLayout>
+
+
+</RelativeLayout>

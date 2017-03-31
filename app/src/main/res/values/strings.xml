@@ -73,5 +73,6 @@
     <string name="permission_denied_contacts">To use inbox, allow Reweyou to read your contacts</string>
     <string name="title_activity_review">Reweyou</string>
     <string name="title_activity_your_review">YourReview</string>
+    <string name="normal_sliding_activity">dasdas</string>
 
 </resources>

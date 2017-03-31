@@ -66,9 +66,6 @@ import com.kbeanie.multipicker.api.callbacks.VideoPickerCallback;
 import com.kbeanie.multipicker.api.entity.ChosenImage;
 import com.kbeanie.multipicker.api.entity.ChosenVideo;
 import com.kbeanie.multipicker.utils.IntentUtils;
-import com.leocardz.link.preview.library.LinkPreviewCallback;
-import com.leocardz.link.preview.library.SourceContent;
-import com.leocardz.link.preview.library.TextCrawler;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -162,7 +159,10 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
     private ImagePicker imagePicker;
     private VideoPicker videoPicker;
     private ProgressDialog progressDialog;
-    private TextCrawler textCrawler;
+    /*
+        private TextCrawler textCrawler;
+    */
+/*
     private LinkPreviewCallback callback = new LinkPreviewCallback() {
 
 
@@ -194,6 +194,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
         }
 
     };
+*/
     private AutoCompleteTextView editTag;
     private CheckBox anonyRadioButton;
     private ArrayAdapter<String> adapter;
@@ -228,7 +229,9 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
         setContentView(R.layout.activity_post_report);
 
         getSuggestedTags();
+/*
         textCrawler = new TextCrawler();
+*/
 
 
         initToolbar();
@@ -1519,7 +1522,9 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                         }
                     });
 
+/*
                     textCrawler.makePreview(callback, linkbox.getText().toString());
+*/
                 }
             }
         });
