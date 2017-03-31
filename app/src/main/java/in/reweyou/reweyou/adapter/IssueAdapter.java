@@ -116,7 +116,10 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             issueViewHolder.lock.setVisibility(View.VISIBLE);
         }
         float rating = Float.parseFloat(messagelist.get(position).getRating());
-        if (rating < 2) {
+        if (rating == 0) {
+            issueViewHolder.rating.setTextColor(ContextCompat.getColor(mContext, R.color.ratingno));
+            issueViewHolder.imgStar.setColorFilter(ContextCompat.getColor(mContext, R.color.ratingno));
+        } else if (rating < 2) {
             issueViewHolder.rating.setTextColor(ContextCompat.getColor(mContext, R.color.rating1));
             issueViewHolder.imgStar.setColorFilter(ContextCompat.getColor(mContext, R.color.rating1));
         } else if (rating >= 2 && rating < 3) {
