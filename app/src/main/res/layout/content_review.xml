@@ -9,12 +9,13 @@
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/transparent"
 
-        android:background="@color/transparent">
+        android:fillViewport="true">
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
 
             android:animateLayoutChanges="true"
             android:background="#fff"
@@ -39,7 +40,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:animateLayoutChanges="true"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <TextView
 
@@ -65,9 +67,7 @@
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
                     android:paddingTop="8dp"
-                    android:text="The unprecedented policy decision by the Government to Demonetize the
-economy of the higher denomination currencies (i.e. Rs. 500 and Rs. 1000),
-comprises of three broad aspects. With the objective of cracking down on Black money, counterfeit (fake currency),
+                    android:text="The unprecedented popolicy decisionterfeit (fake currencyhe unprecedented policy decisionterfeit (fake currency),
 terro"
                     android:textColor="#757575" />
 

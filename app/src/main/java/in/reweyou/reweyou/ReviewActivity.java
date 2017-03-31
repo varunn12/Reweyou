@@ -48,6 +48,7 @@ import com.kbeanie.multipicker.api.ImagePicker;
 import com.kbeanie.multipicker.api.Picker;
 import com.kbeanie.multipicker.api.callbacks.ImagePickerCallback;
 import com.kbeanie.multipicker.api.entity.ChosenImage;
+import com.klinker.android.sliding.MultiShrinkScroller;
 import com.klinker.android.sliding.SlidingActivity;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -100,15 +101,87 @@ public class ReviewActivity extends SlidingActivity {
     private String privacy;
     private String passcode = "default";
     private LinearLayout uploadingCon;
+    private LinearLayout rl;
+    private AVLoadingIndicatorView loadingcircularinit;
 
+    @Override
+    protected void configureScroller(MultiShrinkScroller scroller) {
+        super.configureScroller(scroller);
+        scroller.setIntermediateHeaderHeightRatio(0);
+    }
 
     @Override
     public void init(Bundle savedInstanceState) {
+        disableHeader();
+        enableFullscreen();
+
+
         setContent(R.layout.content_review);
 
-        enableFullscreen();
-        disableHeader();
 
+        loadingcircularinit = (AVLoadingIndicatorView) findViewById(R.id.initpro);
+        loadingcircularinit.setVisibility(View.VISIBLE);
+        loadingcircularinit.show();
+
+        rl = (LinearLayout) findViewById(R.id.rl);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                loadingcircularinit.setVisibility(View.GONE);
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        rl.setVisibility(View.VISIBLE);
+
+                    }
+                });
+            }
+        }, 800);
+
+        tvheadline = (TextView) findViewById(R.id.headline);
+        remove = (TextView) findViewById(R.id.remove);
+        noreviewyet = (TextView) findViewById(R.id.noreviewyet);
+        ratetext = (TextView) findViewById(R.id.ratetext);
+        c1 = (LinearLayout) findViewById(R.id.c1);
+        b1 = (LinearLayout) findViewById(R.id.b1);
+        uploadingCon = (LinearLayout) findViewById(R.id.uploading_container);
+        divider2 = findViewById(R.id.divider2);
+        tvdescription = (TextView) findViewById(R.id.description);
+        tvrating = (TextView) findViewById(R.id.rating);
+        tvreview = (TextView) findViewById(R.id.review);
+        tvuser = (TextView) findViewById(R.id.user);
+        image = (ImageView) findViewById(R.id.image);
+        reim = (ImageView) findViewById(R.id.reim);
+        send = (ImageView) findViewById(R.id.send);
+        camera = (ImageView) findViewById(R.id.btn_image);
+        edittext = (EditText) findViewById(R.id.desc);
+
+        if (getIntent() != null) {
+            Intent i = getIntent();
+            headline = i.getStringExtra("headline");
+            description = i.getStringExtra("description");
+            rating = i.getStringExtra("rating");
+            user = i.getStringExtra("user");
+            review = i.getStringExtra("review");
+            tag = i.getStringExtra("tag");
+            imageurl = i.getStringExtra("image");
+            videourl = i.getStringExtra("video");
+            name = i.getStringExtra("name");
+            gifurl = i.getStringExtra("gif");
+            topicid = i.getStringExtra("topicid");
+            status = i.getStringExtra("status");
+            privacy = i.getStringExtra("privacy");
+        }
+
+
+        getSupportActionBar().setTitle(tag);
+
+        tvheadline.setText(headline);
+        tvdescription.setText(description);
+        tvrating.setText(rating);
+        tvreview.setText(review);
+        tvuser.setText("By- " + name);
 
         loadingcircular = (AVLoadingIndicatorView) findViewById(R.id.avi);
         loadingcircular.show();
@@ -210,25 +283,6 @@ public class ReviewActivity extends SlidingActivity {
 
             }
         });
-
-
-        tvheadline = (TextView) findViewById(R.id.headline);
-        remove = (TextView) findViewById(R.id.remove);
-        noreviewyet = (TextView) findViewById(R.id.noreviewyet);
-        ratetext = (TextView) findViewById(R.id.ratetext);
-        c1 = (LinearLayout) findViewById(R.id.c1);
-        b1 = (LinearLayout) findViewById(R.id.b1);
-        uploadingCon = (LinearLayout) findViewById(R.id.uploading_container);
-        divider2 = findViewById(R.id.divider2);
-        tvdescription = (TextView) findViewById(R.id.description);
-        tvrating = (TextView) findViewById(R.id.rating);
-        tvreview = (TextView) findViewById(R.id.review);
-        tvuser = (TextView) findViewById(R.id.user);
-        image = (ImageView) findViewById(R.id.image);
-        reim = (ImageView) findViewById(R.id.reim);
-        send = (ImageView) findViewById(R.id.send);
-        camera = (ImageView) findViewById(R.id.btn_image);
-        edittext = (EditText) findViewById(R.id.desc);
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -327,31 +381,6 @@ public class ReviewActivity extends SlidingActivity {
         if (!sessionManager.checkLoginSplash())
             edittext.setHint("Sign in to review...");
 
-        if (getIntent() != null) {
-            Intent i = getIntent();
-            headline = i.getStringExtra("headline");
-            description = i.getStringExtra("description");
-            rating = i.getStringExtra("rating");
-            user = i.getStringExtra("user");
-            review = i.getStringExtra("review");
-            tag = i.getStringExtra("tag");
-            imageurl = i.getStringExtra("image");
-            videourl = i.getStringExtra("video");
-            name = i.getStringExtra("name");
-            gifurl = i.getStringExtra("gif");
-            topicid = i.getStringExtra("topicid");
-            status = i.getStringExtra("status");
-            privacy = i.getStringExtra("privacy");
-        }
-
-
-        getSupportActionBar().setTitle(tag);
-
-        tvheadline.setText(headline);
-        tvdescription.setText(description);
-        tvrating.setText(rating);
-        tvreview.setText(review);
-        tvuser.setText("By- " + name);
 
         if (!gifurl.isEmpty()) {
             Glide.with(ReviewActivity.this).load(gifurl).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(image);
@@ -359,7 +388,6 @@ public class ReviewActivity extends SlidingActivity {
         } else if (!imageurl.isEmpty())
             Glide.with(ReviewActivity.this).load(imageurl).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(image);
         else image.setVisibility(View.GONE);
-
 
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
