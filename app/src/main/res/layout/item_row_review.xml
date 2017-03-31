@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rl"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="56dp"
@@ -18,7 +19,7 @@
         android:ellipsize="end"
         android:lines="1"
         android:maxWidth="170dp"
-        android:text="Defualt"
+        android:text="Default"
         android:textColor="#000"
         android:textSize="14dp"
 
@@ -39,7 +40,6 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="4dp"
         android:layout_toRightOf="@+id/img"
-        android:alpha="0.54"
         android:ellipsize="end"
         android:lines="1"
         android:text="5.0"
@@ -55,12 +55,11 @@
         android:layout_below="@+id/user"
         android:layout_marginRight="40dp"
         android:layout_marginTop="2dp"
-        android:alpha="0.54"
         android:autoLink="web"
         android:linksClickable="true"
         android:paddingBottom="10dp"
-        android:text="This is aest"
-        android:textColor="#000"
+        android:text="This is test"
+        android:textColor="#757575"
 
         android:textSize="14dp" />
 

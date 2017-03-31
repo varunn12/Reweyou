@@ -51,10 +51,7 @@
             android:name=".Feed"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar.Feed">
-
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar.Feed"></activity>
         <activity
             android:name=".PostReport"
             android:screenOrientation="portrait"
@@ -173,18 +170,13 @@
             android:screenOrientation="portrait"
             android:taskAffinity=""
             android:theme="@style/Theme.Sliding.Lights"
-            android:windowSoftInputMode="stateHidden">
-
-        </activity>
-
+            android:windowSoftInputMode="stateHidden"></activity>
         <activity
             android:name=".ReviewActivityQR"
             android:label="@string/title_activity_review"
             android:screenOrientation="portrait"
-
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden">
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -194,26 +186,25 @@
                 <data android:scheme="https" />
                 <data android:host="www.reweyou.in" />
                 <data android:pathPrefix="/qr/" />
-
             </intent-filter>
-
         </activity>
-
-
         <activity
             android:name=".YourReview"
             android:label="@string/title_activity_your_review"
-
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name="com.gnzlt.AndroidVisionQRReader.QRActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".LikesActivity"
+            android:excludeFromRecents="true"
+            android:label="@string/title_activity_review"
             android:screenOrientation="portrait"
+            android:taskAffinity=""
+            android:theme="@style/Theme.Sliding.Lights"
 
-            />
-
+            ></activity>
     </application>
 
 </manifest>

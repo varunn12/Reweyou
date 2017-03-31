@@ -31,5 +31,6 @@
     <color name="rating3">#FFB300</color>
     <color name="rating2">#FB8C00</color>
     <color name="rating1">#F4511E</color>
+    <color name="ratingno">#9e9e9e</color>
 
 </resources><!---->

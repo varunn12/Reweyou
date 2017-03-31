@@ -2,7 +2,9 @@ package in.reweyou.reweyou.adapter;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import in.reweyou.reweyou.LikesActivity;
 import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.customView.CustomSigninDialog;
@@ -64,6 +68,28 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         } else {
             issueViewHolder.like.setImageResource(R.drawable.ic_thumbs_up);
             issueViewHolder.likesnumber.setTextColor(Color.parseColor("#909090"));
+        }
+
+        float rating = Float.parseFloat(messagelist.get(position).getRating());
+        if (rating < 2) {
+            issueViewHolder.rate.setTextColor(ContextCompat.getColor(mContext, R.color.rating1));
+            issueViewHolder.img.setColorFilter(ContextCompat.getColor(mContext, R.color.rating1));
+        } else if (rating >= 2 && rating < 3) {
+            issueViewHolder.rate.setTextColor(ContextCompat.getColor(mContext, R.color.rating2));
+            issueViewHolder.img.setColorFilter(ContextCompat.getColor(mContext, R.color.rating2));
+
+        } else if (rating >= 3 && rating < 4) {
+            issueViewHolder.rate.setTextColor(ContextCompat.getColor(mContext, R.color.rating3));
+            issueViewHolder.img.setColorFilter(ContextCompat.getColor(mContext, R.color.rating3));
+
+        } else if (rating >= 4 && rating < 5) {
+            issueViewHolder.rate.setTextColor(ContextCompat.getColor(mContext, R.color.rating4));
+            issueViewHolder.img.setColorFilter(ContextCompat.getColor(mContext, R.color.rating4));
+
+        } else if (rating == 5) {
+            issueViewHolder.rate.setTextColor(ContextCompat.getColor(mContext, R.color.rating5));
+            issueViewHolder.img.setColorFilter(ContextCompat.getColor(mContext, R.color.rating5));
+
         }
 
         issueViewHolder.likesnumber.setText("(" + messagelist.get(position).getLikes() + ")");
@@ -123,8 +149,9 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         private TextView user;
         private TextView likesnumber;
         private TextView rate;
-        private ImageView like, image;
+        private ImageView like, image, img;
         private LinearLayout likebox;
+        private RelativeLayout rl;
 
 
         private IssueViewHolder(View inflate) {
@@ -133,10 +160,20 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             user = (TextView) inflate.findViewById(R.id.user);
             likesnumber = (TextView) inflate.findViewById(R.id.likesnumber);
             rate = (TextView) inflate.findViewById(R.id.rate);
+            rl = (RelativeLayout) inflate.findViewById(R.id.rl);
             like = (ImageView) inflate.findViewById(R.id.like);
             image = (ImageView) inflate.findViewById(R.id.image);
+            img = (ImageView) inflate.findViewById(R.id.img);
             likebox = (LinearLayout) inflate.findViewById(R.id.likesbox);
-
+            rl.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(mContext, LikesActivity.class);
+                    i.putExtra("reviewid", messagelist.get(getAdapterPosition()).getReviewid());
+                    i.putExtra("numLikes", messagelist.get(getAdapterPosition()).getLikes());
+                    mContext.startActivity(i);
+                }
+            });
             likebox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

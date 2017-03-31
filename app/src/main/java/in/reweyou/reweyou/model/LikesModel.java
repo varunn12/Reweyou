@@ -6,19 +6,18 @@ package in.reweyou.reweyou.model;
 
 public class LikesModel {
     private String profilepic;
-    private String reviewer_name;
-    private String reviewer;
+    private String created_by;
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public String getCreated_by() {
+        return created_by;
+    }
 
     public String getProfilepic() {
         return profilepic;
-    }
-
-    public String getReviewer_name() {
-        return reviewer_name;
-    }
-
-
-    public String getReviewer() {
-        return reviewer;
     }
 }
