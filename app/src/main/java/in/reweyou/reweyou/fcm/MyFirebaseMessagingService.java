@@ -22,7 +22,7 @@ import org.json.JSONObject;
 import java.util.Random;
 
 import in.reweyou.reweyou.R;
-import in.reweyou.reweyou.ReviewActivity;
+import in.reweyou.reweyou.ReviewActivityQR;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
@@ -121,9 +121,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     notificationManager.notify(100, mBuilder.build());
                 }
 */
-            Intent i = new Intent(this, ReviewActivity.class);
+            Intent i = new Intent(this, ReviewActivityQR.class);
 
-            i.putExtra("headline", payload.getString("headline"));
+          /*  i.putExtra("headline", payload.getString("headline"));
             i.putExtra("description", payload.getString("description"));
             i.putExtra("rating", payload.getString("rating"));
             i.putExtra("name", payload.getString("user"));
@@ -131,13 +131,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             i.putExtra("tag", payload.getString("tag"));
             i.putExtra("image", payload.getString("image"));
             i.putExtra("video", payload.getString("video"));
-            i.putExtra("gif", payload.getString("gif"));
-            i.putExtra("topicid", payload.getString("topicid"));
+            i.putExtra("gif", payload.getString("gif"));*/
+            i.putExtra("qrdata", "https://www.reweyou.in/qr/topicid=" + payload.getString("topicid"));
 
-            if (!payload.has("status"))
-                i.putExtra("status", "true");
-            else
-                i.putExtra("status", payload.getString("status"));
+
             Random random = new Random();
 
             int m = random.nextInt(9999 - 1000) + 1000;
