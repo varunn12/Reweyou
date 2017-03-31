@@ -75,7 +75,7 @@ public class UserSessionManager {
     }
 
     public String getDeviceid() {
-        return pref.getString(KEY_DEVICE_ID, null);
+        return pref.getString(KEY_DEVICE_ID, "default");
     }
 
     public void setDeviceid(String deviceid) {

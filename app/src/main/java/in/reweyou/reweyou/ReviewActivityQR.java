@@ -30,7 +30,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -102,10 +101,11 @@ public class ReviewActivityQR extends AppCompatActivity {
     private String selectedImageUri;
     private String encodedImage;
     private ProgressDialog progressDialog;
-    private RelativeLayout rlcont;
+    private LinearLayout rlcont;
     private AVLoadingIndicatorView loadingcircularinit;
     private String privacy;
     private String passcode;
+    private LinearLayout uploadingCon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,12 +122,14 @@ public class ReviewActivityQR extends AppCompatActivity {
 
         sessionManager = new UserSessionManager(this);
 
-        rlcont = (RelativeLayout) findViewById(R.id.rl);
+        rlcont = (LinearLayout) findViewById(R.id.rl);
         rlcont.setVisibility(View.INVISIBLE);
 
         loadingcircularinit = (AVLoadingIndicatorView) findViewById(R.id.initpro);
         loadingcircularinit.setVisibility(View.VISIBLE);
         loadingcircularinit.show();
+        uploadingCon = (LinearLayout) findViewById(R.id.uploading_container);
+
 
 
         final ImageView ra1 = (ImageView) findViewById(R.id.ra1);
@@ -425,8 +427,22 @@ public class ReviewActivityQR extends AppCompatActivity {
     }
 
     private void updateReview() {
-        send.setClickable(false);
-        remove.setClickable(false);
+
+
+        b1.setVisibility(View.GONE);
+        c1.setVisibility(View.GONE);
+        if (encodedImage != null) {
+            reim.setVisibility(View.GONE);
+            remove.setVisibility(View.GONE);
+        }
+
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                uploadingCon.setVisibility(View.VISIBLE);
+            }
+        });
+
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("topicid", topicid);
         hashMap.put("number", sessionManager.getMobileNumber());
@@ -442,8 +458,6 @@ public class ReviewActivityQR extends AppCompatActivity {
             hashMap.put("image", encodedImage);
 
 
-        edittext.setText("");
-
         AndroidNetworking.post("https://reweyou.in/reviews/post_reviews.php")
                 .addBodyParameter(hashMap)
                 .setTag("repordt")
@@ -452,44 +466,68 @@ public class ReviewActivityQR extends AppCompatActivity {
                 .getAsString(new StringRequestListener() {
                     @Override
                     public void onResponse(String response) {
-                        if (progressDialog != null)
-                            progressDialog.dismiss();
-
-
 
                         Log.d(TAG, "onResponse: " + response);
                         if (response.equals("reviewed")) {
                             edittext.setText("");
                             loadReportsfromServer();
 
+                            clearAttachedMediaPaths();
+                            uploadingCon.setVisibility(View.GONE);
+/*
+
+
                             ratetext.setVisibility(View.GONE);
                             b1.setVisibility(View.GONE);
                             c1.setVisibility(View.GONE);
                             divider2.setVisibility(View.GONE);
-                            clearAttachedMediaPaths();
                             reim.setVisibility(View.GONE);
-                            remove.setVisibility(View.GONE);
+                            remove.setVisibility(View.GONE);*/
                         } else if (response.equals("Passcode is incorrect")) {
                             Toast.makeText(ReviewActivityQR.this, "Passcode is incorrect", Toast.LENGTH_SHORT).show();
-                        }
+                            uploadingCon.setVisibility(View.GONE);
 
+                            ratetext.setVisibility(View.VISIBLE);
+                            b1.setVisibility(View.VISIBLE);
+                            c1.setVisibility(View.VISIBLE);
+                            divider2.setVisibility(View.VISIBLE);
+                            if (encodedImage != null) {
+                                reim.setVisibility(View.VISIBLE);
+                                remove.setVisibility(View.VISIBLE);
+                            }
+                        }
 
 
                     }
 
                     @Override
                     public void onError(ANError anError) {
-                        if (progressDialog != null) progressDialog.dismiss();
+
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                uploadingCon.setVisibility(View.GONE);
+
+                                ratetext.setVisibility(View.VISIBLE);
+                                b1.setVisibility(View.VISIBLE);
+                                c1.setVisibility(View.VISIBLE);
+                                divider2.setVisibility(View.VISIBLE);
+                                if (encodedImage != null) {
+                                    reim.setVisibility(View.VISIBLE);
+                                    remove.setVisibility(View.VISIBLE);
+                                }
+                            }
+                        }, 1000);
+
 
                         Log.e(TAG, "error: " + anError.getErrorDetail());
                         Toast.makeText(ReviewActivityQR.this, "Couldn't connect", Toast.LENGTH_SHORT).show();
-                        send.setClickable(true);
-                        remove.setClickable(true);
 
 
                     }
                 });
     }
+
 
     private void loadReportsfromServer() {
         HashMap<String, String> hashMap = new HashMap<>();

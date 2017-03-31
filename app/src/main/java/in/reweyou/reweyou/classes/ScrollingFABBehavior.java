@@ -38,7 +38,13 @@ public class ScrollingFABBehavior extends FloatingActionButton.Behavior {
         // Log.e(TAG, "onNestedScroll called");
         if (dyConsumed > 0 && child.getVisibility() == View.VISIBLE) {
             // Log.e(TAG, "child.hide()");
-            child.hide();
+            child.hide(new FloatingActionButton.OnVisibilityChangedListener() {
+                @Override
+                public void onHidden(FloatingActionButton fab) {
+                    super.onHidden(fab);
+                    fab.setVisibility(View.INVISIBLE);
+                }
+            });
         } else if (dyConsumed < 0 && child.getVisibility() != View.VISIBLE) {
             // Log.e(TAG, "child.show()");
             child.show();
