@@ -273,10 +273,7 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
 
         session = new UserSessionManager(this);
 
-        if (!session.checkLoginSplash()) {
-            final CustomSigninDialog customSigninDialog = new CustomSigninDialog(PostReport.this);
-            customSigninDialog.show();
-        }
+
 
         checker = new PermissionsChecker(this);
         mycity = session.getLoginLocation();
@@ -330,7 +327,17 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
             }
 
         }
-        showHangingNoti();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                showHangingNoti();
+
+                if (!session.checkLoginSplash()) {
+                    final CustomSigninDialog customSigninDialog = new CustomSigninDialog(PostReport.this);
+                    customSigninDialog.show();
+                }
+            }
+        }, 300);
     }
 
     private void getSuggestedTags() {

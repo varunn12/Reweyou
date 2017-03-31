@@ -106,6 +106,7 @@ public class ReviewActivityQR extends AppCompatActivity {
     private String privacy;
     private String passcode;
     private LinearLayout uploadingCon;
+    private ImageView closebutton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,7 +131,13 @@ public class ReviewActivityQR extends AppCompatActivity {
         loadingcircularinit.show();
         uploadingCon = (LinearLayout) findViewById(R.id.uploading_container);
 
-
+        closebutton = (ImageView) findViewById(R.id.close);
+        closebutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         final ImageView ra1 = (ImageView) findViewById(R.id.ra1);
         final ImageView ra2 = (ImageView) findViewById(R.id.ra2);
@@ -579,6 +586,26 @@ public class ReviewActivityQR extends AppCompatActivity {
                             tvreview.setText(review);
                             tvuser.setText("By- " + name);
 
+
+                            float ratingnum = Float.parseFloat(rating);
+                            Context mContext = ReviewActivityQR.this;
+                            if (ratingnum == 0) {
+                                tvrating.setTextColor(ContextCompat.getColor(mContext, R.color.ratingno));
+
+                            } else if (ratingnum < 2) {
+                                tvrating.setTextColor(ContextCompat.getColor(mContext, R.color.rating1));
+                            } else if (ratingnum >= 2 && ratingnum < 3) {
+                                tvrating.setTextColor(ContextCompat.getColor(mContext, R.color.rating2));
+
+                            } else if (ratingnum >= 3 && ratingnum < 4) {
+                                tvrating.setTextColor(ContextCompat.getColor(mContext, R.color.rating3));
+
+                            } else if (ratingnum >= 4 && ratingnum < 5) {
+                                tvrating.setTextColor(ContextCompat.getColor(mContext, R.color.rating4));
+
+                            } else if (ratingnum == 5) {
+                                tvrating.setTextColor(ContextCompat.getColor(mContext, R.color.rating5));
+                            }
                             if (!gifurl.isEmpty()) {
                                 Glide.with(ReviewActivityQR.this).load(gifurl).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(image);
 

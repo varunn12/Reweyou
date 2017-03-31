@@ -103,6 +103,7 @@ public class ReviewActivity extends SlidingActivity {
     private LinearLayout uploadingCon;
     private LinearLayout rl;
     private AVLoadingIndicatorView loadingcircularinit;
+    private ImageView closebutton;
 
     @Override
     protected void configureScroller(MultiShrinkScroller scroller) {
@@ -119,9 +120,17 @@ public class ReviewActivity extends SlidingActivity {
         setContent(R.layout.content_review);
 
 
+        closebutton = (ImageView) findViewById(R.id.close);
+        closebutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         loadingcircularinit = (AVLoadingIndicatorView) findViewById(R.id.initpro);
         loadingcircularinit.setVisibility(View.VISIBLE);
         loadingcircularinit.show();
+
 
         rl = (LinearLayout) findViewById(R.id.rl);
 
@@ -137,7 +146,7 @@ public class ReviewActivity extends SlidingActivity {
                     }
                 });
             }
-        }, 800);
+        }, 500);
 
         tvheadline = (TextView) findViewById(R.id.headline);
         remove = (TextView) findViewById(R.id.remove);
@@ -180,6 +189,27 @@ public class ReviewActivity extends SlidingActivity {
         tvheadline.setText(headline);
         tvdescription.setText(description);
         tvrating.setText(rating);
+
+        float ratingnum = Float.parseFloat(rating);
+        Context mContext = ReviewActivity.this;
+        if (ratingnum == 0) {
+            tvrating.setTextColor(ContextCompat.getColor(mContext, R.color.ratingno));
+
+        } else if (ratingnum < 2) {
+            tvrating.setTextColor(ContextCompat.getColor(mContext, R.color.rating1));
+        } else if (ratingnum >= 2 && ratingnum < 3) {
+            tvrating.setTextColor(ContextCompat.getColor(mContext, R.color.rating2));
+
+        } else if (ratingnum >= 3 && ratingnum < 4) {
+            tvrating.setTextColor(ContextCompat.getColor(mContext, R.color.rating3));
+
+        } else if (ratingnum >= 4 && ratingnum < 5) {
+            tvrating.setTextColor(ContextCompat.getColor(mContext, R.color.rating4));
+
+        } else if (ratingnum == 5) {
+            tvrating.setTextColor(ContextCompat.getColor(mContext, R.color.rating5));
+        }
+
         tvreview.setText(review);
         tvuser.setText("By- " + name);
 
@@ -403,7 +433,7 @@ public class ReviewActivity extends SlidingActivity {
             public void run() {
                 loadReportsfromServer();
             }
-        }, 700);
+        }, 800);
 
         image.setOnClickListener(new View.OnClickListener() {
             @Override
