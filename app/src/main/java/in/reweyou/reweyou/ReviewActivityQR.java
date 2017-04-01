@@ -25,6 +25,8 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -161,6 +163,10 @@ public class ReviewActivityQR extends AppCompatActivity {
 
                 numrating = 1;
 
+                if (edittext.getText().toString().trim().length() != 0)
+                    send.setImageResource(R.drawable.button_send_reviews1);
+
+
             }
         });
 
@@ -174,6 +180,8 @@ public class ReviewActivityQR extends AppCompatActivity {
                 ra5.setColorFilter(Color.parseColor("#e0e0e0"));
                 numrating = 2;
 
+                if (edittext.getText().toString().trim().length() != 0)
+                    send.setImageResource(R.drawable.button_send_reviews2);
 
             }
         });
@@ -189,7 +197,8 @@ public class ReviewActivityQR extends AppCompatActivity {
                 ra5.setColorFilter(Color.parseColor("#e0e0e0"));
                 numrating = 3;
 
-
+                if (edittext.getText().toString().trim().length() != 0)
+                    send.setImageResource(R.drawable.button_send_reviews3);
             }
         });
 
@@ -205,6 +214,9 @@ public class ReviewActivityQR extends AppCompatActivity {
                 ra5.setColorFilter(Color.parseColor("#e0e0e0"));
                 numrating = 4;
 
+                if (edittext.getText().toString().trim().length() != 0)
+                    send.setImageResource(R.drawable.button_send_reviews4);
+
             }
         });
 
@@ -219,6 +231,9 @@ public class ReviewActivityQR extends AppCompatActivity {
 
 
                 numrating = 5;
+
+                if (edittext.getText().toString().trim().length() != 0)
+                    send.setImageResource(R.drawable.button_send_reviews5);
 
             }
         });
@@ -253,7 +268,10 @@ public class ReviewActivityQR extends AppCompatActivity {
 
             }
         });
+
+
         send.setClickable(false);
+        send.setTag("0");
 
         camera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -274,18 +292,56 @@ public class ReviewActivityQR extends AppCompatActivity {
         edittext.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.toString().trim().length() == 0) {
+                    send.setTag("0");
                     send.setClickable(false);
-                    send.setImageResource(R.drawable.button_send_disable);
+                    send.animate().scaleY(0.0f).scaleX(0.0f).setDuration(200).setInterpolator(new AccelerateInterpolator()).withEndAction(new Runnable() {
+                        @Override
+                        public void run() {
+                            send.setImageResource(R.drawable.button_send_disable);
+                            send.animate().scaleX(1.0f).scaleY(1.0f).setInterpolator(new DecelerateInterpolator()).setDuration(300);
+                        }
+                    });
 
-                } else {
+                } else if (s.toString().trim().length() > 0) {
+
+
                     send.setClickable(true);
-                    send.setImageResource(R.drawable.button_send_comments);
+
+                    if (!send.getTag().toString().equals("1")) {
+                        send.setTag("1");
+                        send.animate().scaleY(0.0f).scaleX(0.0f).setDuration(200).setInterpolator(new AccelerateInterpolator()).withEndAction(new Runnable() {
+                            @Override
+                            public void run() {
+                                switch (numrating) {
+                                    case 0:
+                                        send.setImageResource(R.drawable.button_send_comments);
+                                        break;
+                                    case 1:
+                                        send.setImageResource(R.drawable.button_send_reviews1);
+                                        break;
+                                    case 2:
+                                        send.setImageResource(R.drawable.button_send_reviews2);
+                                        break;
+                                    case 3:
+                                        send.setImageResource(R.drawable.button_send_reviews3);
+                                        break;
+                                    case 4:
+                                        send.setImageResource(R.drawable.button_send_reviews4);
+                                        break;
+                                    case 5:
+                                        send.setImageResource(R.drawable.button_send_reviews5);
+                                        break;
+                                }
+                                send.animate().scaleX(1.0f).scaleY(1.0f).setInterpolator(new DecelerateInterpolator()).setDuration(300);
+                            }
+                        });
+                    }
+
                 }
             }
 
@@ -317,6 +373,7 @@ public class ReviewActivityQR extends AppCompatActivity {
         } else {
             if (getIntent() != null) {
                 String url = getIntent().getStringExtra("qrdata");
+                Log.d(TAG, "onCreate: id" + getIntent().getStringExtra("id"));
                 try {
                     topicid = url.replace("https://www.reweyou.in/qr/topicid=", "");
                     Log.d(TAG, "onCreateintent: " + topicid);
@@ -552,7 +609,6 @@ public class ReviewActivityQR extends AppCompatActivity {
                     public void onResponse(String response) {
                         try {
                             loadingcircularinit.setVisibility(View.GONE);
-                            rlcont.setVisibility(View.VISIBLE);
 
                             Log.d(TAG, "onResponse: " + response);
                             JSONObject jsonObject = new JSONObject(response);
@@ -622,13 +678,28 @@ public class ReviewActivityQR extends AppCompatActivity {
 
                             Type listType = new TypeToken<List<ReviewModel>>() {
                             }.getType();
-                            List<ReviewModel> listreviews = gson.fromJson(jsonArrayreviews.toString(), listType);
+                            final List<ReviewModel> listreviews = gson.fromJson(jsonArrayreviews.toString(), listType);
 
-                            if (listreviews.size() == 0)
-                                noreviewyet.setVisibility(View.VISIBLE);
-                            else noreviewyet.setVisibility(View.GONE);
-                            loadingcircular.hide();
-                            adapter.add(listreviews);
+
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    rlcont.setVisibility(View.VISIBLE);
+                                    new Handler().postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (listreviews.size() == 0)
+                                                noreviewyet.setVisibility(View.VISIBLE);
+                                            else noreviewyet.setVisibility(View.GONE);
+                                            loadingcircular.hide();
+                                            adapter.add(listreviews);
+                                        }
+                                    }, 700);
+
+                                }
+                            }, 400);
+
+
 
                         } catch (Exception e) {
                             e.printStackTrace();
