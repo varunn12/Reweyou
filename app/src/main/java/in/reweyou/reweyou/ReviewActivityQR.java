@@ -67,6 +67,7 @@ import in.reweyou.reweyou.customView.CustomSigninDialog;
 import in.reweyou.reweyou.customView.PreCachingLayoutManager;
 import in.reweyou.reweyou.model.IssueModel;
 import in.reweyou.reweyou.model.ReviewModel;
+import in.reweyou.reweyou.utils.Constants;
 
 public class ReviewActivityQR extends AppCompatActivity {
 
@@ -543,10 +544,13 @@ public class ReviewActivityQR extends AppCompatActivity {
 
                             ratetext.setVisibility(View.GONE);
                             b1.setVisibility(View.GONE);
-                            c1.setVisibility(View.GONE);
+                            c1.setVisibility(View.GONE);*/
                             divider2.setVisibility(View.GONE);
                             reim.setVisibility(View.GONE);
-                            remove.setVisibility(View.GONE);*/
+                            remove.setVisibility(View.GONE);
+
+                            Constants.addtoreviewlist(topicid);
+
                         } else if (response.equals("Passcode is incorrect")) {
                             Toast.makeText(ReviewActivityQR.this, "Passcode is incorrect", Toast.LENGTH_SHORT).show();
                             uploadingCon.setVisibility(View.GONE);

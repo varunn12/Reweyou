@@ -620,10 +620,10 @@ public class ReviewActivity extends SlidingActivity {
 
                             ratetext.setVisibility(View.GONE);
                             b1.setVisibility(View.GONE);
-                            c1.setVisibility(View.GONE);
+                            c1.setVisibility(View.GONE);*/
                             divider2.setVisibility(View.GONE);
                             reim.setVisibility(View.GONE);
-                            remove.setVisibility(View.GONE);*/
+                            remove.setVisibility(View.GONE);
 
                             Constants.addtoreviewlist(topicid);
 
