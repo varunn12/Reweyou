@@ -32,12 +32,12 @@
         "source": "/home/master/.android/build-cache/a202090086e73b252992eb9b0053415576884a6f/output/res/layout/abc_action_bar_view_list_nav_layout.xml"
     },
     {
-        "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/androidTest/debug/layout/abc_alert_dialog_title_material.xml",
-        "source": "/home/master/.android/build-cache/a202090086e73b252992eb9b0053415576884a6f/output/res/layout/abc_alert_dialog_title_material.xml"
-    },
-    {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/androidTest/debug/layout/notification_template_custom_big.xml",
         "source": "/home/master/.android/build-cache/a202090086e73b252992eb9b0053415576884a6f/output/res/layout/notification_template_custom_big.xml"
+    },
+    {
+        "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/androidTest/debug/layout/abc_alert_dialog_title_material.xml",
+        "source": "/home/master/.android/build-cache/a202090086e73b252992eb9b0053415576884a6f/output/res/layout/abc_alert_dialog_title_material.xml"
     },
     {
         "merged": "/home/master/AndroidStudioProjects/Reweyou/videoPreviewLib/build/intermediates/res/merged/androidTest/debug/layout/exomedia_default_native_surface_video_view.xml",

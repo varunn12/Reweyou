@@ -19,6 +19,7 @@ import com.google.firebase.messaging.RemoteMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Calendar;
 import java.util.Random;
 
 import in.reweyou.reweyou.R;
@@ -121,6 +122,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     notificationManager.notify(100, mBuilder.build());
                 }
 */
+            Random random = new Random();
+
+            int m = random.nextInt(9999 - 1000) + 1000;
             Intent i = new Intent(this, ReviewActivityQR.class);
 
           /*  i.putExtra("headline", payload.getString("headline"));
@@ -132,27 +136,36 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             i.putExtra("image", payload.getString("image"));
             i.putExtra("video", payload.getString("video"));
             i.putExtra("gif", payload.getString("gif"));*/
+            i.putExtra("id", String.valueOf(m));
+            Log.d(TAG, "handleDataMessage: id " + m);
             i.putExtra("qrdata", "https://www.reweyou.in/qr/topicid=" + payload.getString("topicid"));
 
 
-            Random random = new Random();
+            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), m, i, PendingIntent.FLAG_UPDATE_CURRENT);
 
-            int m = random.nextInt(9999 - 1000) + 1000;
 
-            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
-
+            NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle();
+            bigTextStyle.bigText(message);
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext())
                     .setSmallIcon(R.drawable.ic_stat_logo_plain)
                     .setContentIntent(pendingIntent)
                     .setAutoCancel(true)
-                    .setDefaults(NotificationCompat.DEFAULT_VIBRATE)
-
+                    .setStyle(bigTextStyle)
                     .setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(), R.mipmap.ic_launcher))
                     .setContentTitle(title)
                     .setContentText(message);
 
-            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
+            Calendar cal = Calendar.getInstance();
+            int hour = cal.get(Calendar.HOUR_OF_DAY);
+            if (hour < 7 || hour > 23) {
+                mBuilder.setDefaults(NotificationCompat.DEFAULT_VIBRATE);
+
+            } else {
+                mBuilder.setDefaults(NotificationCompat.DEFAULT_ALL);
+
+            }
+            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.notify(m, mBuilder.build());
              /*else {
                 Intent i = new Intent(Constants.SEND_NOTI_CHANGE_REQUEST);
