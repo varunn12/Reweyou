@@ -1,5 +1,6 @@
 package in.reweyou.reweyou;
 
+import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -10,6 +11,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,7 +24,9 @@ import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
@@ -30,6 +34,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,6 +59,7 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.wang.avi.AVLoadingIndicatorView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -105,6 +111,14 @@ public class ReviewActivity extends SlidingActivity {
     private LinearLayout rl;
     private AVLoadingIndicatorView loadingcircularinit;
     private ImageView closebutton;
+    private int numstar1 = 0;
+    private int numstar2 = 0;
+    private int numstar3 = 0;
+    private int numstar4 = 0;
+    private int numstar5 = 0;
+    private int totalrating;
+    private SeekBar sb1, sb2, sb3, sb4, sb5;
+    private TextView tb1, tb2, tb3, tb4, tb5;
 
     @Override
     protected void configureScroller(MultiShrinkScroller scroller) {
@@ -119,7 +133,53 @@ public class ReviewActivity extends SlidingActivity {
 
 
         setContent(R.layout.content_review);
+        sb1 = (SeekBar) findViewById(R.id.sb1);
+        sb2 = (SeekBar) findViewById(R.id.sb2);
+        sb3 = (SeekBar) findViewById(R.id.sb3);
+        sb4 = (SeekBar) findViewById(R.id.sb4);
+        sb5 = (SeekBar) findViewById(R.id.sb5);
 
+        sb1.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
+
+        sb2.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
+
+        sb3.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
+
+        sb4.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
+
+        sb5.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
+
+
+        tb1 = (TextView) findViewById(R.id.tb1);
+        tb2 = (TextView) findViewById(R.id.tb2);
+        tb3 = (TextView) findViewById(R.id.tb3);
+        tb4 = (TextView) findViewById(R.id.tb4);
+        tb5 = (TextView) findViewById(R.id.tb5);
 
         closebutton = (ImageView) findViewById(R.id.close);
         closebutton.setOnClickListener(new View.OnClickListener() {
@@ -429,12 +489,12 @@ public class ReviewActivity extends SlidingActivity {
         // recyclerView.addItemDecoration(verticalSpaceItemDecorator);*//*
         adapter = new ReviewAdapter(this);
         recyclerView.setAdapter(adapter);
-        new Handler().postDelayed(new Runnable() {
+        new Handler().post(new Runnable() {
             @Override
             public void run() {
                 loadReportsfromServer();
             }
-        }, 800);
+        });
 
         image.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -687,13 +747,28 @@ public class ReviewActivity extends SlidingActivity {
                 }, new ParsedRequestListener<List<ReviewModel>>() {
 
                     @Override
-                    public void onResponse(List<ReviewModel> list) {
-                        if (list.size() == 0)
-                            noreviewyet.setVisibility(View.VISIBLE);
-                        else noreviewyet.setVisibility(View.GONE);
-                        loadingcircular.hide();
-                        adapter.add(list);
-                        Log.d(TAG, "onResponse: lis" + list.size());
+                    public void onResponse(final List<ReviewModel> list) {
+
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (list.size() == 0)
+                                    noreviewyet.setVisibility(View.VISIBLE);
+                                else noreviewyet.setVisibility(View.GONE);
+                                loadingcircular.hide();
+                                adapter.add(list);
+                                Log.d(TAG, "onResponse: lis" + list.size());
+
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        new Asynccalc().execute(list);
+
+                                    }
+                                }, 500);
+                            }
+                        }, 1000);
+
 
                     }
 
@@ -946,6 +1021,94 @@ public class ReviewActivity extends SlidingActivity {
             }
         });
 
+    }
+
+    private class Asynccalc extends AsyncTask<List<ReviewModel>, Void, ArrayList<Integer>> {
+
+        @Override
+        protected ArrayList<Integer> doInBackground(List<ReviewModel>... listaa) {
+            List<ReviewModel> list = new ArrayList<>();
+            list = listaa[0];
+            int numstar1 = 0;
+            int numstar2 = 0;
+            int numstar3 = 0;
+            int numstar4 = 0;
+            int numstar5 = 0;
+            int sizeoflist = 0;
+            sizeoflist = list.size();
+            for (int i = 0; i < list.size(); i++) {
+                switch (Integer.parseInt(list.get(i).getRating().replace(".00", ""))) {
+                    case 1:
+                        numstar1++;
+                        break;
+                    case 2:
+                        numstar2++;
+
+                        break;
+                    case 3:
+                        numstar3++;
+
+                        break;
+                    case 4:
+                        numstar4++;
+
+                        break;
+                    case 5:
+                        numstar5++;
+
+                        break;
+                }
+
+            }
+            ArrayList<Integer> arrayList = new ArrayList<>();
+            arrayList.add(numstar1);
+            arrayList.add(numstar2);
+            arrayList.add(numstar3);
+            arrayList.add(numstar4);
+            arrayList.add(numstar5);
+            arrayList.add(sizeoflist);
+
+
+            return arrayList;
+        }
+
+        @Override
+        protected void onPostExecute(final ArrayList<Integer> list) {
+            try {
+                int duration = 700;
+                ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 100);
+                valueAnimator.setDuration(duration);
+                valueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+                valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        sb1.setProgress((int) (((Float) animation.getAnimatedValue() / list.get(5)) * list.get(0)));
+                        sb2.setProgress((int) (((Float) animation.getAnimatedValue() / list.get(5)) * list.get(1)));
+                        sb3.setProgress((int) (((Float) animation.getAnimatedValue() / list.get(5)) * list.get(2)));
+                        sb4.setProgress((int) (((Float) animation.getAnimatedValue() / list.get(5)) * list.get(3)));
+                        sb5.setProgress((int) (((Float) animation.getAnimatedValue() / list.get(5)) * list.get(4)));
+
+
+                    }
+                });
+                valueAnimator.start();
+
+                tb1.setText(String.valueOf(list.get(0)));
+                tb2.setText(String.valueOf(list.get(1)));
+                tb3.setText(String.valueOf(list.get(2)));
+                tb4.setText(String.valueOf(list.get(3)));
+                tb5.setText(String.valueOf(list.get(4)));
+
+
+                tb1.animate().scaleX(1.0f).scaleY(1.0f).setDuration(duration).setInterpolator(new AccelerateDecelerateInterpolator());
+                tb2.animate().scaleX(1.0f).scaleY(1.0f).setDuration(duration).setInterpolator(new AccelerateDecelerateInterpolator());
+                tb3.animate().scaleX(1.0f).scaleY(1.0f).setDuration(duration).setInterpolator(new AccelerateDecelerateInterpolator());
+                tb4.animate().scaleX(1.0f).scaleY(1.0f).setDuration(duration).setInterpolator(new AccelerateDecelerateInterpolator());
+                tb5.animate().scaleX(1.0f).scaleY(1.0f).setDuration(duration).setInterpolator(new AccelerateDecelerateInterpolator());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 

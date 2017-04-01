@@ -140,6 +140,7 @@ terro"
                                 app:srcCompat="@drawable/ic_star" />
 
                             <SeekBar
+                                android:id="@+id/sb5"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"
@@ -150,21 +151,23 @@ terro"
                                 android:paddingRight="0dp"
 
                                 android:paddingStart="0dp"
-                                android:progress="85"
+                                android:progress="0"
                                 android:scaleY="2"
                                 android:theme="@style/MySeekBarTheme5"
                                 android:thumb="@color/transparent" />
 
                             <TextView
+                                android:id="@+id/tb5"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentRight="true"
                                 android:layout_centerVertical="true"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginLeft="10dp"
-
                                 android:gravity="center"
-                                android:text="17"
+                                android:scaleX="0"
+                                android:scaleY="0"
+                                android:text=""
                                 android:textColor="#424242"
                                 android:textSize="12dp" />
 
@@ -198,6 +201,8 @@ terro"
                                 app:srcCompat="@drawable/ic_star" />
 
                             <SeekBar
+                                android:id="@+id/sb4"
+
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"
@@ -209,21 +214,24 @@ terro"
                                 android:paddingRight="0dp"
 
                                 android:paddingStart="0dp"
-                                android:progress="65"
+                                android:progress="0"
                                 android:scaleY="2"
                                 android:theme="@style/MySeekBarTheme4"
                                 android:thumb="@color/transparent" />
 
                             <TextView
+                                android:id="@+id/tb4"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentRight="true"
                                 android:layout_centerVertical="true"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginLeft="10dp"
-
                                 android:gravity="center"
-                                android:text="12"
+                                android:scaleX="0"
+
+                                android:scaleY="0"
+                                android:text=""
                                 android:textColor="#424242"
                                 android:textSize="12dp" />
 
@@ -257,6 +265,8 @@ terro"
                                 app:srcCompat="@drawable/ic_star" />
 
                             <SeekBar
+                                android:id="@+id/sb3"
+
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"
@@ -268,21 +278,24 @@ terro"
                                 android:paddingRight="0dp"
                                 android:paddingStart="0dp"
 
-                                android:progress="35"
+                                android:progress="0"
                                 android:scaleY="2"
                                 android:theme="@style/MySeekBarTheme3"
                                 android:thumb="@color/transparent" />
 
                             <TextView
+                                android:id="@+id/tb3"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentRight="true"
                                 android:layout_centerVertical="true"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginLeft="10dp"
-
                                 android:gravity="center"
-                                android:text="9"
+                                android:scaleX="0"
+
+                                android:scaleY="0"
+                                android:text=""
                                 android:textColor="#424242"
                                 android:textSize="12dp" />
 
@@ -316,6 +329,8 @@ terro"
                                 app:srcCompat="@drawable/ic_star" />
 
                             <SeekBar
+                                android:id="@+id/sb2"
+
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"
@@ -327,21 +342,23 @@ terro"
                                 android:paddingRight="0dp"
 
                                 android:paddingStart="0dp"
-                                android:progress="15"
+                                android:progress="0"
                                 android:scaleY="2"
                                 android:theme="@style/MySeekBarTheme2"
                                 android:thumb="@color/transparent" />
 
                             <TextView
+                                android:id="@+id/tb2"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentRight="true"
                                 android:layout_centerVertical="true"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginLeft="10dp"
-
                                 android:gravity="center"
-                                android:text="3"
+                                android:scaleX="0"
+                                android:scaleY="0"
+                                android:text=""
                                 android:textColor="#424242"
                                 android:textSize="12dp" />
 
@@ -375,6 +392,8 @@ terro"
                                 app:srcCompat="@drawable/ic_star" />
 
                             <SeekBar
+                                android:id="@+id/sb1"
+
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"
@@ -386,22 +405,24 @@ terro"
                                 android:paddingRight="0dp"
 
                                 android:paddingStart="0dp"
-                                android:progress="25"
+                                android:progress="0"
                                 android:scaleY="2"
                                 android:theme="@style/MySeekBarTheme1"
                                 android:thumb="@color/transparent" />
 
                             <TextView
+                                android:id="@+id/tb1"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentRight="true"
                                 android:layout_centerVertical="true"
                                 android:layout_gravity="center_vertical"
-
                                 android:layout_marginLeft="10dp"
-
                                 android:gravity="center"
-                                android:text="7"
+                                android:scaleX="0"
+
+                                android:scaleY="0"
+                                android:text=""
                                 android:textColor="#424242"
                                 android:textSize="12dp" />
 
