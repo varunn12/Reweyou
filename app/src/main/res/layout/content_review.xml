@@ -102,18 +102,322 @@ terro"
                         android:textColor="#000"
                         android:textSize="12dp" />
 
+                    <LinearLayout
+                        android:layout_width="140dp"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/user"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="4dp"
+                        android:orientation="vertical">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_gravity="center_vertical"
+                                android:text="5"
+                                android:textColor="@color/rating5"
+                                android:textSize="12dp" />
+
+                            <ImageView
+
+                                android:layout_width="9dp"
+
+                                android:layout_height="9dp"
+                                android:layout_centerVertical="true"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginLeft="8dp"
+                                android:layout_marginRight="4dp"
+                                android:paddingBottom="0.5dp"
+                                android:tint="@color/rating5"
+                                app:srcCompat="@drawable/ic_star" />
+
+                            <SeekBar
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="24dp"
+                                android:layout_marginRight="18dp"
+                                android:paddingEnd="0dp"
+                                android:paddingLeft="0dp"
+                                android:paddingRight="0dp"
+
+                                android:paddingStart="0dp"
+                                android:progress="85"
+                                android:scaleY="2"
+                                android:theme="@style/MySeekBarTheme5"
+                                android:thumb="@color/transparent" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginLeft="10dp"
+
+                                android:gravity="center"
+                                android:text="17"
+                                android:textColor="#424242"
+                                android:textSize="12dp" />
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_gravity="center_vertical"
+                                android:text="4"
+                                android:textColor="@color/rating4"
+                                android:textSize="12dp" />
+
+                            <ImageView
+
+                                android:layout_width="9dp"
+
+                                android:layout_height="9dp"
+                                android:layout_centerVertical="true"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginLeft="8dp"
+                                android:layout_marginRight="4dp"
+                                android:paddingBottom="0.5dp"
+                                android:tint="@color/rating4"
+                                app:srcCompat="@drawable/ic_star" />
+
+                            <SeekBar
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="24dp"
+
+                                android:layout_marginRight="18dp"
+                                android:paddingEnd="0dp"
+                                android:paddingLeft="0dp"
+                                android:paddingRight="0dp"
+
+                                android:paddingStart="0dp"
+                                android:progress="65"
+                                android:scaleY="2"
+                                android:theme="@style/MySeekBarTheme4"
+                                android:thumb="@color/transparent" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginLeft="10dp"
+
+                                android:gravity="center"
+                                android:text="12"
+                                android:textColor="#424242"
+                                android:textSize="12dp" />
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_gravity="center_vertical"
+                                android:text="3"
+                                android:textColor="@color/rating3"
+                                android:textSize="12dp" />
+
+                            <ImageView
+
+                                android:layout_width="9dp"
+
+                                android:layout_height="9dp"
+                                android:layout_centerVertical="true"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginLeft="8dp"
+                                android:layout_marginRight="4dp"
+                                android:paddingBottom="0.5dp"
+                                android:tint="@color/rating3"
+                                app:srcCompat="@drawable/ic_star" />
+
+                            <SeekBar
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="24dp"
+                                android:layout_marginRight="18dp"
+                                android:paddingEnd="0dp"
+                                android:paddingLeft="0dp"
+
+                                android:paddingRight="0dp"
+                                android:paddingStart="0dp"
+
+                                android:progress="35"
+                                android:scaleY="2"
+                                android:theme="@style/MySeekBarTheme3"
+                                android:thumb="@color/transparent" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginLeft="10dp"
+
+                                android:gravity="center"
+                                android:text="9"
+                                android:textColor="#424242"
+                                android:textSize="12dp" />
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_gravity="center_vertical"
+                                android:text="2"
+                                android:textColor="@color/rating2"
+                                android:textSize="12dp" />
+
+                            <ImageView
+
+                                android:layout_width="9dp"
+
+                                android:layout_height="9dp"
+                                android:layout_centerVertical="true"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginLeft="8dp"
+                                android:layout_marginRight="4dp"
+                                android:paddingBottom="0.5dp"
+                                android:tint="@color/rating2"
+                                app:srcCompat="@drawable/ic_star" />
+
+                            <SeekBar
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="24dp"
+                                android:layout_marginRight="18dp"
+                                android:paddingEnd="0dp"
+                                android:paddingLeft="0dp"
+
+                                android:paddingRight="0dp"
+
+                                android:paddingStart="0dp"
+                                android:progress="15"
+                                android:scaleY="2"
+                                android:theme="@style/MySeekBarTheme2"
+                                android:thumb="@color/transparent" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginLeft="10dp"
+
+                                android:gravity="center"
+                                android:text="3"
+                                android:textColor="#424242"
+                                android:textSize="12dp" />
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_gravity="center_vertical"
+                                android:text="1"
+                                android:textColor="@color/rating1"
+                                android:textSize="12dp" />
+
+                            <ImageView
+
+                                android:layout_width="9dp"
+
+                                android:layout_height="9dp"
+                                android:layout_centerVertical="true"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginLeft="8dp"
+                                android:layout_marginRight="4dp"
+                                android:paddingBottom="0.5dp"
+                                android:tint="@color/rating1"
+                                app:srcCompat="@drawable/ic_star" />
+
+                            <SeekBar
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="24dp"
+                                android:layout_marginRight="18dp"
+                                android:paddingEnd="0dp"
+                                android:paddingLeft="0dp"
+
+                                android:paddingRight="0dp"
+
+                                android:paddingStart="0dp"
+                                android:progress="25"
+                                android:scaleY="2"
+                                android:theme="@style/MySeekBarTheme1"
+                                android:thumb="@color/transparent" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                android:layout_gravity="center_vertical"
+
+                                android:layout_marginLeft="10dp"
+
+                                android:gravity="center"
+                                android:text="7"
+                                android:textColor="#424242"
+                                android:textSize="12dp" />
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
 
                     <ImageView
                         android:id="@+id/image"
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:layout_alignParentRight="true"
-                        android:layout_marginBottom="16dp"
+                        android:layout_marginBottom="8dp"
                         android:layout_marginLeft="16dp"
                         android:layout_marginRight="16dp"
-                        android:layout_marginTop="8dp"
-                        android:scaleType="centerCrop"
-                        android:transitionName="ta" />
+                        android:layout_marginTop="12dp"
+                        android:scaleType="centerCrop" />
 
                     <TextView
                         android:id="@+id/rating"
@@ -130,7 +434,8 @@ terro"
                         android:text="4.72"
                         android:textColor="#29B6F6"
                         android:textSize="20dp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:visibility="invisible" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -138,22 +443,25 @@ terro"
                         android:layout_alignTop="@+id/rating"
                         android:layout_marginLeft="8dp"
                         android:layout_marginTop="6dp"
-                        android:layout_toRightOf="@+id/rating"
 
+                        android:layout_toRightOf="@+id/rating"
                         android:alpha="0.38"
+
                         android:ellipsize="end"
                         android:gravity="center_vertical"
                         android:lines="1"
                         android:paddingBottom="4dp"
                         android:text="RATING"
                         android:textColor="#000"
-                        android:textSize="12dp" />
+                        android:textSize="12dp"
+                        android:visibility="invisible" />
 
                     <TextView
                         android:id="@+id/review"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignRight="@+id/rating"
+
                         android:layout_below="@+id/rating"
                         android:layout_marginLeft="16dp"
                         android:alpha="0.87"
@@ -161,11 +469,12 @@ terro"
                         android:gravity="center_vertical"
                         android:lines="1"
                         android:paddingBottom="4dp"
-
                         android:text="24"
+
                         android:textColor="#000"
                         android:textSize="20dp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:visibility="invisible" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -173,17 +482,19 @@ terro"
                         android:layout_below="@+id/rating"
                         android:layout_marginLeft="8dp"
                         android:layout_marginTop="6dp"
+
                         android:layout_toRightOf="@id/rating"
                         android:alpha="0.38"
-
                         android:ellipsize="end"
+
                         android:gravity="center_vertical"
                         android:lines="1"
-
                         android:paddingBottom="4dp"
+
                         android:text="REVIEWS"
                         android:textColor="#000"
-                        android:textSize="12dp" />
+                        android:textSize="12dp"
+                        android:visibility="invisible" />
                 </RelativeLayout>
 
 

@@ -147,7 +147,7 @@ public class ReviewActivity extends SlidingActivity {
                     }
                 });
             }
-        }, 500);
+        }, 700);
 
         tvheadline = (TextView) findViewById(R.id.headline);
         remove = (TextView) findViewById(R.id.remove);
