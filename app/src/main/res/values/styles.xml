@@ -11,6 +11,26 @@
 
     </style>
 
+    <style name="MySeekBarTheme5" parent="Widget.AppCompat.SeekBar">
+        <item name="colorAccent">@color/rating5</item>
+
+    </style>
+
+    <style name="MySeekBarTheme4" parent="Widget.AppCompat.SeekBar">
+        <item name="colorAccent">@color/rating4</item>
+    </style>
+
+    <style name="MySeekBarTheme3" parent="Widget.AppCompat.SeekBar">
+        <item name="colorAccent">@color/rating3</item>
+    </style>
+
+    <style name="MySeekBarTheme2" parent="Widget.AppCompat.SeekBar">
+        <item name="colorAccent">@color/rating2</item>
+    </style>
+
+    <style name="MySeekBarTheme1" parent="Widget.AppCompat.SeekBar">
+        <item name="colorAccent">@color/rating1</item>
+    </style>
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

@@ -633,23 +633,27 @@ public class Feed extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
+        if (this.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            this.drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
 
-        if (doubleBackToExitPressedOnce) {
+            if (doubleBackToExitPressedOnce) {
 
-            finishAffinity();
-        }
-        if (!doubleBackToExitPressedOnce)
-            Toast.makeText(this, "Press again to exit.", Toast.LENGTH_SHORT).show();
-
-        this.doubleBackToExitPressedOnce = true;
-
-        new Handler().postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                doubleBackToExitPressedOnce = false;
+                finishAffinity();
             }
-        }, 3000);
+            if (!doubleBackToExitPressedOnce)
+                Toast.makeText(this, "Press again to exit.", Toast.LENGTH_SHORT).show();
+
+            this.doubleBackToExitPressedOnce = true;
+
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    doubleBackToExitPressedOnce = false;
+                }
+            }, 3000);
+        }
     }
 
     public void alertMessage() {
