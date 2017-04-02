@@ -435,7 +435,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             hashMap.put("token", sessionManager.getKeyAuthToken());
             hashMap.put("deviceid", sessionManager.getDeviceid());
             hashMap.put("name", sessionManager.getUsername());
-            AndroidNetworking.post("https://reweyou.in/reviews/agree_new.php")
+            AndroidNetworking.post("https://www.reweyou.in/reviews/agree_new.php")
                     .addBodyParameter(hashMap)
                     .setTag("agree")
                     .setPriority(Priority.HIGH)
