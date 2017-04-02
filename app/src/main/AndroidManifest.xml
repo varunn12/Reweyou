@@ -142,12 +142,15 @@
 
         <activity
             android:name=".WhatsNew"
+
             android:screenOrientation="portrait" />
         <activity
             android:name=".WelcomeActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:screenOrientation="portrait"
+
             android:theme="@style/Base.Theme.AppCompat" />
         <activity
             android:name=".FullImage"
@@ -173,8 +176,8 @@
             android:windowSoftInputMode="stateHidden"></activity>
         <activity
             android:name=".ReviewActivityQR"
-            android:label="@string/title_activity_review"
             android:excludeFromRecents="true"
+            android:label="@string/title_activity_review"
 
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"

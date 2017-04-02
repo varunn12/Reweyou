@@ -306,7 +306,7 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     }
 
-    private void takeScreenshot(CardView cv) {
+    private void takeScreenshot(CardView cv, String topicid) {
         Date now = new Date();
         android.text.format.DateFormat.format("yyyy-MM-dd_hh:mm:ss", now);
 
@@ -331,7 +331,7 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             outputStream.flush();
             outputStream.close();
 
-            ShareIntent();
+            ShareIntent(topicid);
 
         } catch (Throwable e) {
             e.printStackTrace();
@@ -375,9 +375,9 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         return resizedBitmap;
     }
 
-    private void ShareIntent() {
+    private void ShareIntent(String topicid) {
         Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.putExtra(Intent.EXTRA_TEXT, "Download Reweyou App to read and report. https://goo.gl/o5Kyqc");
+        intent.putExtra(Intent.EXTRA_TEXT, "https://www.reweyou.in/story/" + topicid + " Download Reweyou App to read and report.");
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_STREAM, uri);
         intent.setType("image/jpeg");
@@ -461,7 +461,7 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 public void onClick(View v) {
                     try {
                         if (isStoragePermissionGranted()) {
-                            takeScreenshot(cv);
+                            takeScreenshot(cv, messagelist.get(getAdapterPosition()).getTopicid());
                         }
 
                     } catch (Exception e) {

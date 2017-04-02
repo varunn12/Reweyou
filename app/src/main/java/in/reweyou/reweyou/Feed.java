@@ -728,6 +728,7 @@ public class Feed extends AppCompatActivity {
                 switch (id) {
                     case R.id.myreports:
                         drawerLayout.closeDrawers();
+
                         Intent reports = new Intent(Feed.this, YourReview.class);
                         startActivity(reports);
                         break;
