@@ -51,6 +51,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import in.reweyou.reweyou.FullImage;
+import in.reweyou.reweyou.MyProfile;
 import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.ReviewActivity;
 import in.reweyou.reweyou.VideoDisplay;
@@ -419,7 +420,7 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private CardView cv;
         private LinearLayout codecon;
 
-        private IssueViewHolder(View inflate) {
+        private IssueViewHolder(final View inflate) {
             super(inflate);
             headline = (TextView) inflate.findViewById(R.id.headline);
             description = (TextView) inflate.findViewById(R.id.description);
@@ -444,6 +445,16 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
             });
 
+            user.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!messagelist.get(getAdapterPosition()).getName().equals("Anonymous")) {
+                        Intent intent = new Intent(mContext, MyProfile.class);
+                        intent.putExtra("number", messagelist.get(getAdapterPosition()).getCreated_by());
+                        mContext.startActivity(intent);
+                    }
+                }
+            });
 
             share.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -482,6 +493,7 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     mContext.startActivity(i);
                 }
             });
+
 
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override

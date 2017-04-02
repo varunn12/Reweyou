@@ -730,7 +730,6 @@ public class Feed extends AppCompatActivity {
                         drawerLayout.closeDrawers();
                         Intent reports = new Intent(Feed.this, YourReview.class);
                         startActivity(reports);
-                        overridePendingTransition(0, 0);
                         break;
                   /*  case R.id.leaderboard:
                         drawerLayout.closeDrawers();
@@ -748,7 +747,6 @@ public class Feed extends AppCompatActivity {
                         drawerLayout.closeDrawers();
                         Intent inv = new Intent(Feed.this, Invite.class);
                         startActivity(inv);
-                        overridePendingTransition(0, 0);
                         break;
 
                     case R.id.qrreport:

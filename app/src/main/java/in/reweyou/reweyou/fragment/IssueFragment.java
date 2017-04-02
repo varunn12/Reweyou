@@ -94,7 +94,9 @@ public class IssueFragment extends Fragment {
         Log.d(TAG, "loadReportsfromServer: " + currenttag);
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("tags", currenttag);
-        hashMap.put("number", userSessionManager.getMobileNumber());
+        if (Constants.tempnumber == null)
+            Constants.tempnumber = userSessionManager.getMobileNumber();
+        hashMap.put("number", Constants.tempnumber);
         String url;
         if (mContext instanceof Feed)
             url = "https://reweyou.in/reviews/topics.php";

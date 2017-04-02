@@ -2,11 +2,13 @@ package in.reweyou.reweyou.adapter;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -15,6 +17,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import java.util.ArrayList;
 import java.util.List;
 
+import in.reweyou.reweyou.MyProfile;
 import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.model.LikesModel;
 
@@ -66,13 +69,21 @@ public class LikesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         private ImageView profilepic;
         private TextView name;
-
+        private LinearLayout con;
 
         private LikesViewHolder(View inflate) {
             super(inflate);
-
             profilepic = (ImageView) inflate.findViewById(R.id.profilepic);
             name = (TextView) inflate.findViewById(R.id.name);
+            con = (LinearLayout) inflate.findViewById(R.id.ll);
+            con.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext, MyProfile.class);
+                    intent.putExtra("number", messagelist.get(getAdapterPosition()).getCreated_by());
+                    mContext.startActivity(intent);
+                }
+            });
 
 
         }

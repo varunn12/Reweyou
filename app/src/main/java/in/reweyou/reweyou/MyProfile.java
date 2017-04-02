@@ -39,6 +39,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONArrayRequestListener;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -94,6 +98,8 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
     private boolean dataloaded;
     private String name;
     private String number1;
+    private String numberextra;
+    private String TAG = MyProfile.class.getName();
 
 
     @Override
@@ -138,7 +144,9 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                     i.putExtra("number", number1
                     );
                     startActivity(i);*/
+                    Constants.tempnumber = number1;
                     Intent i = new Intent(MyProfile.this, YourReview.class);
+
                     startActivity(i);
                 }
             }
@@ -147,23 +155,94 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
         button = (Button) findViewById(R.id.button);
         profilepic = (ImageView) findViewById(R.id.profilepic);
 
+        if (getIntent() != null) {
+            numberextra = getIntent().getStringExtra("number");
+            if (numberextra != null) {
+                findViewById(R.id.editphoto).setVisibility(View.GONE);
+                findViewById(R.id.privatecon).setVisibility(View.GONE);
+                getSupportActionBar().setTitle("Profile");
+            }
 
-
+        }
         //Progress bar
         tag = "Random";
-        isInternetPresent = cd.isConnectingToInternet();
-        if (isInternetPresent) {
-            new JSONTask().execute(i);
-            // new JSONTasks().execute(tag, i);
-            // new JSONTasks().execute(tag, i);
-        } else {
-            Toast.makeText(this, "You are not connected to Internet", Toast.LENGTH_LONG).show();
-        }
 
         profilepic.setOnClickListener(this);
         button.setOnClickListener(this);
         Readers.setOnClickListener(this);
         uploadOptions = new UploadOptions(this);
+
+        loadDataFromServer();
+    }
+
+    private void loadDataFromServer() {
+        HashMap<String, String> hashMap = new HashMap<>();
+        if (numberextra == null)
+            hashMap.put("number", session.getMobileNumber());
+        else hashMap.put("number", numberextra);
+        hashMap.put("token", session.getKeyAuthToken());
+        hashMap.put("deviceid", session.getMobileNumber());
+
+        AndroidNetworking.post("https://www.reweyou.in/reviews/user_list.php")
+                .setTag("tss")
+                .addBodyParameter(hashMap)
+                .setPriority(Priority.HIGH)
+                .build()
+                .getAsJSONArray(new JSONArrayRequestListener() {
+                    @Override
+                    public void onResponse(JSONArray respons) {
+                        try {
+                            JSONObject response = respons.getJSONObject(0);
+                            Log.d(TAG, "onResponse: " + response);
+                            dataloaded = true;
+                            name = response.getString("name");
+                            number1 = response.getString("number");
+                            Readers.setText(response.getString("total_likes"));
+                            TextView topiccc = (TextView) findViewById(R.id.topics);
+                            topiccc.setText(response.getString("topics"));
+                            Reports.setText(response.getString("reviews"));
+
+
+                            Name.setText(name);
+                            if (!response.getString("info").isEmpty()) {
+                                Info.setText(response.getString("info"));
+                                Info.setPaintFlags(Info.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
+                            } else {
+                                Info.setText(getResources().getString(R.string.emptyStatus));
+                                Info.setTextColor(ColorStateList.valueOf(getResources().getColor(R.color.red)));
+                                Info.setPaintFlags(Info.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
+                            }
+
+                            Info.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    try {
+                                        editHeadline();
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+
+
+                            Glide.with(getApplicationContext()).load(response.getString("profilepic")).diskCacheStrategy(DiskCacheStrategy.SOURCE).error(R.drawable.download).into(profilepic);
+                            Mobile.setText(number1);
+                            Location.setText(response.getString("location"));
+
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        Log.d(TAG, "onError: " + anError);
+                        Toast.makeText(MyProfile.this, "Couldn't fetch", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
 
@@ -464,6 +543,11 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_profile, menu);
+        MenuItem item = menu.findItem(R.id.action_settings);
+        if (getIntent() != null)
+            if (getIntent().getStringExtra("number") != null)
+                item.setVisible(false);
+
         // Retrieve the SearchView and plug it into SearchManager
         // Associate searchable configuration with the SearchView
        /* SearchManager searchManager =

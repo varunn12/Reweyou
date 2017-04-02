@@ -96,6 +96,7 @@ public class Constants {
     public static final String SEND_NOTI_CHANGE_REQUEST = "abx";
 
     public static String suggestpostid;
+    public static String tempnumber;
     private static ArrayList<String> arrayList = new ArrayList<>();
 
     public static void addtoreviewlist(String topicid) {
