@@ -606,6 +606,8 @@ public class ReviewActivityQR extends AppCompatActivity {
 
                             clearAttachedMediaPaths();
                             uploadingCon.setVisibility(View.GONE);
+                            ratetext.setVisibility(View.GONE);
+
 /*
 
 

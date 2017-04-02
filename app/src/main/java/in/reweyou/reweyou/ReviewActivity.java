@@ -688,11 +688,11 @@ public class ReviewActivity extends SlidingActivity {
 
                             clearAttachedMediaPaths();
                             uploadingCon.setVisibility(View.GONE);
-/*
+
 
 
                             ratetext.setVisibility(View.GONE);
-                            b1.setVisibility(View.GONE);
+                           /* b1.setVisibility(View.GONE);
                             c1.setVisibility(View.GONE);*/
                             divider2.setVisibility(View.GONE);
                             reim.setVisibility(View.GONE);
