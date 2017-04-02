@@ -3,6 +3,7 @@ package in.reweyou.reweyou.adapter;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -222,10 +224,12 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         buttonEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(editTextDes.getWindowToken(), 0);
 
+                alertDialog.dismiss();
 
-                if (!editTextDes.getText().toString().trim().equals(messagelist.get(position).getDescription())) {
-                    alertDialog.dismiss();
+                if (editTextDes.getText().toString().trim().length() != 0) {
                     final String des = editTextDes.getText().toString().trim();
 
                     Toast.makeText(mContext, "Updating...", Toast.LENGTH_SHORT).show();
@@ -246,9 +250,10 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                             .getAsString(new StringRequestListener() {
                                 @Override
                                 public void onResponse(String response) {
-
+                                    Log.d(TAG, "onResponse: " + response);
                                     if (response.equals("updated")) {
                                         try {
+
                                             Toast.makeText(mContext, "Your post updated", Toast.LENGTH_SHORT).show();
 
                                             if (mContext instanceof ReviewActivity)
@@ -260,14 +265,14 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                             e.printStackTrace();
                                         }
                                     } else
-                                        Toast.makeText(mContext, "Couldnt update", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(mContext, "Couldn't update", Toast.LENGTH_SHORT).show();
 
 
                                 }
 
                                 @Override
                                 public void onError(ANError anError) {
-                                    Toast.makeText(mContext, "Couldnt update", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(mContext, "Couldn't update", Toast.LENGTH_SHORT).show();
                                 }
                             });
                 } else alertDialog.dismiss();
