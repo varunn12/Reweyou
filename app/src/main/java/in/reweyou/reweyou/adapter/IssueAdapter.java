@@ -58,6 +58,7 @@ import in.reweyou.reweyou.VideoDisplay;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.fragment.IssueFragment;
 import in.reweyou.reweyou.model.IssueModel;
+import in.reweyou.reweyou.utils.Constants;
 
 
 public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -377,7 +378,7 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     private void ShareIntent(String topicid) {
         Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.putExtra(Intent.EXTRA_TEXT, "https://www.reweyou.in/story/" + topicid + " Download Reweyou App to read and report.");
+        intent.putExtra(Intent.EXTRA_TEXT, "Express your opinion on " + "https://www.reweyou.in/story/" + topicid + " and create a powerful story.");
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_STREAM, uri);
         intent.setType("image/jpeg");
@@ -450,6 +451,7 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 public void onClick(View v) {
                     if (!messagelist.get(getAdapterPosition()).getName().equals("Anonymous")) {
                         Intent intent = new Intent(mContext, MyProfile.class);
+                        Constants.tempnumber = messagelist.get(getAdapterPosition()).getCreated_by();
                         intent.putExtra("number", messagelist.get(getAdapterPosition()).getCreated_by());
                         mContext.startActivity(intent);
                     }

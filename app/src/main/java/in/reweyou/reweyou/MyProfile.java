@@ -216,18 +216,18 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
 
                             } else Info.setText("");
 
-
-                            Info.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    try {
-                                        editHeadline();
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
+                            if (tempnumber.equals(session.getMobileNumber())) {
+                                Info.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        try {
+                                            editHeadline();
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
                                     }
-                                }
-                            });
-
+                                });
+                            }
 
                             Glide.with(getApplicationContext()).load(response.getString("profilepic")).diskCacheStrategy(DiskCacheStrategy.SOURCE).error(R.drawable.download).into(profilepic);
                             Mobile.setText(number1);
