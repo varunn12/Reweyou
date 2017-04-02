@@ -667,7 +667,6 @@ public class ReviewActivity extends SlidingActivity {
         hashMap.put("deviceid", sessionManager.getDeviceid());
         hashMap.put("passcode", passcode);
         hashMap.put("privacy", privacy);
-
         if (encodedImage != null)
             hashMap.put("image", encodedImage);
 

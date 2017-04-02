@@ -114,7 +114,7 @@ public class ReviewActivityQR extends AppCompatActivity {
     private LinearLayout rlcont;
     private AVLoadingIndicatorView loadingcircularinit;
     private String privacy;
-    private String passcode;
+    private String passcode = "default";
     private LinearLayout uploadingCon;
     private ImageView closebutton;
     private SeekBar sb1, sb2, sb3, sb4, sb5;
@@ -585,6 +585,8 @@ public class ReviewActivityQR extends AppCompatActivity {
         hashMap.put("deviceid", sessionManager.getDeviceid());
         hashMap.put("passcode", passcode);
         hashMap.put("privacy", privacy);
+
+        Log.d(TAG, "updateReview: " + topicid + numrating + edittext.getText().toString() + passcode + privacy);
 
         if (encodedImage != null)
             hashMap.put("image", encodedImage);
