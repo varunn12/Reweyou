@@ -753,8 +753,14 @@ public class Feed extends AppCompatActivity {
 
                     case R.id.qrreport:
                         drawerLayout.closeDrawers();
-                        Intent qrScanIntent = new Intent(Feed.this, QRActivity.class);
-                        startActivityForResult(qrScanIntent, QR_REQUEST);
+                        new Handler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Intent qrScanIntent = new Intent(Feed.this, QRActivity.class);
+                                startActivityForResult(qrScanIntent, QR_REQUEST);
+                            }
+                        });
+
                         break;
                    /* case R.id.New:
                         drawerLayout.closeDrawers();

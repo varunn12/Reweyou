@@ -49,6 +49,22 @@
         />
 
     <TextView
+        android:id="@+id/edit"
+        android:layout_width="44dp"
+        android:layout_height="24dp"
+        android:layout_toRightOf="@+id/rate"
+        android:ellipsize="end"
+        android:lines="1"
+        android:paddingLeft="8dp"
+        android:paddingTop="1dp"
+        android:text="EDIT"
+        android:textColor="@color/red"
+        android:textSize="12dp"
+        android:textStyle="bold"
+
+        />
+
+    <TextView
         android:id="@+id/description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

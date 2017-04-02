@@ -2,14 +2,18 @@ package in.reweyou.reweyou.adapter;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -29,6 +33,8 @@ import java.util.List;
 
 import in.reweyou.reweyou.LikesActivity;
 import in.reweyou.reweyou.R;
+import in.reweyou.reweyou.ReviewActivity;
+import in.reweyou.reweyou.ReviewActivityQR;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.customView.CustomSigninDialog;
 import in.reweyou.reweyou.model.ReviewModel;
@@ -42,6 +48,8 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private final UserSessionManager sessionManager;
 
     private List<ReviewModel> messagelist;
+    private int numrating;
+    private ImageView ra1, ra2, ra3, ra4, ra5;
 
 
     public ReviewAdapter(Activity mContext) {
@@ -62,6 +70,11 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         issueViewHolder.description.setText(messagelist.get(position).getDescription());
         issueViewHolder.user.setText(messagelist.get(position).getName());
         issueViewHolder.rate.setText(messagelist.get(position).getRating());
+
+        if (messagelist.get(position).getCreated_by().equals(sessionManager.getMobileNumber())) {
+            issueViewHolder.edit.setVisibility(View.VISIBLE);
+        } else issueViewHolder.edit.setVisibility(View.INVISIBLE);
+
         if (messagelist.get(position).getIs_liked().equals("true")) {
             issueViewHolder.like.setImageResource(R.drawable.ic_thumbs_up_red);
             issueViewHolder.likesnumber.setTextColor(Color.RED);
@@ -143,11 +156,213 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     }
 
+    private void editReview(final int position) {
+        //Creating a LayoutInflater object for the dialog box
+        LayoutInflater li = LayoutInflater.from(mContext);
+        //Creating a view to get the dialog box
+        View confirmDialog = li.inflate(R.layout.dialog_edit_review, null);
+        initStarRating(confirmDialog);
+        ImageView close = (ImageView) confirmDialog.findViewById(R.id.close);
+
+
+        switch (Integer.parseInt(messagelist.get(position).getRating().replace(".00", ""))) {
+            case 1:
+                ra1.performClick();
+                break;
+            case 2:
+                ra2.performClick();
+                break;
+            case 3:
+                ra3.performClick();
+                break;
+            case 4:
+                ra4.performClick();
+                break;
+            case 5:
+                ra5.performClick();
+                break;
+        }
+        //  number=session.getMobileNumber();
+        //Initizliaing confirm button fo dialog box and edittext of dialog box
+        Button buttonEdit = (Button) confirmDialog.findViewById(R.id.buttonConfirm);
+
+        final EditText editTextDes = (EditText) confirmDialog.findViewById(R.id.des);
+        editTextDes.setText(messagelist.get(position).getDescription());
+        editTextDes.setSelection(editTextDes.getText().length());
+
+
+        //Creating an alertdialog builder
+        final AlertDialog.Builder alert = new AlertDialog.Builder(mContext);
+
+        //Adding our dialog box to the view of alert dialog
+        alert.setView(confirmDialog);
+
+        //Creating an alert dialog
+        final AlertDialog alertDialog = alert.create();
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        //Displaying the alert dialog
+        alertDialog.show();
+
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+        //On the click of the confirm button from alert dialog
+        buttonEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                if (!editTextDes.getText().toString().trim().equals(messagelist.get(position).getDescription())) {
+                    alertDialog.dismiss();
+                    final String des = editTextDes.getText().toString().trim();
+
+                    Toast.makeText(mContext, "Updating...", Toast.LENGTH_SHORT).show();
+
+                    HashMap<String, String> hashMap = new HashMap<String, String>();
+                    hashMap.put("reviewid", messagelist.get(position).getReviewid());
+                    hashMap.put("description", des);
+                    hashMap.put("rating", String.valueOf(numrating));
+                    hashMap.put("number", sessionManager.getMobileNumber());
+                    hashMap.put("deviceid", sessionManager.getDeviceid());
+                    hashMap.put("token", sessionManager.getKeyAuthToken());
+
+                    AndroidNetworking.post("https://www.reweyou.in/reviews/edit_review.php")
+                            .addBodyParameter(hashMap)
+                            .setTag("agredwdwe")
+                            .setPriority(Priority.HIGH)
+                            .build()
+                            .getAsString(new StringRequestListener() {
+                                @Override
+                                public void onResponse(String response) {
+
+                                    if (response.equals("updated")) {
+                                        try {
+                                            Toast.makeText(mContext, "Your post updated", Toast.LENGTH_SHORT).show();
+
+                                            if (mContext instanceof ReviewActivity)
+                                                ((ReviewActivity) mContext).reviewupdated();
+                                            else if (mContext instanceof ReviewActivityQR)
+                                                ((ReviewActivityQR) mContext).reviewupdated();
+
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    } else
+                                        Toast.makeText(mContext, "Couldnt update", Toast.LENGTH_SHORT).show();
+
+
+                                }
+
+                                @Override
+                                public void onError(ANError anError) {
+                                    Toast.makeText(mContext, "Couldnt update", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                } else alertDialog.dismiss();
+            }
+        });
+
+    }
+
+    private void initStarRating(View confirmDialog) {
+        ra1 = (ImageView) confirmDialog.findViewById(R.id.ra1);
+        ra2 = (ImageView) confirmDialog.findViewById(R.id.ra2);
+        ra3 = (ImageView) confirmDialog.findViewById(R.id.ra3);
+        ra4 = (ImageView) confirmDialog.findViewById(R.id.ra4);
+        ra5 = (ImageView) confirmDialog.findViewById(R.id.ra5);
+
+        ra1.setColorFilter(Color.parseColor("#e0e0e0"));
+        ra2.setColorFilter(Color.parseColor("#e0e0e0"));
+        ra3.setColorFilter(Color.parseColor("#e0e0e0"));
+        ra4.setColorFilter(Color.parseColor("#e0e0e0"));
+        ra5.setColorFilter(Color.parseColor("#e0e0e0"));
+
+        ra1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ra1.setColorFilter(ContextCompat.getColor(mContext, R.color.rating1));
+                ra2.setColorFilter(Color.parseColor("#e0e0e0"));
+                ra3.setColorFilter(Color.parseColor("#e0e0e0"));
+                ra4.setColorFilter(Color.parseColor("#e0e0e0"));
+                ra5.setColorFilter(Color.parseColor("#e0e0e0"));
+
+                numrating = 1;
+
+
+            }
+        });
+
+        ra2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ra1.setColorFilter(ContextCompat.getColor(mContext, R.color.rating2));
+                ra2.setColorFilter(ContextCompat.getColor(mContext, R.color.rating2));
+                ra3.setColorFilter(Color.parseColor("#e0e0e0"));
+                ra4.setColorFilter(Color.parseColor("#e0e0e0"));
+                ra5.setColorFilter(Color.parseColor("#e0e0e0"));
+                numrating = 2;
+
+
+            }
+        });
+
+        ra3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ra1.setColorFilter(ContextCompat.getColor(mContext, R.color.rating3));
+                ra2.setColorFilter(ContextCompat.getColor(mContext, R.color.rating3));
+                ra3.setColorFilter(ContextCompat.getColor(mContext, R.color.rating3));
+
+                ra4.setColorFilter(Color.parseColor("#e0e0e0"));
+                ra5.setColorFilter(Color.parseColor("#e0e0e0"));
+                numrating = 3;
+
+
+            }
+        });
+
+        ra4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ra1.setColorFilter(ContextCompat.getColor(mContext, R.color.rating4));
+                ra2.setColorFilter(ContextCompat.getColor(mContext, R.color.rating4));
+                ra3.setColorFilter(ContextCompat.getColor(mContext, R.color.rating4));
+                ra4.setColorFilter(ContextCompat.getColor(mContext, R.color.rating4));
+
+
+                ra5.setColorFilter(Color.parseColor("#e0e0e0"));
+                numrating = 4;
+
+
+            }
+        });
+
+        ra5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ra1.setColorFilter(ContextCompat.getColor(mContext, R.color.rating5));
+                ra2.setColorFilter(ContextCompat.getColor(mContext, R.color.rating5));
+                ra3.setColorFilter(ContextCompat.getColor(mContext, R.color.rating5));
+                ra4.setColorFilter(ContextCompat.getColor(mContext, R.color.rating5));
+                ra5.setColorFilter(ContextCompat.getColor(mContext, R.color.rating5));
+
+
+                numrating = 5;
+
+
+            }
+        });
+    }
+
     private class IssueViewHolder extends RecyclerView.ViewHolder {
 
         private TextView description;
         private TextView user;
-        private TextView likesnumber;
+        private TextView likesnumber, edit;
         private TextView rate;
         private ImageView like, image, img;
         private LinearLayout likebox;
@@ -157,6 +372,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         private IssueViewHolder(View inflate) {
             super(inflate);
             description = (TextView) inflate.findViewById(R.id.description);
+            edit = (TextView) inflate.findViewById(R.id.edit);
             user = (TextView) inflate.findViewById(R.id.user);
             likesnumber = (TextView) inflate.findViewById(R.id.likesnumber);
             rate = (TextView) inflate.findViewById(R.id.rate);
@@ -188,6 +404,13 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         }
                         updateLike(getAdapterPosition());
                     } else showlogindialog();
+                }
+            });
+
+            edit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    editReview(getAdapterPosition());
                 }
             });
         }

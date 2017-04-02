@@ -130,56 +130,11 @@ public class ReviewActivity extends SlidingActivity {
     public void init(Bundle savedInstanceState) {
         disableHeader();
         enableFullscreen();
-
-
         setContent(R.layout.content_review);
-        sb1 = (SeekBar) findViewById(R.id.sb1);
-        sb2 = (SeekBar) findViewById(R.id.sb2);
-        sb3 = (SeekBar) findViewById(R.id.sb3);
-        sb4 = (SeekBar) findViewById(R.id.sb4);
-        sb5 = (SeekBar) findViewById(R.id.sb5);
-
-        sb1.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return true;
-            }
-        });
-
-        sb2.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return true;
-            }
-        });
-
-        sb3.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return true;
-            }
-        });
-
-        sb4.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return true;
-            }
-        });
-
-        sb5.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return true;
-            }
-        });
 
 
-        tb1 = (TextView) findViewById(R.id.tb1);
-        tb2 = (TextView) findViewById(R.id.tb2);
-        tb3 = (TextView) findViewById(R.id.tb3);
-        tb4 = (TextView) findViewById(R.id.tb4);
-        tb5 = (TextView) findViewById(R.id.tb5);
+        initRatingBar();
+
 
         closebutton = (ImageView) findViewById(R.id.close);
         closebutton.setOnClickListener(new View.OnClickListener() {
@@ -278,102 +233,9 @@ public class ReviewActivity extends SlidingActivity {
         loadingcircular.show();
         sessionManager = new UserSessionManager(this);
 
-        final ImageView ra1 = (ImageView) findViewById(R.id.ra1);
-        final ImageView ra2 = (ImageView) findViewById(R.id.ra2);
-        final ImageView ra3 = (ImageView) findViewById(R.id.ra3);
-        final ImageView ra4 = (ImageView) findViewById(R.id.ra4);
-        final ImageView ra5 = (ImageView) findViewById(R.id.ra5);
-        ra1.setColorFilter(Color.parseColor("#e0e0e0"));
-        ra2.setColorFilter(Color.parseColor("#e0e0e0"));
-        ra3.setColorFilter(Color.parseColor("#e0e0e0"));
-        ra4.setColorFilter(Color.parseColor("#e0e0e0"));
-        ra5.setColorFilter(Color.parseColor("#e0e0e0"));
-
-        ra1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ra1.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating1));
-                ra2.setColorFilter(Color.parseColor("#e0e0e0"));
-                ra3.setColorFilter(Color.parseColor("#e0e0e0"));
-                ra4.setColorFilter(Color.parseColor("#e0e0e0"));
-                ra5.setColorFilter(Color.parseColor("#e0e0e0"));
-
-                numrating = 1;
-
-                if (edittext.getText().toString().trim().length() != 0)
-                    send.setImageResource(R.drawable.button_send_reviews1);
+        initStarRating();
 
 
-            }
-        });
-
-        ra2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ra1.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating2));
-                ra2.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating2));
-                ra3.setColorFilter(Color.parseColor("#e0e0e0"));
-                ra4.setColorFilter(Color.parseColor("#e0e0e0"));
-                ra5.setColorFilter(Color.parseColor("#e0e0e0"));
-                numrating = 2;
-
-                if (edittext.getText().toString().trim().length() != 0)
-                    send.setImageResource(R.drawable.button_send_reviews2);
-
-            }
-        });
-
-        ra3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ra1.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating3));
-                ra2.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating3));
-                ra3.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating3));
-
-                ra4.setColorFilter(Color.parseColor("#e0e0e0"));
-                ra5.setColorFilter(Color.parseColor("#e0e0e0"));
-                numrating = 3;
-
-                if (edittext.getText().toString().trim().length() != 0)
-                    send.setImageResource(R.drawable.button_send_reviews3);
-            }
-        });
-
-        ra4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ra1.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating4));
-                ra2.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating4));
-                ra3.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating4));
-                ra4.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating4));
-
-
-                ra5.setColorFilter(Color.parseColor("#e0e0e0"));
-                numrating = 4;
-
-                if (edittext.getText().toString().trim().length() != 0)
-                    send.setImageResource(R.drawable.button_send_reviews4);
-
-            }
-        });
-
-        ra5.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ra1.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating5));
-                ra2.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating5));
-                ra3.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating5));
-                ra4.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating5));
-                ra5.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating5));
-
-
-                numrating = 5;
-
-                if (edittext.getText().toString().trim().length() != 0)
-                    send.setImageResource(R.drawable.button_send_reviews5);
-
-            }
-        });
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -528,6 +390,155 @@ public class ReviewActivity extends SlidingActivity {
             c1.setVisibility(View.GONE);
             divider2.setVisibility(View.GONE);
         }
+    }
+
+    private void initStarRating() {
+        final ImageView ra1 = (ImageView) findViewById(R.id.ra1);
+        final ImageView ra2 = (ImageView) findViewById(R.id.ra2);
+        final ImageView ra3 = (ImageView) findViewById(R.id.ra3);
+        final ImageView ra4 = (ImageView) findViewById(R.id.ra4);
+        final ImageView ra5 = (ImageView) findViewById(R.id.ra5);
+        ra1.setColorFilter(Color.parseColor("#e0e0e0"));
+        ra2.setColorFilter(Color.parseColor("#e0e0e0"));
+        ra3.setColorFilter(Color.parseColor("#e0e0e0"));
+        ra4.setColorFilter(Color.parseColor("#e0e0e0"));
+        ra5.setColorFilter(Color.parseColor("#e0e0e0"));
+
+        ra1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ra1.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating1));
+                ra2.setColorFilter(Color.parseColor("#e0e0e0"));
+                ra3.setColorFilter(Color.parseColor("#e0e0e0"));
+                ra4.setColorFilter(Color.parseColor("#e0e0e0"));
+                ra5.setColorFilter(Color.parseColor("#e0e0e0"));
+
+                numrating = 1;
+
+                if (edittext.getText().toString().trim().length() != 0)
+                    send.setImageResource(R.drawable.button_send_reviews1);
+
+
+            }
+        });
+
+        ra2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ra1.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating2));
+                ra2.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating2));
+                ra3.setColorFilter(Color.parseColor("#e0e0e0"));
+                ra4.setColorFilter(Color.parseColor("#e0e0e0"));
+                ra5.setColorFilter(Color.parseColor("#e0e0e0"));
+                numrating = 2;
+
+                if (edittext.getText().toString().trim().length() != 0)
+                    send.setImageResource(R.drawable.button_send_reviews2);
+
+            }
+        });
+
+        ra3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ra1.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating3));
+                ra2.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating3));
+                ra3.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating3));
+
+                ra4.setColorFilter(Color.parseColor("#e0e0e0"));
+                ra5.setColorFilter(Color.parseColor("#e0e0e0"));
+                numrating = 3;
+
+                if (edittext.getText().toString().trim().length() != 0)
+                    send.setImageResource(R.drawable.button_send_reviews3);
+            }
+        });
+
+        ra4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ra1.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating4));
+                ra2.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating4));
+                ra3.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating4));
+                ra4.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating4));
+
+
+                ra5.setColorFilter(Color.parseColor("#e0e0e0"));
+                numrating = 4;
+
+                if (edittext.getText().toString().trim().length() != 0)
+                    send.setImageResource(R.drawable.button_send_reviews4);
+
+            }
+        });
+
+        ra5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ra1.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating5));
+                ra2.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating5));
+                ra3.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating5));
+                ra4.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating5));
+                ra5.setColorFilter(ContextCompat.getColor(ReviewActivity.this, R.color.rating5));
+
+
+                numrating = 5;
+
+                if (edittext.getText().toString().trim().length() != 0)
+                    send.setImageResource(R.drawable.button_send_reviews5);
+
+            }
+        });
+    }
+
+    private void initRatingBar() {
+        sb1 = (SeekBar) findViewById(R.id.sb1);
+        sb2 = (SeekBar) findViewById(R.id.sb2);
+        sb3 = (SeekBar) findViewById(R.id.sb3);
+        sb4 = (SeekBar) findViewById(R.id.sb4);
+        sb5 = (SeekBar) findViewById(R.id.sb5);
+
+        sb1.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
+
+        sb2.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
+
+        sb3.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
+
+        sb4.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
+
+        sb5.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
+
+
+        tb1 = (TextView) findViewById(R.id.tb1);
+        tb2 = (TextView) findViewById(R.id.tb2);
+        tb3 = (TextView) findViewById(R.id.tb3);
+        tb4 = (TextView) findViewById(R.id.tb4);
+        tb5 = (TextView) findViewById(R.id.tb5);
     }
 
 
@@ -1021,6 +1032,10 @@ public class ReviewActivity extends SlidingActivity {
             }
         });
 
+    }
+
+    public void reviewupdated() {
+        loadReportsfromServer();
     }
 
     private class Asynccalc extends AsyncTask<List<ReviewModel>, Void, ArrayList<Integer>> {

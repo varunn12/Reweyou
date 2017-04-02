@@ -135,7 +135,7 @@ terro"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginLeft="8dp"
                                 android:layout_marginRight="4dp"
-                                android:paddingBottom="0.5dp"
+                                android:paddingTop="1dp"
                                 android:tint="@color/rating5"
                                 app:srcCompat="@drawable/ic_star" />
 
@@ -196,7 +196,7 @@ terro"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginLeft="8dp"
                                 android:layout_marginRight="4dp"
-                                android:paddingBottom="0.5dp"
+                                android:paddingTop="1dp"
                                 android:tint="@color/rating4"
                                 app:srcCompat="@drawable/ic_star" />
 
@@ -260,7 +260,7 @@ terro"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginLeft="8dp"
                                 android:layout_marginRight="4dp"
-                                android:paddingBottom="0.5dp"
+                                android:paddingTop="1dp"
                                 android:tint="@color/rating3"
                                 app:srcCompat="@drawable/ic_star" />
 
@@ -324,7 +324,7 @@ terro"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginLeft="8dp"
                                 android:layout_marginRight="4dp"
-                                android:paddingBottom="0.5dp"
+                                android:paddingTop="1dp"
                                 android:tint="@color/rating2"
                                 app:srcCompat="@drawable/ic_star" />
 
@@ -387,7 +387,7 @@ terro"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginLeft="8dp"
                                 android:layout_marginRight="4dp"
-                                android:paddingBottom="0.5dp"
+                                android:paddingTop="1dp"
                                 android:tint="@color/rating1"
                                 app:srcCompat="@drawable/ic_star" />
 
