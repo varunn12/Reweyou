@@ -141,8 +141,7 @@ public class ReviewActivityQR extends AppCompatActivity {
         rlcont.setVisibility(View.INVISIBLE);
 
         loadingcircularinit = (AVLoadingIndicatorView) findViewById(R.id.initpro);
-        loadingcircularinit.setVisibility(View.VISIBLE);
-        loadingcircularinit.show();
+
         uploadingCon = (LinearLayout) findViewById(R.id.uploading_container);
 
         closebutton = (ImageView) findViewById(R.id.close);

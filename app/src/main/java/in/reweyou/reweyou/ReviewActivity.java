@@ -145,8 +145,6 @@ public class ReviewActivity extends SlidingActivity {
             }
         });
         loadingcircularinit = (AVLoadingIndicatorView) findViewById(R.id.initpro);
-        loadingcircularinit.setVisibility(View.VISIBLE);
-        loadingcircularinit.show();
 
 
         rl = (LinearLayout) findViewById(R.id.rl);

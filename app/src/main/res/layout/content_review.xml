@@ -34,7 +34,7 @@
                 android:layout_centerInParent="true"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="100dp"
-                android:visibility="invisible"
+                android:visibility="gone"
                 app:indicatorColor="@color/divider"
                 app:indicatorName="LineSpinFadeLoaderIndicator" />
 
@@ -54,8 +54,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:animateLayoutChanges="true"
-                android:orientation="vertical"
-                android:visibility="gone">
+                android:orientation="vertical">
 
                 <TextView
 
