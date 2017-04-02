@@ -69,6 +69,7 @@ import in.reweyou.reweyou.customView.CustomSigninDialog;
 import in.reweyou.reweyou.customView.PreCachingLayoutManager;
 import in.reweyou.reweyou.model.ReviewModel;
 import in.reweyou.reweyou.utils.Constants;
+import jp.wasabeef.recyclerview.animators.FadeInUpAnimator;
 
 public class ReviewActivity extends SlidingActivity {
 
@@ -346,6 +347,9 @@ public class ReviewActivity extends SlidingActivity {
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         PreCachingLayoutManager preCachingLayoutManager = new PreCachingLayoutManager(this);
         recyclerView.setNestedScrollingEnabled(false);
+        FadeInUpAnimator fadeInUpAnimator = new FadeInUpAnimator();
+        fadeInUpAnimator.setAddDuration(300);
+        recyclerView.setItemAnimator(fadeInUpAnimator);
         recyclerView.setLayoutManager(preCachingLayoutManager);
           /*VerticalSpaceItemDecorator verticalSpaceItemDecorator = new VerticalSpaceItemDecorator((int) pxFromDp(this, 6));*/
         // recyclerView.addItemDecoration(verticalSpaceItemDecorator);*//*

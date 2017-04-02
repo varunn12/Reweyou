@@ -145,9 +145,17 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     public void add(List<ReviewModel> list) {
-        messagelist.clear();
-        messagelist.addAll(list);
-        notifyDataSetChanged();
+        if (messagelist.size() != 0) {
+            messagelist.clear();
+
+            messagelist.addAll(list);
+            notifyDataSetChanged();
+        } else {
+            messagelist.clear();
+            messagelist.addAll(list);
+            notifyItemRangeInserted(0, messagelist.size());
+
+        }
     }
 
     private void showlogindialog() {

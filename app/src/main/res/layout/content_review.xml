@@ -54,8 +54,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:animateLayoutChanges="true"
-                android:orientation="vertical"
-                android:visibility="gone">
+                android:orientation="vertical">
 
                 <TextView
 
@@ -752,42 +751,46 @@ terro"
 
                     android:textStyle="bold" />
 
-                <com.wang.avi.AVLoadingIndicatorView
-                    android:id="@+id/avi"
-                    style="@style/AVLoadingIndicatorView.Small"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-
-                    android:layout_marginBottom="8dp"
-                    android:alpha="0.87"
-                    android:paddingTop="12dp"
-                    android:visibility="visible"
-                    app:indicatorColor="@color/divider"
-                    app:indicatorName="LineSpinFadeLoaderIndicator" />
-
-                <TextView
-                    android:id="@+id/noreviewyet"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-
-                    android:layout_marginBottom="6dp"
-                    android:paddingTop="16dp"
-                    android:text="Be the first one to review"
-                    android:textColor="#9e9e9e"
-
-                    android:visibility="gone" />
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recycler_view"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="4dp"
-                    android:clipToPadding="false"
+                    android:layout_height="wrap_content">
 
-                    android:paddingBottom="16dp" />
+                    <com.wang.avi.AVLoadingIndicatorView
+                        android:id="@+id/avi"
+                        style="@style/AVLoadingIndicatorView.Small"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="8dp"
+                        android:alpha="0.87"
+                        android:paddingTop="12dp"
+                        android:visibility="visible"
+                        app:indicatorColor="@color/divider"
+                        app:indicatorName="LineSpinFadeLoaderIndicator" />
+
+                    <TextView
+                        android:id="@+id/noreviewyet"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+
+                        android:layout_marginBottom="6dp"
+                        android:paddingTop="16dp"
+                        android:text="Be the first one to review"
+                        android:textColor="#9e9e9e"
+
+                        android:visibility="gone" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="4dp"
+                        android:clipToPadding="false"
+
+                        android:paddingBottom="16dp" />
+                </RelativeLayout>
             </LinearLayout>
 
 
