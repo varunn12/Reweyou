@@ -804,6 +804,7 @@ public class Feed extends AppCompatActivity {
             profileSetting.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    drawerLayout.closeDrawers();
                     Intent profile = new Intent(Feed.this, MyProfile.class);
                     startActivityForResult(profile, REQ_CODE_PROFILE);
                 }
