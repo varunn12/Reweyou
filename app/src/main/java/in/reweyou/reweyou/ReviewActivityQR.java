@@ -773,10 +773,10 @@ public class ReviewActivityQR extends AppCompatActivity {
                                                 }
                                             }, 500);
                                         }
-                                    }, 700);
+                                    }, 600);
 
                                 }
-                            }, 400);
+                            }, 200);
 
 
                         } catch (Exception e) {
@@ -1075,8 +1075,9 @@ public class ReviewActivityQR extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(final ArrayList<Integer> list) {
+
             try {
-                int duration = 700;
+                int duration = 600;
                 ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 100);
                 valueAnimator.setDuration(duration);
                 valueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());

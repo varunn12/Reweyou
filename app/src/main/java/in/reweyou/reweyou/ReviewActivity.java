@@ -782,7 +782,7 @@ public class ReviewActivity extends SlidingActivity {
                                     }
                                 }, 500);
                             }
-                        }, 1000);
+                        }, 600);
 
 
                     }
@@ -1094,7 +1094,7 @@ public class ReviewActivity extends SlidingActivity {
         @Override
         protected void onPostExecute(final ArrayList<Integer> list) {
             try {
-                int duration = 700;
+                int duration = 600;
                 ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 100);
                 valueAnimator.setDuration(duration);
                 valueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
