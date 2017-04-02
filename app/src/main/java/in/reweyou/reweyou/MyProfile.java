@@ -76,6 +76,7 @@ import static in.reweyou.reweyou.classes.HandleActivityResult.HANDLE_IMAGE;
 import static in.reweyou.reweyou.classes.UploadOptions.PERMISSION_ALL_IMAGE;
 import static in.reweyou.reweyou.classes.UploadOptions.PERMISSION_ALL_PROFILE_PIC;
 import static in.reweyou.reweyou.utils.Constants.MY_PROFILE_EDIT_URL;
+import static in.reweyou.reweyou.utils.Constants.tempnumber;
 
 public class MyProfile extends AppCompatActivity implements View.OnClickListener {
 
@@ -208,12 +209,13 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                                 Info.setText(response.getString("info"));
                                 Info.setPaintFlags(Info.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
-                            } else {
+                            } else if (tempnumber.equals(session.getMobileNumber())) {
                                 Info.setText(getResources().getString(R.string.emptyStatus));
                                 Info.setTextColor(ColorStateList.valueOf(getResources().getColor(R.color.red)));
                                 Info.setPaintFlags(Info.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
-                            }
+                            } else Info.setText("");
+
 
                             Info.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -248,19 +250,23 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.profilepic:
+        if (Constants.tempnumber.equals(session.getMobileNumber())) {
 
-                if (uploadOptions.showprofilepicOptions())
-                    showpicgallery();
-                break;
-            case R.id.button:
-                try {
-                    editHeadline();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                break;
+            switch (v.getId()) {
+
+                case R.id.profilepic:
+
+                    if (uploadOptions.showprofilepicOptions())
+                        showpicgallery();
+                    break;
+                case R.id.button:
+                    try {
+                        editHeadline();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+            }
            /* case R.id.Readers:
                 Bundle bundle = new Bundle();
                 bundle.putString("myData", user);
