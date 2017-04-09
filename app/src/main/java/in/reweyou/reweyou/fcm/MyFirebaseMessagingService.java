@@ -138,7 +138,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             i.putExtra("qrdata", "https://www.reweyou.in/qr/topicid=" + payload.getString("topicid"));
 
 
-            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), m, i, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), m, i, PendingIntent.FLAG_ONE_SHOT);
 
 
             NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle();
