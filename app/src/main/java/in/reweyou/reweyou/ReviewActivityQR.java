@@ -592,7 +592,7 @@ public class ReviewActivityQR extends AppCompatActivity {
             hashMap.put("image", encodedImage);
 
 
-        AndroidNetworking.post("https://reweyou.in/reviews/post_reviews.php")
+        AndroidNetworking.post("https://www.reweyou.in/reviews/post_reviews.php")
                 .addBodyParameter(hashMap)
                 .setTag("repordt")
                 .setPriority(Priority.HIGH)
@@ -674,7 +674,7 @@ public class ReviewActivityQR extends AppCompatActivity {
         hashMap.put("number", sessionManager.getMobileNumber());
         hashMap.put("token", sessionManager.getKeyAuthToken());
         hashMap.put("deviceid", sessionManager.getDeviceid());
-        AndroidNetworking.post("https://reweyou.in/reviews/topic_reviews.php")
+        AndroidNetworking.post("https://www.reweyou.in/reviews/topic_reviews.php")
                 .addBodyParameter(hashMap)
                 .setTag("report212")
                 .setPriority(Priority.HIGH)

@@ -671,7 +671,7 @@ public class ReviewActivity extends SlidingActivity {
             hashMap.put("image", encodedImage);
 
 
-        AndroidNetworking.post("https://reweyou.in/reviews/post_reviews.php")
+        AndroidNetworking.post("https://www.reweyou.in/reviews/post_reviews.php")
                 .addBodyParameter(hashMap)
                 .setTag("repordt")
                 .setPriority(Priority.HIGH)
@@ -750,7 +750,7 @@ public class ReviewActivity extends SlidingActivity {
         hashMap.put("number", sessionManager.getMobileNumber());
         hashMap.put("token", sessionManager.getKeyAuthToken());
         hashMap.put("deviceid", sessionManager.getDeviceid());
-        AndroidNetworking.post("https://reweyou.in/reviews/reviews.php")
+        AndroidNetworking.post("https://www.reweyou.in/reviews/reviews.php")
                 .addBodyParameter(hashMap)
                 .setTag("report")
                 .setPriority(Priority.HIGH)

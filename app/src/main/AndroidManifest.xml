@@ -176,9 +176,7 @@
             android:windowSoftInputMode="stateHidden"></activity>
         <activity
             android:name=".ReviewActivityQR"
-            android:excludeFromRecents="true"
             android:label="@string/title_activity_review"
-
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden">

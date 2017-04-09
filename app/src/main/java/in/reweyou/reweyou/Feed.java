@@ -213,7 +213,7 @@ public class Feed extends AppCompatActivity {
 
     public void makeTagsRequest() {
 
-        AndroidNetworking.get("https://reweyou.in/reviews/tags.php")
+        AndroidNetworking.get("https://www.reweyou.in/reviews/tags.php")
                 .setTag("t")
                 .setPriority(Priority.IMMEDIATE)
                 .build()

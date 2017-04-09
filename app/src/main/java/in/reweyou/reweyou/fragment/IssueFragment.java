@@ -99,9 +99,9 @@ public class IssueFragment extends Fragment {
         hashMap.put("number", Constants.tempnumber);
         String url;
         if (mContext instanceof Feed)
-            url = "https://reweyou.in/reviews/topics.php";
+            url = "https://www.reweyou.in/reviews/topics.php";
         else
-            url = "https://reweyou.in/reviews/myreviews.php";
+            url = "https://www.reweyou.in/reviews/myreviews.php";
 
         AndroidNetworking.post(url)
                 .addBodyParameter(hashMap)
