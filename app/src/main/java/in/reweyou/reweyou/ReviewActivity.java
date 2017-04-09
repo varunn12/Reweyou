@@ -789,6 +789,7 @@ public class ReviewActivity extends SlidingActivity {
                         loadingcircular.hide();
                         Log.e(TAG, "error: " + anError.getErrorDetail());
 
+                        Toast.makeText(ReviewActivity.this, "Couldn't fetch data", Toast.LENGTH_SHORT).show();
                         /*new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
