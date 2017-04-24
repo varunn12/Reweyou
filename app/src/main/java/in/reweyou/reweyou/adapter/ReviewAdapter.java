@@ -124,21 +124,31 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         if (!payloads.isEmpty()) {
             if (payloads.contains("prelike")) {
-                ((IssueViewHolder) holder).like.setImageResource(R.drawable.ic_thumbs_up_red);
-                issueViewHolder.likesnumber.setTextColor(Color.RED);
 
-                issueViewHolder.likesnumber.setText("(" + (Integer.parseInt(messagelist.get(position).getLikes()) + 1) + ")");
-                messagelist.get(position).setLikes(String.valueOf(Integer.parseInt(messagelist.get(position).getLikes()) + 1));
+                updateLike(issueViewHolder, position);
 
             } else if (payloads.contains("preunlike")) {
-                ((IssueViewHolder) holder).like.setImageResource(R.drawable.ic_thumbs_up);
-                issueViewHolder.likesnumber.setTextColor(Color.parseColor("#909090"));
 
-                issueViewHolder.likesnumber.setText("(" + (Integer.parseInt(messagelist.get(position).getLikes()) - 1) + ")");
-                messagelist.get(position).setLikes(String.valueOf(Integer.parseInt(messagelist.get(position).getLikes()) - 1));
+                updateDislike(issueViewHolder, position);
 
             }
         } else super.onBindViewHolder(holder, position, payloads);
+    }
+
+
+    private void updateLike(IssueViewHolder issueViewHolder, int position) {
+        issueViewHolder.like.setImageResource(R.drawable.ic_thumbs_up_red);
+        issueViewHolder.likesnumber.setTextColor(Color.RED);
+        issueViewHolder.likesnumber.setText("(" + (Integer.parseInt(messagelist.get(position).getLikes()) + 1) + ")");
+        messagelist.get(position).setLikes(String.valueOf(Integer.parseInt(messagelist.get(position).getLikes()) + 1));
+    }
+
+    private void updateDislike(IssueViewHolder issueViewHolder, int position) {
+        issueViewHolder.like.setImageResource(R.drawable.ic_thumbs_up);
+        issueViewHolder.likesnumber.setTextColor(Color.parseColor("#909090"));
+        issueViewHolder.likesnumber.setText("(" + (Integer.parseInt(messagelist.get(position).getLikes()) - 1) + ")");
+        messagelist.get(position).setLikes(String.valueOf(Integer.parseInt(messagelist.get(position).getLikes()) - 1));
+
     }
 
     @Override
