@@ -10,11 +10,11 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.StandardExceptionParser;
 import com.google.android.gms.analytics.Tracker;
 
-
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import in.reweyou.reweyou.classes.AnalyticsTracker;
+import in.reweyou.reweyou.utils.Utils;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 
@@ -49,6 +49,7 @@ public class ApplicationClass extends Application {
         super.onCreate();
         mInstance = this;
 
+        Utils.setBackgroundColor();
         AnalyticsTracker.initialize(this);
         AnalyticsTracker.getInstance().get(AnalyticsTracker.Target.APP);
 

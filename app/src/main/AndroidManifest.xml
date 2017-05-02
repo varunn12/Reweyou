@@ -37,11 +37,7 @@
             android:name=".SplashScreen"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".Signup"
@@ -51,7 +47,7 @@
             android:name=".Feed"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar.Feed"></activity>
+            android:theme="@style/AppTheme.NoActionBar.Feed" />
         <activity
             android:name=".PostReport"
             android:screenOrientation="portrait"
@@ -142,7 +138,6 @@
 
         <activity
             android:name=".WhatsNew"
-
             android:screenOrientation="portrait" />
         <activity
             android:name=".WelcomeActivity"
@@ -150,7 +145,6 @@
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:screenOrientation="portrait"
-
             android:theme="@style/Base.Theme.AppCompat" />
         <activity
             android:name=".FullImage"
@@ -173,7 +167,7 @@
             android:screenOrientation="portrait"
             android:taskAffinity=""
             android:theme="@style/Theme.Sliding.Lights"
-            android:windowSoftInputMode="stateHidden"></activity>
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".ReviewActivityQR"
             android:label="@string/title_activity_review"
@@ -195,7 +189,7 @@
             android:name=".YourReview"
             android:label="@string/title_activity_your_review"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="com.gnzlt.AndroidVisionQRReader.QRActivity"
             android:screenOrientation="portrait" />
@@ -205,9 +199,17 @@
             android:label="@string/title_activity_review"
             android:screenOrientation="portrait"
             android:taskAffinity=""
-            android:theme="@style/Theme.Sliding.Lights"
+            android:theme="@style/Theme.Sliding.Lights" />
+        <activity
+            android:name=".ForumMainActivity"
+            android:label="@string/title_activity_forum_main"
+            android:theme="@style/AppTheme2.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-            ></activity>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

@@ -240,5 +240,12 @@ public class UserSessionManager {
     }
 
 
+    public boolean getFirstLoadReview() {
+        return pref.getBoolean("reviewfirst", false);
+    }
 
+    public void setFirstLoadReview() {
+        editor.putBoolean("reviewfirst", true);
+        editor.commit();
+    }
 }

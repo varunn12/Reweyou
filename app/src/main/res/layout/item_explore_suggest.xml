@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="130dp"
+    android:layout_height="160dp"
+    android:layout_centerInParent="true"
+    android:layout_marginLeft="6dp"
+    android:layout_marginRight="6dp"
+    android:background="@drawable/border_explore_item"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/img"
+        android:layout_width="match_parent"
+        android:layout_height="102dp"
+        android:layout_marginLeft="1dp"
+
+        android:layout_marginRight="1dp"
+        android:layout_marginTop="1dp"
+        android:background="#56CCFF90"
+        android:scaleType="fitXY" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.7dp"
+        android:background="#757575" />
+
+    <TextView
+        android:id="@+id/groupname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:gravity="center"
+        android:text="GroupName"
+        android:textColor="#424242"
+        android:textStyle="bold" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="6dp"
+        android:layout_marginTop="6dp">
+
+        <TextView
+            android:id="@+id/members"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_supervisor_account_black_24px"
+            android:gravity="center"
+            android:text="46"
+            android:textSize="12dp" />
+
+        <TextView
+            android:id="@+id/threads"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:drawableLeft="@drawable/ic_subject_black_24px"
+
+            android:gravity="center"
+            android:text="92"
+            android:textSize="12dp" />
+
+
+    </FrameLayout>
+
+
+</LinearLayout>
+
+

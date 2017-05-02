@@ -11,6 +11,16 @@
 
     </style>
 
+    <style name="AppTheme2" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">#212121</item>
+        <item name="colorPrimaryDark">#000000</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowDrawsSystemBarBackgrounds" tools:targetApi="lollipop">false</item>
+
+
+    </style>
+
     <style name="MySeekBarTheme5" parent="Widget.AppCompat.SeekBar">
         <item name="colorAccent">@color/rating5</item>
 
@@ -31,7 +41,13 @@
     <style name="MySeekBarTheme1" parent="Widget.AppCompat.SeekBar">
         <item name="colorAccent">@color/rating1</item>
     </style>
+
     <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme2.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>

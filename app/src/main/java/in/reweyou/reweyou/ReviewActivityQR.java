@@ -119,6 +119,7 @@ public class ReviewActivityQR extends AppCompatActivity {
     private ImageView closebutton;
     private SeekBar sb1, sb2, sb3, sb4, sb5;
     private TextView tb1, tb2, tb3, tb4, tb5;
+    private ImageView btn_anonymous;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,6 +136,7 @@ public class ReviewActivityQR extends AppCompatActivity {
 
         sessionManager = new UserSessionManager(this);
 
+        initAnonymousButton();
         initRatingBar();
 
         rlcont = (LinearLayout) findViewById(R.id.rl);
@@ -349,6 +351,24 @@ public class ReviewActivityQR extends AppCompatActivity {
         });
 
 
+    }
+
+    private void initAnonymousButton() {
+        btn_anonymous = (ImageView) findViewById(R.id.btn_anonymous);
+        btn_anonymous.setTag("0");
+        btn_anonymous.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (btn_anonymous.getTag().equals("0")) {
+                    btn_anonymous.setColorFilter(Color.RED);
+                    btn_anonymous.setTag("1");
+                } else if (btn_anonymous.getTag().equals("1")) {
+                    btn_anonymous.setColorFilter(Color.parseColor("#757575"));
+                    btn_anonymous.setTag("0");
+                }
+
+            }
+        });
     }
 
     private void initStarRating() {
@@ -578,7 +598,9 @@ public class ReviewActivityQR extends AppCompatActivity {
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("topicid", topicid);
         hashMap.put("number", sessionManager.getMobileNumber());
-        hashMap.put("name", sessionManager.getUsername());
+        if (btn_anonymous.getTag().equals("0"))
+            hashMap.put("name", sessionManager.getUsername());
+        else hashMap.put("name", "Anonymous");
         hashMap.put("rating", String.valueOf(numrating));
         hashMap.put("description", edittext.getText().toString());
         hashMap.put("token", sessionManager.getKeyAuthToken());

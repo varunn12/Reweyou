@@ -15,5 +15,7 @@
     <dimen name="feed_menu_icon">24dp</dimen>
 
     <dimen name="design_fab_size_mini" tools:ignore="PrivateResource">70dp</dimen>
+    <dimen name="tab_black">20dp</dimen>
+    <dimen name="tab_grey">16dp</dimen>
 
 </resources>

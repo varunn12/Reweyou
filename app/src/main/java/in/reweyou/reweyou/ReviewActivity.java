@@ -119,6 +119,9 @@ public class ReviewActivity extends SlidingActivity {
     private int totalrating;
     private SeekBar sb1, sb2, sb3, sb4, sb5;
     private TextView tb1, tb2, tb3, tb4, tb5;
+    private ImageView btn_anonymous;
+    private TextView hangingtextView;
+    private View hangingview;
 
     @Override
     protected void configureScroller(MultiShrinkScroller scroller) {
@@ -132,9 +135,9 @@ public class ReviewActivity extends SlidingActivity {
         enableFullscreen();
         setContent(R.layout.content_review);
 
-
+        initAnonymousButton();
         initRatingBar();
-
+        initAnoymousNoti();
 
         closebutton = (ImageView) findViewById(R.id.close);
         closebutton.setOnClickListener(new View.OnClickListener() {
@@ -329,6 +332,35 @@ public class ReviewActivity extends SlidingActivity {
             }
         });
 
+
+        edittext.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if (!sessionManager.getFirstLoadReview()) {
+                            sessionManager.setFirstLoadReview();
+
+                            hangingtextView.setVisibility(View.VISIBLE);
+                            hangingview.setVisibility(View.VISIBLE);
+
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    hangingtextView.setVisibility(View.GONE);
+                                    hangingview.setVisibility(View.GONE);
+                                }
+                            }, 8000);
+                        }
+                    }
+                }, 1000);
+
+                return false;
+            }
+        });
         if (!sessionManager.checkLoginSplash())
             edittext.setHint("Sign in to review...");
 
@@ -391,6 +423,33 @@ public class ReviewActivity extends SlidingActivity {
             c1.setVisibility(View.GONE);
             divider2.setVisibility(View.GONE);
         }
+    }
+
+    private void initAnoymousNoti() {
+        hangingtextView = (TextView) findViewById(R.id.hanging_noti_anonymous);
+        hangingview = findViewById(R.id.hanging_noti_anonymous_1);
+
+
+    }
+
+    private void initAnonymousButton() {
+        btn_anonymous = (ImageView) findViewById(R.id.btn_anonymous);
+        btn_anonymous.setTag("0");
+        btn_anonymous.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hangingtextView.setVisibility(View.GONE);
+                hangingview.setVisibility(View.GONE);
+                if (btn_anonymous.getTag().equals("0")) {
+                    btn_anonymous.setColorFilter(Color.RED);
+                    btn_anonymous.setTag("1");
+                } else if (btn_anonymous.getTag().equals("1")) {
+                    btn_anonymous.setColorFilter(Color.parseColor("#757575"));
+                    btn_anonymous.setTag("0");
+                }
+
+            }
+        });
     }
 
     private void initStarRating() {
@@ -659,7 +718,10 @@ public class ReviewActivity extends SlidingActivity {
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("topicid", topicid);
         hashMap.put("number", sessionManager.getMobileNumber());
-        hashMap.put("name", sessionManager.getUsername());
+        if (btn_anonymous.getTag().equals("0"))
+            hashMap.put("name", sessionManager.getUsername());
+        else hashMap.put("name", "Anonymous");
+
         hashMap.put("rating", String.valueOf(numrating));
         hashMap.put("description", edittext.getText().toString());
         hashMap.put("token", sessionManager.getKeyAuthToken());
@@ -686,7 +748,6 @@ public class ReviewActivity extends SlidingActivity {
 
                             clearAttachedMediaPaths();
                             uploadingCon.setVisibility(View.GONE);
-
 
 
                             ratetext.setVisibility(View.GONE);
