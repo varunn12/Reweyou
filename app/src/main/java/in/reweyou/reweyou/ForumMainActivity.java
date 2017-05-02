@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import in.reweyou.reweyou.fragment.CreateFragment;
 import in.reweyou.reweyou.fragment.ExploreFragment;
 import in.reweyou.reweyou.fragment.ForumFragment;
 import in.reweyou.reweyou.utils.Utils;
@@ -82,6 +83,8 @@ public class ForumMainActivity extends AppCompatActivity {
 
             if (position == 1)
                 return new ExploreFragment();
+            else if (position == 2)
+                return new CreateFragment();
             else
                 return new ForumFragment();
         }

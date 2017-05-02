@@ -1,0 +1,135 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@null"
+    android:fillViewport="true">
+
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        app:cardCornerRadius="2dp"
+        app:cardElevation="4dp"
+        app:cardUseCompatPadding="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:background="#fff"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:drawableLeft="@drawable/create_group_layer"
+                android:drawablePadding="6dp"
+                android:gravity="center_vertical"
+                android:text="Create your Group"
+                android:textColor="@color/main_background_pink_alpha"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Start creating your own Group, by just adding a cover pic, name and description" />
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="24dp"
+
+
+                android:background="#56CCFF90"
+                android:scaleType="center"
+
+                app:srcCompat="@drawable/ic_photo_camera_black_24px_create" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="GROUP NAME"
+                android:textSize="12dp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:hint="..."
+                android:inputType="textMultiLine"
+                android:maxLength="100"
+                android:minLines="1"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
+                android:textColorHint="#9e9e9e"
+                android:textCursorDrawable="@drawable/color_cursor"
+                android:textSize="16dp"
+
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.7dp"
+                android:layout_gravity="center_horizontal"
+
+                android:layout_marginTop="4dp"
+                android:background="@color/greylight" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_marginTop="16dp"
+                android:text="SHORT DESCRIPTION"
+                android:textSize="12dp"
+                android:textStyle="bold" />
+
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:gravity="top"
+                android:hint="..."
+                android:inputType="textMultiLine"
+                android:maxLength="500"
+                android:maxLines="5"
+                android:minLines="3"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
+                android:textColorHint="#9e9e9e"
+                android:textCursorDrawable="@drawable/color_cursor"
+
+                android:textSize="16dp" />
+
+            <View
+                android:layout_width="match_parent"
+
+                android:layout_height="0.7dp"
+                android:layout_gravity="center_horizontal"
+
+                android:layout_marginTop="4dp"
+                android:background="@color/greylight" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/border_pink"
+                android:text="CREATE"
+                android:textColor="#9e9e9e"
+                android:textSize="13dp" />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+
+</ScrollView>
