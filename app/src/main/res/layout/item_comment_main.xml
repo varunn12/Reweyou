@@ -27,7 +27,7 @@
         android:layout_toRightOf="@+id/image"
         android:text="Username"
         android:textColor="#424242"
-        android:textSize="13sp"
+        android:textSize="13dp"
         android:textStyle="bold" />
 
     <TextView
@@ -40,7 +40,7 @@
         android:paddingRight="8dp"
         android:text="Hello World!"
         android:textColor="#757575"
-        android:textSize="12sp" />
+        android:textSize="13dp" />
 
     <TextView
         android:id="@+id/reply"
@@ -50,14 +50,14 @@
         android:layout_below="@+id/comment"
         android:layout_marginLeft="12dp"
         android:layout_toRightOf="@+id/image"
-        android:drawablePadding="8dp"
+        android:drawablePadding="6dp"
         android:drawableRight="@drawable/ic_reply_layer"
         android:paddingBottom="4dp"
         android:paddingRight="16dp"
         android:paddingTop="8dp"
         android:text="Reply"
         android:textColor="#424242"
-        android:textSize="12sp"
+        android:textSize="12dp"
         android:textStyle="bold" />
 
 

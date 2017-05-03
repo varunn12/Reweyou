@@ -38,7 +38,6 @@ public class CommentActivity extends SlidingActivity {
     @Override
     public void init(Bundle savedInstanceState) {
         disableHeader();
-        enableFullscreen();
         setContent(R.layout.content_comment);
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
@@ -68,7 +67,7 @@ public class CommentActivity extends SlidingActivity {
                                         CommentModel coModel = gson.fromJson(json.toString(), CommentModel.class);
                                         list.add(coModel);
                                         for (int j = 0; j < jsonReply.length(); j++) {
-                                            JSONObject jsontemp = jsonReply.getJSONObject(0);
+                                            JSONObject jsontemp = jsonReply.getJSONObject(j);
                                             ReplyCommentModel temp = gson.fromJson(jsontemp.toString(), ReplyCommentModel.class);
                                             list.add(temp);
                                         }
