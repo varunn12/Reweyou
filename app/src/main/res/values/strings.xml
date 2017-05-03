@@ -9,11 +9,21 @@
     <string name="tab_4">News</string>
     <string name="tab_5">My City</string>
 
+    <string name="tab1">INFO</string>
+    <string name="tab2">FEED</string>
+    <string name="tab3">CREATE</string>
+    <string name="tab4">CHAT</string>
     <string-array name="tabs">
         <item>@string/tab_1</item>
         <item>@string/tab_4</item>
         <item>@string/tab_5</item>
         <item>@string/tab_8</item>
+    </string-array>
+    <string-array name="group_tabs">
+        <item>@string/tab1</item>
+        <item>@string/tab2</item>
+        <item>@string/tab3</item>
+        <item>@string/tab4</item>
     </string-array>
 
     <string name="tab_8">POST</string>
@@ -79,5 +89,6 @@
     <string name="normal_sliding_activity">dasdas</string>
     <string name="title_activity_forum_main">Feeds</string>
     <string name="title_activity_comment">CommentActivity</string>
+    <string name="title_activity_group">GroupActivity</string>
 
 </resources>
