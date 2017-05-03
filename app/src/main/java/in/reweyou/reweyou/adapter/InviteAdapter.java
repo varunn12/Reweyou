@@ -108,8 +108,8 @@ public class InviteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         ViewHolderActiveUser(View itemView) {
             super(itemView);
             username = (TextView) itemView.findViewById(R.id.username);
-            number = (TextView) itemView.findViewById(R.id.number);
-            pic = (ImageView) itemView.findViewById(R.id.pic);
+            number = (TextView) itemView.findViewById(R.id.comment);
+            pic = (ImageView) itemView.findViewById(R.id.image);
             container = (RelativeLayout) itemView.findViewById(R.id.container);
 
 
@@ -125,8 +125,8 @@ public class InviteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         ViewHolderInviteContact(View itemView) {
             super(itemView);
             username = (TextView) itemView.findViewById(R.id.username);
-            number = (TextView) itemView.findViewById(R.id.number);
-            pic = (ImageView) itemView.findViewById(R.id.pic);
+            number = (TextView) itemView.findViewById(R.id.comment);
+            pic = (ImageView) itemView.findViewById(R.id.image);
             container = (RelativeLayout) itemView.findViewById(R.id.container);
 
             container.setOnClickListener(new View.OnClickListener() {

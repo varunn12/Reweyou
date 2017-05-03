@@ -20,6 +20,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="2dp"
                 android:background="#fff">
 
                 <TextView
@@ -59,7 +60,8 @@
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="238dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="2dp"
+            android:visibility="gone"
             app:cardCornerRadius="2dp"
             app:cardElevation="4dp"
             app:cardUseCompatPadding="true">
@@ -67,6 +69,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+
                 android:background="#fff">
 
                 <TextView
@@ -106,7 +109,7 @@
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="2dp"
             app:cardCornerRadius="2dp"
 
             app:cardElevation="4dp"

@@ -14,7 +14,7 @@
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="24dp"
         android:layout_marginRight="16dp"
-        android:layout_toRightOf="@+id/pic"
+        android:layout_toRightOf="@+id/image"
         android:ellipsize="end"
 
 

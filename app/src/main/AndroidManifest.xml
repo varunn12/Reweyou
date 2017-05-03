@@ -36,9 +36,7 @@
         <activity
             android:name=".SplashScreen"
             android:screenOrientation="portrait"
-            android:theme="@style/SplashTheme">
-
-        </activity>
+            android:theme="@style/SplashTheme"></activity>
         <activity
             android:name=".Signup"
             android:screenOrientation="portrait"
@@ -210,6 +208,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".CommentActivity"
+            android:excludeFromRecents="true"
+            android:label="@string/title_activity_comment"
+            android:screenOrientation="portrait"
+            android:taskAffinity=""
+            android:theme="@style/Theme.Sliding.Lights"
+            android:windowSoftInputMode="stateHidden"></activity>
     </application>
 
 </manifest>

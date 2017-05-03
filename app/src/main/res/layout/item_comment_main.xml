@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/ripple_effect4"
+    android:minHeight="48dp"
+    android:orientation="horizontal"
+    android:paddingBottom="4dp">
+
+    <in.reweyou.reweyou.customView.CircularImageView
+        android:id="@+id/image"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/download"
+        app:myborderWidth="0dp" />
+
+    <TextView
+        android:id="@+id/username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="8dp"
+        android:layout_toRightOf="@+id/image"
+        android:text="Username"
+        android:textColor="#424242"
+        android:textSize="13sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/username"
+        android:layout_marginLeft="12dp"
+        android:layout_toRightOf="@+id/image"
+        android:paddingRight="8dp"
+        android:text="Hello World!"
+        android:textColor="#757575"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/reply"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/comment"
+        android:layout_marginLeft="12dp"
+        android:layout_toRightOf="@+id/image"
+        android:drawablePadding="8dp"
+        android:drawableRight="@drawable/ic_reply_layer"
+        android:paddingBottom="4dp"
+        android:paddingRight="16dp"
+        android:paddingTop="8dp"
+        android:text="Reply"
+        android:textColor="#424242"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+
+</RelativeLayout>

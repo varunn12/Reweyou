@@ -102,6 +102,7 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     @Override
+
     public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder2, final int position) {
 
         final IssueViewHolder issueViewHolder = (IssueViewHolder) viewHolder2;

@@ -78,5 +78,6 @@
     <string name="title_activity_your_review">YourReview</string>
     <string name="normal_sliding_activity">dasdas</string>
     <string name="title_activity_forum_main">Feeds</string>
+    <string name="title_activity_comment">CommentActivity</string>
 
 </resources>

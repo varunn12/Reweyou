@@ -77,6 +77,8 @@ dependencies {
     compile 'jp.wasabeef:recyclerview-animators:2.2.6'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
+    compile 'com.google.code.gson:gson:2.+'
+
 }
 
 apply plugin: 'com.google.gms.google-services'
