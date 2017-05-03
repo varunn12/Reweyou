@@ -1,0 +1,129 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:background="@null"
+    android:fillViewport="true">
+
+
+    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        android:layout_marginTop="4dp"
+        app:cardCornerRadius="2dp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        app:cardElevation="4dp"
+        app:cardUseCompatPadding="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:background="#fff"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_marginTop="32dp"
+                android:background="#56CCFF90"
+                android:layout_height="100dp"
+                android:layout_gravity="center_horizontal"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:drawablePadding="6dp"
+                android:gravity="center"
+                android:textSize="18dp"
+                android:text="Rajneeti"
+                android:textColor="#424242"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:maxLines="5"
+                android:text="Modi's victory indeed transforms India's political landscape. BJP's dominance is now a fact of India's political life that everyone "
+                android:textColor="#616161" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="40dp"
+                        app:srcCompat="@drawable/ic_supervisor_account_black_24px"
+                        android:layout_height="40dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:paddingLeft="4dp"
+                        android:text="105"
+                        android:gravity="center"
+                        android:textColor="#424242"
+                        android:textSize="18dp"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+                <android.support.v4.widget.Space
+                    android:layout_width="50dp"
+
+                    android:layout_height="1dp"
+                    android:layout_gravity="center"/>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="40dp"
+                        app:srcCompat="@drawable/ic_subject_black_24px"
+                        android:layout_height="40dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:paddingLeft="4dp"
+                        android:text="31"
+                        android:gravity="center"
+                        android:textColor="#424242"
+                        android:textSize="18dp"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/border_pink"
+                android:text="Unfollow"
+                android:textAllCaps="false"
+                android:textColor="@color/main_background_pink_alpha"
+                android:textSize="13dp" />
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+
+</ScrollView>

@@ -5,133 +5,252 @@
     android:background="@null"
     android:fillViewport="true">
 
-
-    <android.support.v7.widget.CardView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="2dp"
-        android:layout_marginTop="4dp"
-        app:cardCornerRadius="2dp"
-        app:cardElevation="4dp"
-        app:cardUseCompatPadding="true">
+        android:layout_height="match_parent"
 
-        <LinearLayout
+        android:orientation="vertical">
+
+        <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:background="#fff"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:layout_marginTop="4dp"
+            app:cardCornerRadius="2dp"
+            app:cardElevation="4dp"
+            app:cardUseCompatPadding="true">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:background="#fff"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:drawablePadding="6dp"
+                    android:gravity="center_vertical"
+                    android:text="Share a new feed"
+                    android:textColor="@color/main_background_pink_alpha"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:paddingBottom="18dp"
+                    android:text="Start creating a new post or share a link directly with people "
+                    android:textColor="#616161" />
+
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:cardBackgroundColor="#fff"
+            app:cardCornerRadius="2dp"
+            android:animateLayoutChanges="true"
+android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            app:cardElevation="4dp"
+            app:cardUseCompatPadding="true">
+
+            <TextView
+                android:id="@+id/tvpost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
                 android:drawableLeft="@drawable/create_group_layer"
                 android:drawablePadding="6dp"
                 android:gravity="center_vertical"
-                android:text="Create Thread"
+                android:paddingBottom="20dp"
+                android:paddingTop="20dp"
+                android:text="Create Post"
                 android:textColor="@color/main_background_pink_alpha"
                 android:textStyle="bold" />
 
+            <LinearLayout
+                android:id="@+id/expandcreatepostcontainer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="50dp"
+                android:orientation="vertical"
+
+                android:visibility="gone">
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Start your own feed by creating a post or by sharing a link"
+                    android:textColor="#616161" />
+
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="16dp"
+
+
+                    android:background="#56CCFF90"
+                    android:scaleType="center"
+
+                    app:srcCompat="@drawable/ic_photo_camera_black_24px_create" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="SHORT DESCRIPTION"
+                    android:textSize="12dp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:hint="..."
+                    android:inputType="textMultiLine"
+                    android:maxLength="100"
+                    android:minLines="1"
+                    android:paddingBottom="10dp"
+                    android:paddingTop="10dp"
+                    android:textColorHint="#9e9e9e"
+                    android:textCursorDrawable="@drawable/color_cursor"
+                    android:textSize="16dp"
+
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.7dp"
+                    android:layout_gravity="center_horizontal"
+
+                    android:layout_marginTop="4dp"
+                    android:background="@color/greylight" />
+
+
+
+
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/border_pink"
+                    android:text="POST"
+                    android:textColor="#9e9e9e"
+                    android:textSize="13dp" />
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            app:cardBackgroundColor="#fff"
+            app:cardCornerRadius="2dp"
+            app:cardElevation="4dp"
+            android:animateLayoutChanges="true"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            app:cardUseCompatPadding="true">
+
             <TextView
+                android:id="@+id/tvshare"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:textColor="#616161"
-                android:text="Start your own feed by creating a post or by sharing a link" />
-
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="16dp"
-
-
-                android:background="#56CCFF90"
-                android:scaleType="center"
-
-                app:srcCompat="@drawable/ic_photo_camera_black_24px_create" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="SHORT DESCRIPTION"
-                android:textSize="12dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:drawableLeft="@drawable/create_group_layer"
+                android:drawablePadding="6dp"
+                android:gravity="center_vertical"
+                android:paddingBottom="20dp"
+                android:paddingTop="20dp"
+                android:text="Share Link"
+                android:textColor="@color/main_background_pink_alpha"
                 android:textStyle="bold" />
 
-            <EditText
+            <LinearLayout
+                android:id="@+id/expandsharelinkcontainer"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@null"
-                android:hint="..."
-                android:inputType="textMultiLine"
-                android:maxLength="100"
-                android:minLines="1"
-                android:paddingBottom="10dp"
-                android:paddingTop="10dp"
-                android:textColorHint="#9e9e9e"
-                android:textCursorDrawable="@drawable/color_cursor"
-                android:textSize="16dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="50dp"
+                android:orientation="vertical"
 
-                android:textStyle="bold" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.7dp"
-                android:layout_gravity="center_horizontal"
-
-                android:layout_marginTop="4dp"
-                android:background="@color/greylight" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-
-                android:layout_marginTop="16dp"
-                android:text="SHARE LINK (optional)"
-                android:textSize="12dp"
-                android:textStyle="bold" />
+                android:visibility="gone">
 
 
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@null"
-                android:gravity="top"
-                android:hint="..."
-                android:inputType="textMultiLine"
-                android:maxLength="500"
-                android:maxLines="5"
-                android:minLines="3"
-                android:paddingBottom="10dp"
-                android:paddingTop="10dp"
-                android:textColorHint="#9e9e9e"
-                android:textCursorDrawable="@drawable/color_cursor"
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
 
-                android:textSize="16dp" />
+                    android:layout_marginTop="16dp"
+                    android:text="PASTE LINK "
+                    android:textSize="12dp"
+                    android:textStyle="bold" />
 
-            <View
-                android:layout_width="match_parent"
 
-                android:layout_height="0.7dp"
-                android:layout_gravity="center_horizontal"
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:gravity="top"
+                    android:hint="..."
+                    android:inputType="textMultiLine"
+                    android:maxLength="500"
+                    android:maxLines="5"
+                    android:minLines="3"
+                    android:paddingBottom="10dp"
+                    android:paddingTop="10dp"
+                    android:textColorHint="#9e9e9e"
+                    android:textCursorDrawable="@drawable/color_cursor"
 
-                android:layout_marginTop="4dp"
-                android:background="@color/greylight" />
+                    android:textSize="16dp" />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="24dp"
-                android:background="@drawable/border_pink"
-                android:text="POST"
-                android:textColor="#9e9e9e"
-                android:textSize="13dp" />
-        </LinearLayout>
-    </android.support.v7.widget.CardView>
+                <View
+                    android:layout_width="match_parent"
+
+                    android:layout_height="0.7dp"
+                    android:layout_gravity="center_horizontal"
+
+                    android:layout_marginTop="4dp"
+                    android:background="@color/greylight" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="24dp"
+                    android:background="@drawable/border_pink"
+                    android:text="POST"
+                    android:layout_marginBottom="16dp"
+                    android:textColor="#9e9e9e"
+                    android:textSize="13dp" />
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+    </LinearLayout>
 
 
 </ScrollView>

@@ -17,7 +17,7 @@ import in.reweyou.reweyou.R;
  * Created by master on 24/2/17.
  */
 
-public class CreateThreadFragment extends Fragment {
+public class GroupInfoFragment extends Fragment {
 
 
     private Activity mContext;
@@ -32,37 +32,8 @@ public class CreateThreadFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View layout = inflater.inflate(R.layout.fragment_create_thread, container, false);
-        final LinearLayout expandpost = (LinearLayout) layout.findViewById(R.id.expandcreatepostcontainer);
-        final LinearLayout expandshare = (LinearLayout) layout.findViewById(R.id.expandsharelinkcontainer);
+        View layout = inflater.inflate(R.layout.fragment_group_info, container, false);
 
-        TextView tvpost = (TextView) layout.findViewById(R.id.tvpost);
-        TextView tvshare = (TextView) layout.findViewById(R.id.tvshare);
-
-        tvpost.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (expandpost.getVisibility() == View.VISIBLE) {
-                    expandpost.setVisibility(View.GONE);
-                } else {
-                    expandpost.setVisibility(View.VISIBLE);
-                    expandshare.setVisibility(View.GONE);
-                }
-
-            }
-        });
-        tvshare.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (expandshare.getVisibility() == View.VISIBLE) {
-                    expandshare.setVisibility(View.GONE);
-                } else {
-                    expandshare.setVisibility(View.VISIBLE);
-                    expandpost.setVisibility(View.GONE);
-                }
-
-            }
-        });
 
         return layout;
     }

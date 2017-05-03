@@ -16,6 +16,7 @@ import in.reweyou.reweyou.fragment.ChatFragment;
 import in.reweyou.reweyou.fragment.CreateFragment;
 import in.reweyou.reweyou.fragment.CreateThreadFragment;
 import in.reweyou.reweyou.fragment.ForumFragment;
+import in.reweyou.reweyou.fragment.GroupInfoFragment;
 
 public class GroupActivity extends AppCompatActivity {
 
@@ -59,8 +60,8 @@ public class GroupActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
 
 
-            if (position == 1)
-                return new ForumFragment();
+            if (position == 0)
+                return new GroupInfoFragment();
             else if (position == 2)
                 return new CreateThreadFragment();
             else if(position==3)
