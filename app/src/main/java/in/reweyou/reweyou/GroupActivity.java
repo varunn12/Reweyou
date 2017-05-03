@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import in.reweyou.reweyou.fragment.ChatFragment;
-import in.reweyou.reweyou.fragment.CreateFragment;
 import in.reweyou.reweyou.fragment.CreateThreadFragment;
 import in.reweyou.reweyou.fragment.ForumFragment;
 import in.reweyou.reweyou.fragment.GroupInfoFragment;
@@ -43,7 +42,6 @@ public class GroupActivity extends AppCompatActivity {
         viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
-
 
     }
 
