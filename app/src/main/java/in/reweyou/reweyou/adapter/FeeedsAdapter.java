@@ -19,6 +19,7 @@ import java.util.List;
 import in.reweyou.reweyou.CommentActivity;
 import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.model.IssueModel;
+import in.reweyou.reweyou.utils.Utils;
 
 /**
  * Created by master on 1/5/17.
@@ -87,7 +88,7 @@ public class FeeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 @Override
                 public void onClick(View v) {
                     like.setColorFilter(Color.parseColor("#D75A4A"));
-                    liketemp.animate().translationYBy(-100).alpha(0).rotationBy(150).setDuration(600).setInterpolator(new DecelerateInterpolator()).start();
+                    liketemp.animate().translationYBy(-Utils.convertpxFromDp(70)).alpha(0).rotationBy(150).setDuration(600).setInterpolator(new DecelerateInterpolator()).start();
                 }
             });
 

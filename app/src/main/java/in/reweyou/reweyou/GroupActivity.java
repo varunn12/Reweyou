@@ -11,13 +11,17 @@ import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import in.reweyou.reweyou.fragment.ChatFragment;
 import in.reweyou.reweyou.fragment.CreateThreadFragment;
 import in.reweyou.reweyou.fragment.ForumFragment;
 import in.reweyou.reweyou.fragment.GroupInfoFragment;
+import in.reweyou.reweyou.utils.Utils;
 
 public class GroupActivity extends AppCompatActivity {
+
+    private ImageView back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,12 +41,31 @@ public class GroupActivity extends AppCompatActivity {
             }
         });
 
+        back = (ImageView) findViewById(R.id.backgroundimageview);
+        setBackgroundtint();
+
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
         viewPager.setOffscreenPageLimit(3);
         viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
 
+    }
+
+    private void setBackgroundtint() {
+        switch (Utils.backgroundCode) {
+            case 0:
+                break;
+            case 1:
+                back.setColorFilter(this.getResources().getColor(R.color.main_background_blue_alpha));
+                break;
+            case 2:
+                back.setColorFilter(this.getResources().getColor(R.color.main_background_green_alpha));
+                break;
+            case 3:
+                back.setColorFilter(this.getResources().getColor(R.color.main_background_pink_alpha));
+                break;
+        }
     }
 
     private class PagerAdapter extends FragmentStatePagerAdapter {
@@ -62,7 +85,7 @@ public class GroupActivity extends AppCompatActivity {
                 return new GroupInfoFragment();
             else if (position == 2)
                 return new CreateThreadFragment();
-            else if(position==3)
+            else if (position == 3)
                 return new ChatFragment();
             else return new ForumFragment();
         }

@@ -27,13 +27,18 @@
             android:orientation="vertical">
 
             <ImageView
+                android:id="@+id/image"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="32dp"
-                android:background="#56CCFF90" />
+                android:background="@drawable/border_green"
+                android:padding="1dp"
+
+                android:scaleType="fitXY" />
 
             <TextView
+                android:id="@+id/groupname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -45,7 +50,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/shortdescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -66,54 +71,96 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
-                    android:orientation="horizontal">
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        app:srcCompat="@drawable/ic_supervisor_account_black_24px" />
+                    android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/members"
                         android:layout_width="wrap_content"
-                        android:layout_height="40dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
                         android:gravity="center"
                         android:paddingLeft="4dp"
                         android:text="105"
                         android:textColor="#424242"
                         android:textSize="18dp"
                         android:textStyle="bold"/>
-                </LinearLayout>
-                <android.support.v4.widget.Space
-                    android:layout_width="50dp"
-
-                    android:layout_height="1dp"
-                    android:layout_gravity="center"/>
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        app:srcCompat="@drawable/ic_subject_black_24px" />
 
                     <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="40dp"
+                        android:layout_height="wrap_content"
                         android:gravity="center"
                         android:paddingLeft="4dp"
-                        android:text="31"
+                        android:text="Members"
+                        android:textColor="#757575"
+                        android:textSize="14dp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="0.7dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginRight="22dp"
+                    android:background="@color/divider" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/threads"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="center"
+                        android:paddingLeft="4dp"
+                        android:text="23"
                         android:textColor="#424242"
                         android:textSize="18dp"
                         android:textStyle="bold"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:paddingLeft="4dp"
+                        android:text="Threads"
+                        android:textColor="#757575"
+                        android:textSize="14dp"
+                        android:textStyle="bold" />
                 </LinearLayout>
 
             </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="DESCRIPTION"
+                android:textColor="@color/main_background_pink_alpha"
+                android:textSize="12dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="13dp"
+                android:text="It is very often said that politics is about power.[1] A political system is a framework which defines acceptable political methods within a given society. History of political thought can be traced back to early antiquity, with seminal works such as Plato's Republic, Aristotle's Politics and the works of Confucius.
+
+Formal Politics refers to the operation of a constitutional system of government and publicly defined institutions and procedures.[1] Political parties, public policy or discussions about war and foreign affairs would fall under the category of Formal Politics.[1] Many people view formal politics as something outside of themselves, but that can still affect their daily lives.[1]
+
+Semi-formal Politics is Politics in government associations such as neighborhood associations, or student governments where student government political party politics is often important."
+
+                android:textColor="#616161"
+                android:textSize="14dp" />
 
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="16dp"
                 android:layout_marginTop="24dp"
                 android:background="@drawable/border_pink"
                 android:text="Unfollow"

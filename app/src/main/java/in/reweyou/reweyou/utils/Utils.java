@@ -1,5 +1,7 @@
 package in.reweyou.reweyou.utils;
 
+import android.content.Context;
+
 import java.util.Calendar;
 import java.util.Random;
 
@@ -10,6 +12,7 @@ import java.util.Random;
 public class Utils {
     public static boolean isNight;
     public static int backgroundCode;
+    private static int scalefactor;
 
     public static void setDayNightBoolean() {
         Calendar calendar = Calendar.getInstance();
@@ -24,4 +27,14 @@ public class Utils {
         Random rand = new Random();
         backgroundCode = rand.nextInt(4);
     }
+
+    public static void setpxFromDp(final Context context) {
+        int scalefacto = (int) (context.getResources().getDisplayMetrics().density);
+        scalefactor = scalefacto;
+    }
+
+    public static int convertpxFromDp(int dp) {
+        return scalefactor * dp;
+    }
+
 }

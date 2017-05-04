@@ -8,8 +8,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import in.reweyou.reweyou.R;
 
@@ -34,7 +36,14 @@ public class GroupInfoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_group_info, container, false);
 
+        ImageView img = (ImageView) layout.findViewById(R.id.image);
+        TextView groupname = (TextView) layout.findViewById(R.id.groupname);
+        TextView shortdes = (TextView) layout.findViewById(R.id.shortdescription);
+        TextView description = (TextView) layout.findViewById(R.id.description);
+        TextView members = (TextView) layout.findViewById(R.id.members);
+        TextView threads = (TextView) layout.findViewById(R.id.threads);
 
+        Glide.with(mContext).load("https://media.giphy.com/media/m82Z6oaf0TF1S/giphy.gif").into(img);
         return layout;
     }
 
@@ -54,9 +63,6 @@ public class GroupInfoFragment extends Fragment {
 
     }
 
-    public float pxFromDp(final Context context, final float dp) {
-        return dp * context.getResources().getDisplayMetrics().density;
-    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {

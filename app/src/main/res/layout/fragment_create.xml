@@ -40,17 +40,35 @@
                 android:layout_marginTop="8dp"
                 android:text="Start creating your own Group, by just adding a cover pic, name and description" />
 
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="24dp">
+
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
 
 
-                android:background="#56CCFF90"
-                android:scaleType="center"
+                    android:background="@drawable/border_green"
+                    android:padding="1dp"
+                    android:scaleType="center"
 
-                app:srcCompat="@drawable/ic_photo_camera_black_24px_create" />
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:alpha="0.44"
+                    android:gravity="center"
+                    android:text="Tap to\nAdd an image"
+                    android:textColor="#000"
+                    android:textSize="12dp" />
+            </RelativeLayout>
+
 
             <TextView
                 android:layout_width="match_parent"

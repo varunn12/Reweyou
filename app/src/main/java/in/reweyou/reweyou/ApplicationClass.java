@@ -50,6 +50,7 @@ public class ApplicationClass extends Application {
         mInstance = this;
 
         Utils.setBackgroundColor();
+        Utils.setpxFromDp(getApplicationContext());
         AnalyticsTracker.initialize(this);
         AnalyticsTracker.getInstance().get(AnalyticsTracker.Target.APP);
 

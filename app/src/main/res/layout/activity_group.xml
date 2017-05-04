@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
-        android:tint="@color/main_background_pink_alpha"
         app:srcCompat="@drawable/ic_asb" />
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -27,9 +26,9 @@
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
             android:layout_height="44dp"
+            android:background="#212121"
             app:tabIndicatorColor="#651FFF"
-            app:tabIndicatorHeight="4dp"
-            android:background="#212121"/>
+            app:tabIndicatorHeight="4dp" />
 
     </android.support.design.widget.AppBarLayout>
 

@@ -145,7 +145,8 @@ public class ForumMainActivity extends AppCompatActivity {
                 .setActivityTitle("Crop Image")
                 .setBackgroundColor(Color.parseColor("#90000000"))
                 .setMinCropResultSize(200, 200)
-
+                .setFixAspectRatio(true)
+                .setAspectRatio(1, 1)
                 .setBorderCornerColor(getResources().getColor(R.color.colorPrimaryDark))
                 .setBorderLineColor(getResources().getColor(R.color.colorPrimary))
                 .setGuidelinesColor(getResources().getColor(R.color.divider))
@@ -189,6 +190,7 @@ public class ForumMainActivity extends AppCompatActivity {
             }
         });
     }
+
 
     private void uploadImage(String resource) {
         AndroidNetworking.post("")
