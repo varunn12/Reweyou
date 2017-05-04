@@ -31,7 +31,7 @@
                 android:drawablePadding="6dp"
                 android:gravity="center_vertical"
                 android:text="Create your Group"
-                android:textColor="@color/main_background_pink_alpha"
+                android:textColor="@color/main_background_pink"
                 android:textStyle="bold" />
 
             <TextView
@@ -48,6 +48,7 @@
                 android:layout_marginTop="24dp">
 
                 <ImageView
+                    android:id="@+id/image"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
 
@@ -59,6 +60,7 @@
                     />
 
                 <TextView
+                    android:id="@+id/imgtext"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
@@ -79,6 +81,7 @@
                 android:textStyle="bold" />
 
             <EditText
+                android:id="@+id/groupname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@null"
@@ -113,6 +116,7 @@
 
 
             <EditText
+                android:id="@+id/description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@null"
@@ -139,12 +143,13 @@
                 android:background="@color/greylight" />
 
             <Button
+                android:id="@+id/create"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="16dp"
                 android:layout_marginTop="24dp"
-                android:background="@drawable/border_pink"
+                android:background="@drawable/border_grey"
                 android:text="CREATE"
                 android:textColor="#9e9e9e"
                 android:textSize="13dp" />

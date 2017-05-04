@@ -46,6 +46,7 @@ public class ForumMainActivity extends AppCompatActivity {
     private static final String TAG = ForumMainActivity.class.getName();
     private ImagePicker imagePicker;
     private PagerAdapter pagerAdapter;
+    private int positionFragment = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +91,8 @@ public class ForumMainActivity extends AppCompatActivity {
 
     }
 
-    public void showPickImage() {
+    public void showPickImage(int i) {
+        this.positionFragment = i;
         imagePicker = new ImagePicker(this);
         imagePicker.setImagePickerCallback(new ImagePickerCallback() {
                                                @Override
@@ -164,7 +166,12 @@ public class ForumMainActivity extends AppCompatActivity {
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
-                handleImage(result.getUri().toString());
+                if (positionFragment == 3)
+                    handleImage(result.getUri().toString());
+                else if (positionFragment == 2) {
+                    CreateFragment createFragment = (CreateFragment) pagerAdapter.getRegisteredFragment(2);
+                    createFragment.onImageChoosen(result.getUri().toString());
+                }
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
             }

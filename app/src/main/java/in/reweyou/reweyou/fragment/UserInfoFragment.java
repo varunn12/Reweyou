@@ -110,7 +110,7 @@ public class UserInfoFragment extends Fragment {
                 .withListener(new PermissionListener() {
                     @Override
                     public void onPermissionGranted(PermissionGrantedResponse response) {
-                        ((ForumMainActivity) mContext).showPickImage();
+                        ((ForumMainActivity) mContext).showPickImage(3);
                     }
 
                     @Override
