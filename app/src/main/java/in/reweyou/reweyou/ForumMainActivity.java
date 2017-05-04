@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import in.reweyou.reweyou.fragment.CreateFragment;
 import in.reweyou.reweyou.fragment.ExploreFragment;
 import in.reweyou.reweyou.fragment.ForumFragment;
+import in.reweyou.reweyou.fragment.UserInfoFragment;
 import in.reweyou.reweyou.utils.Utils;
 
 public class ForumMainActivity extends AppCompatActivity {
@@ -80,8 +81,9 @@ public class ForumMainActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
 
-
-            if (position == 1)
+            if (position == 3)
+                return new UserInfoFragment();
+            else if (position == 1)
                 return new ExploreFragment();
             else if (position == 2)
                 return new CreateFragment();

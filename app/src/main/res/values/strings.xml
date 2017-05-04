@@ -90,5 +90,6 @@
     <string name="title_activity_forum_main">Feeds</string>
     <string name="title_activity_comment">CommentActivity</string>
     <string name="title_activity_group">GroupActivity</string>
+    <string name="title_activity_login">LoginActivity</string>
 
 </resources>
