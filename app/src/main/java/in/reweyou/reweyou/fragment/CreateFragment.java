@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -50,14 +51,22 @@ public class CreateFragment extends Fragment {
                 //Log.d(TAG, "onGlobalLayout: height"+heightDiff+"   "+findViewById(R.id.main_content).getRootView().getHeight()+    "    "+(r.bottom - r.top));
                 if (heightDiff > pxFromDp(mContext, 150)) { // if more than 100 pixels, its probably a keyboard...
                     //ok now we know the keyboard is up...
-                    mContext.findViewById(R.id.tabLayout).setVisibility(View.INVISIBLE);
+                    mContext.findViewById(R.id.tabLayout).setVisibility(View.GONE);
+                    mContext.findViewById(R.id.line).setVisibility(View.GONE);
                     mContext.findViewById(R.id.tabLayout).setAlpha(0);
 
 
                 } else {
                     //ok now we know the keyboard is down...
-                    mContext.findViewById(R.id.tabLayout).setVisibility(View.VISIBLE);
-                    mContext.findViewById(R.id.tabLayout).animate().alpha(1).setDuration(300).start();
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mContext.findViewById(R.id.tabLayout).setVisibility(View.VISIBLE);
+                            mContext.findViewById(R.id.line).setVisibility(View.VISIBLE);
+                            mContext.findViewById(R.id.tabLayout).animate().alpha(1).setDuration(150).start();
+
+                        }
+                    }, 150);
 
 
                 }

@@ -2,7 +2,9 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootlayout"
     android:layout_width="match_parent"
+
     android:layout_height="match_parent"
     tools:context="in.reweyou.reweyou.ForumMainActivity">
 
@@ -32,10 +34,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
 
-        android:layout_marginBottom="44dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <View
+        android:id="@+id/line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_gravity="bottom"

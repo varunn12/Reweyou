@@ -11,6 +11,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import in.reweyou.reweyou.CommentActivity;
 import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.model.CommentModel;
 import in.reweyou.reweyou.model.ReplyCommentModel;
@@ -83,6 +84,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     private class CommentViewHolder extends RecyclerView.ViewHolder {
+        private TextView reply;
         private ImageView image;
         private TextView username, comment;
 
@@ -93,6 +95,14 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             image = (ImageView) inflate.findViewById(R.id.image);
             username = (TextView) inflate.findViewById(R.id.username);
             comment = (TextView) inflate.findViewById(R.id.comment);
+            reply = (TextView) inflate.findViewById(R.id.reply);
+
+            reply.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ((CommentActivity) context).passClicktoEditText(((CommentModel) messagelist.get(getAdapterPosition())).getName());
+                }
+            });
 
 
         }
@@ -100,7 +110,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private class ReplyViewHolder extends RecyclerView.ViewHolder {
         private ImageView image;
-        private TextView username, comment;
+        private TextView username, comment, reply;
 
 
         public ReplyViewHolder(View inflate) {

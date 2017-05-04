@@ -36,7 +36,7 @@ import in.reweyou.reweyou.model.ReplyCommentModel;
 public class CommentActivity extends SlidingActivity {
 
     private static final String TAG = CommentActivity.class.getName();
-    private EditText editText;
+    public EditText editText;
     private ImageView send;
 
     @Override
@@ -49,8 +49,9 @@ public class CommentActivity extends SlidingActivity {
     @Override
     public void init(Bundle savedInstanceState) {
         disableHeader();
-        setContent(R.layout.content_comment);
+        enableFullscreen();
 
+        setContent(R.layout.content_comment);
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -129,7 +130,7 @@ public class CommentActivity extends SlidingActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().trim().length() == 0) {
+                if (s.toString().length() == 0) {
                     send.setTag("0");
                     send.setClickable(false);
                     send.animate().scaleY(0.0f).scaleX(0.0f).setDuration(200).setInterpolator(new AccelerateInterpolator()).withEndAction(new Runnable() {
@@ -142,7 +143,6 @@ public class CommentActivity extends SlidingActivity {
 
                 } else if (s.toString().trim().length() > 0) {
 
-
                     send.setClickable(true);
 
                     if (!send.getTag().toString().equals("1")) {
@@ -150,6 +150,7 @@ public class CommentActivity extends SlidingActivity {
                         send.animate().scaleY(0.0f).scaleX(0.0f).setDuration(200).setInterpolator(new AccelerateInterpolator()).withEndAction(new Runnable() {
                             @Override
                             public void run() {
+                                send.setImageResource(R.drawable.button_send_comments);
 
                                 send.animate().scaleX(1.0f).scaleY(1.0f).setInterpolator(new DecelerateInterpolator()).setDuration(300);
                             }
@@ -167,4 +168,13 @@ public class CommentActivity extends SlidingActivity {
 
     }
 
+    public void passClicktoEditText(String name) {
+        editText.setHint("Reply to " + name + "...");
+        editText.setFocusableInTouchMode(true);
+        editText.requestFocus();
+        editText.performClick();
+        final InputMethodManager inputMethodManager = (InputMethodManager) this
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
+    }
 }

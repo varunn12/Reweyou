@@ -51,6 +51,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 mContext.startActivity(new Intent(mContext, ForumMainActivity.class));
+                mContext.finish();
             }
         });
 
@@ -91,7 +92,7 @@ public class ProfileFragment extends Fragment {
         Log.d("ProfileFragment", "onsignin: reached 1 postition");
         if (username != null) {
             username.setText(givenName);
-            username.setSelection(username.getText().length());
+            username.setSelection(givenName.length());
         }
         Glide.with(ProfileFragment.this).load(photoUrl).into(image);
 
