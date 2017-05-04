@@ -14,6 +14,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
@@ -38,6 +39,7 @@ public class CommentActivity extends SlidingActivity {
     private static final String TAG = CommentActivity.class.getName();
     public EditText editText;
     private ImageView send;
+    private TextView replyheader;
 
     @Override
     protected void configureScroller(MultiShrinkScroller scroller) {
@@ -57,6 +59,9 @@ public class CommentActivity extends SlidingActivity {
 
         editText = (EditText) findViewById(R.id.edittext);
         send = (ImageView) findViewById(R.id.send);
+
+        replyheader = (TextView) findViewById(R.id.t2);
+
         final CommentsAdapter adapterComment = new CommentsAdapter(this);
         recyclerView.setAdapter(adapterComment);
 
@@ -169,7 +174,17 @@ public class CommentActivity extends SlidingActivity {
     }
 
     public void passClicktoEditText(String name) {
-        editText.setHint("Reply to " + name + "...");
+        if (replyheader.getVisibility() == View.GONE) {
+            replyheader.setVisibility(View.VISIBLE);
+            editText.setHint("Write a reply...");
+
+        } else {
+            replyheader.setVisibility(View.GONE);
+            editText.setHint("Write a comment...");
+
+        }
+
+        replyheader.setText("Reply to " + name);
         editText.setFocusableInTouchMode(true);
         editText.requestFocus();
         editText.performClick();
