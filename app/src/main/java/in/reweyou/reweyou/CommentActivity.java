@@ -1,10 +1,19 @@
 package in.reweyou.reweyou;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
@@ -27,6 +36,8 @@ import in.reweyou.reweyou.model.ReplyCommentModel;
 public class CommentActivity extends SlidingActivity {
 
     private static final String TAG = CommentActivity.class.getName();
+    private EditText editText;
+    private ImageView send;
 
     @Override
     protected void configureScroller(MultiShrinkScroller scroller) {
@@ -43,9 +54,13 @@ public class CommentActivity extends SlidingActivity {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        editText = (EditText) findViewById(R.id.edittext);
+        send = (ImageView) findViewById(R.id.send);
         final CommentsAdapter adapterComment = new CommentsAdapter(this);
         recyclerView.setAdapter(adapterComment);
 
+        initSendButton();
+        initTextWatcherEditText();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -90,6 +105,65 @@ public class CommentActivity extends SlidingActivity {
                         });
             }
         }, 500);
+
+    }
+
+    private void initSendButton() {
+        send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InputMethodManager imm = (InputMethodManager) CommentActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+
+            }
+        });
+        send.setClickable(false);
+        send.setTag("0");
+    }
+
+    private void initTextWatcherEditText() {
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.toString().trim().length() == 0) {
+                    send.setTag("0");
+                    send.setClickable(false);
+                    send.animate().scaleY(0.0f).scaleX(0.0f).setDuration(200).setInterpolator(new AccelerateInterpolator()).withEndAction(new Runnable() {
+                        @Override
+                        public void run() {
+                            send.setImageResource(R.drawable.button_send_disable);
+                            send.animate().scaleX(1.0f).scaleY(1.0f).setInterpolator(new DecelerateInterpolator()).setDuration(300);
+                        }
+                    });
+
+                } else if (s.toString().trim().length() > 0) {
+
+
+                    send.setClickable(true);
+
+                    if (!send.getTag().toString().equals("1")) {
+                        send.setTag("1");
+                        send.animate().scaleY(0.0f).scaleX(0.0f).setDuration(200).setInterpolator(new AccelerateInterpolator()).withEndAction(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                send.animate().scaleX(1.0f).scaleY(1.0f).setInterpolator(new DecelerateInterpolator()).setDuration(300);
+                            }
+                        });
+                    }
+
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
     }
 

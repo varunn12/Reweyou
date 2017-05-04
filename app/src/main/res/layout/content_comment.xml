@@ -31,8 +31,46 @@
             android:id="@id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginBottom="44dp"
             android:layout_marginTop="48dp"
             android:paddingLeft="8dp"
-            android:paddingRight="8dp"></android.support.v7.widget.RecyclerView>
+            android:paddingRight="8dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.7dp"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="44dp"
+            android:background="#757575" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:layout_gravity="bottom"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/edittext"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/transparent"
+                android:hint="Write a comment..."
+                android:maxLength="600"
+                android:minHeight="44dp"
+                android:paddingLeft="12dp"
+
+                android:textSize="14dp" />
+
+            <ImageView
+                android:id="@+id/send"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_gravity="center"
+                android:layout_marginRight="4dp"
+                android:padding="4dp"
+                app:srcCompat="@drawable/button_send_disable" />
+
+        </LinearLayout>
     </android.support.v7.widget.CardView>
 </RelativeLayout>
