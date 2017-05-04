@@ -82,6 +82,9 @@ dependencies {
     compile 'com.google.firebase:firebase-auth:10.2.4'
     compile 'com.google.android.gms:play-services-auth:10.2.4'
     testCompile 'junit:junit:4.12'
+
+    compile 'com.karumi:dexter:4.1.0'
+
 }
 
 apply plugin: 'com.google.gms.google-services'

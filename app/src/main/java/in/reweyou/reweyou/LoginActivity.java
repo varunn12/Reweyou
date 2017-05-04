@@ -1,22 +1,41 @@
 package in.reweyou.reweyou;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.StringRequestListener;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.kbeanie.multipicker.api.ImagePicker;
+import com.kbeanie.multipicker.api.Picker;
+import com.kbeanie.multipicker.api.callbacks.ImagePickerCallback;
+import com.kbeanie.multipicker.api.entity.ChosenImage;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
+
+import java.util.List;
 
 import in.reweyou.reweyou.customView.NonSwipeableViewPager;
 import in.reweyou.reweyou.fragment.LoginFragment;
@@ -29,6 +48,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private GoogleApiClient mGoogleApiClient;
     private NonSwipeableViewPager nonSwipeableViewPager;
     private PagerAdapter pagerAdapter;
+    private ImagePicker imagePicker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,16 +84,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            handleSignInResult(result);
-        }
-    }
 
     private void handleSignInResult(GoogleSignInResult result) {
         Log.d(TAG, "handleSignInResult:" + result.isSuccess());
@@ -89,6 +99,133 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             // Signed out, show unauthenticated UI.
             Log.d(TAG, "handleSignInResult: signed out");
         }
+    }
+
+
+    public void showPickImage() {
+        imagePicker = new ImagePicker(this);
+        imagePicker.setImagePickerCallback(new ImagePickerCallback() {
+                                               @Override
+                                               public void onImagesChosen(List<ChosenImage> images) {
+
+                                                   onImageChoosenbyUser(images);
+
+                                               }
+
+                                               @Override
+                                               public void onError(String message) {
+                                                   // Do error handling
+                                                   Log.e(TAG, "onError: " + message);
+                                               }
+                                           }
+
+        );
+
+        imagePicker.shouldGenerateMetadata(true);
+        imagePicker.shouldGenerateThumbnails(false);
+        imagePicker.pickImage();
+
+    }
+
+    private void onImageChoosenbyUser(List<ChosenImage> images) {
+        if (images != null) {
+
+            try {
+
+                Log.d(TAG, "onImagesChosen: size" + images.size());
+                if (images.size() > 0) {
+                    Log.d(TAG, "onImagesChosen: path" + images.get(0).getOriginalPath() + "  %%%   " + images.get(0).getThumbnailSmallPath());
+
+                    if (images.get(0).getOriginalPath() != null) {
+                        Log.d(TAG, "onImagesChosen: " + images.get(0).getFileExtensionFromMimeTypeWithoutDot());
+                        if (images.get(0).getFileExtensionFromMimeTypeWithoutDot().equals("gif")) {
+                            // handleGif(images.get(0).getOriginalPath());
+                            Toast.makeText(this, "Only image can be uploaded", Toast.LENGTH_SHORT).show();
+                        } else {
+                            startImageCropActivity(Uri.parse(images.get(0).getQueryUri()));
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                Toast.makeText(this, "Something went wrong. ErrorCode: 19", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void startImageCropActivity(Uri data) {
+        CropImage.activity(data)
+                .setActivityTitle("Crop Image")
+                .setBackgroundColor(Color.parseColor("#90000000"))
+                .setMinCropResultSize(200, 200)
+
+                .setBorderCornerColor(getResources().getColor(R.color.colorPrimaryDark))
+                .setBorderLineColor(getResources().getColor(R.color.colorPrimary))
+                .setGuidelinesColor(getResources().getColor(R.color.divider))
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .start(this);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        Log.d("reached", "activigty");
+        super.onActivityResult(requestCode, resultCode, data);
+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            handleSignInResult(result);
+        }
+
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                handleImage(result.getUri().toString());
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+            }
+        }
+
+        if (resultCode == RESULT_OK) {
+            if (requestCode == Picker.PICK_IMAGE_DEVICE) {
+                imagePicker.submit(data);
+            }
+        }
+
+    }
+
+    private void handleImage(String s) {
+        ProfileFragment profileFragment = (ProfileFragment) pagerAdapter.getRegisteredFragment(1);
+        profileFragment.onImageChoosen(s);
+
+        Glide.with(this).load(s).asBitmap().toBytes().into(new SimpleTarget<byte[]>(150, 150) {
+            @Override
+            public void onResourceReady(byte[] resource, GlideAnimation<? super byte[]> glideAnimation) {
+                String encodedImage = Base64.encodeToString(resource, Base64.DEFAULT);
+                uploadImage(encodedImage);
+            }
+        });
+    }
+
+    private void uploadImage(String resource) {
+        AndroidNetworking.post("")
+                .addBodyParameter("image", resource)
+                .addBodyParameter("token", "token")
+                .addBodyParameter("userid", "Apg")
+                .setTag("test")
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsString(new StringRequestListener() {
+                    @Override
+                    public void onResponse(String response) {
+                        ProfileFragment profileFragment = (ProfileFragment) pagerAdapter.getRegisteredFragment(3);
+                        profileFragment.onImageUpload();
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        Log.e(TAG, "onError: " + anError);
+                    }
+                });
     }
 
     private class PagerAdapter extends FragmentStatePagerAdapter {

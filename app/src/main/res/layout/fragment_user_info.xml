@@ -1,5 +1,6 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@null"
@@ -26,13 +27,42 @@
             android:background="#fff"
             android:orientation="vertical">
 
-            <in.reweyou.reweyou.customView.CircularImageView
+            <RelativeLayout
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="32dp"
-                android:src="@drawable/download"
-                app:myborderWidth="0dp" />
+                android:layout_marginTop="32dp">
+
+                <in.reweyou.reweyou.customView.CircularImageView
+                    android:id="@+id/image"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:src="@drawable/download"
+                    app:myborderColor="#6200EA"
+                    app:myborderWidth="2dp" />
+
+                <ImageView
+                    android:id="@+id/editphoto"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginBottom="2dp"
+                    android:layout_marginRight="2dp"
+                    android:background="@drawable/solid_circle"
+                    android:elevation="4dp"
+                    android:padding="6dp"
+                    app:srcCompat="@drawable/ic_mode_edit_black_24px"
+                    tools:targetApi="lollipop" />
+
+                <ProgressBar
+                    android:id="@+id/pd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:visibility="invisible" />
+            </RelativeLayout>
+
 
             <TextView
                 android:layout_width="match_parent"
@@ -42,18 +72,19 @@
                 android:gravity="center"
                 android:text="Ayush P Gupta"
                 android:textColor="#424242"
-                android:textSize="18dp"
+                android:textSize="16dp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
                 android:gravity="center"
                 android:maxLines="5"
+                android:paddingTop="2dp"
                 android:text="One isn't born Genius"
-                android:textColor="#616161" />
+                android:textColor="#616161"
+                android:textSize="13dp" />
 
             <View
                 android:layout_width="match_parent"
@@ -94,7 +125,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:paddingLeft="4dp"
-                        android:paddingTop="4dp"
+                        android:paddingTop="2dp"
                         android:text=" Followers"
                         android:textColor="#757575"
                         android:textSize="14dp" />
@@ -124,7 +155,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:paddingLeft="4dp"
-                        android:paddingTop="4dp"
+                        android:paddingTop="2dp"
                         android:text=" Groups"
                         android:textColor="#757575"
                         android:textSize="14dp" />

@@ -1,5 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -12,19 +13,47 @@
         android:orientation="vertical"
         android:paddingBottom="40dp">
 
-        <in.reweyou.reweyou.customView.CircularImageView
-            android:id="@+id/image"
-            android:layout_width="90dp"
-            android:layout_height="90dp"
-            android:layout_gravity="center_horizontal"
-            android:src="@drawable/download"
-            app:myborderColor="#6200EA"
-            app:myborderWidth="2dp" />
+        <RelativeLayout
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+
+            android:layout_gravity="center_horizontal">
+
+            <in.reweyou.reweyou.customView.CircularImageView
+                android:id="@+id/image"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/download"
+                app:myborderColor="#6200EA"
+                app:myborderWidth="2dp" />
+
+            <ImageView
+                android:id="@+id/editphoto"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="2dp"
+                android:layout_marginRight="2dp"
+                android:background="@drawable/solid_circle"
+                android:elevation="4dp"
+                android:padding="6dp"
+                app:srcCompat="@drawable/ic_mode_edit_black_24px"
+                tools:targetApi="lollipop" />
+
+            <ProgressBar
+                android:id="@+id/pd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:visibility="invisible" />
+        </RelativeLayout>
+
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="30dp"
             android:text="NAME"
 
             android:textSize="12dp"
