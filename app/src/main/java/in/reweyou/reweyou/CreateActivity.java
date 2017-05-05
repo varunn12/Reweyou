@@ -38,6 +38,7 @@ public class CreateActivity extends SlidingActivity {
     private RelativeLayout rl;
     private ImageView camerabtn;
     private ImageView linkbtn;
+    private TextView linklink;
 
     @Override
     protected void configureScroller(MultiShrinkScroller scroller) {
@@ -58,6 +59,7 @@ public class CreateActivity extends SlidingActivity {
 
         headlinelink = (TextView) findViewById(R.id.headlinelink);
         descriptionlink = (TextView) findViewById(R.id.descriptionlink);
+        linklink = (TextView) findViewById(R.id.linklink);
         rl = (RelativeLayout) findViewById(R.id.rl);
         linkbtn = (ImageView) findViewById(R.id.link);
         camerabtn = (ImageView) findViewById(R.id.camera);
@@ -154,6 +156,7 @@ public class CreateActivity extends SlidingActivity {
 
                             linkpd.setVisibility(View.INVISIBLE);
                             JSONObject jsonObject = new JSONObject(response);
+                            String reallink = jsonObject.getString("reallink");
                             String link = jsonObject.getString("link");
                             Log.d(TAG, "onResponse: " + response + "   " + link);
                             String title = jsonObject.getString("title");
@@ -163,6 +166,8 @@ public class CreateActivity extends SlidingActivity {
                                 headlinelink.setText(title);
                             if (description != null)
                                 descriptionlink.setText(description);
+                            if (link != null)
+                                linklink.setText(reallink);
 
                         } catch (Exception e) {
                             camerabtn.setVisibility(View.VISIBLE);

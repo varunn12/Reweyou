@@ -35,12 +35,13 @@
 
         android:layout_marginRight="16dp"
         android:background="@color/transparent"
-
         android:drawableLeft="@drawable/ic_fileattach_layer1"
         android:drawablePadding="6dp"
-        android:inputType="textNoSuggestions|textCapWords"
+        android:hint="Paste link here..."
+        android:inputType="textWebEmailAddress"
         android:lines="1"
         android:maxLines="1"
+        android:textAllCaps="false"
         android:textColor="#212121"
         android:textSize="16sp" />
 

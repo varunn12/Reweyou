@@ -97,6 +97,21 @@
                             android:textColor="#424242"
                             android:textSize="14dp" />
 
+                        <TextView
+                            android:id="@+id/linklink"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/descriptionlink"
+                            android:ellipsize="end"
+                            android:fontFamily="sans-serif-condensed"
+                            android:maxLines="1"
+                            android:paddingBottom="8dp"
+                            android:paddingRight="16dp"
+                            android:textColor="#757575"
+                            android:textSize="14dp"
+                            android:textStyle="italic" />
+
+
                         <ProgressBar
                             android:id="@+id/linkpd"
                             android:layout_width="40dp"
