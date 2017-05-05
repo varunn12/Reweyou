@@ -127,20 +127,40 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@null"
-                    android:hint="Start writing here..."
+                    android:hint="Share your thoughts..."
                     android:inputType="textMultiLine"
                     android:maxLength="500"
                     android:minLines="1"
                     android:paddingBottom="14dp"
-                    android:paddingLeft="14dp"
+                    android:paddingLeft="15dp"
                     android:paddingRight="14dp"
                     android:paddingTop="12dp"
-                    android:textColor="#616161"
+                    android:textColor="#424242"
                     android:textColorHint="#9e9e9e"
                     android:textCursorDrawable="@drawable/color_cursor"
                     android:textSize="14dp"
 
                     />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.7dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:alpha="0.44"
+                    android:background="@color/divider" />
+
+                <Button
+                    android:id="@+id/create"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/border_grey"
+                    android:text="POST"
+                    android:textColor="#9e9e9e"
+                    android:textSize="13dp" />
 
             </LinearLayout>
         </ScrollView>
@@ -170,6 +190,8 @@
                 android:layout_centerVertical="true"
                 android:layout_gravity="center"
                 android:layout_marginLeft="8dp"
+                android:background="@drawable/ripple_effect3"
+                android:clickable="true"
                 android:padding="10dp"
                 app:srcCompat="@drawable/ic_photo_camera_black_24px_grey" />
 
@@ -180,6 +202,8 @@
                 android:layout_centerVertical="true"
                 android:layout_gravity="center"
                 android:layout_toRightOf="@+id/camera"
+                android:background="@drawable/ripple_effect3"
+                android:clickable="true"
                 android:padding="10dp"
                 app:srcCompat="@drawable/ic_attach_file_black_24px" />
 

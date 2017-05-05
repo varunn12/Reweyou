@@ -39,6 +39,8 @@ public class CreateActivity extends SlidingActivity {
     private ImageView camerabtn;
     private ImageView linkbtn;
     private TextView linklink;
+    private TextView create;
+    private EditText editText;
 
     @Override
     protected void configureScroller(MultiShrinkScroller scroller) {
@@ -57,6 +59,7 @@ public class CreateActivity extends SlidingActivity {
         linkpd = (ProgressBar) findViewById(R.id.linkpd);
         cd = (CardView) findViewById(R.id.cd);
 
+        editText = (EditText) findViewById(R.id.groupname);
         headlinelink = (TextView) findViewById(R.id.headlinelink);
         descriptionlink = (TextView) findViewById(R.id.descriptionlink);
         linklink = (TextView) findViewById(R.id.linklink);
@@ -69,6 +72,54 @@ public class CreateActivity extends SlidingActivity {
                 editHeadline();
             }
         });
+        create = (TextView) findViewById(R.id.create);
+        create.setEnabled(false);
+        create.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                uploadPost();
+            }
+        });
+        initTextWatchers();
+
+    }
+
+    private void uploadPost() {
+
+    }
+
+    private void initTextWatchers() {
+
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (editText.getText().toString().trim().length() > 0) {
+                    updateCreateTextUI(true);
+                } else updateCreateTextUI(false);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+    }
+
+    private void updateCreateTextUI(boolean b) {
+        if (b) {
+            create.setEnabled(true);
+            create.setTextColor(this.getResources().getColor(R.color.main_background_pink));
+            create.setBackground(this.getResources().getDrawable(R.drawable.border_pink));
+        } else {
+            create.setEnabled(false);
+            create.setTextColor(this.getResources().getColor(R.color.grey_create));
+            create.setBackground(this.getResources().getDrawable(R.drawable.border_grey));
+        }
     }
 
     private void editHeadline() {
@@ -132,8 +183,8 @@ public class CreateActivity extends SlidingActivity {
 
     private void onLinkPasted(String s) {
         cd.setVisibility(View.VISIBLE);
-        camerabtn.setVisibility(View.INVISIBLE);
-        linkbtn.setVisibility(View.INVISIBLE);
+        rl.setVisibility(View.GONE);
+
         new Handler().post(new Runnable() {
             @Override
             public void run() {
@@ -170,8 +221,8 @@ public class CreateActivity extends SlidingActivity {
                                 linklink.setText(reallink);
 
                         } catch (Exception e) {
-                            camerabtn.setVisibility(View.VISIBLE);
-                            linkbtn.setVisibility(View.VISIBLE);
+                            rl.setVisibility(View.VISIBLE);
+                            editText.setHint("Describe this link...");
                             cd.setVisibility(View.GONE);
                             Toast.makeText(CreateActivity.this, "Error in fetching data from link", Toast.LENGTH_SHORT).show();
 
@@ -183,8 +234,7 @@ public class CreateActivity extends SlidingActivity {
                     @Override
                     public void onError(ANError anError) {
                         cd.setVisibility(View.GONE);
-                        camerabtn.setVisibility(View.VISIBLE);
-                        linkbtn.setVisibility(View.VISIBLE);
+                        rl.setVisibility(View.VISIBLE);
 
 
                         Toast.makeText(CreateActivity.this, "Error in fetching data from link", Toast.LENGTH_SHORT).show();
