@@ -91,5 +91,6 @@
     <string name="title_activity_comment">CommentActivity</string>
     <string name="title_activity_group">GroupActivity</string>
     <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_create">CreateActivity</string>
 
 </resources>

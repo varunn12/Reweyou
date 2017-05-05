@@ -201,9 +201,7 @@
         <activity
             android:name=".ForumMainActivity"
             android:label="@string/title_activity_forum_main"
-            android:theme="@style/AppTheme2.NoActionBar">
-
-        </activity>
+            android:theme="@style/AppTheme2.NoActionBar"></activity>
         <activity
             android:name=".CommentActivity"
             android:excludeFromRecents="true"
@@ -226,6 +224,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".CreateActivity"
+            android:label="@string/title_activity_create"
+            android:screenOrientation="portrait"
+            android:taskAffinity=""
+            android:theme="@style/Theme.Sliding.Lights"
+            android:windowSoftInputMode="adjustResize"></activity>
     </application>
 
 </manifest>

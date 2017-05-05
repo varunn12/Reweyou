@@ -2,8 +2,10 @@ package in.reweyou.reweyou.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,6 +22,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.util.List;
 
+import in.reweyou.reweyou.CreateActivity;
 import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.adapter.FeeedsAdapter;
 import in.reweyou.reweyou.model.IssueModel;
@@ -49,6 +52,13 @@ public class ForumFragment extends Fragment {
         recyclerView = (RecyclerView) layout.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 
+        FloatingActionButton fab = (FloatingActionButton) layout.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mContext.startActivity(new Intent(mContext, CreateActivity.class));
+            }
+        });
         return layout;
     }
 
