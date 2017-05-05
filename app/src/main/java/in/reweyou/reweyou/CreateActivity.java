@@ -36,6 +36,8 @@ public class CreateActivity extends SlidingActivity {
     private TextView headlinelink;
     private TextView descriptionlink;
     private RelativeLayout rl;
+    private ImageView camerabtn;
+    private ImageView linkbtn;
 
     @Override
     protected void configureScroller(MultiShrinkScroller scroller) {
@@ -57,7 +59,8 @@ public class CreateActivity extends SlidingActivity {
         headlinelink = (TextView) findViewById(R.id.headlinelink);
         descriptionlink = (TextView) findViewById(R.id.descriptionlink);
         rl = (RelativeLayout) findViewById(R.id.rl);
-        ImageView linkbtn = (ImageView) findViewById(R.id.link);
+        linkbtn = (ImageView) findViewById(R.id.link);
+        camerabtn = (ImageView) findViewById(R.id.camera);
         linkbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -127,7 +130,8 @@ public class CreateActivity extends SlidingActivity {
 
     private void onLinkPasted(String s) {
         cd.setVisibility(View.VISIBLE);
-        rl.setVisibility(View.INVISIBLE);
+        camerabtn.setVisibility(View.INVISIBLE);
+        linkbtn.setVisibility(View.INVISIBLE);
         new Handler().post(new Runnable() {
             @Override
             public void run() {
@@ -161,8 +165,8 @@ public class CreateActivity extends SlidingActivity {
                                 descriptionlink.setText(description);
 
                         } catch (Exception e) {
-                            rl.setVisibility(View.VISIBLE);
-
+                            camerabtn.setVisibility(View.VISIBLE);
+                            linkbtn.setVisibility(View.VISIBLE);
                             cd.setVisibility(View.GONE);
                             Toast.makeText(CreateActivity.this, "Error in fetching data from link", Toast.LENGTH_SHORT).show();
 
@@ -174,7 +178,8 @@ public class CreateActivity extends SlidingActivity {
                     @Override
                     public void onError(ANError anError) {
                         cd.setVisibility(View.GONE);
-                        rl.setVisibility(View.VISIBLE);
+                        camerabtn.setVisibility(View.VISIBLE);
+                        linkbtn.setVisibility(View.VISIBLE);
 
 
                         Toast.makeText(CreateActivity.this, "Error in fetching data from link", Toast.LENGTH_SHORT).show();
