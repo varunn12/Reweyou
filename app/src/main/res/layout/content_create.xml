@@ -39,11 +39,12 @@
 
                 <ImageView
                     android:id="@+id/image"
-                    android:layout_width="100dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="100dp"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="8dp"
                     android:layout_marginTop="16dp"
+                    android:adjustViewBounds="true"
                     android:visibility="gone" />
 
 
@@ -127,10 +128,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@null"
+                    android:gravity="top"
                     android:hint="Share your thoughts..."
                     android:inputType="textMultiLine"
                     android:maxLength="500"
-                    android:minLines="1"
+                    android:minLines="2"
                     android:paddingBottom="14dp"
                     android:paddingLeft="15dp"
                     android:paddingRight="14dp"
@@ -153,7 +155,7 @@
                 <Button
                     android:id="@+id/create"
                     android:layout_width="wrap_content"
-                    android:layout_height="40dp"
+                    android:layout_height="36dp"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="16dp"
                     android:layout_marginTop="20dp"

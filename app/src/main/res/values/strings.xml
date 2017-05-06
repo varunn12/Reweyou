@@ -26,6 +26,12 @@
         <item>@string/tab4</item>
     </string-array>
 
+    <string-array name="group_tab">
+        <item>@string/tab1</item>
+        <item>@string/tab2</item>
+        <item>@string/tab4</item>
+    </string-array>
+
     <string name="tab_8">POST</string>
     <string name="tab_9">Reactions</string>
 

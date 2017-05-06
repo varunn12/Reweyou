@@ -1,8 +1,11 @@
 package in.reweyou.reweyou;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.CardView;
@@ -23,10 +26,25 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.StringRequestListener;
+import com.bumptech.glide.Glide;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.single.PermissionListener;
+import com.kbeanie.multipicker.api.ImagePicker;
+import com.kbeanie.multipicker.api.Picker;
+import com.kbeanie.multipicker.api.callbacks.ImagePickerCallback;
+import com.kbeanie.multipicker.api.entity.ChosenImage;
 import com.klinker.android.sliding.MultiShrinkScroller;
 import com.klinker.android.sliding.SlidingActivity;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.json.JSONObject;
+
+import java.util.List;
 
 public class CreateActivity extends SlidingActivity {
 
@@ -41,6 +59,8 @@ public class CreateActivity extends SlidingActivity {
     private TextView linklink;
     private TextView create;
     private EditText editText;
+    private ImagePicker imagePicker;
+    private ImageView image;
 
     @Override
     protected void configureScroller(MultiShrinkScroller scroller) {
@@ -58,7 +78,7 @@ public class CreateActivity extends SlidingActivity {
 
         linkpd = (ProgressBar) findViewById(R.id.linkpd);
         cd = (CardView) findViewById(R.id.cd);
-
+        image = (ImageView) findViewById(R.id.image);
         editText = (EditText) findViewById(R.id.groupname);
         headlinelink = (TextView) findViewById(R.id.headlinelink);
         descriptionlink = (TextView) findViewById(R.id.descriptionlink);
@@ -81,7 +101,40 @@ public class CreateActivity extends SlidingActivity {
             }
         });
         initTextWatchers();
+        camerabtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    checkStoragePermission();
 
+                } else showPickImage();
+            }
+        });
+
+    }
+
+    private void checkStoragePermission() {
+        Dexter.withActivity(this)
+                .withPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                .withListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted(PermissionGrantedResponse response) {
+                        showPickImage();
+                    }
+
+                    @Override
+                    public void onPermissionDenied(PermissionDeniedResponse response) {
+                        Toast.makeText(CreateActivity.this, "Storage Permission denied by user", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "onPermissionGranted: " + response.isPermanentlyDenied());
+
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+                        token.continuePermissionRequest();
+
+                    }
+                }).check();
     }
 
     private void uploadPost() {
@@ -243,4 +296,112 @@ public class CreateActivity extends SlidingActivity {
 
     }
 
+
+    public void showPickImage() {
+        imagePicker = new ImagePicker(this);
+        imagePicker.setImagePickerCallback(new ImagePickerCallback() {
+                                               @Override
+                                               public void onImagesChosen(List<ChosenImage> images) {
+
+                                                   onImageChoosenbyUser(images);
+
+                                               }
+
+                                               @Override
+                                               public void onError(String message) {
+                                                   // Do error handling
+                                                   Log.e(TAG, "onError: " + message);
+                                               }
+                                           }
+
+        );
+
+        imagePicker.shouldGenerateMetadata(true);
+        imagePicker.shouldGenerateThumbnails(false);
+        imagePicker.pickImage();
+
+    }
+
+    private void onImageChoosenbyUser(List<ChosenImage> images) {
+        if (images != null) {
+
+            try {
+
+                Log.d(TAG, "onImagesChosen: size" + images.size());
+                if (images.size() > 0) {
+                    Log.d(TAG, "onImagesChosen: path" + images.get(0).getOriginalPath() + "  %%%   " + images.get(0).getThumbnailSmallPath());
+
+                    if (images.get(0).getOriginalPath() != null) {
+                        Log.d(TAG, "onImagesChosen: " + images.get(0).getFileExtensionFromMimeTypeWithoutDot());
+                        if (images.get(0).getFileExtensionFromMimeTypeWithoutDot().equals("gif")) {
+                            // handleGif(images.get(0).getOriginalPath());
+                            Toast.makeText(this, "Only image can be uploaded", Toast.LENGTH_SHORT).show();
+                        } else {
+                            startImageCropActivity(Uri.parse(images.get(0).getQueryUri()));
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                Toast.makeText(this, "Something went wrong. ErrorCode: 19", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void startImageCropActivity(Uri data) {
+        CropImage.activity(data)
+                .setActivityTitle("Crop Image")
+                .setBackgroundColor(Color.parseColor("#90000000"))
+                .setMinCropResultSize(200, 200)
+                .setBorderCornerColor(getResources().getColor(R.color.colorPrimaryDark))
+                .setBorderLineColor(getResources().getColor(R.color.colorPrimary))
+                .setGuidelinesColor(getResources().getColor(R.color.divider))
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .start(this);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        Log.d("reached", "activigty");
+        super.onActivityResult(requestCode, resultCode, data);
+
+
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                handleImage(result.getUri().toString());
+
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+            }
+        }
+
+        if (resultCode == RESULT_OK) {
+            if (requestCode == Picker.PICK_IMAGE_DEVICE) {
+                imagePicker.submit(data);
+            }
+        }
+
+    }
+
+    private void handleImage(final String s) {
+        image.setVisibility(View.VISIBLE);
+        rl.setVisibility(View.GONE);
+
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                Glide.with(CreateActivity.this).load(s).into(image);
+            }
+        });
+
+      /*  Glide.with(this).load(s).asBitmap().toBytes().into(new SimpleTarget<byte[]>(150, 150) {
+            @Override
+            public void onResourceReady(byte[] resource, GlideAnimation<? super byte[]> glideAnimation) {
+                String encodedImage = Base64.encodeToString(resource, Base64.DEFAULT);
+               // uploadImage(encodedImage);
+            }
+        });*/
+
+    }
 }

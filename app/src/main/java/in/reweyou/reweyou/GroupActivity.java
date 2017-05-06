@@ -200,7 +200,7 @@ public class GroupActivity extends AppCompatActivity {
     private class PagerAdapter extends FragmentStatePagerAdapter {
         SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
 
-        private String[] tabs = getResources().getStringArray(R.array.group_tabs);
+        private String[] tabs = getResources().getStringArray(R.array.group_tab);
 
         private PagerAdapter(FragmentManager fragmentManager) {
             super(fragmentManager);
