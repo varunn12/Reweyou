@@ -81,12 +81,12 @@ public class UserSessionManager {
     }*/
 
     public String getUsername() {
-        return pref.getString(KEY_LOGIN_FULLNAME, "");
+        return pref.getString(KEY_NAME, "");
     }
 
     public void setUsername(String fullname) {
-        editor.putString(KEY_LOGIN_FULLNAME, fullname);
-        editor.commit();
+       /* editor.putString(KEY_LOGIN_FULLNAME, fullname);
+        editor.commit();*/
     }
 
    /* public String getLoginLocation() {

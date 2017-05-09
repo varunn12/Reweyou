@@ -233,22 +233,22 @@ public class GroupActivity extends AppCompatActivity {
     private void compressImages() {
         final int count = intentData.getIntExtra("counter", 0);
         if (count > 0) {
-            Glide.with(this).load(intentData.getStringExtra("image1")).asBitmap().toBytes().into(new SimpleTarget<byte[]>(150, 150) {
+            Glide.with(this).load(intentData.getStringExtra("image1")).asBitmap().toBytes().into(new SimpleTarget<byte[]>(1200, 1200) {
                 @Override
                 public void onResourceReady(byte[] resource, GlideAnimation<? super byte[]> glideAnimation) {
                     image1encoded = Base64.encodeToString(resource, Base64.DEFAULT);
                     if (count > 1)
-                        Glide.with(GroupActivity.this).load(intentData.getStringExtra("image2")).asBitmap().toBytes().into(new SimpleTarget<byte[]>(150, 150) {
+                        Glide.with(GroupActivity.this).load(intentData.getStringExtra("image2")).asBitmap().toBytes().into(new SimpleTarget<byte[]>(1200, 1200) {
                             @Override
                             public void onResourceReady(byte[] resource, GlideAnimation<? super byte[]> glideAnimation) {
                                 image2encoded = Base64.encodeToString(resource, Base64.DEFAULT);
                                 if (count > 2)
-                                    Glide.with(GroupActivity.this).load(intentData.getStringExtra("image3")).asBitmap().toBytes().into(new SimpleTarget<byte[]>(150, 150) {
+                                    Glide.with(GroupActivity.this).load(intentData.getStringExtra("image3")).asBitmap().toBytes().into(new SimpleTarget<byte[]>(1200, 1200) {
                                         @Override
                                         public void onResourceReady(byte[] resource, GlideAnimation<? super byte[]> glideAnimation) {
                                             image3encoded = Base64.encodeToString(resource, Base64.DEFAULT);
                                             if (count > 3)
-                                                Glide.with(GroupActivity.this).load(intentData.getStringExtra("image4")).asBitmap().toBytes().into(new SimpleTarget<byte[]>(150, 150) {
+                                                Glide.with(GroupActivity.this).load(intentData.getStringExtra("image4")).asBitmap().toBytes().into(new SimpleTarget<byte[]>(1200, 1200) {
                                                     @Override
                                                     public void onResourceReady(byte[] resource, GlideAnimation<? super byte[]> glideAnimation) {
                                                         image4encoded = Base64.encodeToString(resource, Base64.DEFAULT);
@@ -284,6 +284,8 @@ public class GroupActivity extends AppCompatActivity {
                 .addBodyParameter("image4", image4encoded)
                 .addBodyParameter("type", data.getStringExtra("type"))
                 .addBodyParameter("uid", userSessionManager.getUID())
+                .addBodyParameter("name", userSessionManager.getUsername())
+                .addBodyParameter("profilepic", userSessionManager.getProfilePicture())
                 .addBodyParameter("authtoken", userSessionManager.getAuthToken())
                 .setTag("uploadpost")
                 .setPriority(Priority.HIGH)

@@ -537,6 +537,8 @@ public class CreateActivity extends SlidingActivity {
             counter++;
 
         } else if (counter == 3) {
+            type = "image3";
+
             image3url = s;
             image1.setOnClickListener(null);
             image4.setVisibility(View.VISIBLE);
@@ -551,6 +553,7 @@ public class CreateActivity extends SlidingActivity {
 
         } else if (counter == 4) {
             image4url = s;
+            type = "image4";
 
             image1.setOnClickListener(null);
 
@@ -560,6 +563,7 @@ public class CreateActivity extends SlidingActivity {
                     Glide.with(CreateActivity.this).load(s).into(image4);
                 }
             });
+            counter++;
 
 
         }

@@ -24,7 +24,7 @@ import java.util.List;
 import in.reweyou.reweyou.GroupActivity;
 import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.adapter.FeeedsAdapter;
-import in.reweyou.reweyou.model.IssueModel;
+import in.reweyou.reweyou.model.ThreadModel;
 
 /**
  * Created by master on 24/2/17.
@@ -89,15 +89,15 @@ public class ForumFragment extends Fragment {
         if (isAdded()) {
             final FeeedsAdapter feeedsAdapter = new FeeedsAdapter(mContext);
             recyclerView.setAdapter(feeedsAdapter);
-            AndroidNetworking.get("https://reweyou.in/reviews/samplefeed.php")
+            AndroidNetworking.get("https://www.reweyou.in/google/list_threads.php")
                     .setTag("report")
                     .setPriority(Priority.HIGH)
                     .build()
-                    .getAsParsed(new TypeToken<List<IssueModel>>() {
-                    }, new ParsedRequestListener<List<IssueModel>>() {
+                    .getAsParsed(new TypeToken<List<ThreadModel>>() {
+                    }, new ParsedRequestListener<List<ThreadModel>>() {
 
                         @Override
-                        public void onResponse(final List<IssueModel> list) {
+                        public void onResponse(final List<ThreadModel> list) {
                             feeedsAdapter.add(list);
                         }
 
