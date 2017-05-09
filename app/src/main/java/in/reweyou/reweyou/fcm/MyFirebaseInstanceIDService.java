@@ -52,7 +52,6 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
     private void sendRegistrationToServer(final String token) {
         // sending gcm token to server
             UserSessionManager session = new UserSessionManager(getApplicationContext());
-            final String number = session.getMobileNumber();
             // final ProgressDialog loading = ProgressDialog.show(this, "Authenticating", "Please wait", false, false);
             StringRequest strReq = new StringRequest(Request.Method.POST,
                     URL_UPDATE_TOKEN, new Response.Listener<String>() {
@@ -83,7 +82,6 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
                     params.put("token", token);
-                    params.put("number", number);
 
                     Log.e(TAG, "Posting params: " + params.toString());
                     return params;

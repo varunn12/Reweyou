@@ -2,7 +2,6 @@ package in.reweyou.reweyou.fragment;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -22,7 +21,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.util.List;
 
-import in.reweyou.reweyou.CreateActivity;
+import in.reweyou.reweyou.GroupActivity;
 import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.adapter.FeeedsAdapter;
 import in.reweyou.reweyou.model.IssueModel;
@@ -56,7 +55,9 @@ public class ForumFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mContext.startActivity(new Intent(mContext, CreateActivity.class));
+
+                ((GroupActivity) mContext).startCreateActivity();
+
             }
         });
         return layout;

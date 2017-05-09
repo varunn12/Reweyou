@@ -280,10 +280,7 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
                             if (response.trim().equals("success")) {
                                 loading.dismiss();
                                 try {
-                                    //Asking user to enter otp again
-                                    session.setMobileNumber(number);
-                                    session.setUsername(username);
-                                    session.setLoginLocation(place);
+
                                     confirmOtp(number);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -325,7 +322,6 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
         //intent.putExtra(KEY_USERNAME, username);
         //startActivity(intent);
 
-        session.createUserRegisterSession(username, number, place);
 
         // Starting TokenTest
         Intent i = new Intent(this, WelcomeActivity.class);
@@ -481,11 +477,6 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
                     JSONObject responseObject = jsonArray.getJSONObject(0);
                     JSONObject jsonObject = responseObject.getJSONObject("profile");
                     session.setAuthToken(jsonObject.getString("token"));
-                    session.setUsername(jsonObject.getString("name"));
-                    session.setMobileNumber(jsonObject.getString("number"));
-                    session.setLoginLocation(jsonObject.getString("location"));
-                    session.setProfilePicture(jsonObject.getString("profilepic"));
-                    session.setDeviceid(jsonObject.getString("deviceid"));
 
                     if (responseObject.has("likes")) {
                         JSONArray jsonArray1 = responseObject.getJSONArray("likes");
@@ -496,7 +487,6 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
                             likesList.add(jsonObject1.getString("postid"));
 
                         }
-                        session.setLikesList(likesList);
                         Log.d("jsonlist", String.valueOf(likesList));
                     }
                     openProfile();
@@ -519,7 +509,6 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("otp", otp);
-                params.put("number", session.getMobileNumber());
                 return params;
             }
 

@@ -94,8 +94,7 @@ public class IssueFragment extends Fragment {
         Log.d(TAG, "loadReportsfromServer: " + currenttag);
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("tags", currenttag);
-        if (Constants.tempnumber == null)
-            Constants.tempnumber = userSessionManager.getMobileNumber();
+
         hashMap.put("number", Constants.tempnumber);
         String url;
         if (mContext instanceof Feed)

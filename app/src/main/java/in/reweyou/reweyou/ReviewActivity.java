@@ -717,7 +717,6 @@ public class ReviewActivity extends SlidingActivity {
 
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("topicid", topicid);
-        hashMap.put("number", sessionManager.getMobileNumber());
         if (btn_anonymous.getTag().equals("0"))
             hashMap.put("name", sessionManager.getUsername());
         else hashMap.put("name", "Anonymous");
@@ -807,9 +806,7 @@ public class ReviewActivity extends SlidingActivity {
     private void loadReportsfromServer() {
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("topicid", topicid);
-        hashMap.put("number", sessionManager.getMobileNumber());
-        hashMap.put("token", sessionManager.getKeyAuthToken());
-        hashMap.put("deviceid", sessionManager.getDeviceid());
+
         AndroidNetworking.post("https://www.reweyou.in/reviews/reviews.php")
                 .addBodyParameter(hashMap)
                 .setTag("report")

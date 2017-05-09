@@ -7,12 +7,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import in.reweyou.reweyou.Signup;
 
@@ -39,20 +34,21 @@ public class UserSessionManager {
     private static final String KEY_AUTH_TOKEN = "authtoken";
     private static final String KEY_DEVICE_ID = "deviceid";
     private static final String TAG = UserSessionManager.class.getName();
+    private static final String KEY_REALNAME = "realname";
+    private static final String KEY_UID = "uid";
     // Shared Preferences reference
     SharedPreferences pref;
     // Editor reference for Shared preferences
     SharedPreferences.Editor editor;
     // Context
     Context _context;
-    List<String> list = new ArrayList<>(Arrays.asList("Mumbai", "Dhanbad", "Chennai"));
-    List<String> list1 = new ArrayList<>(Arrays.asList("New Delhi", "Dhanbad", "Lucknow"));
-    List<String> list2 = new ArrayList<>(Arrays.asList("New Delhi", "Chennai", "Lucknow"));
     // Shared pref mode
     int PRIVATE_MODE = 0;
     private Gson gson = new Gson();
     private List<String> likesList;
     private String FIRST_LOAD_TUT = "firsttimeload";
+    private boolean mobileNumber;
+    private String deviceid;
 
 
     // Constructor
@@ -65,36 +61,27 @@ public class UserSessionManager {
 
 
 
-    public String getProfilePicture() {
-        return pref.getString(KEY_PIC, null);
-    }
-
-    public void setProfilePicture(String image) {
-        editor.putString(KEY_PIC, image);
-        editor.commit();
-    }
-
-    public String getDeviceid() {
-        return pref.getString(KEY_DEVICE_ID, "default");
+    /*public String getDeviceid() {
+        return pref.getString(KEY_DEVICE_ID, "");
     }
 
     public void setDeviceid(String deviceid) {
         editor.putString(KEY_DEVICE_ID, deviceid);
         editor.commit();
 
-    }
+    }*/
 
-    public String getMobileNumber() {
-        return pref.getString(KEY_MOBILE_NUMBER, "0");
+    /*public String getMobileNumber() {
+        return pref.getString(KEY_MOBILE_NUMBER, "");
     }
 
     public void setMobileNumber(String number) {
         editor.putString(KEY_MOBILE_NUMBER, number);
         editor.commit();
-    }
+    }*/
 
     public String getUsername() {
-        return pref.getString(KEY_LOGIN_FULLNAME, null);
+        return pref.getString(KEY_LOGIN_FULLNAME, "");
     }
 
     public void setUsername(String fullname) {
@@ -102,29 +89,49 @@ public class UserSessionManager {
         editor.commit();
     }
 
-    public String getLoginLocation() {
+   /* public String getLoginLocation() {
         return pref.getString(KEY_LOGIN_LOCATION, "New Delhi");
     }
 
     public void setLoginLocation(String location) {
         editor.putString(KEY_LOGIN_LOCATION, location);
         editor.commit();
-    }
+    }*/
 
     //Create login session and Register
-    public void createUserRegisterSession(String username, String number, String place) {
-        // Storing login value as TRUE
+    public void createUserRegisterSession(String uid, String real, String username, String photoUrl, String authtoken) {
+
         editor.putBoolean(IS_USER_LOGIN, true);
 
-        // Storing name in pref
+        editor.putString(KEY_REALNAME, real);
+        editor.putString(KEY_PIC, photoUrl);
         editor.putString(KEY_NAME, username);
-
-        //Storing number
-        editor.putString(KEY_NUMBER, number);
-
-        editor.putString(KEY_LOCATION, place);
+        editor.putString(KEY_UID, uid);
+        editor.putString(KEY_AUTH_TOKEN, authtoken);
 
         // commit changes
+        editor.commit();
+    }
+
+    public String getUID() {
+        return pref.getString(KEY_UID, "");
+    }
+
+    public String getAuthToken() {
+        return pref.getString(KEY_AUTH_TOKEN, "");
+    }
+
+    public void setAuthToken(String token) {
+        editor.putString(KEY_AUTH_TOKEN, token);
+        editor.commit();
+    }
+
+    public String getProfilePicture() {
+        return pref.getString(KEY_PIC, "");
+    }
+
+    public void setProfilePicture(String image) {
+        editor.putString(KEY_PIC, image);
         editor.commit();
     }
 
@@ -138,35 +145,6 @@ public class UserSessionManager {
         // Check login status
         return this.isUserLoggedIn();
     }
-
-    /**
-     * Get stored session data
-     */
-    public HashMap<String, String> getUserDetails() {
-
-        //Use hashmap to store user credentials
-        HashMap<String, String> user = new HashMap<String, String>();
-
-        // user name
-        user.put(KEY_NAME, pref.getString(KEY_NAME, null));
-
-        // user email id
-        user.put(KEY_EMAIL, pref.getString(KEY_EMAIL, "Add Email"));
-
-        //user number
-        user.put(KEY_LOCATION, pref.getString(KEY_LOCATION, null));
-
-        user.put(KEY_PASSWORD, pref.getString(KEY_PASSWORD, null));
-
-        user.put(KEY_NUMBER, pref.getString(KEY_NUMBER, null));
-
-        // return user
-        return user;
-    }
-
-    /**
-     * Clear session details
-     */
 
     public void logoutUser() {
         Toast.makeText(_context, "invalid session! please login again", Toast.LENGTH_SHORT).show();
@@ -195,28 +173,13 @@ public class UserSessionManager {
     }
 
     // Check for login
-    private boolean isUserLoggedIn() {
+    public boolean isUserLoggedIn() {
         return pref.getBoolean(IS_USER_LOGIN, false);
     }
 
-
-
-    public void setAuthToken(String token) {
-        editor.putString(KEY_AUTH_TOKEN, token);
-        editor.commit();
-    }
-
     public String getKeyAuthToken() {
-        return pref.getString(KEY_AUTH_TOKEN, "default");
+        return pref.getString(KEY_AUTH_TOKEN, "");
     }
-
-
-    public void setLikesList(List<String> likesList) {
-        Set<String> list = new HashSet<String>(likesList);
-        editor.putStringSet("likesList", list);
-        editor.commit();
-    }
-
 
 
     public void setFirstLoad() {
@@ -228,24 +191,20 @@ public class UserSessionManager {
         return pref.getBoolean(FIRST_LOAD_TUT, false);
     }
 
-    public void setFirstLoad1() {
-        editor.putBoolean("aaas", true);
-        editor.commit();
-    }
 
-
-
-    public String getCustomLocation() {
-        return pref.getString(KEY_CUSTOM_LOCATION, getLoginLocation());
-    }
-
-
-    public boolean getFirstLoadReview() {
-        return pref.getBoolean("reviewfirst", false);
+    public boolean getMobileNumber() {
+        return mobileNumber;
     }
 
     public void setFirstLoadReview() {
-        editor.putBoolean("reviewfirst", true);
-        editor.commit();
+    }
+
+    public boolean getFirstLoadReview() {
+
+        return false;
+    }
+
+    public String getDeviceid() {
+        return deviceid;
     }
 }

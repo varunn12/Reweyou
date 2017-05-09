@@ -164,7 +164,6 @@ public class Feed extends AppCompatActivity {
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                session.setFirstLoad1();
                 alertDialog.dismiss();
             }
         });
@@ -317,7 +316,6 @@ public class Feed extends AppCompatActivity {
             public void onClick(View v) {
                 if (session.checkLoginSplash()) {
                     Intent s = new Intent(Feed.this, MyProfile.class);
-                    Constants.tempnumber = session.getMobileNumber();
 
                     startActivity(s);
                 } else showSignupDialog();
@@ -807,7 +805,6 @@ public class Feed extends AppCompatActivity {
                 public void onClick(View v) {
                     drawerLayout.closeDrawers();
                     Intent profile = new Intent(Feed.this, MyProfile.class);
-                    Constants.tempnumber = session.getMobileNumber();
                     startActivityForResult(profile, REQ_CODE_PROFILE);
                 }
             });

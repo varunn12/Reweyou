@@ -597,16 +597,7 @@ public class ReviewActivityQR extends AppCompatActivity {
 
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("topicid", topicid);
-        hashMap.put("number", sessionManager.getMobileNumber());
-        if (btn_anonymous.getTag().equals("0"))
-            hashMap.put("name", sessionManager.getUsername());
-        else hashMap.put("name", "Anonymous");
-        hashMap.put("rating", String.valueOf(numrating));
-        hashMap.put("description", edittext.getText().toString());
-        hashMap.put("token", sessionManager.getKeyAuthToken());
-        hashMap.put("deviceid", sessionManager.getDeviceid());
-        hashMap.put("passcode", passcode);
-        hashMap.put("privacy", privacy);
+
 
         Log.d(TAG, "updateReview: " + topicid + numrating + edittext.getText().toString() + passcode + privacy);
 
@@ -693,9 +684,7 @@ public class ReviewActivityQR extends AppCompatActivity {
     private void loadReportsfromServer() {
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("topicid", topicid);
-        hashMap.put("number", sessionManager.getMobileNumber());
-        hashMap.put("token", sessionManager.getKeyAuthToken());
-        hashMap.put("deviceid", sessionManager.getDeviceid());
+
         AndroidNetworking.post("https://www.reweyou.in/reviews/topic_reviews.php")
                 .addBodyParameter(hashMap)
                 .setTag("report212")

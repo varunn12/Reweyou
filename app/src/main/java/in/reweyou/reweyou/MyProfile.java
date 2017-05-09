@@ -122,7 +122,6 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
 
         //initCollapsingToolbar();
         session = new UserSessionManager(MyProfile.this);
-        i = session.getMobileNumber();
         cd = new ConnectionDetector(MyProfile.this);
         session = new UserSessionManager(getApplicationContext());
 
@@ -178,11 +177,6 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
 
     private void loadDataFromServer() {
         HashMap<String, String> hashMap = new HashMap<>();
-        if (numberextra == null)
-            hashMap.put("number", session.getMobileNumber());
-        else hashMap.put("number", numberextra);
-        hashMap.put("token", session.getKeyAuthToken());
-        hashMap.put("deviceid", session.getMobileNumber());
 
         AndroidNetworking.post("https://www.reweyou.in/reviews/user_list.php")
                 .setTag("tss")
@@ -287,7 +281,6 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
     }
 
     private void button(final String i) {
-        final String number = session.getMobileNumber();
         // final ProgressDialog loading = ProgressDialog.show(this, "Authenticating", "Please wait", false, false);
         StringRequest strReq = new StringRequest(Request.Method.POST,
                 Constants.MY_PROFILE_URL_VERIFY_FOLLOW, new Response.Listener<String>() {

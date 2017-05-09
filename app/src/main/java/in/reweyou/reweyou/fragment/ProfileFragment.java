@@ -19,6 +19,10 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.StringRequestListener;
 import com.bumptech.glide.Glide;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
@@ -31,6 +35,7 @@ import com.kbeanie.multipicker.api.ImagePicker;
 import in.reweyou.reweyou.ForumMainActivity;
 import in.reweyou.reweyou.LoginActivity;
 import in.reweyou.reweyou.R;
+import in.reweyou.reweyou.classes.UserSessionManager;
 
 /**
  * Created by master on 24/2/17.
@@ -46,6 +51,11 @@ public class ProfileFragment extends Fragment {
     private Button continuebutton;
     private ImagePicker imagePicker;
     private ProgressBar progressBar;
+    private String idToken;
+    private String realname;
+    private Uri photoUrl;
+    private String serverAuthCode;
+    private String uid;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,12 +87,46 @@ public class ProfileFragment extends Fragment {
         continuebutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mContext.startActivity(new Intent(mContext, ForumMainActivity.class));
-                mContext.finish();
+
+                uploadDetails();
+
             }
         });
 
         return layout;
+    }
+
+
+    private void uploadDetails() {
+        Log.d(TAG, "uploadDetails: " + uid);
+        AndroidNetworking.post("https://www.reweyou.in/google/signup.php")
+                .addBodyParameter("profileurl", photoUrl.toString())
+                .addBodyParameter("name", realname)
+                .addBodyParameter("userid", idToken)
+                .addBodyParameter("uid", uid)
+                .addBodyParameter("username", username.getText().toString())
+                .setTag("login")
+                .setPriority(Priority.HIGH)
+                .build()
+                .getAsString(new StringRequestListener() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d(TAG, "onResponse: " + response);
+                        if (!response.equals("Error")) {
+                            UserSessionManager userSessionManager = new UserSessionManager(mContext);
+                            userSessionManager.createUserRegisterSession(uid, realname, username.getText().toString(), photoUrl.toString(), response.replace("token", ""));
+                            mContext.startActivity(new Intent(mContext, ForumMainActivity.class));
+                            mContext.finish();
+                        } else
+                            Toast.makeText(mContext, "Something went wrong! Please try again", Toast.LENGTH_SHORT).show();
+
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        Log.e(TAG, "onError: " + anError);
+                    }
+                });
     }
 
     private void showGallery() {
@@ -147,7 +191,12 @@ public class ProfileFragment extends Fragment {
     }
 
 
-    public void onsignin(String givenName, Uri photoUrl) {
+    public void onsignin(String id, String idToken, String givenName, Uri photoUrl, String serverAuthCode) {
+        this.uid = id;
+        this.idToken = idToken;
+        this.realname = givenName;
+        this.photoUrl = photoUrl;
+        this.serverAuthCode = serverAuthCode;
         Log.d("ProfileFragment", "onsignin: reached 1 postition");
         if (username != null) {
             username.setText(givenName);

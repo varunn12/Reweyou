@@ -176,17 +176,6 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
 
 
-        if (session.getMobileNumber().equals(messagelist.get(position).getCreated_by())) {
-            issueViewHolder.editpost.setVisibility(View.VISIBLE);
-            if (!messagelist.get(position).getPasscode().isEmpty()) {
-                issueViewHolder.codecon.setVisibility(View.VISIBLE);
-                issueViewHolder.code.setText(messagelist.get(position).getPasscode());
-            } else issueViewHolder.codecon.setVisibility(View.GONE);
-
-        } else {
-            issueViewHolder.editpost.setVisibility(View.GONE);
-            issueViewHolder.codecon.setVisibility(View.GONE);
-        }
 
 
     }
@@ -272,11 +261,7 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     Toast.makeText(mContext, "Updating...", Toast.LENGTH_SHORT).show();
 
                     HashMap<String, String> hashMap = new HashMap<String, String>();
-                    hashMap.put("topicid", messagelist.get(position).getTopicid());
-                    hashMap.put("headline", headline);
-                    hashMap.put("description", des);
-                    hashMap.put("number", session.getMobileNumber());
-                    hashMap.put("deviceid", session.getDeviceid());
+
                     hashMap.put("token", session.getKeyAuthToken());
 
                     AndroidNetworking.post("https://www.reweyou.in/reviews/edit_topic.php")

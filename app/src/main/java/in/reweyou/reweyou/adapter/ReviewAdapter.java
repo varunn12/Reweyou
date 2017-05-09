@@ -245,12 +245,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     Toast.makeText(mContext, "Updating...", Toast.LENGTH_SHORT).show();
 
                     HashMap<String, String> hashMap = new HashMap<String, String>();
-                    hashMap.put("reviewid", messagelist.get(position).getReviewid());
-                    hashMap.put("description", des);
-                    hashMap.put("rating", String.valueOf(numrating));
-                    hashMap.put("number", sessionManager.getMobileNumber());
-                    hashMap.put("deviceid", sessionManager.getDeviceid());
-                    hashMap.put("token", sessionManager.getKeyAuthToken());
+
 
                     AndroidNetworking.post("https://www.reweyou.in/reviews/edit_review.php")
                             .addBodyParameter(hashMap)
@@ -441,10 +436,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         private void updateLike(final int adapterPosition) {
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.put("reviewid", messagelist.get(adapterPosition).getReviewid());
-            hashMap.put("number", sessionManager.getMobileNumber());
-            hashMap.put("token", sessionManager.getKeyAuthToken());
-            hashMap.put("deviceid", sessionManager.getDeviceid());
-            hashMap.put("name", sessionManager.getUsername());
+
             AndroidNetworking.post("https://www.reweyou.in/reviews/agree_new.php")
                     .addBodyParameter(hashMap)
                     .setTag("agree")

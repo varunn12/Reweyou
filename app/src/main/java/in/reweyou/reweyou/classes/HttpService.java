@@ -90,7 +90,6 @@ public class HttpService extends Service {
         sendMessageShowVerifyDialog();
 
         final UserSessionManager session = new UserSessionManager(getApplicationContext());
-        final String number = session.getMobileNumber();
         // final ProgressDialog loading = ProgressDialog.show(this, "Authenticating", "Please wait", false, false);
         StringRequest strReq = new StringRequest(Request.Method.POST,
                 URL_VERIFY_OTP, new Response.Listener<String>() {
@@ -104,13 +103,7 @@ public class HttpService extends Service {
 
                     JSONObject responseObject = jsonArray.getJSONObject(0);
                     JSONObject jsonObject = responseObject.getJSONObject("profile");
-                    session.setAuthToken(jsonObject.getString("token"));
-                    session.setUsername(jsonObject.getString("name"));
-                    session.setMobileNumber(jsonObject.getString("number"));
-                    session.setLoginLocation(jsonObject.getString("location"));
-                    session.setProfilePicture(jsonObject.getString("profilepic"));
-                    session.setDeviceid(jsonObject.getString("deviceid"));
-                    // session.setAuthToken(jsonObject.getString("token"));
+
 
                     if (responseObject.has("likes")) {
                         JSONArray jsonArray1 = responseObject.getJSONArray("likes");
@@ -122,7 +115,6 @@ public class HttpService extends Service {
                             likesList.add(jsonObject1.getString("postid"));
 
                         }
-                        session.setLikesList(likesList);
                         Log.d("jsonlist", String.valueOf(likesList));
                     }
                     openProfile();
@@ -152,8 +144,7 @@ public class HttpService extends Service {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("otp", otp);
-                params.put("number", number);
+
 
                 Log.e(TAG, "Posting params: " + params.toString());
                 return params;
@@ -169,12 +160,7 @@ public class HttpService extends Service {
     private void openProfile() {
 
         UserSessionManager session = new UserSessionManager(getApplicationContext());
-        String place = session.getLoginLocation();
-        String number = session.getMobileNumber();
-        String name = session.getUsername();
-        session.createUserRegisterSession(name, number, place);
 
-        // Starting TokenTest
         Intent i = new Intent(this, WelcomeActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 

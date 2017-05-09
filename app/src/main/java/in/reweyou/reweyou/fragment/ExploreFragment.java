@@ -17,16 +17,21 @@ import android.widget.TextView;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.ParsedRequestListener;
-import com.google.gson.reflect.TypeToken;
+import com.androidnetworking.interfaces.JSONArrayRequestListener;
+import com.google.gson.Gson;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.adapter.ForumAdapter;
 import in.reweyou.reweyou.adapter.SuggestAdapter;
 import in.reweyou.reweyou.adapter.YourGroupsAdapter;
-import in.reweyou.reweyou.model.ForumModel;
+import in.reweyou.reweyou.classes.UserSessionManager;
+import in.reweyou.reweyou.model.GroupModel;
 import in.reweyou.reweyou.utils.Utils;
 
 /**
@@ -45,17 +50,20 @@ public class ExploreFragment extends Fragment {
     private TextView suggesttextview;
     private YourGroupsAdapter adapterYourGroups;
     private TextView yourgroupstextview;
+    private UserSessionManager userSessionManager;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        userSessionManager = new UserSessionManager(mContext);
 
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         View layout = inflater.inflate(R.layout.fragment_explore, container, false);
         recyclerViewExplore = (RecyclerView) layout.findViewById(R.id.explore_recycler_view);
         recyclerViewSuggested = (RecyclerView) layout.findViewById(R.id.explore_recycler_view_suggested);
@@ -130,29 +138,62 @@ public class ExploreFragment extends Fragment {
         recyclerViewSuggested.setAdapter(adapterSuggested);
         recyclerViewYourGroups.setAdapter(adapterYourGroups);
 
-        AndroidNetworking.get("https://reweyou.in/reviews/sampleforum.php")
-                .setTag("report")
+        AndroidNetworking.post("https://www.reweyou.in/google/discover_groups.php")
+                .addBodyParameter("uid", userSessionManager.getUID())
+                .setTag("fetchgroups")
                 .setPriority(Priority.HIGH)
                 .build()
-                .getAsParsed(new TypeToken<List<ForumModel>>() {
-                }, new ParsedRequestListener<List<ForumModel>>() {
-
+                /*.getAsString(new StringRequestListener() {
                     @Override
-                    public void onResponse(final List<ForumModel> list) {
-                        adapterExplore.add(list);
-                        ////
-                        adapterSuggested.add(list);
-                        ///
-                        adapterYourGroups.add(list);
+                    public void onResponse(String response) {
+                        Log.d(TAG, "onResponse: "+response);
                     }
 
                     @Override
-                    public void onError(final ANError anError) {
-                        Log.e(TAG, "run: error: " + anError.getErrorDetail());
+                    public void onError(ANError anError) {
 
+                    }
+                });*/
+                .getAsJSONArray(new JSONArrayRequestListener() {
+                    @Override
+                    public void onResponse(JSONArray jsonarray) {
+                        try {
+                            Gson gson = new Gson();
+                            JSONObject jsonobject = jsonarray.getJSONObject(0);
+                            Log.d(TAG, "onResponse: " + jsonobject);
+
+                            JSONArray followjsonarray = jsonobject.getJSONArray("followed");
+                            JSONArray explorejsonarray = jsonobject.getJSONArray("explore");
+
+                            List<GroupModel> explorelist = new ArrayList<GroupModel>();
+                            List<GroupModel> followlist = new ArrayList<GroupModel>();
+                            for (int i = 0; i < explorejsonarray.length(); i++) {
+                                JSONObject jsonObject = explorejsonarray.getJSONObject(i);
+                                GroupModel groupModel = gson.fromJson(jsonObject.toString(), GroupModel.class);
+                                explorelist.add(groupModel);
+                            }
+
+                            for (int i = 0; i < followjsonarray.length(); i++) {
+                                JSONObject jsonObject = followjsonarray.getJSONObject(i);
+                                GroupModel groupModel = gson.fromJson(jsonObject.toString(), GroupModel.class);
+                                followlist.add(groupModel);
+                            }
+                            adapterExplore.add(explorelist);
+                            adapterYourGroups.add(followlist);
+
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
 
                     }
                 });
+
+
     }
 
 }

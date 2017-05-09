@@ -37,6 +37,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.util.List;
 
+import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.customView.NonSwipeableViewPager;
 import in.reweyou.reweyou.fragment.LoginFragment;
 import in.reweyou.reweyou.fragment.ProfileFragment;
@@ -53,11 +54,20 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        UserSessionManager userSessionManager = new UserSessionManager(this);
+        if (userSessionManager.isUserLoggedIn()) {
+            startActivity(new Intent(LoginActivity.this, ForumMainActivity.class));
+            finish();
+        }
+
+
         setContentView(R.layout.content_login);
 
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
+                .requestId()
                 .requestIdToken(getString(R.string.default_web_client_id))
 
                 .build();
@@ -91,7 +101,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
             Log.d(TAG, "handleSignInResult: LoginName: " + acct.getGivenName());
-            ((ProfileFragment) pagerAdapter.getRegisteredFragment(1)).onsignin(acct.getDisplayName(), acct.getPhotoUrl());
+
+
+            ((ProfileFragment) pagerAdapter.getRegisteredFragment(1)).onsignin(acct.getId(), acct.getIdToken(), acct.getDisplayName(), acct.getPhotoUrl(), acct.getServerAuthCode());
 
 
             nonSwipeableViewPager.setCurrentItem(1);

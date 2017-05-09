@@ -76,7 +76,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -276,15 +275,11 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
 
 
         checker = new PermissionsChecker(this);
-        mycity = session.getLoginLocation();
         cd = new ConnectionDetector(PostReport.this);
         appLocationService = new AppLocationService(PostReport.this);
 
         sendButton.setOnClickListener(this);
 
-        HashMap<String, String> user = session.getUserDetails();
-        name = user.get(UserSessionManager.KEY_NAME);
-        number = user.get(UserSessionManager.KEY_NUMBER);
 
         initCategorySpinner();
 
@@ -810,11 +805,9 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
                         if (!getaddress.isEmpty()) {
                             address = getaddress;
                         } else {
-                            address = session.getLoginLocation();
                             place = address;
                         }
                     } else {
-                        place = session.getLoginLocation();
                         address = place;
                     }
                     pd.dismiss();
@@ -852,7 +845,6 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
 
             MyLocation myLocation = new MyLocation();
             if (!myLocation.getLocation(this, locationResult)) {
-                address = session.getLoginLocation();
                 place = address;
                 pd.dismiss();
                 Log.d("place", place);
@@ -876,7 +868,6 @@ public class PostReport extends AppCompatActivity implements View.OnClickListene
             }
 
         } else {
-            address = session.getLoginLocation();
             place = address;
             pd.dismiss();
             Log.d("place", place);

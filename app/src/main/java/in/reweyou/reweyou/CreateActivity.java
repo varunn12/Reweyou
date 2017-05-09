@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -46,6 +47,8 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+import in.reweyou.reweyou.classes.UserSessionManager;
+
 public class CreateActivity extends SlidingActivity {
 
     private static final String TAG = CreateActivity.class.getName();
@@ -58,9 +61,24 @@ public class CreateActivity extends SlidingActivity {
     private ImageView linkbtn;
     private TextView linklink;
     private TextView create;
-    private EditText editText;
+    private EditText edittextdescription;
     private ImagePicker imagePicker;
-    private ImageView image;
+    private ImageView image1;
+    private ImageView image2;
+    private ImageView image3;
+    private ImageView image4;
+    private ImageView addmore;
+    private int counter = 1;
+    private RelativeLayout addmorecont;
+    private String link = "";
+    private String type;
+    private UserSessionManager sessionManager;
+    private LinearLayout uploadingContainer;
+    private String image1url = "";
+    private String image2url = "";
+    private String image3url = "";
+    private String image4url = "";
+    private LinearLayout ll, l2;
 
     @Override
     protected void configureScroller(MultiShrinkScroller scroller) {
@@ -76,10 +94,60 @@ public class CreateActivity extends SlidingActivity {
 
         setContent(R.layout.content_create);
 
+        sessionManager = new UserSessionManager(this);
         linkpd = (ProgressBar) findViewById(R.id.linkpd);
         cd = (CardView) findViewById(R.id.cd);
-        image = (ImageView) findViewById(R.id.image);
-        editText = (EditText) findViewById(R.id.groupname);
+        image1 = (ImageView) findViewById(R.id.image1);
+        image2 = (ImageView) findViewById(R.id.image2);
+        image3 = (ImageView) findViewById(R.id.image3);
+        image4 = (ImageView) findViewById(R.id.image4);
+
+        image1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    checkStoragePermission();
+
+                } else showPickImage();
+
+            }
+        });
+        image2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    checkStoragePermission();
+
+                } else showPickImage();
+
+            }
+        });
+        image3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    checkStoragePermission();
+
+                } else showPickImage();
+
+            }
+        });
+        image4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    checkStoragePermission();
+
+                } else showPickImage();
+
+            }
+        });
+
+
+        ll = (LinearLayout) findViewById(R.id.ll);
+        l2 = (LinearLayout) findViewById(R.id.l2);
+
+        edittextdescription = (EditText) findViewById(R.id.groupname);
         headlinelink = (TextView) findViewById(R.id.headlinelink);
         descriptionlink = (TextView) findViewById(R.id.descriptionlink);
         linklink = (TextView) findViewById(R.id.linklink);
@@ -111,7 +179,9 @@ public class CreateActivity extends SlidingActivity {
             }
         });
 
+
     }
+
 
     private void checkStoragePermission() {
         Dexter.withActivity(this)
@@ -139,11 +209,55 @@ public class CreateActivity extends SlidingActivity {
 
     private void uploadPost() {
 
+
+        if (edittextdescription.getText().toString().trim().length() > 0 && type != null) {
+
+            Intent intent = new Intent();
+            intent.putExtra("description", edittextdescription.getText().toString());
+            intent.putExtra("link", link);
+            intent.putExtra("counter", counter - 1);
+            intent.putExtra("image1", image1url);
+            intent.putExtra("image2", image2url);
+            intent.putExtra("image3", image3url);
+            intent.putExtra("image4", image4url);
+            intent.putExtra("type", type);
+            setResult(RESULT_OK, intent);
+            finish();
+            /*AndroidNetworking.post("https://www.reweyou.in/google/create_threads.php")
+                    .addBodyParameter("groupname", "Photography")
+                    .addBodyParameter("description", edittextdescription.getText().toString())
+                    .addBodyParameter("link", link)
+                    .addBodyParameter("type", type)
+                    .addBodyParameter("uid", sessionManager.getUID())
+                    .addBodyParameter("authtoken", sessionManager.getAuthToken())
+                    .setTag("uploadpost")
+                    .setPriority(Priority.HIGH)
+                    .build()
+                    .getAsString(new StringRequestListener() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.d(TAG, "onResponse: " + response);
+                            if (response.equals("Thread created")) {
+                                Toast.makeText(CreateActivity.this, "Post uploaded successfully", Toast.LENGTH_SHORT).show();
+                            } else
+                                Toast.makeText(CreateActivity.this, "Couldn't post. connectivity error", Toast.LENGTH_SHORT).show();
+
+                        }
+
+                        @Override
+                        public void onError(ANError anError) {
+                            Log.d(TAG, "onError: " + anError);
+                            Toast.makeText(CreateActivity.this, "Couldn't post. connectivity error", Toast.LENGTH_SHORT).show();
+
+                        }
+                    });*/
+        }
+
     }
 
     private void initTextWatchers() {
 
-        editText.addTextChangedListener(new TextWatcher() {
+        edittextdescription.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -151,7 +265,7 @@ public class CreateActivity extends SlidingActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (editText.getText().toString().trim().length() > 0) {
+                if (edittextdescription.getText().toString().trim().length() > 0) {
                     updateCreateTextUI(true);
                 } else updateCreateTextUI(false);
             }
@@ -266,6 +380,7 @@ public class CreateActivity extends SlidingActivity {
                             String title = jsonObject.getString("title");
                             String description = jsonObject.getString("description");
 
+
                             if (title != null)
                                 headlinelink.setText(title);
                             if (description != null)
@@ -273,9 +388,12 @@ public class CreateActivity extends SlidingActivity {
                             if (link != null)
                                 linklink.setText(reallink);
 
+                            CreateActivity.this.link = link;
+
+                            type = "link";
                         } catch (Exception e) {
                             rl.setVisibility(View.VISIBLE);
-                            editText.setHint("Describe this link...");
+                            edittextdescription.setHint("Describe this link...");
                             cd.setVisibility(View.GONE);
                             Toast.makeText(CreateActivity.this, "Error in fetching data from link", Toast.LENGTH_SHORT).show();
 
@@ -351,7 +469,7 @@ public class CreateActivity extends SlidingActivity {
         CropImage.activity(data)
                 .setActivityTitle("Crop Image")
                 .setBackgroundColor(Color.parseColor("#90000000"))
-                .setMinCropResultSize(200, 200)
+                .setMinCropResultSize(600, 600)
                 .setBorderCornerColor(getResources().getColor(R.color.colorPrimaryDark))
                 .setBorderLineColor(getResources().getColor(R.color.colorPrimary))
                 .setGuidelinesColor(getResources().getColor(R.color.divider))
@@ -385,15 +503,67 @@ public class CreateActivity extends SlidingActivity {
     }
 
     private void handleImage(final String s) {
-        image.setVisibility(View.VISIBLE);
-        rl.setVisibility(View.GONE);
 
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                Glide.with(CreateActivity.this).load(s).into(image);
-            }
-        });
+        if (counter == 1) {
+
+            ll.setVisibility(View.VISIBLE);
+            image1.setOnClickListener(null);
+            type = "image1";
+            image1url = s;
+            edittextdescription.setHint("Describe about this image...");
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    Glide.with(CreateActivity.this).load(s).into(image1);
+
+                }
+            });
+            counter++;
+        } else if (counter == 2) {
+            type = "image2";
+            edittextdescription.setHint("Describe about these images...");
+
+            image2url = s;
+            image1.setOnClickListener(null);
+
+            l2.setVisibility(View.VISIBLE);
+            image4.setVisibility(View.INVISIBLE);
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    Glide.with(CreateActivity.this).load(s).into(image2);
+                }
+            });
+            counter++;
+
+        } else if (counter == 3) {
+            image3url = s;
+            image1.setOnClickListener(null);
+            image4.setVisibility(View.VISIBLE);
+
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    Glide.with(CreateActivity.this).load(s).into(image3);
+                }
+            });
+            counter++;
+
+        } else if (counter == 4) {
+            image4url = s;
+
+            image1.setOnClickListener(null);
+
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    Glide.with(CreateActivity.this).load(s).into(image4);
+                }
+            });
+
+
+        }
+
 
       /*  Glide.with(this).load(s).asBitmap().toBytes().into(new SimpleTarget<byte[]>(150, 150) {
             @Override

@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +28,8 @@ import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.StringRequestListener;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -37,6 +41,7 @@ import java.util.HashMap;
 
 import in.reweyou.reweyou.ForumMainActivity;
 import in.reweyou.reweyou.R;
+import in.reweyou.reweyou.classes.UserSessionManager;
 
 /**
  * Created by master on 24/2/17.
@@ -53,11 +58,13 @@ public class CreateFragment extends Fragment {
     private ImageView img;
     private TextView imgtext;
     private String imgUrl;
+    private UserSessionManager userSessionManager;
+    private ProgressBar pd;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        userSessionManager = new UserSessionManager(mContext);
 
     }
 
@@ -72,13 +79,14 @@ public class CreateFragment extends Fragment {
         imgtext = (TextView) layout.findViewById(R.id.imgtext);
         groupname = (EditText) layout.findViewById(R.id.groupname);
         description = (EditText) layout.findViewById(R.id.description);
+        pd = (ProgressBar) layout.findViewById(R.id.progressBar);
 
         create = (TextView) layout.findViewById(R.id.create);
         create.setEnabled(false);
         create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                uploadGroup();
+                compressImage();
             }
         });
 
@@ -97,27 +105,60 @@ public class CreateFragment extends Fragment {
         return layout;
     }
 
-    private void uploadGroup() {
+    private void compressImage() {
+        if (imgUrl != null) {
+            Glide.with(this).load(imgUrl).asBitmap().toBytes().into(new SimpleTarget<byte[]>(200, 200) {
+                @Override
+                public void onResourceReady(byte[] resource, GlideAnimation<? super byte[]> glideAnimation) {
+                    String encodedImage = Base64.encodeToString(resource, Base64.DEFAULT);
+                    uploadGroup(encodedImage);
+                }
+            });
+        } else uploadGroup(null);
+    }
+
+    private void uploadGroup(String encodedImage) {
+
+        create.setVisibility(View.INVISIBLE);
+        pd.setVisibility(View.VISIBLE);
+
+
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("groupname", groupname.getText().toString());
         hashMap.put("description", description.getText().toString());
+        hashMap.put("admin", userSessionManager.getUID());
+        hashMap.put("authtoken", userSessionManager.getAuthToken());
         if (imgUrl != null)
-            hashMap.put("image", description.getText().toString());
+            hashMap.put("image", encodedImage);
 
-        AndroidNetworking.post("")
+        AndroidNetworking.post("https://www.reweyou.in/google/create_groups.php")
                 .addBodyParameter(hashMap)
-                .setTag("groupupload")
-                .setPriority(Priority.MEDIUM)
+                .setTag("groupcreate")
+                .setPriority(Priority.HIGH)
                 .build()
                 .getAsString(new StringRequestListener() {
                     @Override
                     public void onResponse(String response) {
                         Log.d(TAG, "onResponse: group upload: " + response);
+                        Toast.makeText(mContext, "Group created successfully", Toast.LENGTH_SHORT).show();
+
+
+                        imgtext.setVisibility(View.VISIBLE);
+                        img.setImageResource(0);
+
+                        description.setText("");
+                        groupname.setText("");
+
+
+                        create.setVisibility(View.VISIBLE);
+                        pd.setVisibility(View.INVISIBLE);
                     }
 
                     @Override
                     public void onError(ANError anError) {
                         Log.e(TAG, "onError: " + anError);
+                        create.setVisibility(View.VISIBLE);
+                        pd.setVisibility(View.INVISIBLE);
                     }
                 });
     }

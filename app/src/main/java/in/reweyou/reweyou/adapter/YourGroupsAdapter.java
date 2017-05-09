@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.reweyou.reweyou.R;
-import in.reweyou.reweyou.model.ForumModel;
+import in.reweyou.reweyou.model.GroupModel;
 
 /**
  * Created by master on 1/5/17.
@@ -23,7 +23,7 @@ import in.reweyou.reweyou.model.ForumModel;
 public class YourGroupsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final Context context;
-    List<ForumModel> messagelist;
+    List<GroupModel> messagelist;
 
     public YourGroupsAdapter(Context context) {
         this.context = context;
@@ -40,7 +40,8 @@ public class YourGroupsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         YourGroupsViewHolder forumViewHolder = (YourGroupsViewHolder) holder;
         Glide.with(context).load(messagelist.get(position).getImage()).into(forumViewHolder.backgroundImage);
-        forumViewHolder.groupName.setText(messagelist.get(position).getForum_name());
+        forumViewHolder.groupName.setText(messagelist.get(position).getGroupname());
+        forumViewHolder.members.setText(messagelist.get(position).getMembers());
     }
 
     @Override
@@ -48,7 +49,7 @@ public class YourGroupsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         return messagelist.size();
     }
 
-    public void add(List<ForumModel> list) {
+    public void add(List<GroupModel> list) {
         messagelist.clear();
         messagelist.addAll(list);
         notifyDataSetChanged();

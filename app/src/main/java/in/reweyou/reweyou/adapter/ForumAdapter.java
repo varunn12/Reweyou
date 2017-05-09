@@ -11,14 +11,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.vision.text.Line;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import in.reweyou.reweyou.GroupActivity;
 import in.reweyou.reweyou.R;
-import in.reweyou.reweyou.model.ForumModel;
+import in.reweyou.reweyou.model.GroupModel;
 
 /**
  * Created by master on 1/5/17.
@@ -27,7 +26,7 @@ import in.reweyou.reweyou.model.ForumModel;
 public class ForumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final Context context;
-    List<ForumModel> messagelist;
+    List<GroupModel> messagelist;
 
     public ForumAdapter(Context context) {
         this.context = context;
@@ -44,7 +43,8 @@ public class ForumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ForumViewHolder forumViewHolder = (ForumViewHolder) holder;
         Glide.with(context).load(messagelist.get(position).getImage()).into(forumViewHolder.backgroundImage);
-        forumViewHolder.groupName.setText(messagelist.get(position).getForum_name());
+        forumViewHolder.groupName.setText(messagelist.get(position).getGroupname());
+        forumViewHolder.members.setText(messagelist.get(position).getMembers());
     }
 
     @Override
@@ -52,7 +52,7 @@ public class ForumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         return messagelist.size();
     }
 
-    public void add(List<ForumModel> list) {
+    public void add(List<GroupModel> list) {
         messagelist.clear();
         messagelist.addAll(list);
         notifyDataSetChanged();
