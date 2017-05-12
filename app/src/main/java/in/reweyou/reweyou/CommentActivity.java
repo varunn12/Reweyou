@@ -20,6 +20,7 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONArrayRequestListener;
+import com.androidnetworking.interfaces.StringRequestListener;
 import com.google.gson.Gson;
 import com.klinker.android.sliding.MultiShrinkScroller;
 import com.klinker.android.sliding.SlidingActivity;
@@ -28,9 +29,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import in.reweyou.reweyou.adapter.CommentsAdapter;
+import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.model.CommentModel;
 import in.reweyou.reweyou.model.ReplyCommentModel;
 
@@ -40,6 +43,9 @@ public class CommentActivity extends SlidingActivity {
     public EditText editText;
     private ImageView send;
     private TextView replyheader;
+    private UserSessionManager userSessionManager;
+    private String threadid;
+    private String tempcommentid;
 
     @Override
     protected void configureScroller(MultiShrinkScroller scroller) {
@@ -53,13 +59,22 @@ public class CommentActivity extends SlidingActivity {
         disableHeader();
         enableFullscreen();
 
+
         setContent(R.layout.content_comment);
+
+        try {
+            threadid = getIntent().getStringExtra("threadid");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         editText = (EditText) findViewById(R.id.edittext);
         send = (ImageView) findViewById(R.id.send);
 
+
+        userSessionManager = new UserSessionManager(this);
         replyheader = (TextView) findViewById(R.id.t2);
 
         final CommentsAdapter adapterComment = new CommentsAdapter(this);
@@ -72,6 +87,7 @@ public class CommentActivity extends SlidingActivity {
             public void run() {
                 AndroidNetworking.get("https://reweyou.in/reviews/samplecomment.php")
                         .setTag("report")
+
                         .setPriority(Priority.HIGH)
                         .build()
                         .getAsJSONArray(new JSONArrayRequestListener() {
@@ -120,6 +136,49 @@ public class CommentActivity extends SlidingActivity {
             public void onClick(View v) {
                 InputMethodManager imm = (InputMethodManager) CommentActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+                if (editText.getText().toString().trim().length() > 0) {
+
+
+                    HashMap<String, String> hashMap = new HashMap<String, String>();
+                    hashMap.put("uid", userSessionManager.getUID());
+                    hashMap.put("threadid", threadid);
+                    hashMap.put("image", "");
+                    String url;
+                    if (replyheader.getVisibility() == View.VISIBLE) {
+                        url = "https://www.reweyou.in/google/create_reply.php";
+                        // hashMap.put("commentid", tempcommentid);
+                        hashMap.put("commentid", tempcommentid);
+                        hashMap.put("reply", editText.getText().toString());
+
+                        Log.d(TAG, "onClick: reply");
+                    } else {
+                        url = "https://www.reweyou.in/google/create_comments.php";
+                        hashMap.put("comment", editText.getText().toString());
+
+                    }
+
+
+                    AndroidNetworking.post(url)
+                            .addBodyParameter(hashMap)
+                            .setTag("comment")
+                            .setPriority(Priority.HIGH)
+                            .build()
+                            .getAsString(new StringRequestListener() {
+                                @Override
+                                public void onResponse(String response) {
+                                    Log.d(TAG, "onResponse: " + response);
+                                    if (response.equals("Comment created")) {
+
+                                    }
+                                }
+
+                                @Override
+                                public void onError(ANError anError) {
+                                    Log.d(TAG, "onError: anerror" + anError);
+                                }
+                            });
+                }
+
 
             }
         });
@@ -173,7 +232,8 @@ public class CommentActivity extends SlidingActivity {
 
     }
 
-    public void passClicktoEditText(String name) {
+    public void passClicktoEditText(String s, String commentid) {
+        this.tempcommentid = commentid;
         if (replyheader.getVisibility() == View.GONE) {
             replyheader.setVisibility(View.VISIBLE);
             editText.setHint("Write a reply...");
@@ -184,7 +244,7 @@ public class CommentActivity extends SlidingActivity {
 
         }
 
-        replyheader.setText("Reply to " + name);
+        replyheader.setText("Reply to " + s);
         editText.setFocusableInTouchMode(true);
         editText.requestFocus();
         editText.performClick();

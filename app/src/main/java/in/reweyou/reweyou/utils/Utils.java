@@ -1,6 +1,9 @@
 package in.reweyou.reweyou.utils;
 
 import android.content.Context;
+import android.graphics.Point;
+import android.view.Display;
+import android.view.WindowManager;
 
 import java.util.Calendar;
 import java.util.Random;
@@ -12,7 +15,9 @@ import java.util.Random;
 public class Utils {
     public static boolean isNight;
     public static int backgroundCode;
+    public static int screenWidth;
     private static int scalefactor;
+    private static int screenHeight;
 
     public static void setDayNightBoolean() {
         Calendar calendar = Calendar.getInstance();
@@ -23,9 +28,17 @@ public class Utils {
         }
     }
 
-    public static void setBackgroundColor() {
+    public static void setBackgroundColor(Context applicationContext) {
         Random rand = new Random();
         backgroundCode = rand.nextInt(4);
+
+        WindowManager wm = (WindowManager) applicationContext.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+
+        Point size = new Point();
+        display.getSize(size);
+        screenWidth = size.x;
+        screenHeight = size.y;
     }
 
     public static void setpxFromDp(final Context context) {

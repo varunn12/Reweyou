@@ -23,6 +23,7 @@ public class GroupInfoFragment extends Fragment {
 
 
     private Activity mContext;
+    private String groupid;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,6 +37,7 @@ public class GroupInfoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_group_info, container, false);
 
+
         ImageView img = (ImageView) layout.findViewById(R.id.image);
         TextView groupname = (TextView) layout.findViewById(R.id.groupname);
         TextView shortdes = (TextView) layout.findViewById(R.id.shortdescription);
@@ -43,7 +45,14 @@ public class GroupInfoFragment extends Fragment {
         TextView members = (TextView) layout.findViewById(R.id.members);
         TextView threads = (TextView) layout.findViewById(R.id.threads);
 
-        Glide.with(mContext).load("https://media.giphy.com/media/m82Z6oaf0TF1S/giphy.gif").into(img);
+        try {
+            groupname.setText(getArguments().getString("groupname"));
+            members.setText(getArguments().getString("members"));
+            groupid = getArguments().getString("groupid");
+            Glide.with(mContext).load(getArguments().getString("image")).into(img);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return layout;
     }
 

@@ -132,61 +132,9 @@ terro"
             android:alpha="0.44"
             android:background="@color/divider" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="44dp"
-            android:layout_gravity="end"
-            android:layout_marginRight="16dp">
-
-
-            <ImageView
-                android:id="@+id/itemp"
-                android:layout_width="44dp"
-                android:layout_height="44dp"
-                android:paddingBottom="12dp"
-                android:paddingLeft="8dp"
-                android:paddingTop="12dp"
-                card_view:srcCompat="@drawable/ic_heart_like" />
-
-            <ImageView
-                android:id="@+id/i1"
-                android:layout_width="44dp"
-                android:layout_height="44dp"
-                android:paddingBottom="12dp"
-                android:paddingLeft="8dp"
-                android:paddingTop="12dp"
-                card_view:srcCompat="@drawable/ic_heart_like_grey" />
-
-            <TextView
-                android:id="@+id/likenumber"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_toRightOf="@+id/i1"
-                android:gravity="center"
-                android:text="26" />
-
-            <ImageView
-                android:id="@+id/comment"
-                android:layout_width="44dp"
-                android:layout_height="44dp"
-                android:layout_gravity="end"
-
-                android:layout_toLeftOf="@+id/commentnumber"
-                android:paddingBottom="12dp"
-                android:paddingLeft="8dp"
-                android:paddingTop="12dp"
-                card_view:srcCompat="@drawable/ic_chat_comment" />
-
-            <TextView
-                android:id="@+id/commentnumber"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
-                android:layout_gravity="end"
-                android:gravity="center"
-                android:text="15" />
-        </RelativeLayout>
-
+        <include
+            android:id="@+id/include1"
+            layout="@layout/item_row_like" />
 
     </LinearLayout>
 

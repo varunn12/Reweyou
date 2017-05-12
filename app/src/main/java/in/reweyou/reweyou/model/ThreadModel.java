@@ -16,7 +16,7 @@ public class ThreadModel {
     private String image2;
     private String image3;
     private String image4;
-    private String profilepic;
+    private String imageurl;
     private String description;
     private String type;
     private String upvotes;
@@ -33,7 +33,7 @@ public class ThreadModel {
     }
 
     public String getProfilepic() {
-        return profilepic;
+        return imageurl;
     }
 
 

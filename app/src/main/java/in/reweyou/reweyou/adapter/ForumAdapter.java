@@ -77,7 +77,14 @@ public class ForumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    context.startActivity(new Intent(context, GroupActivity.class));
+                    Intent i = new Intent(context, GroupActivity.class);
+                    i.putExtra("groupname", messagelist.get(getAdapterPosition()).getGroupname());
+                    i.putExtra("groupid", messagelist.get(getAdapterPosition()).getGroupId());
+                    i.putExtra("image", messagelist.get(getAdapterPosition()).getImage());
+                    i.putExtra("members", messagelist.get(getAdapterPosition()).getMembers());
+                    context.startActivity(i);
+                    //  i.putExtra("threads",messagelist.get(getAdapterPosition()).ge);
+
                 }
             });
         }

@@ -8,6 +8,7 @@ public class CommentModel {
 
     private String name;
     private String comment;
+    private String commentid;
 
     public String getName() {
         return name;
@@ -15,5 +16,9 @@ public class CommentModel {
 
     public String getComment() {
         return comment;
+    }
+
+    public String getCommentid() {
+        return commentid;
     }
 }

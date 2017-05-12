@@ -63,6 +63,10 @@ public class GroupActivity extends AppCompatActivity {
     private String image2encoded = "";
     private String image3encoded = "";
     private String image4encoded = "";
+    private String groupid;
+    private String groupname;
+    private String groupmembers;
+    private String groupimage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +77,20 @@ public class GroupActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        getSupportActionBar().setTitle("Rajneeti");
+
+        try {
+
+            groupname = getIntent().getStringExtra("groupname");
+            groupid = getIntent().getStringExtra("groupid");
+            groupmembers = getIntent().getStringExtra("members");
+            groupimage = getIntent().getStringExtra("image");
+
+            getSupportActionBar().setTitle(groupname);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         userSessionManager = new UserSessionManager(this);
         initUploadingContainer();
@@ -233,22 +250,22 @@ public class GroupActivity extends AppCompatActivity {
     private void compressImages() {
         final int count = intentData.getIntExtra("counter", 0);
         if (count > 0) {
-            Glide.with(this).load(intentData.getStringExtra("image1")).asBitmap().toBytes().into(new SimpleTarget<byte[]>(1200, 1200) {
+            Glide.with(this).load(intentData.getStringExtra("image1")).asBitmap().toBytes().override(1500, 1500).atMost().into(new SimpleTarget<byte[]>() {
                 @Override
                 public void onResourceReady(byte[] resource, GlideAnimation<? super byte[]> glideAnimation) {
                     image1encoded = Base64.encodeToString(resource, Base64.DEFAULT);
                     if (count > 1)
-                        Glide.with(GroupActivity.this).load(intentData.getStringExtra("image2")).asBitmap().toBytes().into(new SimpleTarget<byte[]>(1200, 1200) {
+                        Glide.with(GroupActivity.this).load(intentData.getStringExtra("image2")).asBitmap().toBytes().override(1500, 1500).atMost().into(new SimpleTarget<byte[]>() {
                             @Override
                             public void onResourceReady(byte[] resource, GlideAnimation<? super byte[]> glideAnimation) {
                                 image2encoded = Base64.encodeToString(resource, Base64.DEFAULT);
                                 if (count > 2)
-                                    Glide.with(GroupActivity.this).load(intentData.getStringExtra("image3")).asBitmap().toBytes().into(new SimpleTarget<byte[]>(1200, 1200) {
+                                    Glide.with(GroupActivity.this).load(intentData.getStringExtra("image3")).asBitmap().toBytes().override(1500, 1500).atMost().into(new SimpleTarget<byte[]>() {
                                         @Override
                                         public void onResourceReady(byte[] resource, GlideAnimation<? super byte[]> glideAnimation) {
                                             image3encoded = Base64.encodeToString(resource, Base64.DEFAULT);
                                             if (count > 3)
-                                                Glide.with(GroupActivity.this).load(intentData.getStringExtra("image4")).asBitmap().toBytes().into(new SimpleTarget<byte[]>(1200, 1200) {
+                                                Glide.with(GroupActivity.this).load(intentData.getStringExtra("image4")).asBitmap().toBytes().override(1500, 1500).atMost().into(new SimpleTarget<byte[]>() {
                                                     @Override
                                                     public void onResourceReady(byte[] resource, GlideAnimation<? super byte[]> glideAnimation) {
                                                         image4encoded = Base64.encodeToString(resource, Base64.DEFAULT);
@@ -372,9 +389,18 @@ public class GroupActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
 
 
-            if (position == 0)
-                return new GroupInfoFragment();
-            else if (position == 2)
+            if (position == 0) {
+                Bundle bundle = new Bundle();
+                bundle.putString("groupname", groupname);
+                bundle.putString("groupid", groupid);
+                bundle.putString("members", groupmembers);
+                bundle.putString("image", groupimage);
+
+                GroupInfoFragment fragment = new GroupInfoFragment();
+                fragment.setArguments(bundle);
+
+                return fragment;
+            } else if (position == 2)
                 return new ChatFragment();
             else return new ForumFragment();
         }

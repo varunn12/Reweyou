@@ -49,7 +49,8 @@ public class ApplicationClass extends Application {
         super.onCreate();
         mInstance = this;
 
-        Utils.setBackgroundColor();
+
+        Utils.setBackgroundColor(getApplicationContext());
         Utils.setpxFromDp(getApplicationContext());
         AnalyticsTracker.initialize(this);
         AnalyticsTracker.getInstance().get(AnalyticsTracker.Target.APP);
