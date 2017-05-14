@@ -152,7 +152,14 @@ public class CreateFragment extends Fragment {
 
                         create.setVisibility(View.VISIBLE);
                         pd.setVisibility(View.INVISIBLE);
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                ((ForumMainActivity) mContext).showExploreGroupFragment();
+                            }
+                        }, 500);
                     }
+
 
                     @Override
                     public void onError(ANError anError) {

@@ -227,6 +227,10 @@ public class ForumMainActivity extends AppCompatActivity {
         return true;
     }
 
+    public void showExploreGroupFragment() {
+
+    }
+
     private class PagerAdapter extends FragmentStatePagerAdapter {
         SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
 

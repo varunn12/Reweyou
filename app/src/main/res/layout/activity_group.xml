@@ -59,9 +59,10 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="8dp"
-
                 android:layout_weight="1"
-                android:indeterminateOnly="true" />
+
+                android:indeterminateOnly="true"
+                android:scaleY="1.5" />
 
             <TextView
                 android:id="@+id/okbutton"

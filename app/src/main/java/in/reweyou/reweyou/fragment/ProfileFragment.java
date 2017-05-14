@@ -68,6 +68,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_profile_login, container, false);
+
         username = (EditText) layout.findViewById(R.id.username);
         image = (ImageView) layout.findViewById(R.id.image);
         continuebutton = (Button) layout.findViewById(R.id.continu);

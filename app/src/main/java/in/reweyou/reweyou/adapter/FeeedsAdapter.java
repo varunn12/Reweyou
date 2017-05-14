@@ -32,6 +32,7 @@ import java.util.List;
 import in.reweyou.reweyou.CommentActivity;
 import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.model.ThreadModel;
+import in.reweyou.reweyou.utils.Utils;
 
 /**
  * Created by master on 1/5/17.
@@ -279,6 +280,7 @@ public class FeeedsAdapter extends RecyclerView.Adapter<FeeedsAdapter.BaseViewHo
             wallpaper.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Toast.makeText(mContext, "setting wallpaper...", Toast.LENGTH_SHORT).show();
 
 
                     RotateAnimation rotate = new RotateAnimation(0, 360,
@@ -294,14 +296,13 @@ public class FeeedsAdapter extends RecyclerView.Adapter<FeeedsAdapter.BaseViewHo
                     DisplayMetrics displayMetrics = new DisplayMetrics();
                     ((Activity) mContext).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
                     int height = displayMetrics.heightPixels;
-                    int width = 2 * displayMetrics.widthPixels;
+                    int width = (int) (1.5 * displayMetrics.widthPixels);
                     Log.d("ddd", "onClick: " + height + "  " + width);
                     Glide.with(mContext).load(messagelist.get(getAdapterPosition()).getImage1()).asBitmap().override(width, height).diskCacheStrategy(DiskCacheStrategy.SOURCE)
                             .into(new SimpleTarget<Bitmap>() {
                                 @Override
                                 public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                                     // you can do something with loaded bitmap here
-
                                     // .....
                                     new WallpaperAsync(resource, wallpaper).execute();
 
@@ -379,11 +380,11 @@ public class FeeedsAdapter extends RecyclerView.Adapter<FeeedsAdapter.BaseViewHo
     }
 
     private class WallpaperAsync extends AsyncTask<Void, Void, Void> {
-        private final Bitmap adapterPosition;
+        private final Bitmap bitmap;
         private final ImageView wallpaper;
 
-        public WallpaperAsync(Bitmap adapterPosition, ImageView wallpaper) {
-            this.adapterPosition = adapterPosition;
+        public WallpaperAsync(Bitmap bitmap, ImageView wallpaper) {
+            this.bitmap = bitmap;
             this.wallpaper = wallpaper;
         }
 
@@ -401,7 +402,13 @@ public class FeeedsAdapter extends RecyclerView.Adapter<FeeedsAdapter.BaseViewHo
             WallpaperManager myWallpaperManager
                     = WallpaperManager.getInstance(mContext.getApplicationContext());
             try {
-                myWallpaperManager.setBitmap(adapterPosition);
+                Log.d("feeds", "doInBackground:ewlm " + bitmap.getWidth() + "  " + bitmap.getHeight());
+                if (bitmap.getWidth() > (1.5 * Utils.screenWidth)) {
+                    Bitmap finalBitmap = Bitmap.createBitmap(bitmap, (int) ((bitmap.getWidth() / 2) - ((1.5 * Utils.screenWidth) / 2)), 0, (int) (1.5 * Utils.screenWidth), bitmap.getHeight());
+                    Log.d("feeds", "doInBackground: " + finalBitmap.getWidth() + "  " + finalBitmap.getHeight());
+                    myWallpaperManager.setBitmap(finalBitmap);
+
+                } else myWallpaperManager.setBitmap(bitmap);
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -25,6 +26,7 @@ import com.karumi.dexter.listener.single.PermissionListener;
 import in.reweyou.reweyou.ForumMainActivity;
 import in.reweyou.reweyou.LoginActivity;
 import in.reweyou.reweyou.R;
+import in.reweyou.reweyou.classes.UserSessionManager;
 
 /**
  * Created by master on 24/2/17.
@@ -63,6 +65,9 @@ public class UserInfoFragment extends Fragment {
                 showGallery();
             }
         });
+
+        UserSessionManager userSessionManager = new UserSessionManager(mContext);
+        Glide.with(mContext).load(userSessionManager.getProfilePicture()).into(image);
 
         return layout;
     }

@@ -1,6 +1,7 @@
 package in.reweyou.reweyou;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -248,24 +249,25 @@ public class GroupActivity extends AppCompatActivity {
     }
 
     private void compressImages() {
+        showUploading();
         final int count = intentData.getIntExtra("counter", 0);
         if (count > 0) {
-            Glide.with(this).load(intentData.getStringExtra("image1")).asBitmap().toBytes().override(1500, 1500).atMost().into(new SimpleTarget<byte[]>() {
+            Glide.with(this).load(intentData.getStringExtra("image1")).asBitmap().toBytes(Bitmap.CompressFormat.JPEG, 80).atMost().override(1200, 1200).into(new SimpleTarget<byte[]>() {
                 @Override
                 public void onResourceReady(byte[] resource, GlideAnimation<? super byte[]> glideAnimation) {
                     image1encoded = Base64.encodeToString(resource, Base64.DEFAULT);
                     if (count > 1)
-                        Glide.with(GroupActivity.this).load(intentData.getStringExtra("image2")).asBitmap().toBytes().override(1500, 1500).atMost().into(new SimpleTarget<byte[]>() {
+                        Glide.with(GroupActivity.this).load(intentData.getStringExtra("image2")).asBitmap().toBytes(Bitmap.CompressFormat.JPEG, 80).atMost().override(1200, 1200).into(new SimpleTarget<byte[]>() {
                             @Override
                             public void onResourceReady(byte[] resource, GlideAnimation<? super byte[]> glideAnimation) {
                                 image2encoded = Base64.encodeToString(resource, Base64.DEFAULT);
                                 if (count > 2)
-                                    Glide.with(GroupActivity.this).load(intentData.getStringExtra("image3")).asBitmap().toBytes().override(1500, 1500).atMost().into(new SimpleTarget<byte[]>() {
+                                    Glide.with(GroupActivity.this).load(intentData.getStringExtra("image3")).asBitmap().toBytes(Bitmap.CompressFormat.JPEG, 80).atMost().override(1200, 1200).into(new SimpleTarget<byte[]>() {
                                         @Override
                                         public void onResourceReady(byte[] resource, GlideAnimation<? super byte[]> glideAnimation) {
                                             image3encoded = Base64.encodeToString(resource, Base64.DEFAULT);
                                             if (count > 3)
-                                                Glide.with(GroupActivity.this).load(intentData.getStringExtra("image4")).asBitmap().toBytes().override(1500, 1500).atMost().into(new SimpleTarget<byte[]>() {
+                                                Glide.with(GroupActivity.this).load(intentData.getStringExtra("image4")).asBitmap().toBytes(Bitmap.CompressFormat.JPEG, 80).atMost().override(1200, 1200).into(new SimpleTarget<byte[]>() {
                                                     @Override
                                                     public void onResourceReady(byte[] resource, GlideAnimation<? super byte[]> glideAnimation) {
                                                         image4encoded = Base64.encodeToString(resource, Base64.DEFAULT);
@@ -290,7 +292,7 @@ public class GroupActivity extends AppCompatActivity {
     private void uploadGroup() {
 
         Intent data = intentData;
-        showUploading();
+        //showUploading();
         AndroidNetworking.post("https://www.reweyou.in/google/create_threads.php")
                 .addBodyParameter("groupname", "Photography")
                 .addBodyParameter("description", data.getStringExtra("description"))
@@ -339,7 +341,7 @@ public class GroupActivity extends AppCompatActivity {
 
     private void showUploadSuccessful() {
         uploadingpd.setVisibility(View.INVISIBLE);
-        uploadingtext.setText("Upload successful");
+        uploadingtext.setText("Upload successful.");
         okbbutton.setTag("1");
         okbbutton.setText("OK");
         okbbutton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_check_layer, 0, 0, 0);
@@ -349,7 +351,7 @@ public class GroupActivity extends AppCompatActivity {
 
     private void showFailedUpload() {
         uploadingpd.setVisibility(View.INVISIBLE);
-        uploadingtext.setText("Upload failed");
+        uploadingtext.setText("Upload failed.");
         okbbutton.setText("Retry");
 
         okbbutton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_refresh_layer, 0, 0, 0);

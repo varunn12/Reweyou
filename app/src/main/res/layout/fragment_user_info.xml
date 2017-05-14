@@ -86,10 +86,31 @@
                 android:textColor="#616161"
                 android:textSize="13dp" />
 
+            <TextView
+                android:id="@+id/userlevel"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/background_user_level"
+                android:drawableLeft="@drawable/ic_user_level_layer"
+                android:drawablePadding="4dp"
+                android:gravity="center"
+                android:lines="1"
+                android:maxLines="5"
+                android:paddingBottom="4dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="14dp"
+                android:paddingTop="4dp"
+                android:text="Expert"
+                android:textColor="#fff"
+                android:textSize="13dp"
+                android:textStyle="bold" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.7dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="14dp"
                 android:alpha="0.44"
                 android:background="@color/divider" />
 

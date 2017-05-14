@@ -28,7 +28,6 @@ import java.util.List;
 
 import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.adapter.ForumAdapter;
-import in.reweyou.reweyou.adapter.SuggestAdapter;
 import in.reweyou.reweyou.adapter.YourGroupsAdapter;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.model.GroupModel;
@@ -45,9 +44,6 @@ public class ExploreFragment extends Fragment {
     private RecyclerView recyclerViewExplore;
     private TextView exploretextview;
     private RecyclerView recyclerViewYourGroups;
-    private RecyclerView recyclerViewSuggested;
-    private SuggestAdapter adapterSuggested;
-    private TextView suggesttextview;
     private YourGroupsAdapter adapterYourGroups;
     private TextView yourgroupstextview;
     private UserSessionManager userSessionManager;
@@ -66,10 +62,8 @@ public class ExploreFragment extends Fragment {
 
         View layout = inflater.inflate(R.layout.fragment_explore, container, false);
         recyclerViewExplore = (RecyclerView) layout.findViewById(R.id.explore_recycler_view);
-        recyclerViewSuggested = (RecyclerView) layout.findViewById(R.id.explore_recycler_view_suggested);
         recyclerViewYourGroups = (RecyclerView) layout.findViewById(R.id.explore_recycler_view_your_groups);
         exploretextview = (TextView) layout.findViewById(R.id.aaa);
-        suggesttextview = (TextView) layout.findViewById(R.id.text2);
         yourgroupstextview = (TextView) layout.findViewById(R.id.text3);
         recyclerViewYourGroups.setNestedScrollingEnabled(false);
 
@@ -79,24 +73,20 @@ public class ExploreFragment extends Fragment {
                 break;
             case 1:
                 exploretextview.setTextColor(mContext.getResources().getColor(R.color.background_blue_explore));
-                suggesttextview.setTextColor(mContext.getResources().getColor(R.color.background_blue_explore));
                 yourgroupstextview.setTextColor(mContext.getResources().getColor(R.color.background_blue_explore));
                 break;
             case 3:
                 exploretextview.setTextColor(mContext.getResources().getColor(R.color.background_pink_explore));
-                suggesttextview.setTextColor(mContext.getResources().getColor(R.color.background_pink_explore));
                 yourgroupstextview.setTextColor(mContext.getResources().getColor(R.color.background_pink_explore));
                 break;
             case 2:
                 exploretextview.setTextColor(mContext.getResources().getColor(R.color.background_green_explore));
-                suggesttextview.setTextColor(mContext.getResources().getColor(R.color.background_green_explore));
                 yourgroupstextview.setTextColor(mContext.getResources().getColor(R.color.background_green_explore));
                 break;
         }
 
         recyclerViewExplore.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
         ////
-        recyclerViewSuggested.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, true));
         recyclerViewYourGroups.setLayoutManager(new GridLayoutManager(mContext, 2));
         return layout;
     }
@@ -132,10 +122,8 @@ public class ExploreFragment extends Fragment {
 
     private void getDataFromServer() {
         adapterExplore = new ForumAdapter(mContext);
-        adapterSuggested = new SuggestAdapter(mContext);
         adapterYourGroups = new YourGroupsAdapter(mContext);
         recyclerViewExplore.setAdapter(adapterExplore);
-        recyclerViewSuggested.setAdapter(adapterSuggested);
         recyclerViewYourGroups.setAdapter(adapterYourGroups);
 
         AndroidNetworking.post("https://www.reweyou.in/google/discover_groups.php")
@@ -176,7 +164,7 @@ public class ExploreFragment extends Fragment {
                             for (int i = 0; i < followjsonarray.length(); i++) {
                                 JSONObject jsonObject = followjsonarray.getJSONObject(i);
                                 GroupModel groupModel = gson.fromJson(jsonObject.toString(), GroupModel.class);
-                                followlist.add(groupModel);
+                                followlist.add(0, groupModel);
                             }
                             adapterExplore.add(explorelist);
                             adapterYourGroups.add(followlist);
@@ -189,7 +177,7 @@ public class ExploreFragment extends Fragment {
 
                     @Override
                     public void onError(ANError anError) {
-
+                        Log.d(TAG, "onError: " + anError);
                     }
                 });
 
