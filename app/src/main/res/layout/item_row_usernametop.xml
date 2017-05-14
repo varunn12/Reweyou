@@ -1,0 +1,62 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="56dp"
+    android:paddingLeft="16dp">
+
+    <in.reweyou.reweyou.customView.CircularImageView
+        android:id="@+id/profilepic"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/download"
+        card_view:myborderWidth="0dp" />
+
+    <TextView
+        android:id="@+id/usernamee"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="11dp"
+        android:layout_toRightOf="@+id/profilepic"
+        android:paddingLeft="12dp"
+        android:text="Username"
+        android:textColor="#424242"
+        android:textSize="13dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/userlevel"
+        android:layout_width="wrap_content"
+        android:layout_height="18dp"
+        android:layout_gravity="center"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@id/usernamee"
+        android:background="@drawable/background_user_level"
+        android:drawableLeft="@drawable/ic_user_level_layer_small"
+        android:drawablePadding="2dp"
+        android:gravity="center_vertical"
+        android:lines="1"
+
+        android:maxLines="5"
+        android:paddingLeft="5dp"
+        android:paddingRight="7dp"
+
+        android:text="Expert"
+        android:textColor="#fff"
+        android:textSize="10.5dp"
+        android:textStyle="bold" />
+
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/usernamee"
+        android:layout_toRightOf="@+id/profilepic"
+        android:gravity="top"
+        android:paddingLeft="12dp"
+        android:text="2 hour ago"
+        android:textColor="#9e9e9e"
+        android:textSize="12dp" />
+</RelativeLayout>
