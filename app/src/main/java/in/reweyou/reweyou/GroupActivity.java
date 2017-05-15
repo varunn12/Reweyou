@@ -68,6 +68,7 @@ public class GroupActivity extends AppCompatActivity {
     private String groupname;
     private String groupmembers;
     private String groupimage;
+    private boolean isfollowed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +86,7 @@ public class GroupActivity extends AppCompatActivity {
             groupid = getIntent().getStringExtra("groupid");
             groupmembers = getIntent().getStringExtra("members");
             groupimage = getIntent().getStringExtra("image");
+            isfollowed = getIntent().getBooleanExtra("follow", false);
 
             getSupportActionBar().setTitle(groupname);
 
@@ -397,6 +399,7 @@ public class GroupActivity extends AppCompatActivity {
                 bundle.putString("groupid", groupid);
                 bundle.putString("members", groupmembers);
                 bundle.putString("image", groupimage);
+                bundle.putBoolean("follow", isfollowed);
 
                 GroupInfoFragment fragment = new GroupInfoFragment();
                 fragment.setArguments(bundle);

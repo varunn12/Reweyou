@@ -10,171 +10,188 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:layout_marginLeft="2dp"
-        android:layout_marginRight="2dp"
-        android:layout_marginTop="4dp"
-        app:cardCornerRadius="2dp"
-        app:cardElevation="4dp"
-        app:cardUseCompatPadding="true">
 
-        <LinearLayout
+        <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:background="#fff"
-            android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/image"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="32dp"
-                android:background="@drawable/border_green"
-                android:padding="1dp"
-
-                android:scaleType="fitXY" />
-
-            <TextView
-                android:id="@+id/groupname"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:drawablePadding="6dp"
-                android:gravity="center"
-                android:text="Rajneeti"
-                android:textColor="#424242"
-                android:textSize="16dp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/shortdescription"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:gravity="center"
-                android:maxLines="5"
-                android:text="Modi's victory indeed transforms India's political landscape. BJP's dominance is now a fact of India's political life that everyone "
-                android:textColor="#616161"
-                android:textSize="13dp" />
+            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_marginTop="4dp"
+            app:cardCornerRadius="2dp"
+            app:cardElevation="4dp"
+            app:cardUseCompatPadding="true">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:background="#fff"
+                android:orientation="vertical">
 
-                android:orientation="horizontal">
+                <ImageView
+                    android:id="@+id/image"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="32dp"
+                    android:background="@drawable/border_green"
+                    android:padding="1dp"
+
+                    android:scaleType="fitXY" />
+
+                <TextView
+                    android:id="@+id/groupname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:drawablePadding="6dp"
+                    android:gravity="center"
+                    android:text="Rajneeti"
+                    android:textColor="#424242"
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/shortdescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:maxLines="5"
+                    android:text="Modi's victory indeed transforms India's political landscape. BJP's dominance is now a fact of India's political life that everyone "
+                    android:textColor="#616161"
+                    android:textSize="13dp" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:orientation="vertical">
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="16dp"
 
-                    <TextView
-                        android:id="@+id/members"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:gravity="center"
-                        android:paddingLeft="4dp"
-                        android:text="105"
-                        android:textColor="#424242"
-                        android:textSize="18dp"
-                        android:textStyle="bold"/>
+                        android:layout_gravity="start"
+                        android:orientation="vertical">
 
-                    <TextView
+                        <TextView
+                            android:id="@+id/members"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:gravity="center"
+                            android:paddingLeft="4dp"
+                            android:text="105"
+                            android:textColor="#424242"
+                            android:textSize="18dp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:paddingLeft="4dp"
+                            android:text="Members"
+                            android:textColor="#757575"
+                            android:textSize="14dp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="0.7dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="24dp"
+                        android:layout_marginRight="22dp"
+                        android:background="@color/divider" />
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:paddingLeft="4dp"
-                        android:text="Members"
-                        android:textColor="#757575"
-                        android:textSize="14dp"
-                        android:textStyle="bold" />
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/threads"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:gravity="center"
+                            android:paddingLeft="4dp"
+                            android:text="23"
+                            android:textColor="#424242"
+                            android:textSize="18dp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:paddingLeft="4dp"
+                            android:text="Threads"
+                            android:textColor="#757575"
+                            android:textSize="14dp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
                 </LinearLayout>
 
-                <View
-                    android:layout_width="0.7dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="24dp"
-                    android:layout_marginRight="22dp"
-                    android:background="@color/divider" />
-                <LinearLayout
-                    android:layout_width="wrap_content"
+                <TextView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <TextView
-                        android:id="@+id/threads"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:gravity="center"
-                        android:paddingLeft="4dp"
-                        android:text="23"
-                        android:textColor="#424242"
-                        android:textSize="18dp"
-                        android:textStyle="bold"/>
+                    android:layout_marginTop="18dp"
+                    android:text="DESCRIPTION"
+                    android:textColor="@color/main_background_pink_alpha"
+                    android:textSize="12dp"
+                    android:textStyle="bold" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:paddingLeft="4dp"
-                        android:text="Threads"
-                        android:textColor="#757575"
-                        android:textSize="14dp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
-                android:text="DESCRIPTION"
-                android:textColor="@color/main_background_pink_alpha"
-                android:textSize="12dp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="It is very often said that politics is about power.[1] A political system is a framework which defines acceptable political methods within a given society. History of political thought can be traced back to early antiquity, with seminal works such as Plato's Republic, Aristotle's Politics and the works of Confucius.
+                <TextView
+                    android:id="@+id/description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="It is very often said that politics is about power.[1] A political system is a framework which defines acceptable political methods within a given society. History of political thought can be traced back to early antiquity, with seminal works such as Plato's Republic, Aristotle's Politics and the works of Confucius.
 
 Formal Politics refers to the operation of a constitutional system of government and publicly defined institutions and procedures.[1] Political parties, public policy or discussions about war and foreign affairs would fall under the category of Formal Politics.[1] Many people view formal politics as something outside of themselves, but that can still affect their daily lives.[1]
 
 Semi-formal Politics is Politics in government associations such as neighborhood associations, or student governments where student government political party politics is often important."
 
-                android:textColor="#616161"
-                android:textSize="13dp" />
+                    android:textColor="#616161"
+                    android:textSize="13dp" />
 
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="16dp"
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="16dp"
-                android:layout_marginTop="24dp"
-                android:background="@drawable/border_pink"
-                android:text="Unfollow"
-                android:textAllCaps="false"
-                android:textColor="@color/main_background_pink_alpha"
-                android:textSize="13dp" />
+                    android:layout_marginTop="16dp">
 
-        </LinearLayout>
-    </android.support.v7.widget.CardView>
+                    <Button
+                        android:id="@+id/btn_follow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:layout_centerInParent="true"
+                        android:background="@drawable/rectangular_border_pink"
+                        android:elevation="0dp"
+                        android:text="Unfollow"
+                        android:textAllCaps="false"
+                        android:textColor="@color/main_background_pink_alpha"
+                        android:textSize="13dp" />
+
+                    <ProgressBar
+                        android:id="@+id/pd"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_centerInParent="true"
+                        android:visibility="gone" />
+                </RelativeLayout>
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
 
     </LinearLayout>
 

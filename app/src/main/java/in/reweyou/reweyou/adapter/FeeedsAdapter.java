@@ -20,6 +20,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.StringRequestListener;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -31,6 +35,7 @@ import java.util.List;
 
 import in.reweyou.reweyou.CommentActivity;
 import in.reweyou.reweyou.R;
+import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.model.ThreadModel;
 import in.reweyou.reweyou.utils.Utils;
 
@@ -47,13 +52,16 @@ public class FeeedsAdapter extends RecyclerView.Adapter<FeeedsAdapter.BaseViewHo
     private static final int VIEW_TYPE_TEXT = 25;
     private static final int VIEW_TYPE_LINK = 26;
     private static final int VIEW_TYPE_YOUTUBE_LINK = 27;
+    private static final String TAG = FeeedsAdapter.class.getName();
 
     private final Context mContext;
+    private final UserSessionManager userSessionManager;
     List<ThreadModel> messagelist;
 
     public FeeedsAdapter(Context context) {
         this.mContext = context;
         this.messagelist = new ArrayList<>();
+        userSessionManager = new UserSessionManager(mContext);
 
     }
 
@@ -86,7 +94,27 @@ public class FeeedsAdapter extends RecyclerView.Adapter<FeeedsAdapter.BaseViewHo
         holder.username.setText(messagelist.get(position).getName());
         holder.commentnum.setText(messagelist.get(position).getComments());
         Glide.with(mContext).load(messagelist.get(position).getProfilepic()).into(holder.profileimage);
+        if (messagelist.get(position).getLiketype().equals("like1")) {
+            holder.like1.animate().alpha(1.0f).setDuration(10).scaleX(1.0f).scaleY(1.0f).start();
+            holder.like2.setEnabled(false);
+            holder.like3.setEnabled(false);
 
+            holder.likenumber1.setAlpha(1.0f);
+        } else if (messagelist.get(position).getLiketype().equals("like2")) {
+            holder.like2.animate().alpha(1.0f).setDuration(10).scaleX(1.0f).scaleY(1.0f).start();
+            holder.like1.setEnabled(false);
+            holder.like3.setEnabled(false);
+
+            holder.likenumber2.setAlpha(1.0f);
+
+        } else if (messagelist.get(position).getLiketype().equals("like3")) {
+            holder.like3.animate().alpha(1.0f).setDuration(10).scaleX(1.0f).scaleY(1.0f).start();
+            holder.like2.setEnabled(false);
+            holder.like1.setEnabled(false);
+
+            holder.likenumber3.setAlpha(1.0f);
+
+        }
 
         switch (getItemViewType(position)) {
             case VIEW_TYPE_IMAGE_1:
@@ -159,6 +187,67 @@ public class FeeedsAdapter extends RecyclerView.Adapter<FeeedsAdapter.BaseViewHo
 
     }
 
+
+    @Override
+    public void onBindViewHolder(BaseViewHolder holder, int position, List<Object> payloads) {
+
+        if (payloads.contains("like1")) {
+            holder.like1.animate().alpha(1.0f).setDuration(100).rotationBy(360).scaleX(1.0f).scaleY(1.0f).start();
+            holder.like2.setEnabled(false);
+            holder.like3.setEnabled(false);
+
+            holder.likenumber1.setAlpha(1.0f);
+            // messagelist.get(position).setUpvotes(String.valueOf(Integer.parseInt(messagelist.get(position).getUpvotes())+1));
+            //  holder.likenumber1.setText(messagelist.get(position).getUpvotes());
+            messagelist.get(position).setLiketype("like1");
+        } else if (payloads.contains("like2")) {
+            holder.like2.animate().alpha(1.0f).setDuration(100).rotationBy(360).scaleX(1.0f).scaleY(1.0f).start();
+            holder.like1.setEnabled(false);
+            holder.like3.setEnabled(false);
+
+            holder.likenumber2.setAlpha(1.0f);
+            messagelist.get(position).setLiketype("like2");
+
+        } else if (payloads.contains("like3")) {
+            holder.like3.animate().alpha(1.0f).setDuration(100).rotationBy(360).scaleX(1.0f).scaleY(1.0f).start();
+            holder.like1.setEnabled(false);
+            holder.like2.setEnabled(false);
+            holder.likenumber3.setAlpha(1.0f);
+            messagelist.get(position).setLiketype("like3");
+
+        } else if (payloads.contains("like1unlike")) {
+            holder.like1.animate().alpha(0.3f).setDuration(100).scaleX(0.8f).scaleY(0.8f).start();
+            holder.like2.setEnabled(true);
+            holder.like3.setEnabled(true);
+
+            holder.likenumber1.setAlpha(0.3f);
+            Toast.makeText(mContext, "couldn't connect", Toast.LENGTH_SHORT).show();
+            messagelist.get(position).setLiketype("");
+
+            // messagelist.get(position).setUpvotes(String.valueOf(Integer.parseInt(messagelist.get(position).getUpvotes())+1));
+            //  holder.likenumber1.setText(messagelist.get(position).getUpvotes());
+        } else if (payloads.contains("like2unlike")) {
+            holder.like2.animate().alpha(0.3f).setDuration(100).scaleX(0.8f).scaleY(0.8f).start();
+            holder.like1.setEnabled(true);
+            holder.like3.setEnabled(true);
+
+            holder.likenumber2.setAlpha(0.3f);
+            messagelist.get(position).setLiketype("");
+
+            Toast.makeText(mContext, "couldn't connect", Toast.LENGTH_SHORT).show();
+        } else if (payloads.contains("like3unlike")) {
+            holder.like3.animate().alpha(0.3f).setDuration(100).scaleX(0.8f).scaleY(0.8f).start();
+            holder.like2.setEnabled(true);
+            holder.like1.setEnabled(true);
+
+            holder.likenumber3.setAlpha(0.3f);
+            messagelist.get(position).setLiketype("");
+
+            Toast.makeText(mContext, "couldn't connect", Toast.LENGTH_SHORT).show();
+        } else
+            super.onBindViewHolder(holder, position, payloads);
+    }
+
     @Override
     public int getItemViewType(int position) {
         String viewty = messagelist.get(position).getType();
@@ -194,6 +283,30 @@ public class FeeedsAdapter extends RecyclerView.Adapter<FeeedsAdapter.BaseViewHo
         notifyDataSetChanged();
     }
 
+    private void sendrequestforlike(final int adapterPosition, final String liketype) {
+        //  uid, liketype, commentid/replyid/threadid ye params hai aur like.php url hai
+
+        AndroidNetworking.post("https://www.reweyou.in/google/like.php")
+                .addBodyParameter("uid", userSessionManager.getUID())
+                .addBodyParameter("liketype", liketype)
+                .addBodyParameter("threadid", messagelist.get(adapterPosition).getThreadid())
+                .addBodyParameter("authtoken", userSessionManager.getAuthToken())
+                .setTag("reportlike")
+                .setPriority(Priority.HIGH)
+                .build()
+                .getAsString(new StringRequestListener() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d(TAG, "onResponse: " + response);
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        Log.d(TAG, "onError: " + anError);
+                        notifyItemChanged(adapterPosition, liketype + "unlike");
+                    }
+                });
+    }
 
     public class BaseViewHolder extends RecyclerView.ViewHolder {
         private ImageView profileimage, liketemp, comment, like1, like2, like3;
@@ -221,12 +334,8 @@ public class FeeedsAdapter extends RecyclerView.Adapter<FeeedsAdapter.BaseViewHo
                 @Override
                 public void onClick(View v) {
 
-
-                    like1.animate().alpha(1.0f).setDuration(100).rotationBy(360).scaleX(1.0f).scaleY(1.0f).start();
-                    like2.setOnClickListener(null);
-                    like3.setOnClickListener(null);
-
-                    likenumber1.setAlpha(1.0f);
+                    notifyItemChanged(getAdapterPosition(), "like1");
+                    sendrequestforlike(getAdapterPosition(), "like1");
 
                 }
             });
@@ -235,11 +344,9 @@ public class FeeedsAdapter extends RecyclerView.Adapter<FeeedsAdapter.BaseViewHo
                 public void onClick(View v) {
 
 
-                    like2.animate().alpha(1.0f).setDuration(100).rotationBy(360).scaleX(1.0f).scaleY(1.0f).start();
-                    like1.setOnClickListener(null);
-                    like3.setOnClickListener(null);
+                    notifyItemChanged(getAdapterPosition(), "like2");
+                    sendrequestforlike(getAdapterPosition(), "like2");
 
-                    likenumber2.setAlpha(1.0f);
 
                 }
             });
@@ -248,11 +355,8 @@ public class FeeedsAdapter extends RecyclerView.Adapter<FeeedsAdapter.BaseViewHo
                 public void onClick(View v) {
 
 
-                    like3.animate().alpha(1.0f).setDuration(100).rotationBy(360).scaleX(1.0f).scaleY(1.0f).start();
-                    like1.setOnClickListener(null);
-                    like2.setOnClickListener(null);
-
-                    likenumber3.setAlpha(1.0f);
+                    notifyItemChanged(getAdapterPosition(), "like3");
+                    sendrequestforlike(getAdapterPosition(), "like3");
 
                 }
             });
@@ -268,7 +372,6 @@ public class FeeedsAdapter extends RecyclerView.Adapter<FeeedsAdapter.BaseViewHo
 
         }
     }
-
 
     private class Image1ViewHolder extends BaseViewHolder {
         private ImageView image1, wallpaper;

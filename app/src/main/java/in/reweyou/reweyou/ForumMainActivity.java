@@ -180,8 +180,11 @@ public class ForumMainActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             if (requestCode == Picker.PICK_IMAGE_DEVICE) {
                 imagePicker.submit(data);
+            } else if (requestCode == Utils.REQ_CODE_GROP_ACITIVTY) {
+                ((ExploreFragment) pagerAdapter.getRegisteredFragment(1)).refreshlist();
             }
         }
+
 
     }
 

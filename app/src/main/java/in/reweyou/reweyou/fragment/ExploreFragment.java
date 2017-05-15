@@ -184,4 +184,8 @@ public class ExploreFragment extends Fragment {
 
     }
 
+    public void refreshlist() {
+        Log.d(TAG, "refreshlist: reached");
+        getDataFromServer();
+    }
 }

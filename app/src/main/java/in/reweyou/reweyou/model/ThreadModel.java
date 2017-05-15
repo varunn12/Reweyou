@@ -21,6 +21,8 @@ public class ThreadModel {
     private String type;
     private String upvotes;
     private String comments;
+    private String liketype = "";
+
     private String linkdes = "";
     private String linkhead = "";
 
@@ -93,8 +95,20 @@ public class ThreadModel {
         return upvotes;
     }
 
+    public void setUpvotes(String upvotes) {
+        this.upvotes = upvotes;
+    }
+
     public String getYoutubelink() {
         return youtubelink;
+    }
+
+    public String getLiketype() {
+        return liketype;
+    }
+
+    public void setLiketype(String liketype) {
+        this.liketype = liketype;
     }
 
 }

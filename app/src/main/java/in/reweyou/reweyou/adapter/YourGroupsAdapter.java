@@ -1,5 +1,6 @@
 package in.reweyou.reweyou.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +19,7 @@ import java.util.List;
 import in.reweyou.reweyou.GroupActivity;
 import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.model.GroupModel;
+import in.reweyou.reweyou.utils.Utils;
 
 /**
  * Created by master on 1/5/17.
@@ -82,7 +84,8 @@ public class YourGroupsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     i.putExtra("groupid", messagelist.get(getAdapterPosition()).getGroupId());
                     i.putExtra("image", messagelist.get(getAdapterPosition()).getImage());
                     i.putExtra("members", messagelist.get(getAdapterPosition()).getMembers());
-                    context.startActivity(i);
+                    i.putExtra("follow", true);
+                    ((Activity) context).startActivityForResult(i, Utils.REQ_CODE_GROP_ACITIVTY);
                     //  i.putExtra("threads",messagelist.get(getAdapterPosition()).ge);
 
                 }
