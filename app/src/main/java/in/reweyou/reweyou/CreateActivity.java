@@ -79,6 +79,8 @@ public class CreateActivity extends SlidingActivity {
     private String image3url = "";
     private String image4url = "";
     private LinearLayout ll, l2;
+    private String linkhead = "";
+    private String linkdesc = "";
 
     @Override
     protected void configureScroller(MultiShrinkScroller scroller) {
@@ -215,6 +217,8 @@ public class CreateActivity extends SlidingActivity {
             Intent intent = new Intent();
             intent.putExtra("description", edittextdescription.getText().toString());
             intent.putExtra("link", link);
+            intent.putExtra("linkhead", linkhead);
+            intent.putExtra("linkdesc", linkdesc);
             intent.putExtra("counter", counter - 1);
             intent.putExtra("image1", image1url);
             intent.putExtra("image2", image2url);
@@ -381,10 +385,14 @@ public class CreateActivity extends SlidingActivity {
                             String description = jsonObject.getString("description");
 
 
-                            if (title != null)
+                            if (title != null) {
+                                linkhead = title;
                                 headlinelink.setText(title);
-                            if (description != null)
+                            }
+                            if (description != null) {
+                                linkdesc = description;
                                 descriptionlink.setText(description);
+                            }
                             if (link != null)
                                 linklink.setText(reallink);
 

@@ -47,6 +47,7 @@ public class ForumMainActivity extends AppCompatActivity {
     private ImagePicker imagePicker;
     private PagerAdapter pagerAdapter;
     private int positionFragment = -1;
+    private ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +58,7 @@ public class ForumMainActivity extends AppCompatActivity {
         ImageView back = (ImageView) findViewById(R.id.backgroundimageview);
 
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
+        viewPager = (ViewPager) findViewById(R.id.viewPager);
         viewPager.setOffscreenPageLimit(3);
         pagerAdapter = new PagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pagerAdapter);
@@ -232,6 +233,8 @@ public class ForumMainActivity extends AppCompatActivity {
 
     public void showExploreGroupFragment() {
 
+        viewPager.setCurrentItem(1);
+        ((ExploreFragment) pagerAdapter.getRegisteredFragment(1)).refreshlist();
     }
 
     private class PagerAdapter extends FragmentStatePagerAdapter {

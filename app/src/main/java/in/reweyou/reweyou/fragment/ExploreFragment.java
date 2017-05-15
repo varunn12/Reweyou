@@ -158,7 +158,7 @@ public class ExploreFragment extends Fragment {
                             for (int i = 0; i < explorejsonarray.length(); i++) {
                                 JSONObject jsonObject = explorejsonarray.getJSONObject(i);
                                 GroupModel groupModel = gson.fromJson(jsonObject.toString(), GroupModel.class);
-                                explorelist.add(groupModel);
+                                explorelist.add(0, groupModel);
                             }
 
                             for (int i = 0; i < followjsonarray.length(); i++) {

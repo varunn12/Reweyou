@@ -126,9 +126,11 @@ public class GroupActivity extends AppCompatActivity {
         okbbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (okbbutton.getTag().equals("1"))
+                if (okbbutton.getTag().equals("1")) {
                     uploadingContainer.setVisibility(View.GONE);
+                }
                 else if (okbbutton.getTag().equals("0")) {
+                    showUploading();
                     uploadGroup();
 
                 }
@@ -294,11 +296,14 @@ public class GroupActivity extends AppCompatActivity {
     private void uploadGroup() {
 
         Intent data = intentData;
+        Log.d(TAG, "uploadGroup: " + data.getStringExtra("linkdesc") + "****" + data.getStringExtra("linkhead"));
         //showUploading();
         AndroidNetworking.post("https://www.reweyou.in/google/create_threads.php")
-                .addBodyParameter("groupname", "Photography")
+                .addBodyParameter("groupname", groupname)
                 .addBodyParameter("description", data.getStringExtra("description"))
                 .addBodyParameter("link", data.getStringExtra("link"))
+                .addBodyParameter("linkdesc", data.getStringExtra("linkdesc"))
+                .addBodyParameter("linkhead", data.getStringExtra("linkhead"))
                 .addBodyParameter("image1", image1encoded)
                 .addBodyParameter("image2", image2encoded)
                 .addBodyParameter("image3", image3encoded)
@@ -342,12 +347,16 @@ public class GroupActivity extends AppCompatActivity {
     }
 
     private void showUploadSuccessful() {
+
         uploadingpd.setVisibility(View.INVISIBLE);
         uploadingtext.setText("Upload successful.");
         okbbutton.setTag("1");
         okbbutton.setText("OK");
         okbbutton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_check_layer, 0, 0, 0);
         okbbutton.setVisibility(View.VISIBLE);
+
+        ((ForumFragment) pagerAdapter.getRegisteredFragment(1)).refreshList();
+
 
     }
 

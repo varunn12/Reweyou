@@ -36,6 +36,7 @@ public class ForumFragment extends Fragment {
     private static final String TAG = ForumFragment.class.getName();
     private Activity mContext;
     private RecyclerView recyclerView;
+    private FeeedsAdapter feeedsAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -87,30 +88,40 @@ public class ForumFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (isAdded()) {
-            final FeeedsAdapter feeedsAdapter = new FeeedsAdapter(mContext);
+            feeedsAdapter = new FeeedsAdapter(mContext);
             recyclerView.setAdapter(feeedsAdapter);
-            AndroidNetworking.get("https://www.reweyou.in/google/list_threads.php")
-                    .setTag("report")
-                    .setPriority(Priority.HIGH)
-                    .build()
-                    .getAsParsed(new TypeToken<List<ThreadModel>>() {
-                    }, new ParsedRequestListener<List<ThreadModel>>() {
 
-                        @Override
-                        public void onResponse(final List<ThreadModel> list) {
-                            feeedsAdapter.add(list);
-                        }
+            getData();
 
-                        @Override
-                        public void onError(final ANError anError) {
-                            Log.e(TAG, "run: error: " + anError.getErrorDetail());
-
-
-                        }
-                    });
 
         }
     }
 
+    private void getData() {
+        AndroidNetworking.get("https://www.reweyou.in/google/list_threads.php")
+                .setTag("report")
+                .setPriority(Priority.HIGH)
+                .build()
+                .getAsParsed(new TypeToken<List<ThreadModel>>() {
+                }, new ParsedRequestListener<List<ThreadModel>>() {
 
+                    @Override
+                    public void onResponse(final List<ThreadModel> list) {
+                        feeedsAdapter.add(list);
+                    }
+
+                    @Override
+                    public void onError(final ANError anError) {
+                        Log.e(TAG, "run: error: " + anError.getErrorDetail());
+
+
+                    }
+                });
+    }
+
+
+    public void refreshList() {
+        getData();
+
+    }
 }

@@ -23,11 +23,11 @@ public class ThreadModel {
     private String comments;
     private String liketype = "";
 
-    private String linkdes = "";
+    private String linkdesc = "";
     private String linkhead = "";
 
-    public String getLinkdes() {
-        return linkdes;
+    public String getLinkdesc() {
+        return linkdesc;
     }
 
     public String getLinkhead() {

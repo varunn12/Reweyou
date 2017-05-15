@@ -5,6 +5,7 @@ import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -151,7 +152,7 @@ public class FeeedsAdapter extends RecyclerView.Adapter<FeeedsAdapter.BaseViewHo
 
     private void onbindlink(LinkViewHolder linkViewHolder, int position) {
         linkViewHolder.linkheadline.setText(messagelist.get(position).getLinkhead());
-        linkViewHolder.linkdescription.setText(messagelist.get(position).getLinkdes());
+        linkViewHolder.linkdescription.setText(messagelist.get(position).getLinkdesc());
         linkViewHolder.link.setText(messagelist.get(position).getLink());
 
     }
@@ -476,7 +477,10 @@ public class FeeedsAdapter extends RecyclerView.Adapter<FeeedsAdapter.BaseViewHo
             container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    if (messagelist.get(getAdapterPosition()).getLink() != null) {
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(messagelist.get(getAdapterPosition()).getLink()));
+                        mContext.startActivity(browserIntent);
+                    }
                 }
             });
         }

@@ -64,12 +64,12 @@ public class GroupInfoFragment extends Fragment {
             isfollowed = getArguments().getBoolean("follow");
 
             if (isfollowed) {
-                btnfollow.setText("Unfollow");
+                btnfollow.setText("Leave");
                 btnfollow.setTextColor(mContext.getResources().getColor(R.color.main_background_pink));
                 btnfollow.setBackground(mContext.getResources().getDrawable(R.drawable.rectangular_border_pink));
 
             } else {
-                btnfollow.setText("Follow");
+                btnfollow.setText("Join");
                 btnfollow.setTextColor(mContext.getResources().getColor(R.color.white));
                 btnfollow.setBackground(mContext.getResources().getDrawable(R.drawable.rectangular_solid_pink));
             }
@@ -93,7 +93,7 @@ public class GroupInfoFragment extends Fragment {
                                 public void onResponse(String response) {
                                     Log.d(TAG, "onResponse: " + response);
                                     if (response.equals("Followed")) {
-                                        btnfollow.setText("Unfollow");
+                                        btnfollow.setText("Leave");
                                         btnfollow.setTextColor(mContext.getResources().getColor(R.color.main_background_pink));
                                         btnfollow.setBackground(mContext.getResources().getDrawable(R.drawable.rectangular_border_pink));
 
@@ -102,7 +102,7 @@ public class GroupInfoFragment extends Fragment {
                                         Toast.makeText(mContext, "You are now following " + groupname, Toast.LENGTH_SHORT).show();
                                         mContext.setResult(Activity.RESULT_OK);
                                     } else if (response.equals("Unfollowed")) {
-                                        btnfollow.setText("Follow");
+                                        btnfollow.setText("Join");
                                         btnfollow.setTextColor(mContext.getResources().getColor(R.color.white));
                                         btnfollow.setBackground(mContext.getResources().getDrawable(R.drawable.rectangular_solid_pink));
                                         btnfollow.setVisibility(View.VISIBLE);
