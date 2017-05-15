@@ -104,7 +104,9 @@ public class ThreadModel {
     }
 
     public String getLiketype() {
+        if (liketype != null)
         return liketype;
+        else return "";
     }
 
     public void setLiketype(String liketype) {

@@ -47,7 +47,7 @@
             android:layout_toLeftOf="@+id/image"
             android:ellipsize="end"
             android:maxLines="5"
-            android:paddingBottom="10dp"
+            android:paddingBottom="6dp"
             android:paddingLeft="14dp"
             android:paddingRight="14dp"
             android:paddingTop="4dp"
@@ -79,7 +79,7 @@ terro"
                 android:paddingBottom="4dp"
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp"
-                android:paddingTop="4dp">
+                android:paddingTop="2dp">
 
 
                 <TextView
@@ -92,7 +92,7 @@ terro"
                     android:paddingBottom="8dp"
                     android:paddingTop="8dp"
                     android:textColor="#424242"
-                    android:textSize="16dp"
+                    android:textSize="14dp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -105,7 +105,7 @@ terro"
 
                     android:paddingBottom="8dp"
                     android:textColor="#424242"
-                    android:textSize="14dp" />
+                    android:textSize="13dp" />
 
                 <TextView
                     android:id="@+id/linklink"
@@ -118,7 +118,7 @@ terro"
                     android:paddingBottom="8dp"
                     android:paddingRight="16dp"
                     android:textColor="#757575"
-                    android:textSize="14dp"
+                    android:textSize="13dp"
                     android:textStyle="italic" />
 
 

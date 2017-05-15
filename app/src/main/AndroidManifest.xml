@@ -3,7 +3,6 @@
     package="in.reweyou.reweyou">
 
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
@@ -203,7 +202,7 @@
         <activity
             android:name=".ForumMainActivity"
             android:label="@string/title_activity_forum_main"
-            android:theme="@style/AppTheme2.NoActionBar"></activity>
+            android:theme="@style/AppTheme2.NoActionBar" />
         <activity
             android:name=".CommentActivity"
             android:excludeFromRecents="true"
@@ -232,7 +231,11 @@
             android:screenOrientation="portrait"
             android:taskAffinity=""
             android:theme="@style/Theme.Sliding.Lights"
-            android:windowSoftInputMode="adjustResize"></activity>
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".EditActivity"
+            android:label="@string/title_activity_edit"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

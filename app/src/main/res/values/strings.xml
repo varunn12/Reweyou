@@ -98,5 +98,6 @@
     <string name="title_activity_group">GroupActivity</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_create">CreateActivity</string>
+    <string name="title_activity_edit">EditActivity</string>
 
 </resources>

@@ -24,6 +24,7 @@ import java.util.List;
 import in.reweyou.reweyou.GroupActivity;
 import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.adapter.FeeedsAdapter;
+import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.model.ThreadModel;
 
 /**
@@ -37,12 +38,13 @@ public class ForumFragment extends Fragment {
     private Activity mContext;
     private RecyclerView recyclerView;
     private FeeedsAdapter feeedsAdapter;
+    private UserSessionManager userSessionManager;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
+        userSessionManager = new UserSessionManager(mContext);
     }
 
     @Nullable
@@ -98,7 +100,9 @@ public class ForumFragment extends Fragment {
     }
 
     private void getData() {
-        AndroidNetworking.get("https://www.reweyou.in/google/list_threads.php")
+        AndroidNetworking.post("https://www.reweyou.in/google/list_threads.php")
+                .addBodyParameter("uid", userSessionManager.getUID())
+                .addBodyParameter("authtoken", userSessionManager.getAuthToken())
                 .setTag("report")
                 .setPriority(Priority.HIGH)
                 .build()

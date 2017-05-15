@@ -95,26 +95,50 @@ public class FeeedsAdapter extends RecyclerView.Adapter<FeeedsAdapter.BaseViewHo
         holder.username.setText(messagelist.get(position).getName());
         holder.commentnum.setText(messagelist.get(position).getComments());
         Glide.with(mContext).load(messagelist.get(position).getProfilepic()).into(holder.profileimage);
+
+
         if (messagelist.get(position).getLiketype().equals("like1")) {
-            holder.like1.animate().alpha(1.0f).setDuration(10).scaleX(1.0f).scaleY(1.0f).start();
+            holder.like1.setImageResource(R.drawable.ic_happy);
+            holder.like2.setImageResource(R.drawable.ic_surprised_small);
+            holder.like3.setImageResource(R.drawable.ic_sad_small);
+            holder.like1.setEnabled(false);
             holder.like2.setEnabled(false);
             holder.like3.setEnabled(false);
-
             holder.likenumber1.setAlpha(1.0f);
+            holder.likenumber2.setAlpha(0.3f);
+            holder.likenumber3.setAlpha(0.3f);
         } else if (messagelist.get(position).getLiketype().equals("like2")) {
-            holder.like2.animate().alpha(1.0f).setDuration(10).scaleX(1.0f).scaleY(1.0f).start();
+            holder.like1.setImageResource(R.drawable.ic_happy_small);
+            holder.like2.setImageResource(R.drawable.ic_surprised);
+            holder.like3.setImageResource(R.drawable.ic_sad_small);
             holder.like1.setEnabled(false);
+            holder.like2.setEnabled(false);
             holder.like3.setEnabled(false);
-
+            holder.likenumber1.setAlpha(0.3f);
             holder.likenumber2.setAlpha(1.0f);
+            holder.likenumber3.setAlpha(0.3f);
 
         } else if (messagelist.get(position).getLiketype().equals("like3")) {
-            holder.like3.animate().alpha(1.0f).setDuration(10).scaleX(1.0f).scaleY(1.0f).start();
-            holder.like2.setEnabled(false);
+            holder.like1.setImageResource(R.drawable.ic_happy_small);
+            holder.like2.setImageResource(R.drawable.ic_surprised_small);
+            holder.like3.setImageResource(R.drawable.ic_sad);
             holder.like1.setEnabled(false);
-
+            holder.like2.setEnabled(false);
+            holder.like3.setEnabled(false);
+            holder.likenumber1.setAlpha(0.3f);
+            holder.likenumber2.setAlpha(0.3f);
             holder.likenumber3.setAlpha(1.0f);
 
+        } else {
+            holder.like1.setImageResource(R.drawable.ic_happy_small);
+            holder.like2.setImageResource(R.drawable.ic_surprised_small);
+            holder.like3.setImageResource(R.drawable.ic_sad_small);
+            holder.like1.setEnabled(true);
+            holder.like2.setEnabled(true);
+            holder.like3.setEnabled(true);
+            holder.likenumber1.setAlpha(0.3f);
+            holder.likenumber2.setAlpha(0.3f);
+            holder.likenumber3.setAlpha(0.3f);
         }
 
         switch (getItemViewType(position)) {
@@ -193,7 +217,8 @@ public class FeeedsAdapter extends RecyclerView.Adapter<FeeedsAdapter.BaseViewHo
     public void onBindViewHolder(BaseViewHolder holder, int position, List<Object> payloads) {
 
         if (payloads.contains("like1")) {
-            holder.like1.animate().alpha(1.0f).setDuration(100).rotationBy(360).scaleX(1.0f).scaleY(1.0f).start();
+            holder.like1.setImageResource(R.drawable.ic_happy);
+            holder.like1.setEnabled(false);
             holder.like2.setEnabled(false);
             holder.like3.setEnabled(false);
 
@@ -202,22 +227,26 @@ public class FeeedsAdapter extends RecyclerView.Adapter<FeeedsAdapter.BaseViewHo
             //  holder.likenumber1.setText(messagelist.get(position).getUpvotes());
             messagelist.get(position).setLiketype("like1");
         } else if (payloads.contains("like2")) {
-            holder.like2.animate().alpha(1.0f).setDuration(100).rotationBy(360).scaleX(1.0f).scaleY(1.0f).start();
+            holder.like2.setImageResource(R.drawable.ic_surprised);
             holder.like1.setEnabled(false);
+            holder.like2.setEnabled(false);
             holder.like3.setEnabled(false);
 
             holder.likenumber2.setAlpha(1.0f);
             messagelist.get(position).setLiketype("like2");
 
         } else if (payloads.contains("like3")) {
-            holder.like3.animate().alpha(1.0f).setDuration(100).rotationBy(360).scaleX(1.0f).scaleY(1.0f).start();
+            holder.like3.setImageResource(R.drawable.ic_sad);
             holder.like1.setEnabled(false);
             holder.like2.setEnabled(false);
+            holder.like3.setEnabled(false);
+
             holder.likenumber3.setAlpha(1.0f);
             messagelist.get(position).setLiketype("like3");
 
         } else if (payloads.contains("like1unlike")) {
-            holder.like1.animate().alpha(0.3f).setDuration(100).scaleX(0.8f).scaleY(0.8f).start();
+            holder.like1.setImageResource(R.drawable.ic_happy_small);
+            holder.like1.setEnabled(true);
             holder.like2.setEnabled(true);
             holder.like3.setEnabled(true);
 
@@ -228,8 +257,9 @@ public class FeeedsAdapter extends RecyclerView.Adapter<FeeedsAdapter.BaseViewHo
             // messagelist.get(position).setUpvotes(String.valueOf(Integer.parseInt(messagelist.get(position).getUpvotes())+1));
             //  holder.likenumber1.setText(messagelist.get(position).getUpvotes());
         } else if (payloads.contains("like2unlike")) {
-            holder.like2.animate().alpha(0.3f).setDuration(100).scaleX(0.8f).scaleY(0.8f).start();
+            holder.like2.setImageResource(R.drawable.ic_surprised_small);
             holder.like1.setEnabled(true);
+            holder.like2.setEnabled(true);
             holder.like3.setEnabled(true);
 
             holder.likenumber2.setAlpha(0.3f);
@@ -237,11 +267,12 @@ public class FeeedsAdapter extends RecyclerView.Adapter<FeeedsAdapter.BaseViewHo
 
             Toast.makeText(mContext, "couldn't connect", Toast.LENGTH_SHORT).show();
         } else if (payloads.contains("like3unlike")) {
-            holder.like3.animate().alpha(0.3f).setDuration(100).scaleX(0.8f).scaleY(0.8f).start();
-            holder.like2.setEnabled(true);
+            holder.like3.setImageResource(R.drawable.ic_sad_small);
             holder.like1.setEnabled(true);
-
+            holder.like2.setEnabled(true);
+            holder.like3.setEnabled(true);
             holder.likenumber3.setAlpha(0.3f);
+
             messagelist.get(position).setLiketype("");
 
             Toast.makeText(mContext, "couldn't connect", Toast.LENGTH_SHORT).show();
