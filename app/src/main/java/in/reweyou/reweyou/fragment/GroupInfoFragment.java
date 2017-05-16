@@ -2,6 +2,7 @@ package in.reweyou.reweyou.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -20,7 +21,9 @@ import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.StringRequestListener;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
+import in.reweyou.reweyou.EditActivity;
 import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.classes.UserSessionManager;
 
@@ -35,6 +38,9 @@ public class GroupInfoFragment extends Fragment {
     private Activity mContext;
     private String groupid;
     private boolean isfollowed;
+    private String groupdes = "";
+    private String grouprules = "";
+    private String adminuid = "";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,12 +54,15 @@ public class GroupInfoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_group_info, container, false);
 
+        TextView edit = (TextView) layout.findViewById(R.id.edit);
+
         final UserSessionManager userSessionManager = new UserSessionManager(mContext);
         final Button btnfollow = (Button) layout.findViewById(R.id.btn_follow);
-        ImageView img = (ImageView) layout.findViewById(R.id.image);
+        final ImageView img = (ImageView) layout.findViewById(R.id.image);
         final TextView groupname = (TextView) layout.findViewById(R.id.groupname);
+        final TextView textrules = (TextView) layout.findViewById(R.id.textrules);
         TextView shortdes = (TextView) layout.findViewById(R.id.shortdescription);
-        TextView description = (TextView) layout.findViewById(R.id.description);
+        final TextView description = (TextView) layout.findViewById(R.id.description);
         final TextView members = (TextView) layout.findViewById(R.id.members);
         TextView threads = (TextView) layout.findViewById(R.id.threads);
         final ProgressBar pd = (ProgressBar) layout.findViewById(R.id.pd);
@@ -62,6 +71,18 @@ public class GroupInfoFragment extends Fragment {
             members.setText(getArguments().getString("members"));
             groupid = getArguments().getString("groupid");
             isfollowed = getArguments().getBoolean("follow");
+            shortdes.setText(getArguments().getString("description"));
+            description.setText(getArguments().getString("rules"));
+            adminuid = getArguments().getString("admin");
+            if (getArguments().getString("rules").isEmpty()) {
+                if (userSessionManager.getUID().equals(adminuid)) {
+
+                    description.setText("Edit to update rules");
+                } else {
+                    textrules.setVisibility(View.GONE);
+                    description.setVisibility(View.GONE);
+                }
+            }
 
             if (isfollowed) {
                 btnfollow.setText("Leave");
@@ -73,7 +94,7 @@ public class GroupInfoFragment extends Fragment {
                 btnfollow.setTextColor(mContext.getResources().getColor(R.color.white));
                 btnfollow.setBackground(mContext.getResources().getDrawable(R.drawable.rectangular_solid_pink));
             }
-            Glide.with(mContext).load(getArguments().getString("image")).into(img);
+            Glide.with(mContext).load(getArguments().getString("image")).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(img);
             btnfollow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -126,6 +147,18 @@ public class GroupInfoFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(mContext, EditActivity.class);
+                i.putExtra("description", groupdes);
+                i.putExtra("image", getArguments().getString("image"));
+                i.putExtra("rules", grouprules);
+                i.putExtra("groupid", groupid);
+                startActivity(i);
+            }
+        });
         return layout;
     }
 

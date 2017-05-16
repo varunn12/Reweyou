@@ -37,7 +37,7 @@ import java.util.List;
 
 import in.reweyou.reweyou.fragment.CreateFragment;
 import in.reweyou.reweyou.fragment.ExploreFragment;
-import in.reweyou.reweyou.fragment.ForumFragment;
+import in.reweyou.reweyou.fragment.MainThreadsFragment;
 import in.reweyou.reweyou.fragment.UserInfoFragment;
 import in.reweyou.reweyou.utils.Utils;
 
@@ -256,7 +256,7 @@ public class ForumMainActivity extends AppCompatActivity {
             else if (position == 2)
                 return new CreateFragment();
             else
-                return new ForumFragment();
+                return new MainThreadsFragment();
         }
 
         @Override

@@ -6,9 +6,28 @@ package in.reweyou.reweyou.model;
 
 public class GroupModel {
     private String groupname;
+    private String description;
     private String image;
     private String members;
     private String groupid;
+    private String admin;
+    private String rules;
+
+    public String getAdmin() {
+        return admin;
+    }
+
+    public String getGroupid() {
+        return groupid;
+    }
+
+    public String getRules() {
+        return rules;
+    }
+
+    public String getDescription() {
+        return description;
+    }
 
     public String getImage() {
         return image;

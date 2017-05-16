@@ -24,11 +24,12 @@
             app:cardUseCompatPadding="true">
 
             <TextView
+                android:id="@+id/edit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:layout_marginRight="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginRight="12dp"
+                android:layout_marginTop="12dp"
                 android:background="@drawable/ripple_effect2"
                 android:padding="6dp"
                 android:text="EDIT"
@@ -58,7 +59,7 @@
                     android:id="@+id/groupname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="18dp"
                     android:drawablePadding="6dp"
                     android:gravity="center"
                     android:text="Rajneeti"
@@ -70,7 +71,7 @@
                     android:id="@+id/shortdescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="4dp"
                     android:gravity="center"
                     android:maxLines="5"
                     android:text="Modi's victory indeed transforms India's political landscape. BJP's dominance is now a fact of India's political life that everyone "
@@ -153,10 +154,11 @@
                 </LinearLayout>
 
                 <TextView
+                    android:id="@+id/textrules"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="18dp"
-                    android:text="REGULATIONS"
+                    android:text="RULES"
                     android:textColor="@color/main_background_pink"
                     android:textSize="12dp"
                     android:textStyle="bold" />
@@ -180,8 +182,7 @@ Semi-formal Politics is Politics in government associations such as neighborhood
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="16dp"
-                    android:layout_marginTop="16dp"
-                    android:visibility="gone">
+                    android:layout_marginTop="18dp">
 
                     <Button
                         android:id="@+id/btn_follow"

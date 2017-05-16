@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,7 +20,6 @@ import com.google.gson.reflect.TypeToken;
 
 import java.util.List;
 
-import in.reweyou.reweyou.GroupActivity;
 import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.adapter.FeeedsAdapter;
 import in.reweyou.reweyou.classes.UserSessionManager;
@@ -31,10 +29,10 @@ import in.reweyou.reweyou.model.ThreadModel;
  * Created by master on 24/2/17.
  */
 
-public class ForumFragment extends Fragment {
+public class MainThreadsFragment extends Fragment {
 
 
-    private static final String TAG = ForumFragment.class.getName();
+    private static final String TAG = MainThreadsFragment.class.getName();
     private Activity mContext;
     private RecyclerView recyclerView;
     private FeeedsAdapter feeedsAdapter;
@@ -50,19 +48,12 @@ public class ForumFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View layout = inflater.inflate(R.layout.fragment_feeds, container, false);
+        View layout = inflater.inflate(R.layout.fragment_main_threads, container, false);
+
         recyclerView = (RecyclerView) layout.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 
-        FloatingActionButton fab = (FloatingActionButton) layout.findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                ((GroupActivity) mContext).startCreateActivity();
-
-            }
-        });
         return layout;
     }
 

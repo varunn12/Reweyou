@@ -42,8 +42,8 @@ import java.util.List;
 import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.fragment.ChatFragment;
 import in.reweyou.reweyou.fragment.CreateThreadFragment;
-import in.reweyou.reweyou.fragment.ForumFragment;
 import in.reweyou.reweyou.fragment.GroupInfoFragment;
+import in.reweyou.reweyou.fragment.GroupThreadsFragment;
 import in.reweyou.reweyou.fragment.UserInfoFragment;
 import in.reweyou.reweyou.utils.Utils;
 
@@ -67,8 +67,11 @@ public class GroupActivity extends AppCompatActivity {
     private String groupid;
     private String groupname;
     private String groupmembers;
-    private String groupimage;
+    private String groupimage = "";
     private boolean isfollowed;
+    private String groupadmin = "";
+    private String groupdescription = "";
+    private String grouprules = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +89,9 @@ public class GroupActivity extends AppCompatActivity {
             groupid = getIntent().getStringExtra("groupid");
             groupmembers = getIntent().getStringExtra("members");
             groupimage = getIntent().getStringExtra("image");
+            groupadmin = getIntent().getStringExtra("admin");
+            groupdescription = getIntent().getStringExtra("description");
+            grouprules = getIntent().getStringExtra("rules");
             isfollowed = getIntent().getBooleanExtra("follow", false);
 
             getSupportActionBar().setTitle(groupname);
@@ -128,8 +134,7 @@ public class GroupActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (okbbutton.getTag().equals("1")) {
                     uploadingContainer.setVisibility(View.GONE);
-                }
-                else if (okbbutton.getTag().equals("0")) {
+                } else if (okbbutton.getTag().equals("0")) {
                     showUploading();
                     uploadGroup();
 
@@ -355,7 +360,7 @@ public class GroupActivity extends AppCompatActivity {
         okbbutton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_check_layer, 0, 0, 0);
         okbbutton.setVisibility(View.VISIBLE);
 
-        ((ForumFragment) pagerAdapter.getRegisteredFragment(1)).refreshList();
+        ((GroupThreadsFragment) pagerAdapter.getRegisteredFragment(1)).refreshList();
 
 
     }
@@ -407,6 +412,9 @@ public class GroupActivity extends AppCompatActivity {
                 bundle.putString("groupname", groupname);
                 bundle.putString("groupid", groupid);
                 bundle.putString("members", groupmembers);
+                bundle.putString("admin", groupadmin);
+                bundle.putString("description", groupdescription);
+                bundle.putString("rules", grouprules);
                 bundle.putString("image", groupimage);
                 bundle.putBoolean("follow", isfollowed);
 
@@ -416,7 +424,14 @@ public class GroupActivity extends AppCompatActivity {
                 return fragment;
             } else if (position == 2)
                 return new ChatFragment();
-            else return new ForumFragment();
+            else {
+                Bundle bundle = new Bundle();
+                bundle.putString("groupid", groupid);
+                GroupThreadsFragment groupThreadsFragment = new GroupThreadsFragment();
+                groupThreadsFragment.setArguments(bundle);
+
+                return groupThreadsFragment;
+            }
         }
 
         @Override

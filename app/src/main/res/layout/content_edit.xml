@@ -1,11 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="12dp"
+    android:paddingRight="12dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="in.reweyou.reweyou.EditActivity"
     tools:showIn="@layout/activity_edit">
 
-</android.support.constraint.ConstraintLayout>
+    <LinearLayout
+        android:id="@+id/container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="24dp"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/groupimage"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/border_grey"
+            android:padding="1dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Tap to change cover"
+            android:textSize="12dp" />
+
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:paddingLeft="2dp"
+        android:text="GROUP DESCRIPTION"
+        android:textSize="12dp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/groupdescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:hint="..."
+        android:inputType="textMultiLine"
+        android:maxLength="300"
+        android:minLines="1"
+        android:paddingBottom="10dp"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
+        android:paddingTop="10dp"
+        android:textColorHint="#9e9e9e"
+        android:textCursorDrawable="@drawable/color_cursor"
+        android:textSize="16dp"
+
+        android:textStyle="bold" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.7dp"
+        android:layout_gravity="center_horizontal"
+
+        android:layout_marginTop="4dp"
+        android:background="@color/greylight" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:paddingLeft="2dp"
+        android:text="RULES AND REGUALTIONS"
+        android:textSize="12dp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/grouprules"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:hint="..."
+        android:inputType="textMultiLine"
+        android:maxLength="600"
+        android:minLines="1"
+        android:paddingBottom="10dp"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
+        android:paddingTop="10dp"
+        android:textColorHint="#9e9e9e"
+        android:textCursorDrawable="@drawable/color_cursor"
+        android:textSize="16dp"
+
+        android:textStyle="bold" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.7dp"
+        android:layout_gravity="center_horizontal"
+
+        android:layout_marginTop="4dp"
+        android:background="@color/greylight" />
+
+    <Button
+        android:id="@+id/create"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+
+        android:background="@drawable/border_grey"
+        android:text="UPDATE"
+        android:textColor="#9e9e9e"
+        android:textSize="13dp" />
+
+</LinearLayout>

@@ -65,6 +65,7 @@ public class ExploreFragment extends Fragment {
         recyclerViewYourGroups = (RecyclerView) layout.findViewById(R.id.explore_recycler_view_your_groups);
         exploretextview = (TextView) layout.findViewById(R.id.aaa);
         yourgroupstextview = (TextView) layout.findViewById(R.id.text3);
+
         recyclerViewYourGroups.setNestedScrollingEnabled(false);
 
 
@@ -87,7 +88,9 @@ public class ExploreFragment extends Fragment {
 
         recyclerViewExplore.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
         ////
-        recyclerViewYourGroups.setLayoutManager(new GridLayoutManager(mContext, 2));
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(mContext, 2, LinearLayoutManager.VERTICAL, false);
+
+        recyclerViewYourGroups.setLayoutManager(gridLayoutManager);
         return layout;
     }
 

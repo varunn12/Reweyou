@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,6 +58,7 @@ public class YourGroupsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public void add(List<GroupModel> list) {
         messagelist.clear();
         messagelist.addAll(list);
+        Log.d("dhwh", "add: list" + list.size());
         notifyDataSetChanged();
     }
 
@@ -83,6 +85,9 @@ public class YourGroupsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     i.putExtra("groupname", messagelist.get(getAdapterPosition()).getGroupname());
                     i.putExtra("groupid", messagelist.get(getAdapterPosition()).getGroupId());
                     i.putExtra("image", messagelist.get(getAdapterPosition()).getImage());
+                    i.putExtra("description", messagelist.get(getAdapterPosition()).getDescription());
+                    i.putExtra("rules", messagelist.get(getAdapterPosition()).getRules());
+                    i.putExtra("admin", messagelist.get(getAdapterPosition()).getAdmin());
                     i.putExtra("members", messagelist.get(getAdapterPosition()).getMembers());
                     i.putExtra("follow", true);
                     ((Activity) context).startActivityForResult(i, Utils.REQ_CODE_GROP_ACITIVTY);

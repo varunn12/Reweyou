@@ -235,7 +235,7 @@
         <activity
             android:name=".EditActivity"
             android:label="@string/title_activity_edit"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme2.NoActionBar"></activity>
     </application>
 
 </manifest>

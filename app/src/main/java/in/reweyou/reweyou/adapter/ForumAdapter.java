@@ -82,6 +82,9 @@ public class ForumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     Intent i = new Intent(context, GroupActivity.class);
                     i.putExtra("groupname", messagelist.get(getAdapterPosition()).getGroupname());
                     i.putExtra("groupid", messagelist.get(getAdapterPosition()).getGroupId());
+                    i.putExtra("description", messagelist.get(getAdapterPosition()).getDescription());
+                    i.putExtra("rules", messagelist.get(getAdapterPosition()).getRules());
+                    i.putExtra("admin", messagelist.get(getAdapterPosition()).getAdmin());
                     i.putExtra("image", messagelist.get(getAdapterPosition()).getImage());
                     i.putExtra("members", messagelist.get(getAdapterPosition()).getMembers());
                     i.putExtra("follow", false);
