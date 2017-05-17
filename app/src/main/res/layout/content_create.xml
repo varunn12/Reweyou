@@ -237,10 +237,9 @@
         <RelativeLayout
             android:id="@+id/rl"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="44dp"
             android:layout_gravity="bottom"
             android:background="#fff"
-            android:minHeight="48dp"
             android:orientation="horizontal">
 
             <View
@@ -249,32 +248,62 @@
 
                 android:background="#757575" />
 
-
-            <ImageView
+            <RelativeLayout
                 android:id="@+id/camera"
-                android:layout_width="44dp"
-                android:layout_height="44dp"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:layout_gravity="center"
-                android:layout_marginLeft="8dp"
-                android:background="@drawable/ripple_effect3"
-                android:clickable="true"
-                android:padding="10dp"
-                app:srcCompat="@drawable/ic_photo_camera_black_24px_grey" />
+                android:layout_width="wrap_content"
 
-            <ImageView
+                android:layout_height="match_parent"
+                android:background="@drawable/ripple_effect2">
+
+                <ImageView
+                    android:id="@+id/c1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="44dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+
+                    android:paddingLeft="12dp"
+                    android:paddingRight="4dp"
+                    android:scaleType="center"
+                    app:srcCompat="@drawable/ic_photo_camera_black_24px_grey" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_toRightOf="@+id/c1"
+                    android:gravity="center_vertical"
+                    android:paddingRight="8dp"
+                    android:text="IMAGE"
+                    android:textSize="11dp" />
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:id="@+id/link"
-                android:layout_width="44dp"
-                android:layout_height="44dp"
-                android:layout_centerVertical="true"
-                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_toRightOf="@+id/camera"
-                android:background="@drawable/ripple_effect3"
-                android:clickable="true"
-                android:padding="10dp"
-                app:srcCompat="@drawable/ic_attach_file_black_24px" />
+                android:background="@drawable/ripple_effect2">
 
+                <ImageView
+                    android:id="@+id/c2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:paddingLeft="2dp"
+                    android:scaleType="center"
+                    app:srcCompat="@drawable/ic_attach_file_black_24px" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_toRightOf="@+id/c2"
+                    android:gravity="center_vertical"
+                    android:paddingRight="10dp"
+                    android:text="LINK"
+                    android:textSize="11dp" />
+            </RelativeLayout>
         </RelativeLayout>
     </android.support.v7.widget.CardView>
 </RelativeLayout>

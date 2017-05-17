@@ -91,7 +91,7 @@ public class FeeedsAdapter extends RecyclerView.Adapter<FeeedsAdapter.BaseViewHo
 
 
         holder.description.setText(messagelist.get(position).getDescription());
-        holder.date.setText(messagelist.get(position).getTimestamp());
+        holder.date.setText(messagelist.get(position).getTimestamp().replace("about ", ""));
         holder.username.setText(messagelist.get(position).getName());
         holder.commentnum.setText(messagelist.get(position).getComments());
         Glide.with(mContext).load(messagelist.get(position).getProfilepic()).into(holder.profileimage);

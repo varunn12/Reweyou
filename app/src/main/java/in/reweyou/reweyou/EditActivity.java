@@ -42,6 +42,7 @@ import com.kbeanie.multipicker.api.entity.ChosenImage;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.util.HashMap;
 import java.util.List;
 
 import in.reweyou.reweyou.classes.UserSessionManager;
@@ -122,13 +123,18 @@ public class EditActivity extends AppCompatActivity {
                 if (grouprul.getText().toString().length() > 0)
                     temprules = grouprul.getText().toString();
 
+                HashMap<String, String> hashMap = new HashMap<String, String>();
+                hashMap.put("groupid", groupid);
+                if (!encodedImage.isEmpty())
+                    hashMap.put("image", encodedImage);
+                hashMap.put("description", groupdes.getText().toString());
+                hashMap.put("rules", temprules);
+                hashMap.put("uid", userSessionManager.getUID());
+                hashMap.put("authtoken", userSessionManager.getAuthToken());
+
+
                 AndroidNetworking.post("https://www.reweyou.in/google/edit_groups.php")
-                        .addBodyParameter("groupid", groupid)
-                        .addBodyParameter("image", encodedImage)
-                        .addBodyParameter("description", groupdes.getText().toString())
-                        .addBodyParameter("rules", temprules)
-                        .addBodyParameter("uid", userSessionManager.getUID())
-                        .addBodyParameter("authtoken", userSessionManager.getAuthToken())
+                        .addBodyParameter(hashMap)
                         .setTag("editgroup")
                         .setPriority(Priority.HIGH)
                         .build()
@@ -136,10 +142,17 @@ public class EditActivity extends AppCompatActivity {
                             @Override
                             public void onResponse(String response) {
                                 Log.d(TAG, "onResponse: " + response);
-                                pd.setVisibility(View.GONE);
-                                Toast.makeText(EditActivity.this, "Group Info updated", Toast.LENGTH_SHORT).show();
-                                setResult(RESULT_OK);
-                                finish();
+                                if (response.equals("group updated")) {
+                                    pd.setVisibility(View.GONE);
+                                    Toast.makeText(EditActivity.this, "Group Info updated", Toast.LENGTH_SHORT).show();
+                                    setResult(RESULT_OK);
+                                    finish();
+                                } else {
+                                    Toast.makeText(EditActivity.this, "couldn't connect", Toast.LENGTH_SHORT).show();
+
+                                    create.setVisibility(View.VISIBLE);
+                                    pd.setVisibility(View.GONE);
+                                }
                             }
 
                             @Override

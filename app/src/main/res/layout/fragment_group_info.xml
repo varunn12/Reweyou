@@ -8,13 +8,13 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginBottom="4dp"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
@@ -166,11 +166,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="It is very often said that politics is about power.[1] A political system is a framework which defines acceptable political methods within a given society. History of political thought can be traced back to early antiquity, with seminal works such as Plato's Republic, Aristotle's Politics and the works of Confucius.
-
-Formal Politics refers to the operation of a constitutional system of government and publicly defined institutions and procedures.[1] Political parties, public policy or discussions about war and foreign affairs would fall under the category of Formal Politics.[1] Many people view formal politics as something outside of themselves, but that can still affect their daily lives.[1]
-
-Semi-formal Politics is Politics in government associations such as neighborhood associations, or student governments where student government political party politics is often important."
+                    android:text="ent government political party politics is often important."
 
                     android:textColor="#616161"
                     android:textSize="13dp" />
@@ -179,14 +175,15 @@ Semi-formal Politics is Politics in government associations such as neighborhood
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="16dp"
                     android:layout_marginTop="18dp">
 
                     <Button
                         android:id="@+id/btn_follow"
                         android:layout_width="wrap_content"
                         android:layout_height="36dp"
-                        android:layout_centerInParent="true"
+                        android:layout_centerHorizontal="true"
+
+                        android:layout_marginBottom="16dp"
                         android:background="@drawable/rectangular_border_pink"
                         android:elevation="0dp"
                         android:text="Leave"
@@ -198,7 +195,8 @@ Semi-formal Politics is Politics in government associations such as neighborhood
                         android:id="@+id/pd"
                         android:layout_width="36dp"
                         android:layout_height="36dp"
-                        android:layout_centerInParent="true"
+
+                        android:layout_centerHorizontal="true"
                         android:visibility="gone" />
                 </RelativeLayout>
             </LinearLayout>

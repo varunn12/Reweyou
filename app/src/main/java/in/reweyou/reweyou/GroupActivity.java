@@ -307,6 +307,7 @@ public class GroupActivity extends AppCompatActivity {
         //showUploading();
         AndroidNetworking.post("https://www.reweyou.in/google/create_threads.php")
                 .addBodyParameter("groupname", groupname)
+                .addBodyParameter("groupid", groupid)
                 .addBodyParameter("description", data.getStringExtra("description"))
                 .addBodyParameter("link", data.getStringExtra("link"))
                 .addBodyParameter("linkdesc", data.getStringExtra("linkdesc"))

@@ -14,6 +14,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -57,8 +58,8 @@ public class CreateActivity extends SlidingActivity {
     private TextView headlinelink;
     private TextView descriptionlink;
     private RelativeLayout rl;
-    private ImageView camerabtn;
-    private ImageView linkbtn;
+    private RelativeLayout camerabtn;
+    private RelativeLayout linkbtn;
     private TextView linklink;
     private TextView create;
     private EditText edittextdescription;
@@ -154,8 +155,8 @@ public class CreateActivity extends SlidingActivity {
         descriptionlink = (TextView) findViewById(R.id.descriptionlink);
         linklink = (TextView) findViewById(R.id.linklink);
         rl = (RelativeLayout) findViewById(R.id.rl);
-        linkbtn = (ImageView) findViewById(R.id.link);
-        camerabtn = (ImageView) findViewById(R.id.camera);
+        linkbtn = (RelativeLayout) findViewById(R.id.link);
+        camerabtn = (RelativeLayout) findViewById(R.id.camera);
         linkbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -331,6 +332,7 @@ public class CreateActivity extends SlidingActivity {
 
         final AlertDialog alertDialog = alert.create();
         alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 
         alertDialog.show();
 

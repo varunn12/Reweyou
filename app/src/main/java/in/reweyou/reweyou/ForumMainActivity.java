@@ -35,6 +35,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.util.List;
 
+import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.fragment.CreateFragment;
 import in.reweyou.reweyou.fragment.ExploreFragment;
 import in.reweyou.reweyou.fragment.MainThreadsFragment;
@@ -48,6 +49,7 @@ public class ForumMainActivity extends AppCompatActivity {
     private PagerAdapter pagerAdapter;
     private int positionFragment = -1;
     private ViewPager viewPager;
+    private UserSessionManager userSessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +74,8 @@ public class ForumMainActivity extends AppCompatActivity {
         tabCall3.setIcon(R.drawable.tab3_selector);
         TabLayout.Tab tabCall4 = tabLayout.getTabAt(3);
         tabCall4.setIcon(R.drawable.tab4_selector);
+
+        userSessionManager = new UserSessionManager(this);
 
         switch (Utils.backgroundCode) {
             case 0:
@@ -205,9 +209,9 @@ public class ForumMainActivity extends AppCompatActivity {
 
     private void uploadImage(String resource) {
         AndroidNetworking.post("")
-                .addBodyParameter("image", resource)
-                .addBodyParameter("token", "token")
-                .addBodyParameter("userid", "Apg")
+                .addBodyParameter("image", "")
+                .addBodyParameter("authtoken", userSessionManager.getAuthToken())
+                .addBodyParameter("userid", userSessionManager.getUID())
                 .setTag("test")
                 .setPriority(Priority.MEDIUM)
                 .build()
