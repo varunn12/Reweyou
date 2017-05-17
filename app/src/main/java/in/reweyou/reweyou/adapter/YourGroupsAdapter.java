@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +46,7 @@ public class YourGroupsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         YourGroupsViewHolder forumViewHolder = (YourGroupsViewHolder) holder;
-        Glide.with(context).load(messagelist.get(position).getImage()).into(forumViewHolder.backgroundImage);
+        Glide.with(context).load(messagelist.get(position).getImage()).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(forumViewHolder.backgroundImage);
         forumViewHolder.groupName.setText(messagelist.get(position).getGroupname());
         forumViewHolder.members.setText(messagelist.get(position).getMembers());
     }

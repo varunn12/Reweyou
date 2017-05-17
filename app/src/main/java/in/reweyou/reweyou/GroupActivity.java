@@ -252,6 +252,8 @@ public class GroupActivity extends AppCompatActivity {
         } else if (resultCode == RESULT_OK) {
             if (requestCode == Picker.PICK_IMAGE_DEVICE) {
                 imagePicker.submit(data);
+            } else if (requestCode == Utils.REQ_CODE_EDIT_GROUP_ACTIVITY) {
+                ((GroupInfoFragment) pagerAdapter.getRegisteredFragment(0)).refreshDetails();
             }
         }
 

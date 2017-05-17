@@ -14,6 +14,7 @@ import java.util.Random;
 
 public class Utils {
     public static final int REQ_CODE_GROP_ACITIVTY = 25;
+    public static final int REQ_CODE_EDIT_GROUP_ACTIVITY = 27;
     public static boolean isNight;
     public static int backgroundCode;
     public static int screenWidth;

@@ -26,6 +26,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import in.reweyou.reweyou.EditActivity;
 import in.reweyou.reweyou.R;
 import in.reweyou.reweyou.classes.UserSessionManager;
+import in.reweyou.reweyou.utils.Utils;
 
 /**
  * Created by master on 24/2/17.
@@ -72,19 +73,22 @@ public class GroupInfoFragment extends Fragment {
             groupid = getArguments().getString("groupid");
             isfollowed = getArguments().getBoolean("follow");
             shortdes.setText(getArguments().getString("description"));
+            groupdes = getArguments().getString("description");
+            grouprules = getArguments().getString("rules");
             description.setText(getArguments().getString("rules"));
             adminuid = getArguments().getString("admin");
             if (getArguments().getString("rules").isEmpty()) {
                 if (userSessionManager.getUID().equals(adminuid)) {
 
-                    description.setText("Edit to update rules");
+                    description.setText("*Edit to update rules*");
                 } else {
                     textrules.setVisibility(View.GONE);
                     description.setVisibility(View.GONE);
                 }
             }
-
-            if (isfollowed) {
+            if (adminuid.equals(userSessionManager.getUID())) {
+                btnfollow.setVisibility(View.GONE);
+            } else if (isfollowed) {
                 btnfollow.setText("Leave");
                 btnfollow.setTextColor(mContext.getResources().getColor(R.color.main_background_pink));
                 btnfollow.setBackground(mContext.getResources().getDrawable(R.drawable.rectangular_border_pink));
@@ -156,7 +160,7 @@ public class GroupInfoFragment extends Fragment {
                 i.putExtra("image", getArguments().getString("image"));
                 i.putExtra("rules", grouprules);
                 i.putExtra("groupid", groupid);
-                startActivity(i);
+                startActivityForResult(i, Utils.REQ_CODE_EDIT_GROUP_ACTIVITY);
             }
         });
         return layout;
@@ -189,4 +193,7 @@ public class GroupInfoFragment extends Fragment {
     }
 
 
+    public void refreshDetails() {
+        Toast.makeText(mContext, "Details code to be updated soon", Toast.LENGTH_SHORT).show();
+    }
 }

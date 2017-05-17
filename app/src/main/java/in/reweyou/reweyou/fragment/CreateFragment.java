@@ -127,6 +127,10 @@ public class CreateFragment extends Fragment {
 
         create.setVisibility(View.INVISIBLE);
         pd.setVisibility(View.VISIBLE);
+        groupname.setEnabled(false);
+        groupname.setFocusable(false);
+        description.setEnabled(false);
+        description.setFocusable(false);
 
 
         HashMap<String, String> hashMap = new HashMap<>();
@@ -158,6 +162,12 @@ public class CreateFragment extends Fragment {
 
                         create.setVisibility(View.VISIBLE);
                         pd.setVisibility(View.INVISIBLE);
+                        groupname.setEnabled(true);
+                        groupname.setFocusable(true);
+                        description.setEnabled(true);
+                        description.setFocusable(true);
+
+
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -172,6 +182,11 @@ public class CreateFragment extends Fragment {
                         Log.e(TAG, "onError: " + anError);
                         create.setVisibility(View.VISIBLE);
                         pd.setVisibility(View.INVISIBLE);
+                        groupname.setEnabled(true);
+                        groupname.setFocusable(true);
+                        description.setEnabled(true);
+                        description.setFocusable(true);
+
                     }
                 });
     }

@@ -28,10 +28,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:layout_marginRight="12dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/ripple_effect2"
-                android:padding="6dp"
+                android:padding="8dp"
                 android:text="EDIT"
                 android:textColor="@color/red"
                 android:textSize="12dp"
@@ -111,13 +111,12 @@
                             android:paddingLeft="4dp"
                             android:text="Members"
                             android:textColor="#757575"
-                            android:textSize="14dp"
-                            android:textStyle="bold" />
+                            android:textSize="14dp" />
                     </LinearLayout>
 
                     <View
                         android:layout_width="0.7dp"
-                        android:layout_height="24dp"
+                        android:layout_height="28dp"
                         android:layout_gravity="center"
                         android:layout_marginLeft="24dp"
                         android:layout_marginRight="22dp"
@@ -147,8 +146,7 @@
                             android:paddingLeft="4dp"
                             android:text="Threads"
                             android:textColor="#757575"
-                            android:textSize="14dp"
-                            android:textStyle="bold" />
+                            android:textSize="14dp" />
                     </LinearLayout>
 
                 </LinearLayout>
