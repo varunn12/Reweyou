@@ -3,6 +3,7 @@ package in.reweyou.reweyou;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -49,6 +50,7 @@ public class CommentActivity extends AppCompatActivity {
     private String tempcommentid;
     private TextView nocommenttxt;
     private CommentsAdapter adapterComment;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
 
     @Override
@@ -67,14 +69,21 @@ public class CommentActivity extends AppCompatActivity {
                 finish();
             }
         });
-
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getData();
+            }
+        });
         try {
             threadid = getIntent().getStringExtra("threadid");
         } catch (Exception e) {
             e.printStackTrace();
         }
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(linearLayoutManager);
 
         editText = (EditText) findViewById(R.id.edittext);
         send = (ImageView) findViewById(R.id.send);
@@ -95,6 +104,8 @@ public class CommentActivity extends AppCompatActivity {
     }
 
     private void getData() {
+        swipeRefreshLayout.setRefreshing(true);
+        replyheader.setVisibility(View.GONE);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -109,6 +120,8 @@ public class CommentActivity extends AppCompatActivity {
                         .getAsJSONArray(new JSONArrayRequestListener() {
                             @Override
                             public void onResponse(JSONArray response) {
+                                swipeRefreshLayout.setRefreshing(false);
+
                                 Log.d(TAG, "onResponse: " + response);
                                 Gson gson = new Gson();
                                 List<Object> list = new ArrayList<>();
@@ -143,6 +156,8 @@ public class CommentActivity extends AppCompatActivity {
 
                             @Override
                             public void onError(ANError anError) {
+                                swipeRefreshLayout.setRefreshing(false);
+
                                 Log.d(TAG, "onError: " + anError);
                                 Toast.makeText(CommentActivity.this, "couldn't connect", Toast.LENGTH_SHORT).show();
                             }
@@ -155,10 +170,10 @@ public class CommentActivity extends AppCompatActivity {
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 InputMethodManager imm = (InputMethodManager) CommentActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
                 if (editText.getText().toString().trim().length() > 0) {
-
 
                     HashMap<String, String> hashMap = new HashMap<String, String>();
                     hashMap.put("uid", userSessionManager.getUID());
@@ -177,6 +192,7 @@ public class CommentActivity extends AppCompatActivity {
                         hashMap.put("comment", editText.getText().toString().trim());
 
                     }
+                    editText.setText("");
 
 
                     AndroidNetworking.post(url)
@@ -190,6 +206,8 @@ public class CommentActivity extends AppCompatActivity {
                                     Log.d(TAG, "onResponse: " + response);
                                     //   Toast.makeText(CommentActivity.this,response,Toast.LENGTH_SHORT).show();
                                     if (response.equals("Comment created")) {
+                                        getData();
+                                    } else if (response.equals("Reply created")) {
                                         getData();
                                     }
                                 }

@@ -9,6 +9,16 @@ public class CommentModel {
     private String name;
     private String comment;
     private String commentid;
+    private String imageurl;
+    private String timestamp;
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public String getImageurl() {
+        return imageurl;
+    }
 
     public String getName() {
         return name;

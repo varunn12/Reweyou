@@ -8,6 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,12 +52,16 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             CommentViewHolder commentViewHolder = (CommentViewHolder) holder;
             commentViewHolder.username.setText(commentModel.getName());
             commentViewHolder.comment.setText(commentModel.getComment());
+            commentViewHolder.time.setText(commentModel.getTimestamp().replace("about ", ""));
+            Glide.with(context).load(((CommentModel) messagelist.get(position)).getImageurl()).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(commentViewHolder.image);
 
         } else if (getItemViewType(position) == VIEWTYPE_REPLY) {
             ReplyCommentModel replyCommentModel = (ReplyCommentModel) messagelist.get(position);
             ReplyViewHolder replyViewHolder = (ReplyViewHolder) holder;
             replyViewHolder.username.setText(replyCommentModel.getName());
             replyViewHolder.comment.setText(replyCommentModel.getReply());
+            replyViewHolder.time.setText(replyCommentModel.getTimestamp().replace("about ", ""));
+            Glide.with(context).load(((ReplyCommentModel) messagelist.get(position)).getImageurl()).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(replyViewHolder.image);
 
 
         }
@@ -86,7 +93,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private class CommentViewHolder extends RecyclerView.ViewHolder {
         private TextView reply;
         private ImageView image;
-        private TextView username, comment;
+        private TextView username, comment, time;
 
 
         public CommentViewHolder(View inflate) {
@@ -95,6 +102,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             image = (ImageView) inflate.findViewById(R.id.image);
             username = (TextView) inflate.findViewById(R.id.username);
             comment = (TextView) inflate.findViewById(R.id.comment);
+            time = (TextView) inflate.findViewById(R.id.time);
             reply = (TextView) inflate.findViewById(R.id.reply);
 
             reply.setOnClickListener(new View.OnClickListener() {
@@ -110,7 +118,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private class ReplyViewHolder extends RecyclerView.ViewHolder {
         private ImageView image;
-        private TextView username, comment, reply;
+        private TextView username, comment, reply, time;
 
 
         public ReplyViewHolder(View inflate) {
@@ -119,6 +127,8 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             image = (ImageView) inflate.findViewById(R.id.image);
             username = (TextView) inflate.findViewById(R.id.username);
             comment = (TextView) inflate.findViewById(R.id.comment);
+            time = (TextView) inflate.findViewById(R.id.time);
+
 
 
         }

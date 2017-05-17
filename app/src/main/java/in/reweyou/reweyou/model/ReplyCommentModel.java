@@ -8,6 +8,16 @@ public class ReplyCommentModel {
 
     private String name;
     private String reply;
+    private String imageurl;
+    private String timestamp;
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public String getImageurl() {
+        return imageurl;
+    }
 
     public String getName() {
         return name;

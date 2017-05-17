@@ -207,8 +207,9 @@
             android:name=".CommentActivity"
             android:label="@string/title_activity_comment"
             android:screenOrientation="portrait"
+
             android:theme="@style/AppTheme2.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".GroupActivity"
             android:label="@string/title_activity_group"

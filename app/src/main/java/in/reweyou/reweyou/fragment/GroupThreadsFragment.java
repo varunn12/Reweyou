@@ -63,6 +63,12 @@ public class GroupThreadsFragment extends Fragment {
         nopostcard = (CardView) layout.findViewById(R.id.nopostcard);
         FloatingActionButton fab = (FloatingActionButton) layout.findViewById(R.id.fab);
         swipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swiperefresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getData();
+            }
+        });
         createpost = (Button) layout.findViewById(R.id.createpost);
 
         createpost.setOnClickListener(new View.OnClickListener() {
@@ -121,6 +127,7 @@ public class GroupThreadsFragment extends Fragment {
     }
 
     private void getData() {
+        swipeRefreshLayout.setEnabled(true);
         nopostcard.setVisibility(View.GONE);
         swipeRefreshLayout.setRefreshing(true);
         AndroidNetworking.post("https://www.reweyou.in/google/list_threads.php")
@@ -141,6 +148,7 @@ public class GroupThreadsFragment extends Fragment {
                             public void run() {
                                 if (list.size() == 0) {
                                     nopostcard.setVisibility(View.VISIBLE);
+                                    swipeRefreshLayout.setEnabled(false);
                                 } else
                                     feeedsAdapter.add(list);
                             }
