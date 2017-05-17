@@ -46,8 +46,8 @@
 
                 <ImageView
                     android:id="@+id/image"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="32dp"
                     android:background="@drawable/border_green"
@@ -177,19 +177,28 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="18dp">
 
-                    <Button
+                    <TextView
                         android:id="@+id/btn_follow"
-                        android:layout_width="wrap_content"
+                        android:layout_width="90dp"
                         android:layout_height="36dp"
                         android:layout_centerHorizontal="true"
 
                         android:layout_marginBottom="16dp"
                         android:background="@drawable/rectangular_border_pink"
                         android:elevation="0dp"
+                        android:gravity="center"
                         android:text="Leave"
                         android:textAllCaps="true"
                         android:textColor="@color/main_background_pink"
                         android:textSize="13dp" />
+
+                    <ImageView
+                        android:id="@+id/img_shine"
+                        android:layout_width="28dp"
+                        android:layout_height="36dp"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginLeft="-28dp"
+                        android:src="@drawable/shine_effect" />
 
                     <ProgressBar
                         android:id="@+id/pd"

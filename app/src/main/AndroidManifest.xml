@@ -205,11 +205,9 @@
             android:theme="@style/AppTheme2.NoActionBar" />
         <activity
             android:name=".CommentActivity"
-            android:excludeFromRecents="true"
             android:label="@string/title_activity_comment"
             android:screenOrientation="portrait"
-            android:taskAffinity=""
-            android:theme="@style/Theme.Sliding.Lights"
+            android:theme="@style/AppTheme2.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".GroupActivity"

@@ -47,6 +47,8 @@ public class ExploreFragment extends Fragment {
     private YourGroupsAdapter adapterYourGroups;
     private TextView yourgroupstextview;
     private UserSessionManager userSessionManager;
+    private TextView txtgroups;
+    private TextView txtexplore;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,6 +70,8 @@ public class ExploreFragment extends Fragment {
 
         recyclerViewYourGroups.setNestedScrollingEnabled(false);
 
+        txtexplore = (TextView) layout.findViewById(R.id.txtexplore);
+        txtgroups = (TextView) layout.findViewById(R.id.txtgroups);
 
         switch (Utils.backgroundCode) {
             case 0:
@@ -124,6 +128,9 @@ public class ExploreFragment extends Fragment {
     }
 
     private void getDataFromServer() {
+
+        txtgroups.setVisibility(View.GONE);
+        txtexplore.setVisibility(View.GONE);
         adapterExplore = new ForumAdapter(mContext);
         adapterYourGroups = new YourGroupsAdapter(mContext);
         recyclerViewExplore.setAdapter(adapterExplore);
@@ -171,6 +178,14 @@ public class ExploreFragment extends Fragment {
                             }
                             adapterExplore.add(explorelist);
                             adapterYourGroups.add(followlist);
+
+                            if (explorelist.size() == 0) {
+                                txtexplore.setVisibility(View.VISIBLE);
+                            }
+
+                            if (followlist.size() == 0) {
+                                txtgroups.setVisibility(View.VISIBLE);
+                            }
 
 
                         } catch (Exception e) {

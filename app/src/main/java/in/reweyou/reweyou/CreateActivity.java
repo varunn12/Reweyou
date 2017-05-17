@@ -72,7 +72,7 @@ public class CreateActivity extends SlidingActivity {
     private int counter = 1;
     private RelativeLayout addmorecont;
     private String link = "";
-    private String type;
+    private String type = "text";
     private UserSessionManager sessionManager;
     private LinearLayout uploadingContainer;
     private String image1url = "";
@@ -217,6 +217,7 @@ public class CreateActivity extends SlidingActivity {
 
             Intent intent = new Intent();
             intent.putExtra("description", edittextdescription.getText().toString());
+
             intent.putExtra("link", link);
             intent.putExtra("linkhead", linkhead);
             intent.putExtra("linkdesc", linkdesc);
@@ -225,6 +226,8 @@ public class CreateActivity extends SlidingActivity {
             intent.putExtra("image2", image2url);
             intent.putExtra("image3", image3url);
             intent.putExtra("image4", image4url);
+
+
             intent.putExtra("type", type);
             setResult(RESULT_OK, intent);
             finish();

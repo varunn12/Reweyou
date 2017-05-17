@@ -3,8 +3,10 @@ package in.reweyou.reweyou;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -15,6 +17,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
@@ -22,8 +25,6 @@ import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONArrayRequestListener;
 import com.androidnetworking.interfaces.StringRequestListener;
 import com.google.gson.Gson;
-import com.klinker.android.sliding.MultiShrinkScroller;
-import com.klinker.android.sliding.SlidingActivity;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -37,7 +38,7 @@ import in.reweyou.reweyou.classes.UserSessionManager;
 import in.reweyou.reweyou.model.CommentModel;
 import in.reweyou.reweyou.model.ReplyCommentModel;
 
-public class CommentActivity extends SlidingActivity {
+public class CommentActivity extends AppCompatActivity {
 
     private static final String TAG = CommentActivity.class.getName();
     public EditText editText;
@@ -46,21 +47,26 @@ public class CommentActivity extends SlidingActivity {
     private UserSessionManager userSessionManager;
     private String threadid;
     private String tempcommentid;
+    private TextView nocommenttxt;
+    private CommentsAdapter adapterComment;
+
 
     @Override
-    protected void configureScroller(MultiShrinkScroller scroller) {
-        super.configureScroller(scroller);
-        scroller.setIntermediateHeaderHeightRatio(0);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-    }
+        setContentView(R.layout.activity_comment);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-    @Override
-    public void init(Bundle savedInstanceState) {
-        disableHeader();
-        enableFullscreen();
-
-
-        setContent(R.layout.content_comment);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         try {
             threadid = getIntent().getStringExtra("threadid");
@@ -72,20 +78,30 @@ public class CommentActivity extends SlidingActivity {
 
         editText = (EditText) findViewById(R.id.edittext);
         send = (ImageView) findViewById(R.id.send);
-
+        nocommenttxt = (TextView) findViewById(R.id.commenttxt);
 
         userSessionManager = new UserSessionManager(this);
         replyheader = (TextView) findViewById(R.id.t2);
 
-        final CommentsAdapter adapterComment = new CommentsAdapter(this);
+        adapterComment = new CommentsAdapter(this);
         recyclerView.setAdapter(adapterComment);
 
         initSendButton();
         initTextWatcherEditText();
+
+        getData();
+
+
+    }
+
+    private void getData() {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                AndroidNetworking.get("https://reweyou.in/reviews/samplecomment.php")
+                AndroidNetworking.post("https://www.reweyou.in/google/list_comments.php")
+                        .addBodyParameter("uid", userSessionManager.getUID())
+                        .addBodyParameter("authtoken", userSessionManager.getAuthToken())
+                        .addBodyParameter("threadid", threadid)
                         .setTag("report")
 
                         .setPriority(Priority.HIGH)
@@ -100,19 +116,24 @@ public class CommentActivity extends SlidingActivity {
                                 try {
                                     for (int i = 0; i < response.length(); i++) {
                                         JSONObject json = response.getJSONObject(i);
-                                        JSONArray jsonReply = json.getJSONArray("reply");
                                         CommentModel coModel = gson.fromJson(json.toString(), CommentModel.class);
                                         list.add(coModel);
-                                        for (int j = 0; j < jsonReply.length(); j++) {
-                                            JSONObject jsontemp = jsonReply.getJSONObject(j);
-                                            ReplyCommentModel temp = gson.fromJson(jsontemp.toString(), ReplyCommentModel.class);
-                                            list.add(temp);
-                                        }
 
+                                        if (json.has("reply")) {
+                                            JSONArray jsonReply = json.getJSONArray("reply");
+
+                                            for (int j = 0; j < jsonReply.length(); j++) {
+                                                JSONObject jsontemp = jsonReply.getJSONObject(j);
+                                                ReplyCommentModel temp = gson.fromJson(jsontemp.toString(), ReplyCommentModel.class);
+                                                list.add(temp);
+                                            }
+                                        }
 
                                     }
                                     adapterComment.add(list);
-
+                                    if (list.size() == 0) {
+                                        nocommenttxt.setVisibility(View.VISIBLE);
+                                    }
 
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -122,12 +143,12 @@ public class CommentActivity extends SlidingActivity {
 
                             @Override
                             public void onError(ANError anError) {
-
+                                Log.d(TAG, "onError: " + anError);
+                                Toast.makeText(CommentActivity.this, "couldn't connect", Toast.LENGTH_SHORT).show();
                             }
                         });
             }
         }, 500);
-
     }
 
     private void initSendButton() {
@@ -153,7 +174,7 @@ public class CommentActivity extends SlidingActivity {
                         Log.d(TAG, "onClick: reply");
                     } else {
                         url = "https://www.reweyou.in/google/create_comments.php";
-                        hashMap.put("comment", editText.getText().toString());
+                        hashMap.put("comment", editText.getText().toString().trim());
 
                     }
 
@@ -167,8 +188,9 @@ public class CommentActivity extends SlidingActivity {
                                 @Override
                                 public void onResponse(String response) {
                                     Log.d(TAG, "onResponse: " + response);
+                                    //   Toast.makeText(CommentActivity.this,response,Toast.LENGTH_SHORT).show();
                                     if (response.equals("Comment created")) {
-
+                                        getData();
                                     }
                                 }
 

@@ -4,13 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -42,6 +43,7 @@ public class GroupInfoFragment extends Fragment {
     private String groupdes = "";
     private String grouprules = "";
     private String adminuid = "";
+    private ImageView shineeffect;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,7 +60,7 @@ public class GroupInfoFragment extends Fragment {
         TextView edit = (TextView) layout.findViewById(R.id.edit);
 
         final UserSessionManager userSessionManager = new UserSessionManager(mContext);
-        final Button btnfollow = (Button) layout.findViewById(R.id.btn_follow);
+        final TextView btnfollow = (TextView) layout.findViewById(R.id.btn_follow);
         final ImageView img = (ImageView) layout.findViewById(R.id.image);
         final TextView groupname = (TextView) layout.findViewById(R.id.groupname);
         final TextView textrules = (TextView) layout.findViewById(R.id.textrules);
@@ -66,6 +68,7 @@ public class GroupInfoFragment extends Fragment {
         final TextView description = (TextView) layout.findViewById(R.id.description);
         final TextView members = (TextView) layout.findViewById(R.id.members);
         TextView threads = (TextView) layout.findViewById(R.id.threads);
+        shineeffect = (ImageView) layout.findViewById(R.id.img_shine);
         final ProgressBar pd = (ProgressBar) layout.findViewById(R.id.pd);
         try {
             groupname.setText(getArguments().getString("groupname"));
@@ -163,6 +166,14 @@ public class GroupInfoFragment extends Fragment {
                 startActivityForResult(i, Utils.REQ_CODE_EDIT_GROUP_ACTIVITY);
             }
         });
+
+        if (!isfollowed)
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    shineeffect.animate().translationXBy(Utils.convertpxFromDp(28 + 90 + 28)).setInterpolator(new AccelerateDecelerateInterpolator()).setDuration(800).start();
+                }
+            }, 700);
         return layout;
     }
 

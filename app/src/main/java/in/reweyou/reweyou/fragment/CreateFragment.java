@@ -134,8 +134,8 @@ public class CreateFragment extends Fragment {
 
 
         HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("groupname", groupname.getText().toString());
-        hashMap.put("description", description.getText().toString());
+        hashMap.put("groupname", groupname.getText().toString().trim().trim());
+        hashMap.put("description", description.getText().toString().trim());
         hashMap.put("admin", userSessionManager.getUID());
         hashMap.put("authtoken", userSessionManager.getAuthToken());
         if (imgUrl != null)

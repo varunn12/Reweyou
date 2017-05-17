@@ -8,6 +8,7 @@ public class GroupModel {
     private String groupname;
     private String description;
     private String image;
+    private String threads;
     private String members;
     private String groupid;
     private String admin;
@@ -19,6 +20,10 @@ public class GroupModel {
 
     public String getGroupid() {
         return groupid;
+    }
+
+    public String getThreads() {
+        return threads;
     }
 
     public String getRules() {
